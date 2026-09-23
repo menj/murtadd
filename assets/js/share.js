@@ -1,0 +1,38 @@
+/**
+ * Copy link. Progressive: without JS the other three share links still work,
+ * and the copy button is hidden rather than left as a dead control.
+ */
+( function () {
+	'use strict';
+
+	var buttons = document.querySelectorAll( '.murtadd-share-copy' );
+	if ( ! buttons.length ) {
+		return;
+	}
+
+	var supported = !! ( navigator.clipboard && navigator.clipboard.writeText );
+
+	buttons.forEach( function ( button ) {
+		if ( ! supported ) {
+			button.hidden = true;
+			return;
+		}
+
+		var label = button.querySelector( 'span' );
+		var original = label ? label.textContent : '';
+
+		button.addEventListener( 'click', function () {
+			navigator.clipboard.writeText( button.dataset.url ).then( function () {
+				if ( ! label ) {
+					return;
+				}
+				label.textContent = button.dataset.copied || 'Copied';
+				button.classList.add( 'is-copied' );
+				window.setTimeout( function () {
+					label.textContent = original;
+					button.classList.remove( 'is-copied' );
+				}, 2000 );
+			} );
+		} );
+	} );
+}() );

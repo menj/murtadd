@@ -1,0 +1,1262 @@
+# Copyright (C) 2026 Langgam Fikir Enterprise
+msgid ""
+msgstr ""
+"Project-Id-Version: Murtadd 1.23.0\n"
+"POT-Creation-Date: 2026-07-13\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Domain: murtadd\n"
+
+#: 404.php:13
+msgid "That page is not here."
+msgstr ""
+
+#: 404.php:14
+msgid "The link may be old, or the page may have moved. Search, or pick a door below."
+msgstr ""
+
+#: 404.php:22
+#: sidebar.php:20
+#: template-parts/rail/rail-single.php:43
+msgid "Start here"
+msgstr ""
+
+#: 404.php:24
+#: search.php:45
+msgid "Browse doubts"
+msgstr ""
+
+#: 404.php:25
+#: search.php:46
+msgid "Browse rebuttals"
+msgstr ""
+
+#: 404.php:26
+#: archive-murtadd_fatwa.php:19
+#: search.php:47
+msgid "Fatwa index"
+msgstr ""
+
+#: archive-murtadd_doubt.php:27
+msgid "The doubts"
+msgstr ""
+
+#: archive-murtadd_doubt.php:29
+msgid "Questions people actually carry, in the words they actually use. Each one has a short answer you can read in a few minutes, and sources you can check yourself. Find yours below."
+msgstr ""
+
+#: archive-murtadd_doubt.php:38
+msgid "The doubt"
+msgstr ""
+
+#: archive-murtadd_doubt.php:39
+msgid "Where it starts"
+msgstr ""
+
+#: archive-murtadd_doubt.php:40
+msgid "Answer"
+msgstr ""
+
+#: archive-murtadd_doubt.php:41
+msgid "Read"
+msgstr ""
+
+#: archive-murtadd_doubt.php:72
+msgid "%d doubt answered so far."
+msgstr ""
+
+#: archive-murtadd_doubt.php:76
+msgid "If yours is not here, it is not because it cannot be answered."
+msgstr ""
+
+#: archive-murtadd_doubt.php:81
+msgid "No doubts filed yet."
+msgstr ""
+
+#: archive-murtadd_fatwa.php:20
+msgid "Scholarly positions summarized in our own words, each linked to its primary source. A reference, not a verdict."
+msgstr ""
+
+#: archive-murtadd_fatwa.php:25
+#: archive-murtadd_fatwa.php:65
+#: inc/taxonomy-school.php:17
+#: taxonomy-murtadd_school.php:24
+msgid "School"
+msgstr ""
+
+#: archive-murtadd_fatwa.php:27
+msgid "All schools"
+msgstr ""
+
+#: archive-murtadd_fatwa.php:38
+#: archive-murtadd_fatwa.php:66
+#: inc/meta-boxes.php:111
+#: inc/settings-page.php:256
+msgid "Era"
+msgstr ""
+
+#: archive-murtadd_fatwa.php:40
+msgid "All eras"
+msgstr ""
+
+#: archive-murtadd_fatwa.php:41
+#: inc/meta-boxes.php:113
+#: single-murtadd_fatwa.php:24
+#: template-parts/rows/row-fatwa-entry.php:18
+msgid "Classical"
+msgstr ""
+
+#: archive-murtadd_fatwa.php:42
+#: inc/meta-boxes.php:114
+#: single-murtadd_fatwa.php:24
+#: template-parts/rows/row-fatwa-entry.php:18
+msgid "Modern"
+msgstr ""
+
+#: archive-murtadd_fatwa.php:46
+#: inc/taxonomy-topic.php:18
+msgid "Topic"
+msgstr ""
+
+#: archive-murtadd_fatwa.php:48
+msgid "All topics"
+msgstr ""
+
+#: archive-murtadd_fatwa.php:58
+msgid "Filter"
+msgstr ""
+
+#: archive-murtadd_fatwa.php:64
+#: taxonomy-murtadd_school.php:23
+msgid "Scholar / body"
+msgstr ""
+
+#: archive-murtadd_fatwa.php:67
+#: taxonomy-murtadd_school.php:26
+msgid "Position"
+msgstr ""
+
+#: archive-murtadd_fatwa.php:68
+#: taxonomy-murtadd_school.php:27
+msgid "Link"
+msgstr ""
+
+#: archive-murtadd_fatwa.php:76
+msgid "No positions match these filters."
+msgstr ""
+
+#: archive-murtadd_fatwa.php:78
+msgid "Clear filters"
+msgstr ""
+
+#: archive-murtadd_letter.php:16
+#: inc/cpt-letter.php:33
+#: sidebar.php:73
+msgid "Letters"
+msgstr ""
+
+#: archive-murtadd_letter.php:18
+msgid "Correspondence and opinion pieces published in other outlets, archived here in their original form. Each is dated, and each is a position taken at a particular moment. They are kept as a record rather than offered as an answer to anyone’s doubt — for that, start with the doubts."
+msgstr ""
+
+#: archive-murtadd_letter.php:38
+#: single-murtadd_letter.php:32
+msgid "In reply to: %s"
+msgstr ""
+
+#: archive-murtadd_letter.php:51
+msgid "No letters archived yet."
+msgstr ""
+
+#: archive-murtadd_rebuttal.php:13
+#: front-page.php:65
+#: inc/cpt-rebuttal.php:15
+#: sidebar.php:69
+msgid "Rebuttals"
+msgstr ""
+
+#: archive-murtadd_rebuttal.php:14
+msgid "Circulated claims, stated fairly — then answered with sources you can check yourself."
+msgstr ""
+
+#: archive-murtadd_rebuttal.php:34
+msgid "No rebuttals published yet."
+msgstr ""
+
+#: archive.php:27
+msgid "Nothing filed here yet."
+msgstr ""
+
+#: comments.php:23
+#: template-parts/cards/card-doubt-category.php:22
+msgid "%d response"
+msgstr ""
+
+#: comments.php:40
+msgid "Comments navigation"
+msgstr ""
+
+#: comments.php:43
+msgid "Comments are closed on this post."
+msgstr ""
+
+#: comments.php:52
+msgid "Leave a response"
+msgstr ""
+
+#: comments.php:53
+msgid "Reply to %s"
+msgstr ""
+
+#: comments.php:54
+msgid "Cancel reply"
+msgstr ""
+
+#: comments.php:55
+msgid "Post response"
+msgstr ""
+
+#: comments.php:58
+msgid "Responses are moderated before they appear. Address the argument, not the person. Your email address is never published."
+msgstr ""
+
+#: comments.php:61
+msgid "Your response"
+msgstr ""
+
+#: footer.php:16
+msgid "share with attribution"
+msgstr ""
+
+#: footer.php:19
+msgid "Secondary"
+msgstr ""
+
+#: front-page.php:14
+msgid "Doubts, taken seriously."
+msgstr ""
+
+#: front-page.php:15
+msgid "Honest, sourced answers to the questions that shake faith — stated fairly, answered without dismissal, and linked to the scholarship behind them."
+msgstr ""
+
+#: front-page.php:20
+msgid "Where does your doubt start?"
+msgstr ""
+
+#: front-page.php:21
+msgid "All doubts →"
+msgstr ""
+
+#: front-page.php:42
+msgid "This site gives the short answer"
+msgstr ""
+
+#: front-page.php:44
+msgid "When a short answer isn't enough, these carry the full argument."
+msgstr ""
+
+#: front-page.php:48
+msgid "The full evidential case"
+msgstr ""
+
+#: front-page.php:48
+msgid "Manuscripts, history, prophecy — the long-form argument for why Islam is true."
+msgstr ""
+
+#: front-page.php:49
+msgid "Missionary polemics, answered"
+msgstr ""
+
+#: front-page.php:49
+msgid "Responses to the standard arguments used against Islam, claim by claim."
+msgstr ""
+
+#: front-page.php:61
+msgid "Browse"
+msgstr ""
+
+#: front-page.php:63
+#: home.php:15
+#: inc/activation.php:40
+#: inc/template-tags.php:136
+msgid "Blog"
+msgstr ""
+
+#: front-page.php:64
+#: inc/cpt-doubt.php:15
+#: sidebar.php:57
+msgid "Doubts"
+msgstr ""
+
+#: front-page.php:66
+#: inc/cpt-fatwa.php:17
+#: inc/template-tags.php:135
+#: sidebar.php:44
+msgid "Fatwa"
+msgstr ""
+
+#: front-page.php:70
+#: inc/taxonomy-topic.php:17
+#: sidebar.php:31
+msgid "Topics"
+msgstr ""
+
+#: front-page.php:83
+#: inc/activation.php:129
+msgid "Site"
+msgstr ""
+
+#: functions.php:60
+msgid "Primary (sidebar)"
+msgstr ""
+
+#: functions.php:61
+msgid "Footer — Site column"
+msgstr ""
+
+#: functions.php:180
+msgid "Over the soft cap — consider trimming. Saving is not blocked."
+msgstr ""
+
+#: functions.php:181
+msgid "words"
+msgstr ""
+
+#: header.php:18
+msgid "Skip to content"
+msgstr ""
+
+#: home.php:33
+msgid "No posts yet."
+msgstr ""
+
+#: home.php:40
+msgid "“The truth is from your Lord — so never be among the doubters.” — Qur’an 2:147"
+msgstr ""
+
+#: home.php:43
+#: inc/settings-page.php:257
+#: template-parts/rail/rail-single.php:59
+msgid "Recently added"
+msgstr ""
+
+#: inc/activation.php:35
+#: sidebar.php:27
+msgid "Home"
+msgstr ""
+
+#: inc/activation.php:36
+msgid "This page exists so WordPress has a static front page to point at. The homepage is rendered by the theme (front-page.php); nothing written here is displayed."
+msgstr ""
+
+#: inc/activation.php:41
+msgid "This page exists so WordPress has a posts page to point at. The blog index is rendered by the theme (home.php); nothing written here is displayed."
+msgstr ""
+
+#: inc/activation.php:45
+msgid "Start Here"
+msgstr ""
+
+#: inc/activation.php:46
+msgid "The three routes on this page are rendered by the theme (page-start-here.php); nothing written here is displayed."
+msgstr ""
+
+#: inc/activation.php:50
+msgid "Irtidad"
+msgstr ""
+
+#: inc/activation.php:51
+msgid "Placeholder. This page carries the second route from Start Here: what irtidad actually is, and what does not take a person out of Islam. Replace this text."
+msgstr ""
+
+#: inc/activation.php:55
+#: inc/template-tags.php:232
+msgid "About"
+msgstr ""
+
+#: inc/activation.php:56
+#: inc/activation.php:61
+#: inc/activation.php:66
+#: inc/activation.php:71
+msgid "Placeholder. Replace this text."
+msgstr ""
+
+#: inc/activation.php:60
+#: inc/template-tags.php:233
+msgid "FAQ"
+msgstr ""
+
+#: inc/activation.php:65
+#: inc/template-tags.php:234
+msgid "Contact"
+msgstr ""
+
+#: inc/activation.php:70
+#: inc/template-tags.php:235
+msgid "Privacy"
+msgstr ""
+
+#: inc/activation.php:179
+msgid "front page set to “Home”"
+msgstr ""
+
+#: inc/activation.php:184
+msgid "posts page set to “Blog”"
+msgstr ""
+
+#: inc/activation.php:266
+msgid "You do not have permission to do that."
+msgstr ""
+
+#: inc/activation.php:308
+msgid "Murtadd is missing pages it needs."
+msgstr ""
+
+#: inc/activation.php:312
+msgid "These are absent: %s. Until they exist, the \"Start here\" button and the footer links do not appear."
+msgstr ""
+
+#: inc/activation.php:317
+msgid "Run setup →"
+msgstr ""
+
+#: inc/activation.php:337
+msgid "Pages created: %s."
+msgstr ""
+
+#: inc/activation.php:342
+msgid "Footer menu created and assigned."
+msgstr ""
+
+#: inc/activation.php:347
+msgid "Reading settings: %s."
+msgstr ""
+
+#: inc/activation.php:354
+msgid "Starter content added: %1$d doubts, %2$d rebuttals, and %3$d placeholder letters (lorem ipsum — replace or delete them)."
+msgstr ""
+
+#: inc/activation.php:362
+msgid "Everything the theme needs was already in place. Nothing was changed."
+msgstr ""
+
+#: inc/activation.php:364
+msgid "New pages carry placeholder text. Replace it before announcing the site."
+msgstr ""
+
+#: inc/activation.php:369
+msgid "Murtadd is set up."
+msgstr ""
+
+#: inc/analytics.php:100
+#: inc/template-tags.php:57
+msgid "%d min read"
+msgstr ""
+
+#: inc/cpt-doubt.php:16
+#: inc/template-tags.php:133
+msgid "Doubt"
+msgstr ""
+
+#: inc/cpt-doubt.php:17
+msgid "Add New Doubt"
+msgstr ""
+
+#: inc/cpt-doubt.php:18
+msgid "Edit Doubt"
+msgstr ""
+
+#: inc/cpt-fatwa.php:18
+msgid "Fatwa entry"
+msgstr ""
+
+#: inc/cpt-fatwa.php:19
+msgid "Add New Fatwa Entry"
+msgstr ""
+
+#: inc/cpt-fatwa.php:20
+msgid "Edit Fatwa Entry"
+msgstr ""
+
+#: inc/cpt-letter.php:34
+msgid "Letter"
+msgstr ""
+
+#: inc/cpt-letter.php:35
+msgid "Add New Letter"
+msgstr ""
+
+#: inc/cpt-letter.php:36
+msgid "Edit Letter"
+msgstr ""
+
+#: inc/cpt-letter.php:56
+msgid "Letter details"
+msgstr ""
+
+#: inc/cpt-letter.php:80
+msgid "Published in"
+msgstr ""
+
+#: inc/cpt-letter.php:81
+msgid "e.g. Malaysiakini"
+msgstr ""
+
+#: inc/cpt-letter.php:84
+msgid "Date of original publication"
+msgstr ""
+
+#: inc/cpt-letter.php:86
+msgid "Required. The dateline is printed at the head of the letter: an archived position must read as one."
+msgstr ""
+
+#: inc/cpt-letter.php:89
+msgid "Replying to"
+msgstr ""
+
+#: inc/cpt-letter.php:90
+msgid "Title of the letter or article being answered"
+msgstr ""
+
+#: inc/cpt-letter.php:93
+msgid "Link to the original"
+msgstr ""
+
+#: inc/cpt-letter.php:97
+msgid "Editor’s note (optional)"
+msgstr ""
+
+#: inc/cpt-letter.php:98
+msgid "Standing context, or where the position has since developed. Rendered above the letter, in the site’s present voice."
+msgstr ""
+
+#: inc/cpt-letter.php:99
+msgid "Use this where an archived position needs framing for a reader who arrives at it today."
+msgstr ""
+
+#: inc/cpt-rebuttal.php:16
+#: inc/template-tags.php:134
+msgid "Rebuttal"
+msgstr ""
+
+#: inc/cpt-rebuttal.php:17
+msgid "Add New Rebuttal"
+msgstr ""
+
+#: inc/cpt-rebuttal.php:18
+msgid "Edit Rebuttal"
+msgstr ""
+
+#: inc/dashboard.php:30
+msgid "Murtadd — content gaps"
+msgstr ""
+
+#: inc/dashboard.php:58
+msgid "Doubt categories with no doubts. Each shows “0 responses” on the homepage — a door that opens onto nothing."
+msgstr ""
+
+#: inc/dashboard.php:85
+msgid "Doubts with no rebuttal attached. The reader reaches the end of the short answer and has nowhere to go."
+msgstr ""
+
+#: inc/dashboard.php:107
+msgid "Rebuttals with no sources filed. The site promises the reader can check for themselves; these cannot be checked."
+msgstr ""
+
+#: inc/dashboard.php:122
+msgid "No gaps. Every door is populated, every doubt routes onward, every rebuttal is sourced."
+msgstr ""
+
+#: inc/feeds.php:63
+msgid "The claim: %s"
+msgstr ""
+
+#: inc/meta-boxes.php:14
+msgid "Doubt fields"
+msgstr ""
+
+#: inc/meta-boxes.php:15
+msgid "Rebuttal fields"
+msgstr ""
+
+#: inc/meta-boxes.php:16
+msgid "Fatwa fields"
+msgstr ""
+
+#: inc/meta-boxes.php:38
+msgid "Doubt statement"
+msgstr ""
+
+#: inc/meta-boxes.php:38
+msgid "shown as the page title block"
+msgstr ""
+
+#: inc/meta-boxes.php:41
+msgid "Short response"
+msgstr ""
+
+#: inc/meta-boxes.php:41
+msgid "150–400 words; live word count warns past the cap, never blocks"
+msgstr ""
+
+#: inc/meta-boxes.php:45
+msgid "Related rebuttal (primary \"go deeper\" target)"
+msgstr ""
+
+#: inc/meta-boxes.php:46
+#: inc/meta-boxes.php:94
+#: inc/meta-boxes.php:97
+msgid "— None —"
+msgstr ""
+
+#: inc/meta-boxes.php:48
+msgid "External deep link (optional, secondary)"
+msgstr ""
+
+#: inc/meta-boxes.php:61
+#: single-murtadd_rebuttal.php:20
+msgid "Online commentary"
+msgstr ""
+
+#: inc/meta-boxes.php:62
+#: single-murtadd_rebuttal.php:21
+msgid "Academic"
+msgstr ""
+
+#: inc/meta-boxes.php:63
+#: single-murtadd_rebuttal.php:22
+msgid "Forum"
+msgstr ""
+
+#: inc/meta-boxes.php:64
+#: single-murtadd_rebuttal.php:23
+msgid "Pamphlet"
+msgstr ""
+
+#: inc/meta-boxes.php:65
+#: single-murtadd_rebuttal.php:24
+msgid "Other"
+msgstr ""
+
+#: inc/meta-boxes.php:71
+msgid "The claim — stated fairly, as circulated. No named individuals."
+msgstr ""
+
+#: inc/meta-boxes.php:74
+msgid "Claim source type"
+msgstr ""
+
+#: inc/meta-boxes.php:81
+#: single-murtadd_rebuttal.php:65
+msgid "Sources"
+msgstr ""
+
+#: inc/meta-boxes.php:81
+msgid "citation text required per row; URL optional"
+msgstr ""
+
+#: inc/meta-boxes.php:85
+msgid "Citation text"
+msgstr ""
+
+#: inc/meta-boxes.php:87
+msgid "Remove source"
+msgstr ""
+
+#: inc/meta-boxes.php:91
+msgid "Add source"
+msgstr ""
+
+#: inc/meta-boxes.php:93
+msgid "Related fatwa (optional)"
+msgstr ""
+
+#: inc/meta-boxes.php:96
+msgid "Related doubt (back-link, optional)"
+msgstr ""
+
+#: inc/meta-boxes.php:108
+msgid "Scholar or body"
+msgstr ""
+
+#: inc/meta-boxes.php:117
+msgid "Position summary — own words, never verbatim; ~80 word soft cap"
+msgstr ""
+
+#: inc/meta-boxes.php:120
+msgid "Citation link to primary source (required)"
+msgstr ""
+
+#: inc/meta-tags.php:25
+msgid "Honest, sourced answers to the questions that shake faith — stated fairly, answered without dismissal."
+msgstr ""
+
+#: inc/meta-tags.php:36
+msgid "The claim: \"%s\" — stated fairly, answered with sources."
+msgstr ""
+
+#: inc/meta-tags.php:57
+msgid "Doubts, taken seriously: short, sourced answers to the questions that shake faith."
+msgstr ""
+
+#: inc/meta-tags.php:60
+msgid "Circulated claims about Islam, stated fairly and answered with sources."
+msgstr ""
+
+#: inc/meta-tags.php:63
+msgid "Scholarly positions summarised in our own words, each linked to its primary source. A reference, not a verdict."
+msgstr ""
+
+#: inc/meta-tags.php:69
+msgid "Doubts, rebuttals, and fatwa entries on %s."
+msgstr ""
+
+#: inc/meta-tags.php:73
+msgid "Essays and notes from murtadd.org."
+msgstr ""
+
+#: inc/settings-page.php:13
+#: inc/settings-page.php:13
+#: inc/settings-page.php:67
+msgid "Murtadd"
+msgstr ""
+
+#: inc/settings-page.php:57
+msgid "Colours"
+msgstr ""
+
+#: inc/settings-page.php:58
+msgid "Cross-links"
+msgstr ""
+
+#: inc/settings-page.php:59
+msgid "Content display"
+msgstr ""
+
+#: inc/settings-page.php:60
+msgid "Taxonomies"
+msgstr ""
+
+#: inc/settings-page.php:61
+msgid "Setup"
+msgstr ""
+
+#: inc/settings-page.php:68
+msgid "Colours, cross-site links, content behavior, and taxonomy management."
+msgstr ""
+
+#: inc/settings-page.php:77
+msgid "Setup complete."
+msgstr ""
+
+#: inc/settings-page.php:80
+msgid "Site scaffolding"
+msgstr ""
+
+#: inc/settings-page.php:82
+msgid "The theme creates these on activation. Upgrading the theme in place does not re-run that, so this button does it without switching themes away and back. It never overwrites: anything already present is left exactly as it is."
+msgstr ""
+
+#: inc/settings-page.php:90
+#: inc/template-tags.php:137
+msgid "Page"
+msgstr ""
+
+#: inc/settings-page.php:91
+msgid "Status"
+msgstr ""
+
+#: inc/settings-page.php:104
+msgid "Exists — edit"
+msgstr ""
+
+#: inc/settings-page.php:106
+msgid "Missing"
+msgstr ""
+
+#: inc/settings-page.php:112
+msgid "Footer menu"
+msgstr ""
+
+#: inc/settings-page.php:115
+msgid "Assigned"
+msgstr ""
+
+#: inc/settings-page.php:117
+msgid "Not assigned"
+msgstr ""
+
+#: inc/settings-page.php:123
+msgid "Starter content"
+msgstr ""
+
+#: inc/settings-page.php:128
+msgid "%1$d doubts, %2$d rebuttals, %3$d placeholder letters"
+msgstr ""
+
+#: inc/settings-page.php:139
+msgid "All present — view"
+msgstr ""
+
+#: inc/settings-page.php:145
+msgid "%d entry missing"
+msgstr ""
+
+#: inc/settings-page.php:154
+msgid "Reading settings"
+msgstr ""
+
+#: inc/settings-page.php:157
+msgid "Front page and posts page are set"
+msgstr ""
+
+#: inc/settings-page.php:159
+msgid "Not fully set"
+msgstr ""
+
+#: inc/settings-page.php:167
+msgid "The \"Start here\" button in the sidebar renders only when the start-here page exists. That is why it is absent right now."
+msgstr ""
+
+#: inc/settings-page.php:173
+msgid "Create anything missing"
+msgstr ""
+
+#: inc/settings-page.php:177
+msgid "New pages are published immediately and carry placeholder text. Replace the copy before announcing the site. Starter content is published as written and can be edited freely: nothing here ever overwrites a post that already exists, so editing a doubt and running this again will not undo the edit."
+msgstr ""
+
+#: inc/settings-page.php:181
+msgid "Term management"
+msgstr ""
+
+#: inc/settings-page.php:182
+msgid "Terms are managed on the native WordPress screens — nothing is duplicated here."
+msgstr ""
+
+#: inc/settings-page.php:184
+msgid "Manage Topics →"
+msgstr ""
+
+#: inc/settings-page.php:185
+msgid "Manage Schools →"
+msgstr ""
+
+#: inc/settings-page.php:186
+msgid "Doubt categories are locked — four fixed terms power the homepage grid."
+msgstr ""
+
+#: inc/settings-page.php:197
+msgid "Accent colour"
+msgstr ""
+
+#: inc/settings-page.php:200
+msgid "Used for links, buttons, and the sidebar. Applied via wp_add_inline_style."
+msgstr ""
+
+#: inc/settings-page.php:204
+msgid "Accent tint"
+msgstr ""
+
+#: inc/settings-page.php:208
+msgid "Contrast check"
+msgstr ""
+
+#: inc/settings-page.php:218
+msgid "Evidential case base URL"
+msgstr ""
+
+#: inc/settings-page.php:221
+msgid "Used by the homepage \"full argument\" card and doubt pages\\' outbound deep links. Cleared = links hidden."
+msgstr ""
+
+#: inc/settings-page.php:225
+msgid "Polemics base URL"
+msgstr ""
+
+#: inc/settings-page.php:228
+msgid "All outbound links open in a new tab with rel=\"noopener\". No relationship is stated on the frontend."
+msgstr ""
+
+#: inc/settings-page.php:238
+msgid "Short response word cap"
+msgstr ""
+
+#: inc/settings-page.php:241
+msgid "Soft cap. The doubt editor shows a live word count and warns past this — it never blocks saving."
+msgstr ""
+
+#: inc/settings-page.php:245
+msgid "\"If you are struggling\" notice"
+msgstr ""
+
+#: inc/settings-page.php:247
+msgid "Show on Emotional and Identity doubt pages"
+msgstr ""
+
+#: inc/settings-page.php:248
+msgid "A quiet crisis-support block. No tracking, no preaching."
+msgstr ""
+
+#: inc/settings-page.php:252
+msgid "Fatwa index default sort"
+msgstr ""
+
+#: inc/settings-page.php:255
+msgid "Scholar A–Z"
+msgstr ""
+
+#: inc/settings-page.php:262
+msgid "Footer heritage note"
+msgstr ""
+
+#: inc/settings-page.php:266
+msgid "Scripture box"
+msgstr ""
+
+#: inc/settings-page.php:270
+msgid "Show the scripture box in the rail on doubt and rebuttal pages"
+msgstr ""
+
+#: inc/settings-page.php:273
+#: template-parts/rail/rail-single.php:22
+msgid "Let there be no compulsion in religion."
+msgstr ""
+
+#: inc/settings-page.php:273
+msgid "The verse, in whichever rendering you prefer"
+msgstr ""
+
+#: inc/settings-page.php:276
+#: template-parts/rail/rail-single.php:23
+msgid "Qur’an 2:256"
+msgstr ""
+
+#: inc/settings-page.php:276
+msgid "Reference"
+msgstr ""
+
+#: inc/settings-page.php:279
+msgid "Choose the rendering yourself. The wording of a translation is an editorial decision and belongs to you, not to the theme."
+msgstr ""
+
+#: inc/share.php:67
+msgid "WhatsApp"
+msgstr ""
+
+#: inc/share.php:71
+msgid "Telegram"
+msgstr ""
+
+#: inc/share.php:75
+msgid "Email"
+msgstr ""
+
+#: inc/share.php:81
+msgid "Send this to someone"
+msgstr ""
+
+#: inc/share.php:94
+msgid "Copy link"
+msgstr ""
+
+#: inc/share.php:98
+msgid "These are plain links. Nothing here tracks you, and nobody is told that you shared it."
+msgstr ""
+
+#: inc/social-card.php:138
+msgid "%d min read · sourced"
+msgstr ""
+
+#: inc/social-card.php:141
+msgid "Sourced"
+msgstr ""
+
+#: inc/social-card.php:159
+msgid "ANSWERED"
+msgstr ""
+
+#: inc/taxonomy-doubt-category.php:18
+msgid "Doubt Categories"
+msgstr ""
+
+#: inc/taxonomy-doubt-category.php:19
+msgid "Doubt Category"
+msgstr ""
+
+#: inc/taxonomy-doubt-category.php:51
+msgid "Intellectual"
+msgstr ""
+
+#: inc/taxonomy-doubt-category.php:51
+msgid "Reason, theodicy, philosophy."
+msgstr ""
+
+#: inc/taxonomy-doubt-category.php:52
+msgid "Scriptural"
+msgstr ""
+
+#: inc/taxonomy-doubt-category.php:52
+msgid "Hadith authenticity, textual variants, hard verses."
+msgstr ""
+
+#: inc/taxonomy-doubt-category.php:53
+msgid "Emotional"
+msgstr ""
+
+#: inc/taxonomy-doubt-category.php:53
+msgid "Unanswered du‘a, burnout, grief."
+msgstr ""
+
+#: inc/taxonomy-doubt-category.php:54
+msgid "Identity"
+msgstr ""
+
+#: inc/taxonomy-doubt-category.php:54
+msgid "Belonging and community hurt."
+msgstr ""
+
+#: inc/taxonomy-school.php:16
+msgid "Schools"
+msgstr ""
+
+#: inc/taxonomy-school.php:34
+msgid "Hanafi"
+msgstr ""
+
+#: inc/taxonomy-school.php:35
+msgid "Maliki"
+msgstr ""
+
+#: inc/taxonomy-school.php:36
+msgid "Shafi’i"
+msgstr ""
+
+#: inc/taxonomy-school.php:37
+msgid "Hanbali"
+msgstr ""
+
+#: inc/taxonomy-school.php:38
+msgid "Contemporary"
+msgstr ""
+
+#: inc/template-tags.php:85
+msgid "online since 2004"
+msgstr ""
+
+#: inc/template-tags.php:165
+msgid "Awaiting moderation."
+msgstr ""
+
+#: inc/template-tags.php:205
+msgid "murtadd"
+msgstr ""
+
+#: inc/template-tags.php:302
+msgid "Last reviewed"
+msgstr ""
+
+#: inc/template-tags.php:311
+msgid "Published"
+msgstr ""
+
+#: inc/template-tags.php:352
+msgid "More %s doubts"
+msgstr ""
+
+#: index.php:30
+msgid "Nothing found."
+msgstr ""
+
+#: search.php:18
+msgid "Search: %s"
+msgstr ""
+
+#: search.php:26
+msgid "%d result across doubts, rebuttals, fatwa entries, and the blog."
+msgstr ""
+
+#: search.php:43
+msgid "Nothing matched that search. Try a broader term, or start from one of these."
+msgstr ""
+
+#: searchform.php:12
+#: searchform.php:14
+msgid "Search"
+msgstr ""
+
+#: searchform.php:13
+msgid "Search the site…"
+msgstr ""
+
+#: sidebar.php:16
+msgid "before you decide"
+msgstr ""
+
+#: sidebar.php:23
+msgid "Menu"
+msgstr ""
+
+#: sidebar.php:25
+msgid "Primary"
+msgstr ""
+
+#: single-murtadd_doubt.php:49
+msgid "Go deeper"
+msgstr ""
+
+#: single-murtadd_doubt.php:52
+msgid "The full rebuttal"
+msgstr ""
+
+#: single-murtadd_doubt.php:56
+msgid "Read the full case ↗"
+msgstr ""
+
+#: single-murtadd_fatwa.php:20
+msgid "Back to Fatwa index"
+msgstr ""
+
+#: single-murtadd_fatwa.php:31
+msgid "Position summary — in our own words"
+msgstr ""
+
+#: single-murtadd_fatwa.php:34
+msgid "This position is summarized in our own words, not quoted verbatim, and represents its reasoning on its own terms — not a verdict this site issues or endorses on any individual."
+msgstr ""
+
+#: single-murtadd_fatwa.php:39
+msgid "Read the primary source ↗"
+msgstr ""
+
+#: single-murtadd_fatwa.php:40
+msgid "opens in a new tab"
+msgstr ""
+
+#: single-murtadd_letter.php:23
+msgid "All letters"
+msgstr ""
+
+#: single-murtadd_letter.php:40
+msgid "This is an archived letter, reproduced as it was published. It records a position taken at the date above and is not a page written to answer a reader’s doubt."
+msgstr ""
+
+#: single-murtadd_letter.php:41
+msgid "Start with the doubts instead →"
+msgstr ""
+
+#: single-murtadd_letter.php:47
+msgid "Editor’s note"
+msgstr ""
+
+#: single-murtadd_letter.php:57
+msgid "Read at the original publication ↗"
+msgstr ""
+
+#: single-murtadd_rebuttal.php:51
+msgid "The claim — as circulated"
+msgstr ""
+
+#: single-murtadd_rebuttal.php:56
+msgid "The rebuttal"
+msgstr ""
+
+#: single-murtadd_rebuttal.php:70
+msgid "source ↗"
+msgstr ""
+
+#: single-murtadd_rebuttal.php:81
+msgid "Scholarly positions"
+msgstr ""
+
+#: single-murtadd_rebuttal.php:87
+msgid "The short answer"
+msgstr ""
+
+#: single.php:17
+msgid "Back to blog"
+msgstr ""
+
+#: taxonomy-murtadd_doubt_category.php:36
+msgid "No doubts in this category yet."
+msgstr ""
+
+#: taxonomy-murtadd_school.php:14
+msgid "Full fatwa index"
+msgstr ""
+
+#: taxonomy-murtadd_school.php:16
+msgid "Positions from this school, summarized in our own words, each linked to its primary source."
+msgstr ""
+
+#: taxonomy-murtadd_school.php:35
+msgid "No positions filed under this school yet."
+msgstr ""
+
+#: taxonomy-murtadd_topic.php:27
+msgid "Nothing filed under this topic yet."
+msgstr ""
+
+#: template-parts/notices/notice-struggling.php:12
+msgid "Support"
+msgstr ""
+
+#: template-parts/notices/notice-struggling.php:13
+msgid "IF YOU ARE STRUGGLING"
+msgstr ""
+
+#: template-parts/notices/notice-struggling.php:14
+msgid "Whatever you believe right now, your life is not the debate. If you are in crisis, talk to someone today — find a helpline near you. No preaching, no tracking."
+msgstr ""
+
+#: template-parts/rail/rail-single.php:25
+msgid "Related"
+msgstr ""
+
+#: template-parts/rail/rail-single.php:41
+msgid "New here"
+msgstr ""
+
+#: template-parts/rail/rail-single.php:42
+msgid "Three routes in, depending on where you actually are."
+msgstr ""
+
+#: template-parts/rows/row-fatwa-entry.php:20
+msgid "View →"
+msgstr ""
+
+#: templates/page-start-here.php:19
+msgid "You're here because something is bothering you."
+msgstr ""
+
+#: templates/page-start-here.php:20
+msgid "Good. This site was built for exactly that. A doubt is not a verdict, and it is not apostasy — it is a question that deserves a serious answer. Pick the door that matches where you are."
+msgstr ""
+
+#: templates/page-start-here.php:29
+msgid "“I have a doubt I can’t shake.”"
+msgstr ""
+
+#: templates/page-start-here.php:30
+msgid "Start with the short answers — organized by where the doubt comes from: reason, scripture, feeling, or belonging."
+msgstr ""
+
+#: templates/page-start-here.php:39
+msgid "“I’m afraid I’ve already crossed the line.”"
+msgstr ""
+
+#: templates/page-start-here.php:40
+msgid "Read what irtidad actually is — and what does not take you out of Islam. The fear itself is evidence you haven’t left."
+msgstr ""
+
+#: templates/page-start-here.php:48
+msgid "“Someone sent me arguments against Islam.”"
+msgstr ""
+
+#: templates/page-start-here.php:49
+msgid "The claims, stated as fairly as they circulate — then answered with sources you can check yourself."
+msgstr ""
+

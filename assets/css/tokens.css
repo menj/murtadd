@@ -1,0 +1,43 @@
+/*
+ * Design tokens and the self-hosted fonts.
+ *
+ * Loaded by the front end AND by the Theme Options screen, so the two cannot
+ * disagree about what the brand colours are. Everything downstream reads from
+ * here; nothing hardcodes a hex.
+ *
+ * Font paths are relative to this file, which sits alongside main.css, so
+ * ../fonts/ resolves the same way it always did.
+ */
+
+:root {
+	--murtadd-accent: #0f6e56;
+	--murtadd-accent-tint: #eefaf7;
+	--murtadd-accent-secondary: #5bc9bc; /* tags/badges only */
+	--murtadd-accent-strike: #c0392b;    /* logo strike on light bg */
+	--murtadd-accent-strike-dark: #ff7a68; /* logo strike on green */
+	--murtadd-text: #1a1a1a;
+	--murtadd-text-muted: #5a5a5a;
+	--murtadd-border: #e3e3e3;
+	--murtadd-bg: #fcf8ee;               /* warm ivory page ground */
+	--murtadd-surface: #ffffff;
+	--murtadd-well: #f4efe0;
+	--murtadd-font-serif: 'Source Serif 4', Georgia, serif;
+	--murtadd-font-sans: 'Public Sans', system-ui, sans-serif;
+}
+
+/* Self-hosted fonts — drop woff2 files in /fonts. */
+
+
+/* Self-hosted fonts — drop woff2 files in /fonts. */
+@font-face {
+	font-family: 'Source Serif 4';
+	src: url('../fonts/SourceSerif4-Variable.woff2') format('woff2');
+	font-weight: 400 700;
+	font-display: swap;
+}
+@font-face {
+	font-family: 'Public Sans';
+	src: url('../fonts/PublicSans-Variable.woff2') format('woff2');
+	font-weight: 400 700;
+	font-display: swap;
+}

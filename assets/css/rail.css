@@ -1,0 +1,128 @@
+/*
+ * The rail.
+ *
+ * A stacked right-hand column of framed panels is the silhouette of the site
+ * this one answers. It is quoted deliberately: same position, same rhythm.
+ * The execution is current — hairline cards, tracked labels, sticky scroll,
+ * fluid grid — with none of the period furniture (no filled header strips,
+ * no beveled borders, no bold serif chrome).
+ *
+ * The verse card carries the argument. The original placed the same verse in
+ * the same position and read it as a licence to leave. Here it sits in the
+ * same furniture and answers the other way. The recognition is the point;
+ * the reversal is the payload.
+ */
+
+.murtadd-single-layout {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) 300px;
+	gap: 56px;
+	align-items: start;
+}
+
+/* The prose keeps its measure; the rail takes the width the old design gave it. */
+.murtadd-single-main { min-width: 0; max-width: 68ch; }
+
+.murtadd-rail {
+	position: sticky;
+	top: 32px;
+	display: flex;
+	flex-direction: column;
+	gap: 18px;
+	min-width: 0;
+}
+
+/* ---------- Cards ---------- */
+.murtadd-rail-card {
+	background: var(--murtadd-surface);
+	border: 1px solid var(--murtadd-border);
+	border-radius: 14px;
+	padding: 20px 22px;
+}
+
+.murtadd-rail-label {
+	margin: 0 0 12px;
+	font: 700 10.5px var(--murtadd-font-sans);
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	color: var(--murtadd-text-muted);
+}
+
+.murtadd-rail-text {
+	margin: 0 0 12px;
+	font-family: var(--murtadd-font-sans);
+	font-size: 13.5px;
+	line-height: 1.6;
+	color: var(--murtadd-text-muted);
+}
+
+.murtadd-rail-link {
+	display: inline-block;
+	font: 600 13px var(--murtadd-font-sans);
+	color: var(--murtadd-accent);
+	text-decoration: none;
+}
+.murtadd-rail-link::after { content: ' →'; transition: transform 0.15s ease; display: inline-block; }
+.murtadd-rail-link:hover::after { transform: translateX(3px); }
+
+/* ---------- The verse ---------- */
+.murtadd-rail-card--verse {
+	background: var(--murtadd-accent-tint);
+	border-color: transparent;
+	border-left: 3px solid var(--murtadd-accent);
+	border-radius: 4px 14px 14px 4px;
+}
+
+.murtadd-verse { margin: 0; }
+.murtadd-verse p {
+	margin: 0 0 10px;
+	font-family: var(--murtadd-font-serif);
+	font-size: 17px;
+	line-height: 1.6;
+	color: var(--murtadd-text);
+	text-wrap: pretty;
+}
+.murtadd-verse cite {
+	font: 600 11px var(--murtadd-font-sans);
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	font-style: normal;
+	color: var(--murtadd-accent);
+}
+
+/* ---------- Recently added ---------- */
+.murtadd-rail-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+.murtadd-rail-list a {
+	display: block;
+	font-family: var(--murtadd-font-serif);
+	font-size: 14.5px;
+	line-height: 1.45;
+	color: var(--murtadd-text);
+	text-decoration: none;
+}
+.murtadd-rail-list a:hover { color: var(--murtadd-accent); }
+.murtadd-rail-type {
+	display: block;
+	margin-bottom: 3px;
+	font: 700 9.5px var(--murtadd-font-sans);
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	color: var(--murtadd-accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.murtadd-rail-link::after { transition: none; }
+	.murtadd-rail-link:hover::after { transform: none; }
+}
+
+/* The rail is supplementary. Below the article on narrow screens, never sticky. */
+@media (max-width: 900px) {
+	.murtadd-single-layout { grid-template-columns: 1fr; gap: 40px; }
+	.murtadd-single-main { max-width: none; }
+	.murtadd-rail { position: static; }
+}
+
+@media print {
+	.murtadd-rail { display: none; }
+	.murtadd-single-layout { display: block; }
+}

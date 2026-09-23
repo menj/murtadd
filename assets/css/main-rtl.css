@@ -1,0 +1,28 @@
+/*
+ * RTL overrides.
+ *
+ * The site is in English, but its subject matter is Arabic and its readership
+ * is not. If this is ever translated into Arabic, Urdu, or Farsi, the shell
+ * has to flip, and a theme that hardcodes "left" everywhere cannot be flipped
+ * later without a rewrite. Loaded by WordPress only when the locale is RTL.
+ */
+
+body { direction: rtl; unicode-bidi: embed; }
+
+/* Shell: the green panel moves to the right. */
+.murtadd-shell { flex-direction: row-reverse; }
+.murtadd-nav-list > li > a { border-left: none; border-right: 3px solid transparent; }
+.murtadd-nav-list > li > a:hover,
+.murtadd-nav-list > li > a.is-current { border-right-color: var(--murtadd-accent-secondary); }
+
+/* Blocks whose meaning depends on a left edge. */
+.murtadd-comment-list .children { border-left: none; border-right: 2px solid var(--murtadd-border); margin-left: 0; margin-right: 24px; padding-left: 0; padding-right: 20px; }
+.murtadd-comment-content blockquote { border-left: none; border-right: 3px solid var(--murtadd-accent-secondary); padding-left: 0; padding-right: 14px; }
+.murtadd-doubt-statement { border-left: none; border-right: 3px solid var(--murtadd-accent); padding-left: 0; padding-right: 20px; }
+.murtadd-claim-box { border-left: none; border-right: 3px solid var(--murtadd-accent-strike); padding-left: 0; padding-right: 20px; }
+
+/* Directional affordances. */
+.murtadd-back::before { content: '→ '; }
+.murtadd-comment-date { margin-left: 0; margin-right: auto; }
+.murtadd-search-inline .murtadd-searchform,
+.murtadd-footer-bar { text-align: right; }

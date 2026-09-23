@@ -1,0 +1,22 @@
+/* Single Rebuttal template. */
+.murtadd-claim-box { border: 1px solid var(--murtadd-border); border-radius: 14px; overflow: hidden; margin: 28px 0; }
+.murtadd-claim-label {
+	margin: 0; background: var(--murtadd-accent); color: #fff;
+	font: 700 12px var(--murtadd-font-sans); letter-spacing: 0.05em; text-transform: uppercase;
+	padding: 9px 16px;
+}
+.murtadd-claim-box blockquote {
+	margin: 0; padding: 18px; background: var(--murtadd-accent-tint);
+	font: italic 400 16px/1.7 var(--murtadd-font-serif);
+}
+.murtadd-rebuttal-body { font-family: var(--murtadd-font-serif); font-size: 17px; line-height: 1.75; }
+.murtadd-sources-panel { border: 1px solid var(--murtadd-text); padding: 18px 20px; margin-bottom: 28px; }
+.murtadd-sources-list {
+	margin: 12px 0 0; padding: 14px 16px 14px 34px;
+	background: var(--murtadd-well);
+	font: 400 13.5px/1.6 var(--murtadd-font-sans);
+	display: flex; flex-direction: column; gap: 9px;
+}
+.murtadd-source-link { font-weight: 600; margin-left: 6px; }
+.murtadd-crosslink-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding-bottom: 56px; }
+@media (max-width: 700px) { .murtadd-crosslink-row { grid-template-columns: 1fr; } }

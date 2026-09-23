@@ -1,0 +1,55 @@
+/*
+ * The counterpart aside: a relay to the companion site.
+ *
+ * Deliberately quieter than the cross-link cards on the front page. This is a
+ * pointer offered to a reader who has just finished a rebuttal, not an
+ * advertisement competing with the argument above it. Flat, hairline-ruled,
+ * accent only on the link itself.
+ */
+
+.murtadd-counterpart {
+	margin: 40px 0 0;
+	padding: 20px 22px;
+	border: 1px solid var(--murtadd-border, #e4e9e7);
+	border-left: 3px solid var(--murtadd-accent, #0f6e56);
+	border-radius: 8px;
+	background: var(--murtadd-well, #fbfcfc);
+}
+
+.murtadd-counterpart-kicker {
+	margin: 0 0 6px;
+	font-family: var(--murtadd-font-sans, system-ui, sans-serif);
+	font-size: 0.72rem;
+	font-weight: 600;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	color: var(--murtadd-text-muted, #5d6b66);
+}
+
+.murtadd-counterpart-body {
+	margin: 0 0 12px;
+	font-size: 0.95rem;
+	line-height: 1.6;
+	color: var(--murtadd-text, #14201c);
+}
+
+.murtadd-counterpart-link {
+	font-family: var(--murtadd-font-sans, system-ui, sans-serif);
+	font-size: 0.9rem;
+	font-weight: 600;
+	color: var(--murtadd-accent, #0f6e56);
+	text-decoration: none;
+	border-bottom: 1px solid currentColor;
+	padding-bottom: 1px;
+}
+
+.murtadd-counterpart-link:hover,
+.murtadd-counterpart-link:focus {
+	color: var(--murtadd-accent-strike, #c0392b);
+}
+
+@media screen and (max-width: 640px) {
+	.murtadd-counterpart {
+		padding: 16px 18px;
+	}
+}

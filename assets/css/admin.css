@@ -1,0 +1,346 @@
+/*
+ * Theme options — admin skin.
+ *
+ * WordPress admin defaults are grey tables and 2011 form rows. This restyles
+ * the screen without touching the Settings API underneath: the markup is still
+ * a form-table, so every field, nonce, and sanitiser keeps working exactly as
+ * before. Only the surface changes.
+ *
+ * Restraint applies here as much as on the front end. The gradient is confined
+ * to the hero; everything below it is flat, generously spaced, and rounded.
+ * A gradient on every control would be a 2013 admin theme, not a 2026 one.
+ *
+ * Scoped under .murtadd-admin so nothing leaks into the rest of wp-admin.
+ */
+
+.murtadd-admin {
+	--ma-accent: #0f6e56;
+	--ma-accent-2: #5bc9bc;
+	--ma-strike: #c0392b;
+	--ma-ink: #14201c;
+	--ma-muted: #5d6b66;
+	--ma-line: #e4e9e7;
+	--ma-surface: #fff;
+	--ma-ground: #fbfcfc;
+
+	max-width: 1080px;
+	margin-right: 20px;
+	font-family: var(--murtadd-admin-sans, -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif);
+}
+
+.murtadd-admin * { box-sizing: border-box; }
+
+/* ---------- Hero ---------- */
+.murtadd-admin-hero {
+	position: relative;
+	overflow: hidden;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 28px;
+
+	margin: 20px 0 0;
+	padding: 34px 38px;
+	border-radius: 20px;
+
+	/* The one gradient on the screen. Deep accent into the secondary teal,
+	   angled, with a soft light source top-left. */
+	background:
+		radial-gradient( 120% 140% at 12% 0%, rgba( 255, 255, 255, 0.16 ) 0%, rgba( 255, 255, 255, 0 ) 55% ),
+		linear-gradient( 118deg, #0b5443 0%, var(--ma-accent) 42%, #1c8a6d 74%, #35a98a 100% );
+	color: #fff;
+	box-shadow: 0 18px 44px -24px rgba( 15, 110, 86, 0.65 );
+}
+
+/* A whisper of the strike, running under the hero. */
+.murtadd-admin-hero::after {
+	content: '';
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	height: 3px;
+	background: linear-gradient( 90deg, var(--ma-strike) 0%, rgba( 192, 57, 43, 0 ) 60% );
+}
+
+.murtadd-admin-hero-inner { min-width: 0; }
+
+.murtadd-admin-brand {
+	display: flex;
+	align-items: baseline;
+	gap: 14px;
+	flex-wrap: wrap;
+}
+
+/* The icon: core's site icon if one is set, otherwise the theme's mark. */
+.murtadd-admin-icon {
+	width: 52px;
+	height: 52px;
+	border-radius: 13px;
+	background: rgba( 255, 255, 255, 0.14 );
+	border: 1px solid rgba( 255, 255, 255, 0.22 );
+	padding: 3px;
+	flex: none;
+	align-self: center;
+}
+
+/*
+ * The wordmark is NOT restyled here.
+ *
+ * assets/css/logo.css is loaded on this screen, and it is the same file the
+ * front end loads. The mark below is the murtadd_the_logo() component in its
+ * on-dark variant, rendering exactly as it does in the sidebar. Hand-writing a
+ * second copy is how the footer mark drifted, and how this hero drifted before
+ * it. Only its scale is set here.
+ */
+.murtadd-admin-brand .murtadd-logo { --murtadd-logo-size: 34px; }
+
+/* Version badge. */
+.murtadd-admin-version {
+	display: inline-flex;
+	align-items: center;
+	padding: 5px 12px;
+	border-radius: 999px;
+	background: rgba( 255, 255, 255, 0.14 );
+	border: 1px solid rgba( 255, 255, 255, 0.24 );
+	backdrop-filter: blur( 6px );
+	font-size: 12px;
+	font-weight: 600;
+	letter-spacing: 0.04em;
+	font-variant-numeric: tabular-nums;
+	color: #fff;
+}
+
+.murtadd-admin-tagline {
+	margin: 10px 0 0;
+	font-size: 14px;
+	color: rgba( 255, 255, 255, 0.78 );
+}
+
+/* Stats. */
+.murtadd-admin-stats {
+	display: flex;
+	gap: 10px;
+	margin: 0;
+	flex-wrap: wrap;
+}
+.murtadd-admin-stat {
+	min-width: 104px;
+	padding: 14px 18px;
+	border-radius: 14px;
+	background: rgba( 255, 255, 255, 0.12 );
+	border: 1px solid rgba( 255, 255, 255, 0.18 );
+	text-align: left;
+}
+.murtadd-admin-stat dt {
+	margin: 0 0 4px;
+	font-size: 10.5px;
+	font-weight: 700;
+	letter-spacing: 0.09em;
+	text-transform: uppercase;
+	color: rgba( 255, 255, 255, 0.72 );
+}
+.murtadd-admin-stat dd {
+	margin: 0;
+	font-size: 25px;
+	font-weight: 700;
+	line-height: 1;
+	font-variant-numeric: tabular-nums;
+	color: #fff;
+}
+.murtadd-admin-stat.is-warning { background: rgba( 255, 122, 104, 0.24 ); border-color: rgba( 255, 122, 104, 0.42 ); }
+.murtadd-admin-stat.is-clear dd { color: var(--ma-accent-2); }
+
+/* ---------- Tabs ---------- */
+/*
+ * Tabs run in the order the work is done: setup, content, filing, links,
+ * colour. The numbers are a CSS counter rather than markup, so the sequence
+ * is visible without the labels having to carry it, and reordering the PHP
+ * array renumbers them automatically.
+ */
+.murtadd-admin .nav-tab-wrapper.murtadd-admin-tabs {
+	display: flex;
+	gap: 4px;
+	margin: 26px 0 0;
+	padding: 5px;
+	border: 1px solid var(--ma-line);
+	border-radius: 14px;
+	background: var(--ma-surface);
+	box-shadow: 0 1px 2px rgba( 20, 32, 28, 0.04 );
+	counter-reset: murtadd-tab;
+}
+.murtadd-admin .nav-tab-wrapper.murtadd-admin-tabs .nav-tab {
+	counter-increment: murtadd-tab;
+}
+.murtadd-admin .nav-tab-wrapper.murtadd-admin-tabs .nav-tab::before {
+	content: counter( murtadd-tab, decimal-leading-zero );
+	margin-right: 8px;
+	font-size: 10.5px;
+	font-weight: 700;
+	letter-spacing: 0.06em;
+	font-variant-numeric: tabular-nums;
+	opacity: 0.55;
+}
+.murtadd-admin .nav-tab-wrapper.murtadd-admin-tabs .nav-tab {
+	margin: 0;
+	padding: 9px 18px;
+	border: 0;
+	border-radius: 10px;
+	background: transparent;
+	font-size: 13.5px;
+	font-weight: 600;
+	line-height: 1.4;
+	color: var(--ma-muted);
+	transition: background 0.16s ease, color 0.16s ease;
+}
+.murtadd-admin .nav-tab-wrapper.murtadd-admin-tabs .nav-tab:hover {
+	background: #f1f6f4;
+	color: var(--ma-ink);
+}
+.murtadd-admin .nav-tab-wrapper.murtadd-admin-tabs .nav-tab-active,
+.murtadd-admin .nav-tab-wrapper.murtadd-admin-tabs .nav-tab-active:hover {
+	background: linear-gradient( 135deg, var(--ma-accent) 0%, #1c8a6d 100% );
+	color: #fff;
+	box-shadow: 0 6px 16px -8px rgba( 15, 110, 86, 0.8 );
+}
+.murtadd-admin .nav-tab-wrapper.murtadd-admin-tabs .nav-tab-active::before { opacity: 0.75; }
+
+/* ---------- Panel ---------- */
+.murtadd-admin-panel {
+	margin-top: 18px;
+	padding: 32px 36px;
+	background: var(--ma-surface);
+	border: 1px solid var(--ma-line);
+	border-radius: 18px;
+	box-shadow: 0 1px 2px rgba( 20, 32, 28, 0.04 );
+}
+
+.murtadd-admin-panel h2 {
+	margin: 0 0 6px;
+	font-size: 19px;
+	font-weight: 700;
+	color: var(--ma-ink);
+}
+.murtadd-admin-panel .description {
+	color: var(--ma-muted);
+	font-size: 13.5px;
+	line-height: 1.6;
+}
+
+/* Form rows, restyled without touching the markup. */
+.murtadd-admin-panel .form-table { margin-top: 20px; }
+.murtadd-admin-panel .form-table > tbody > tr {
+	display: block;
+	padding: 20px 0;
+	border-bottom: 1px solid var(--ma-line);
+}
+.murtadd-admin-panel .form-table > tbody > tr:last-child { border-bottom: 0; padding-bottom: 0; }
+.murtadd-admin-panel .form-table th {
+	display: block;
+	width: auto;
+	padding: 0 0 8px;
+	font-size: 13.5px;
+	font-weight: 700;
+	color: var(--ma-ink);
+}
+.murtadd-admin-panel .form-table td { display: block; padding: 0; }
+
+.murtadd-admin-panel input[type="text"],
+.murtadd-admin-panel input[type="url"],
+.murtadd-admin-panel input[type="number"],
+.murtadd-admin-panel input[type="date"],
+.murtadd-admin-panel select,
+.murtadd-admin-panel textarea {
+	padding: 10px 14px;
+	border: 1px solid var(--ma-line);
+	border-radius: 10px;
+	background: var(--ma-ground);
+	font-size: 14px;
+	color: var(--ma-ink);
+	box-shadow: none;
+	transition: border-color 0.16s ease, background 0.16s ease;
+}
+.murtadd-admin-panel input:focus,
+.murtadd-admin-panel select:focus,
+.murtadd-admin-panel textarea:focus {
+	border-color: var(--ma-accent);
+	background: var(--ma-surface);
+	outline: 2px solid rgba( 15, 110, 86, 0.18 );
+	outline-offset: 1px;
+	box-shadow: none;
+}
+.murtadd-admin-panel input[type="color"] {
+	width: 54px;
+	height: 40px;
+	padding: 3px;
+	border: 1px solid var(--ma-line);
+	border-radius: 10px;
+	background: var(--ma-surface);
+	cursor: pointer;
+}
+
+/* Status table (Setup tab). */
+.murtadd-admin-panel .widefat {
+	border: 1px solid var(--ma-line);
+	border-radius: 14px;
+	overflow: hidden;
+	box-shadow: none;
+}
+.murtadd-admin-panel .widefat thead th {
+	background: #f4f8f7;
+	border-bottom: 1px solid var(--ma-line);
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: var(--ma-muted);
+}
+.murtadd-admin-panel .widefat td { padding: 13px 14px; font-size: 13.5px; }
+.murtadd-admin-panel .widefat code {
+	background: #f1f6f4;
+	border-radius: 6px;
+	padding: 2px 7px;
+	font-size: 11.5px;
+	color: var(--ma-muted);
+}
+
+/* Buttons. */
+.murtadd-admin .button-primary,
+.murtadd-admin-panel .button-primary {
+	padding: 8px 22px;
+	height: auto;
+	border: 0;
+	border-radius: 999px;
+	background: linear-gradient( 135deg, var(--ma-accent) 0%, #1c8a6d 100% );
+	font-size: 13.5px;
+	font-weight: 600;
+	line-height: 1.6;
+	text-shadow: none;
+	box-shadow: 0 8px 20px -10px rgba( 15, 110, 86, 0.9 );
+	transition: transform 0.14s ease, box-shadow 0.14s ease;
+}
+.murtadd-admin .button-primary:hover {
+	background: linear-gradient( 135deg, #0d6249 0%, #17795f 100% );
+	transform: translateY( -1px );
+	box-shadow: 0 12px 26px -12px rgba( 15, 110, 86, 0.95 );
+}
+
+/* Notices, brought inside the rounded language. */
+.murtadd-admin .notice {
+	margin: 18px 0 0;
+	border-radius: 12px;
+	border-left-width: 4px;
+	box-shadow: none;
+}
+
+@media ( prefers-reduced-motion: reduce ) {
+	.murtadd-admin * { transition: none !important; }
+	.murtadd-admin .button-primary:hover { transform: none; }
+}
+
+@media ( max-width: 782px ) {
+	.murtadd-admin-hero { padding: 26px 22px; }
+	.murtadd-admin-panel { padding: 22px 20px; }
+	.murtadd-admin .nav-tab-wrapper.murtadd-admin-tabs { flex-wrap: wrap; }
+}

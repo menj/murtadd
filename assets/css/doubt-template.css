@@ -1,0 +1,19 @@
+/* Single Doubt template. */
+.murtadd-doubt-statement { font-size: 36px; line-height: 1.25; }
+.murtadd-short-response { font-family: var(--murtadd-font-serif); font-size: 17px; line-height: 1.75; padding-top: 8px; }
+.murtadd-go-deeper { display: flex; flex-direction: column; gap: 12px; padding-bottom: 8px; }
+.murtadd-go-deeper-primary {
+	border: 1px solid var(--murtadd-border); border-radius: 14px;
+	background: var(--murtadd-surface);
+	padding: 18px 20px; text-decoration: none;
+	display: flex; flex-direction: column; gap: 4px;
+	font: 600 15.5px var(--murtadd-font-serif); color: var(--murtadd-accent);
+}
+.murtadd-go-deeper-primary:hover { border-color: var(--murtadd-accent); }
+.murtadd-go-deeper-secondary {
+	align-self: flex-start;
+	font: 600 13px var(--murtadd-font-sans);
+	color: var(--murtadd-accent); text-decoration: none;
+	border: 1.5px solid var(--murtadd-accent); border-radius: 8px;
+	padding: 9px 16px;
+}

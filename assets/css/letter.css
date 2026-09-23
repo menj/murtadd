@@ -1,0 +1,82 @@
+/*
+ * Letters.
+ *
+ * Styled to read as an archive, not as live editorial. The dateline sits above
+ * the title, the archival frame sits above the text, and the letter body is
+ * inset behind a rule so that a reader can see at a glance that they are
+ * looking at a reproduced document rather than at the site speaking now.
+ */
+
+.murtadd-letter-dateline {
+	font: 600 11px var(--murtadd-font-sans);
+	letter-spacing: 0.09em;
+	text-transform: uppercase;
+	color: var(--murtadd-text-muted);
+	margin: 0 0 10px;
+}
+
+.murtadd-letter-replying {
+	font-family: var(--murtadd-font-sans);
+	font-size: 14px;
+	color: var(--murtadd-text-muted);
+	margin: 8px 0 0;
+}
+
+/* The frame: what this is, before a word of it is read. */
+.murtadd-letter-frame {
+	margin: 24px 0;
+	padding: 16px 20px;
+	background: var(--murtadd-accent-tint);
+	border-radius: 10px;
+	font-family: var(--murtadd-font-sans);
+	font-size: 14px;
+	line-height: 1.6;
+	color: var(--murtadd-text-muted);
+}
+.murtadd-letter-frame p { margin: 0; }
+.murtadd-letter-frame a { color: var(--murtadd-accent); font-weight: 600; text-decoration: none; }
+.murtadd-letter-frame a:hover { text-decoration: underline; }
+
+/* Editor's note: the site speaking in the present, above an archived text. */
+.murtadd-letter-note {
+	margin: 24px 0;
+	padding: 20px 22px;
+	background: var(--murtadd-surface);
+	border: 1px solid var(--murtadd-border);
+	border-left: 3px solid var(--murtadd-accent-strike);
+	border-radius: 10px;
+}
+.murtadd-letter-note p {
+	margin: 8px 0 0;
+	font-family: var(--murtadd-font-sans);
+	font-size: 14.5px;
+	line-height: 1.65;
+	color: var(--murtadd-text);
+}
+
+/* The letter itself: inset, so it reads as a reproduced document. */
+.murtadd-letter-body {
+	margin-top: 28px;
+	padding-left: 20px;
+	border-left: 2px solid var(--murtadd-border);
+	font-family: var(--murtadd-font-serif);
+	font-size: 17px;
+	line-height: 1.8;
+	color: var(--murtadd-text);
+}
+.murtadd-letter-body p { margin: 0 0 18px; }
+
+.murtadd-letter-row .murtadd-letter-dateline { margin-bottom: 6px; }
+
+.murtadd-nav-divider {
+	height: 1px;
+	margin: 14px 26px;
+	background: rgba(255, 255, 255, 0.16);
+	list-style: none;
+}
+
+.murtadd-entry-footer .murtadd-btn { margin-right: 14px; }
+
+@media (max-width: 700px) {
+	.murtadd-letter-body { padding-left: 14px; font-size: 16px; }
+}

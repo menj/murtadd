@@ -1,0 +1,54 @@
+/*
+ * Footer profile row + Profiles settings table.
+ *
+ * The footer row is a quiet strip of monochrome glyphs that pick up the footer
+ * text colour and lift to the accent on hover. Nothing here competes with the
+ * content; it is the author's attribution, sitting where attribution sits.
+ */
+
+.murtadd-footer-social {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 14px;
+	align-items: center;
+	margin: 14px 0 0;
+}
+
+.murtadd-social-link {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	color: var(--murtadd-footer-ink, #5d6b66);
+	line-height: 0;
+	box-shadow: none;
+	transition: color 0.12s ease, transform 0.12s ease;
+}
+
+.murtadd-social-link:hover,
+.murtadd-social-link:focus {
+	color: var(--murtadd-accent, #0f6e56);
+	transform: translateY(-1px);
+}
+
+.murtadd-social-link svg {
+	display: block;
+}
+
+/* ---- Settings tab: icon beside each label ---- */
+
+.murtadd-profiles-table th {
+	white-space: nowrap;
+}
+
+.murtadd-profiles-icon {
+	display: inline-flex;
+	width: 20px;
+	height: 18px;
+	margin-right: 8px;
+	vertical-align: middle;
+	color: var(--ma-muted, #5d6b66);
+}
+
+.murtadd-profiles-icon svg {
+	display: block;
+}

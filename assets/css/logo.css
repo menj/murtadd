@@ -1,0 +1,75 @@
+/*
+ * The wordmark, as a shared component.
+ *
+ * Loaded by the front end AND the Theme Options screen. It lives here rather
+ * than inside main.css because the admin needs it too, and the moment the mark
+ * is hand-rewritten for a second context it starts to drift — which is exactly
+ * what happened to the footer mark, and then again to the admin hero.
+ *
+ * There is one wordmark. This is it.
+ */
+
+/*
+ * The wordmark. One component. The strike and the stop carry the identity;
+ * only the ground changes, via the --on-dark / --on-light variants below.
+ *
+ * Both must opt out of the global a:hover colour, which is tuned for body
+ * links and would turn the mark to mud on either ground.
+ */
+.murtadd-logo {
+	text-decoration: none;
+	font: 700 var(--murtadd-logo-size, 24px) var(--murtadd-font-serif);
+	display: inline-flex; align-items: baseline;
+	color: var(--murtadd-logo-ink);
+}
+
+.murtadd-logo-word { position: relative; }
+.murtadd-logo-word::after {
+	content: ''; position: absolute; top: 54%;
+	left: -3%; right: -3%;
+	height: max(2px, 0.075em);
+	background: var(--murtadd-logo-strike);
+	transition: left 0.22s ease, right 0.22s ease, height 0.22s ease, background 0.22s ease;
+}
+.murtadd-logo-stop { color: var(--murtadd-logo-stop-ink); transition: color 0.22s ease; }
+
+/*
+ * Rollover. The strike is the mark's whole idea, so the hover acts on the
+ * strike: it carries further through the word and thickens. A colour nudge on
+ * the letters, which is what this used to be, reads as a rendering glitch
+ * rather than as a response to the pointer.
+ *
+ * Anchors only. The footer mark is a span and must not appear clickable.
+ */
+a.murtadd-logo { cursor: pointer; }
+a.murtadd-logo:hover .murtadd-logo-word::after,
+a.murtadd-logo:focus-visible .murtadd-logo-word::after {
+	left: -11%; right: -11%;
+	height: max(3px, 0.105em);
+}
+a.murtadd-logo:hover,
+a.murtadd-logo:focus-visible { color: var(--murtadd-logo-ink); }
+
+span.murtadd-logo { cursor: default; }
+
+/* On the green panel. */
+.murtadd-logo--on-dark {
+	--murtadd-logo-ink: #fff;
+	--murtadd-logo-strike: var(--murtadd-accent-strike-dark);
+	--murtadd-logo-stop-ink: var(--murtadd-accent-secondary);
+}
+a.murtadd-logo--on-dark:hover { --murtadd-logo-stop-ink: #fff; }
+
+/* On the ivory ground. */
+.murtadd-logo--on-light {
+	--murtadd-logo-ink: var(--murtadd-text);
+	--murtadd-logo-strike: var(--murtadd-accent-strike);
+	--murtadd-logo-stop-ink: var(--murtadd-accent);
+}
+
+/* Motion is decorative here; the rollover still reads without it. */
+@media (prefers-reduced-motion: reduce) {
+	.murtadd-logo-word::after,
+	.murtadd-logo-stop { transition: none; }
+	a.murtadd-logo:hover .murtadd-logo-word::after { transition: none; }
+}

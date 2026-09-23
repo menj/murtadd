@@ -1,0 +1,37 @@
+/* Meta box helpers: live word count on the short response (soft cap — warn, never block)
+   and the sources repeater on rebuttals. Enqueued only on murtadd_* edit screens. */
+( function () {
+	'use strict';
+
+	// Live word count.
+	var field = document.querySelector( '[data-murtadd-wordcount]' );
+	if ( field && window.murtaddMeta ) {
+		var counter = field.parentElement.querySelector( '.murtadd-wordcount' );
+		var update = function () {
+			var words = field.value.trim() ? field.value.trim().split( /\s+/ ).length : 0;
+			var over = words > murtaddMeta.wordCap;
+			counter.textContent = words + ' ' + murtaddMeta.wordsLabel + ( over ? ' — ' + murtaddMeta.capWarning : '' );
+			counter.style.color = over ? '#8a4b00' : '';
+		};
+		field.addEventListener( 'input', update );
+		update();
+	}
+
+	// Sources repeater.
+	var repeater = document.getElementById( 'murtadd-sources-repeater' );
+	var addBtn = document.getElementById( 'murtadd-add-source' );
+	if ( repeater && addBtn ) {
+		addBtn.addEventListener( 'click', function () {
+			var row = repeater.querySelector( '.murtadd-source-row' ).cloneNode( true );
+			row.querySelectorAll( 'input' ).forEach( function ( i ) {
+				i.value = '';
+			} );
+			repeater.appendChild( row );
+		} );
+		repeater.addEventListener( 'click', function ( e ) {
+			if ( e.target.classList.contains( 'murtadd-remove-source' ) && repeater.querySelectorAll( '.murtadd-source-row' ).length > 1 ) {
+				e.target.closest( '.murtadd-source-row' ).remove();
+			}
+		} );
+	}
+}() );

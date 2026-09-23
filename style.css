@@ -1,0 +1,16 @@
+/*
+Theme Name: Murtadd
+Theme URI: https://murtadd.org
+Author: murtadd.org
+Template: twentytwentyfive
+Description: Doubts, taken seriously. A child theme of Twenty Twenty-Five for short answers to doubts, rebuttals of circulated claims, and an on-site fatwa index. Warm scholarly styling, green sidebar navigation, configurable accent colours.
+Version: 1.39.0
+Requires at least: 6.4
+Requires PHP: 8.1
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: murtadd
+Tags: two-columns, left-sidebar, custom-menu, custom-colors, threaded-comments, translation-ready
+*/
+
+/* All styles live in css/main.css and per-template stylesheets, enqueued from functions.php. */
