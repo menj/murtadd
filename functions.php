@@ -278,3 +278,6 @@ function murtadd_fatwa_archive_query( $query ) {
 	}
 }
 add_action( 'pre_get_posts', 'murtadd_fatwa_archive_query' );
+
+/* Cross-site content links between the sister sites. */
+require_once get_stylesheet_directory() . '/inc/network-links.php';
