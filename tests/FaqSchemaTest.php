@@ -55,6 +55,12 @@ final class FaqSchemaTest extends TestCase {
 		$this->assertSame( 'A. B c.', $pairs[0]['acceptedAnswer']['text'] );
 	}
 
+	public function test_pairs_are_plain_text() {
+		$pairs = murtadd_faq_pairs_from_html( '<h2>Who&#8217;s it for?</h2><p>Faith &amp; doubt,&nbsp;both.</p>' );
+		$this->assertSame( "Who\u{2019}s it for?", $pairs[0]['name'] );
+		$this->assertSame( 'Faith & doubt, both.', $pairs[0]['acceptedAnswer']['text'] );
+	}
+
 	public function test_doubt_category_archive_answers_with_the_excerpt_shown() {
 		$long = implode( ' ', array_fill( 0, 40, 'word' ) );
 		$this->category_view(

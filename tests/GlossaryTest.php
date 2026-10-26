@@ -238,6 +238,25 @@ final class GlossaryTest extends TestCase {
 		$this->assertContains( 'script:murtadd-glossary', $GLOBALS['murtadd_test_enqueued'], 'A term in the short response did not load the assets.' );
 	}
 
+	/** A definition rendered from text the head check never sees (a synced pattern, a shortcode) still loads its assets. */
+	public function test_render_loads_assets_for_a_definition_it_adds() {
+		$GLOBALS['murtadd_test_request'] = array( 'queried' => 801 );
+		$GLOBALS['murtadd_test_types']   = array( 801 => 'murtadd_rebuttal' );
+		murtadd_glossary_render( '<p>Nothing to define.</p>', 801 );
+		$this->assertSame( array(), $GLOBALS['murtadd_test_enqueued'] );
+		murtadd_glossary_render( '<p>On riba.</p>', 801 );
+		$this->assertSame( array( 'style:murtadd-glossary', 'script:murtadd-glossary' ), $GLOBALS['murtadd_test_enqueued'] );
+	}
+
+	/** A multi-word term is defined whatever space separates its words. */
+	public function test_multi_word_term_with_any_space_is_defined() {
+		foreach ( array( 'usul&nbsp;al-fiqh', "usul\nal-fiqh", "usul\u{00A0}al-fiqh", 'usul  al-fiqh' ) as $spelling ) {
+			$out = $this->apply( '<p>On ' . $spelling . '.</p>' );
+			$this->assertSame( 1, $this->count_terms( $out ), "Not defined: $spelling" );
+			$this->assertStringContainsString( 'Legal theory', $out );
+		}
+	}
+
 	public function test_setting_sanitises_to_a_flag() {
 		$on  = murtadd_sanitize_content_display( array( 'glossary_terms' => 'yes' ) );
 		$off = murtadd_sanitize_content_display( array() );

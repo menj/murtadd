@@ -122,6 +122,21 @@ final class HardeningTest extends TestCase {
 		$this->assertSame( 'masuk-sini', murtadd_login_slug() );
 	}
 
+	/** A personal-data confirmation email never carries the private address, whatever the permalink shape. */
+	public function test_confirmation_email_never_reveals_the_address() {
+		$GLOBALS['murtadd_options']['murtadd_security'] = array( 'login_slug' => 'masuk-sini' );
+		foreach ( array(
+			'https://murtadd.org/masuk-sini/?action=confirmaction&request_id=7&confirm_key=abc',
+			'https://murtadd.org/masuk-sini?action=confirmaction&request_id=7&confirm_key=abc',
+			'https://murtadd.org/?masuk-sini&action=confirmaction&request_id=7&confirm_key=abc',
+		) as $confirm ) {
+			$out = murtadd_login_confirm_email( 'Open ###CONFIRM_URL### to confirm.', array( 'confirm_url' => $confirm ) );
+			$this->assertStringNotContainsString( 'masuk-sini', $out, $confirm );
+			$this->assertStringContainsString( 'https://murtadd.org/wp-login.php?', $out );
+			$this->assertStringContainsString( 'confirm_key=abc', $out );
+		}
+	}
+
 	public function test_a_stored_bad_slug_never_activates() {
 		$GLOBALS['murtadd_options']['murtadd_security'] = array( 'login_slug' => 'wp-admin' );
 		$this->assertSame( '', murtadd_login_slug() );

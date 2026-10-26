@@ -554,7 +554,15 @@ function murtadd_breadcrumbs() {
 		return;
 	}
 	if ( function_exists( 'murtadd_rank_math_breadcrumbs_active' ) && murtadd_rank_math_breadcrumbs_active() && function_exists( 'rank_math_get_breadcrumbs' ) ) {
-		echo '<nav class="murtadd-breadcrumbs murtadd-breadcrumbs--rank-math" aria-label="' . esc_attr__( 'Breadcrumb', 'murtadd' ) . '">' . wp_kses_post( rank_math_get_breadcrumbs() ) . '</nav>';
+		// Rank Math wraps its trail in a <nav> of its own by default; inside
+		// this one it is a paragraph, so the page has one breadcrumb landmark.
+		$murtadd_rm = rank_math_get_breadcrumbs(
+			array(
+				'wrap_before' => '<p class="rank-math-breadcrumb">',
+				'wrap_after'  => '</p>',
+			)
+		);
+		echo '<nav class="murtadd-breadcrumbs murtadd-breadcrumbs--rank-math" aria-label="' . esc_attr__( 'Breadcrumb', 'murtadd' ) . '">' . wp_kses_post( $murtadd_rm ) . '</nav>';
 		return;
 	}
 	$trail = murtadd_breadcrumb_trail();

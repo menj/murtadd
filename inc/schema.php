@@ -236,7 +236,7 @@ function murtadd_breadcrumb_node() {
 		$items[] = array(
 			'@type'    => 'ListItem',
 			'position' => $i + 1,
-			'name'     => wp_strip_all_tags( $crumb[0] ),
+			'name'     => murtadd_schema_text( $crumb[0] ),
 			'item'     => '' !== $crumb[1] ? $crumb[1] : $here,
 		);
 	}
@@ -245,6 +245,19 @@ function murtadd_breadcrumb_node() {
 		'@id'             => $here . '#breadcrumb',
 		'itemListElement' => $items,
 	);
+}
+
+/**
+ * Markup as plain text for a JSON-LD string: tags gone, entities decoded
+ * (titles arrive texturised, term names escaped), whitespace collapsed.
+ *
+ * @param string $html Markup or escaped text.
+ * @return string
+ */
+function murtadd_schema_text( $html ) {
+	$text = html_entity_decode( wp_strip_all_tags( (string) $html ), ENT_QUOTES | ENT_HTML5, 'UTF-8' );
+	// Malformed UTF-8 makes the /u pattern return null: keep the text as is.
+	return trim( preg_replace( '/[\s\x{00A0}]+/u', ' ', $text ) ?? $text );
 }
 
 /**
@@ -263,8 +276,8 @@ function murtadd_faq_pairs_from_html( $html ) {
 	$pairs = array();
 	$count = count( $parts );
 	for ( $i = 1; $i < $count; $i += 2 ) {
-		$question = trim( wp_strip_all_tags( $parts[ $i ] ) );
-		$answer   = trim( (string) preg_replace( '/\s+/u', ' ', wp_strip_all_tags( preg_replace( '#<!--.*?-->#s', '', $parts[ $i + 1 ] ?? '' ) ) ) );
+		$question = murtadd_schema_text( $parts[ $i ] );
+		$answer   = murtadd_schema_text( preg_replace( '#<!--.*?-->#s', '', $parts[ $i + 1 ] ?? '' ) );
 		if ( '' === $question || '' === $answer ) {
 			continue;
 		}

@@ -50,13 +50,15 @@ function murtadd_glossary_terms() {
 
 /**
  * A spelling reduced for lookup: every apostrophe or ayn mark becomes "'",
- * and capitals go.
+ * any run of spaces (non-breaking ones and line breaks included, as the
+ * matcher allows) becomes one space, and capitals go.
  *
  * @param string $text Term or matched text.
  * @return string
  */
 function murtadd_glossary_key( $text ) {
 	$text = str_replace( array( '&#8217;', '&#8216;', '&#039;', '&#39;', '&rsquo;', '&lsquo;', '&apos;', "\u{2019}", "\u{2018}", "\u{02BC}", "\u{02BF}" ), "'", (string) $text );
+	$text = (string) preg_replace( '/(?:\s|&nbsp;|&#160;|\xC2\xA0)+/', ' ', $text );
 	return function_exists( 'mb_strtolower' ) ? mb_strtolower( $text, 'UTF-8' ) : strtolower( $text );
 }
 
@@ -247,7 +249,13 @@ function murtadd_glossary_render( $html, $post_id = 0 ) {
 	if ( ! isset( $seen[ $post_id ] ) ) {
 		$seen[ $post_id ] = array();
 	}
-	return murtadd_glossary_apply( $html, $seen[ $post_id ], 'murtadd-term-' . $post_id );
+	$out = murtadd_glossary_apply( $html, $seen[ $post_id ], 'murtadd-term-' . $post_id );
+	// A definition the head check could not foresee (a synced pattern, a
+	// shortcode) still gets its stylesheet and script, printed in the footer.
+	if ( $out !== $html ) {
+		murtadd_glossary_enqueue_assets();
+	}
+	return $out;
 }
 
 /** the_content filter. */
@@ -279,12 +287,16 @@ function murtadd_glossary_page_has_terms() {
 	return 1 === preg_match( $matcher['pattern'], $text );
 }
 
-/** Stylesheet and script, on entries that mention a term. */
-function murtadd_glossary_enqueue() {
-	if ( ! murtadd_glossary_page_has_terms() ) {
-		return;
-	}
+/** The stylesheet and script a definition needs. */
+function murtadd_glossary_enqueue_assets() {
 	wp_enqueue_style( 'murtadd-glossary', get_stylesheet_directory_uri() . '/assets/css/glossary' . MURTADD_ASSET_SUFFIX . '.css', array( 'murtadd-main' ), MURTADD_VERSION );
 	wp_enqueue_script( 'murtadd-glossary', get_stylesheet_directory_uri() . '/assets/js/glossary' . MURTADD_ASSET_SUFFIX . '.js', array(), MURTADD_VERSION, true );
+}
+
+/** Stylesheet and script in the head, on entries whose stored text mentions a term. */
+function murtadd_glossary_enqueue() {
+	if ( murtadd_glossary_page_has_terms() ) {
+		murtadd_glossary_enqueue_assets();
+	}
 }
 add_action( 'wp_enqueue_scripts', 'murtadd_glossary_enqueue', 20 );

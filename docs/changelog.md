@@ -14,7 +14,7 @@ Breadcrumbs, FAQ structured data, a glossary of terms, and the tooling to test t
 - **Switch:** Appearance → Theme Options → Content display, "Glossary of terms" (on by default).
 
 ### Tests
-- `tests/GlossaryTest.php` (17 tests): data complete and in house style; every term used in the seed; every "(this site)" source names a real entry; first mention only; accessible markup with unique ids; skip regions; self-glossed mentions; apostrophe forms and capitals; whole words; one definition per entry across render paths; queried entry, feeds, the switch and the care-first doubts; assets only where a term appears; the setting's sanitiser; the `.min` twins. Mutation-checked: removing the care-first guard, the once-per-page record, the gloss skip, the skip regions, the queried-entry check or the malformed-UTF-8 fallback each fails the suite.
+- `tests/GlossaryTest.php` (19 tests): data complete and in house style; every term used in the seed; every "(this site)" source names a real entry; first mention only; accessible markup with unique ids; skip regions; self-glossed mentions; apostrophe forms and capitals; whole words; one definition per entry across render paths; queried entry, feeds, the switch and the care-first doubts; assets only where a term appears; the setting's sanitiser; the `.min` twins. Mutation-checked: removing the care-first guard, the once-per-page record, the gloss skip, the skip regions, the queried-entry check or the malformed-UTF-8 fallback each fails the suite.
 
 ### Changed (admin and tooling)
 - **No inline styles in the admin.** The ten `style` attributes in `inc/settings-page.php` and the gaps widget in `inc/dashboard.php` are classes in `assets/css/admin.css` (`murtadd-gaps-none`, `murtadd-gaps-label`, `murtadd-gaps-list`, `murtadd-admin-note`, `murtadd-admin-spaced`, with the existing `murtadd-admin-table` and `murtadd-status-missing`), scoped so they still win over core admin CSS. The dashboard loads `admin.css` for the widget. Rendered against WordPress 6.6.2's admin CSS, every element computes as before.
@@ -25,6 +25,12 @@ Breadcrumbs, FAQ structured data, a glossary of terms, and the tooling to test t
 
 ### Changed
 - **The settings screen is called Theme Options** (Appearance → Theme Options), as in the other themes of the network. Its address (`themes.php?page=murtadd`) and its tabs are unchanged, so saved links keep working; the docs, notices and comments name it accordingly.
+
+### Fixed
+- **Glossary:** a two-word term (usul al-fiqh, ahl al-fatrah, fard al-'ayn) written with a non-breaking space, a line break or a double space is now defined; it was matched and then dropped. A definition added from text the stored entry does not hold (a synced pattern, a shortcode) now loads the glossary stylesheet and script, in the footer, instead of showing a bare button.
+- **Structured data:** breadcrumb names and FAQ questions and answers are plain text, with entities decoded (`Don’t`, `Law & state`), not `Don&#8217;t` or `Law &amp; state`.
+- **Breadcrumbs with Rank Math:** Rank Math's trail is printed as a paragraph inside the theme's `<nav>`, so the page has one breadcrumb landmark, not one nested in another.
+- **Private login address:** a personal-data confirmation email now links to `wp-login.php` with the request's key, whatever the permalink structure. Without a closing slash, or without pretty permalinks, it carried the private address. `HardeningTest::test_confirmation_email_never_reveals_the_address`.
 
 ### Not in this release
 - Speakable markup (the third search-engine item in the gap list) was not started; it remains on the list.

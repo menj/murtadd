@@ -126,6 +126,18 @@ final class BreadcrumbsTest extends TestCase {
 		$this->assertSame( 'https://murtadd.org/x/r/', end( $node['itemListElement'] )['item'], 'The last crumb points at the page itself.' );
 	}
 
+	public function test_breadcrumb_names_are_plain_text() {
+		murtadd_test_view(
+			array(
+				'post'  => $this->post( 'murtadd_rebuttal', 'r', 'Don&#8217;t <em>ask</em>' ),
+				'terms' => array( 'murtadd_topic' => array( $this->term( 'murtadd_topic', 't', 'Law &amp; state' ) ) ),
+			)
+		);
+		$names = array_column( murtadd_breadcrumb_node()['itemListElement'], 'name' );
+		$this->assertContains( 'Law & state', $names );
+		$this->assertContains( "Don\u{2019}t ask", $names );
+	}
+
 	public function test_graph_carries_the_breadcrumbs_next_to_the_main_node() {
 		murtadd_test_view(
 			array(

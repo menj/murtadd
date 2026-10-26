@@ -110,6 +110,24 @@ function murtadd_login_blocked_url( $scheme = null ) {
 	return murtadd_login_slashed( home_url( '/404', $scheme ) );
 }
 
+/**
+ * A personal-data confirmation email links to wp-login.php, never to the
+ * private address: the request's query is kept, the slug (a path segment,
+ * or a bare query key without pretty permalinks) is dropped, and the
+ * template_redirect step below forwards a valid key to the login screen.
+ *
+ * @param string $text Email body.
+ * @param array  $data Request data, with confirm_url.
+ * @return string
+ */
+function murtadd_login_confirm_email( $text, $data ) {
+	$args = array();
+	parse_str( (string) wp_parse_url( (string) ( $data['confirm_url'] ?? '' ), PHP_URL_QUERY ), $args );
+	unset( $args[ murtadd_login_slug() ] );
+	$url = add_query_arg( array_map( 'rawurlencode', $args ), home_url( '/wp-login.php' ) );
+	return str_replace( '###CONFIRM_URL###', esc_url_raw( $url ), $text );
+}
+
 if ( '' !== murtadd_login_slug() ) {
 
 	/**
@@ -249,14 +267,7 @@ if ( '' !== murtadd_login_slug() ) {
 		}
 	);
 	// Personal-data confirmation emails carry a working address.
-	add_filter(
-		'user_request_action_email_content',
-		static function ( $text, $data ) {
-			return str_replace( '###CONFIRM_URL###', esc_url_raw( str_replace( murtadd_login_slug() . '/', 'wp-login.php', $data['confirm_url'] ) ), $text );
-		},
-		999,
-		2
-	);
+	add_filter( 'user_request_action_email_content', 'murtadd_login_confirm_email', 999, 2 );
 	add_action(
 		'template_redirect',
 		static function () {
