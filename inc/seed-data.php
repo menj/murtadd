@@ -100,6 +100,22 @@ function murtadd_seed_load_map( $name ) {
 }
 
 /**
+ * Entries whose copy is blank are dropped: blank copy is no copy, and must
+ * never create a page or replace a placeholder with nothing.
+ *
+ * @param array<string,string> $map Slug => copy.
+ * @return array<string,string>
+ */
+function murtadd_seed_drop_blank( $map ) {
+	return array_filter(
+		$map,
+		static function ( $copy ) {
+			return '' !== trim( $copy );
+		}
+	);
+}
+
+/**
  * Topic terms the starter content needs.
  *
  * NOT murtadd_seed_topics(): that name belongs to inc/taxonomy-topic.php and
@@ -202,5 +218,5 @@ function murtadd_seed_page_bodies() {
 		$raw = murtadd_seed_load_map( 'pages' );
 	}
 	// Tokens resolve on every call: home_url() can differ between calls (multisite switches, filters).
-	return array_map( 'murtadd_seed_resolve_urls', $raw );
+	return array_map( 'murtadd_seed_resolve_urls', murtadd_seed_drop_blank( $raw ) );
 }

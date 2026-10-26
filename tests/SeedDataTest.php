@@ -38,6 +38,14 @@ final class SeedDataTest extends TestCase {
 		$this->assertStringContainsString( 'href="https://murtadd.org/irtidad/"', murtadd_seed_page_bodies()['faq'] );
 	}
 
+	/** Blank page copy is dropped, so it can never replace a page with nothing. */
+	public function test_blank_page_copy_is_dropped() {
+		$this->assertSame( array( 'faq' => '<p>x</p>' ), murtadd_seed_drop_blank( array( 'about' => '', 'contact' => " \n\t", 'faq' => '<p>x</p>' ) ) );
+		foreach ( murtadd_seed_page_bodies() as $slug => $html ) {
+			$this->assertNotSame( '', trim( $html ), "$slug is blank." );
+		}
+	}
+
 	/** A missing file or a malformed entry loads as nothing, not as an error. */
 	public function test_bad_data_loads_as_empty() {
 		$this->assertSame( array(), murtadd_seed_read_json( 'no-such-file' ) );
