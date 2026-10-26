@@ -47,6 +47,7 @@ require_once get_stylesheet_directory() . '/inc/dashboard.php';
 require_once get_stylesheet_directory() . '/inc/relations.php';
 require_once get_stylesheet_directory() . '/inc/contextual-links.php';
 require_once get_stylesheet_directory() . '/inc/glossary.php';
+require_once get_stylesheet_directory() . '/inc/lanah.php';
 require_once get_stylesheet_directory() . '/inc/contact.php';
 require_once get_stylesheet_directory() . '/inc/quran-text.php';
 require_once get_stylesheet_directory() . '/inc/template-tags.php';

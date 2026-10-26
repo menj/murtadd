@@ -301,7 +301,7 @@ function murtadd_ctx_apply( $html, array $entries, array $args ) {
 	}
 
 	$skip_tags  = array( 'a', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'q', 'figure', 'figcaption', 'cite', 'code', 'pre', 'sup', 'sub', 'nav', 'table', 'button', 'label', 'select', 'textarea', 'summary', 'script', 'style' );
-	$skip_attr  = '/\blang=(["\']?)(?:ar|he|el|syr)(?:-[a-z0-9]+)?\1(?=[\s>\/])|\bclass=(["\'])[^"\']*\b(?:murtadd-ayah|murtadd-ayah-tr|murtadd-ayah-box|murtadd-verse|murtadd-sources-panel|murtadd-sources-list|murtadd-disclaimer|footnotes?|wp-block-footnotes|toc)\b/i';
+	$skip_attr  = '/\blang=(["\']?)(?:ar|he|el|syr)(?:-[a-z0-9]+)?\1(?=[\s>\/])|\bclass=(["\'])[^"\']*\b(?:murtadd-ayah|murtadd-ayah-tr|murtadd-ayah-box|murtadd-verse|murtadd-sources-panel|murtadd-sources-list|murtadd-disclaimer|footnotes?|wp-block-footnotes|toc|murtadd-lanah)\b/i';
 	$block_tags = array( 'p', 'li', 'dd' );
 	$void_tags  = array( 'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'source', 'track', 'wbr' );
 

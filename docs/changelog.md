@@ -2,6 +2,11 @@
 
 ## 1.43.0 — 2026-10-26
 
+### Added (laʿnat Allāh mark)
+- **`[murtadd_lanah]`** (`inc/lanah.php`): لعنة الله, "the curse of God", set after the name of Paul of Tarsus as calligraphy. `.murtadd-lanah` (`assets/css/main.css` and `main.min.css`) draws `assets/images/lanat-allah.svg` (copied from injil.help) as a mask in `--murtadd-accent-strike`, the palette's red; light only, with no dark-mode rule, per the Exclusions; `CanvasText` in forced-colours mode. The words "laʿnat Allāh, the curse of God" stay inside, visually hidden, for screen readers, search and a copy and paste, and show as written where the browser cannot draw a mask. The contextual-link engine skips `.murtadd-lanah`.
+- **No placement.** The site is care-first and no seeded doubt, rebuttal, page or glossary entry discusses Paul, so nothing uses the shortcode. It is for the owner to place by hand, only where the text gives the site's own verdict on Paul, never in titles, headings, excerpts, descriptions, menus, alt text, structured data or quotations.
+- Font licence: the calligraphy is drawn from the outlines of Dubidam Arabic (NamelaType), whose metadata names a free personal-use licence. A web licence is the site owner's to hold.
+
 ### Added (cross-links with Compelling Evidence)
 - **Counterpart switch.** Theme Options → Cross-links → "Show the counterpart link" (`murtadd_cross_links[show_counterpart]`, on by default) turns the "Read it on Compelling Evidence" aside off on every doubt and rebuttal without clearing the base URL. The aside still renders on both single types and links to `<ce_base_url>/articles/<ce_slug>/` with `rel="noopener"`.
 - **ce_slug backfill.** `murtadd_backfill_ce_slugs()` (on `admin_init`) writes the seed data's `ce_slug` into `_murtadd_ce_slug` on posts the seeder created (`murtadd_seeded_slugs`), only where the meta is empty, so a counterpart added to the seed data reaches existing installs without touching an editor's value. It records a hash of the mapping in `murtadd_ce_slug_backfill` and does nothing until the mapping changes.
