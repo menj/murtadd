@@ -10,6 +10,21 @@
 - The links under the card are pills, and the language switcher is styled to match. Colours still come from tokens.css and the Colours tab through `wp_add_inline_style`. The wordmark's `logo.css` is now enqueued on the login screen.
 - Still light only, per the Exclusions in docs/ssot.md: the screen declares `color-scheme: light`, so a device set to dark gets the same ivory and green screen. The hide-login address keeps working, because the screen is styled only through core's login hooks and builds no login URL of its own.
 
+### Fixed (content review, High findings)
+- **The monkeys report** (`were-monkeys-stoned-for-adultery`, doubt `hadith-contain-inhumane-things`): 'Amr ibn Maymun is a Successor who lived through the Jahiliyya, not a Companion, so the report is *maqtu'*, not *mawquf*. Cited as al-Bukhari 3849. New glossary term `maqtu'`.
+- **The first glance** (`the-head-cover-and-modesty`): the source was al-Bukhari 2285, an unrelated hadith. Now Abu Dawud 2149 and al-Tirmidhi 2777 (al-Albani: hasan; al-Tirmidhi: gharib).
+- **The challenge verses** (`the-challenge`): the order now runs from the whole book (17:88, 52:34) to ten suras (11:13) to one (10:38, 2:23).
+- **Qur'an 4:34** (`quran-4-34-in-context`): the dead bismikaallahuma.org source is removed; Muslim 1218 (*ghayr mubarrih*) replaces it. "a English" corrected.
+- **Guardian compulsion** (`marriage-requires-consent`, `married-off-without-consent`, `the-age-of-aisha`): *ijbar* is stated as the Maliki, Shafi'i and better-known Hanbali position, with the Hanafi and Ibn Taymiyya dissent, after Ibn Rushd's *Bidayat al-Mujtahid*. Khansa bint Khidam is identified as previously married (al-Bukhari 5138); the virgin case is Ibn Majah 1875 / Abu Dawud 2096. Mixed USC-MSA numbers replaced.
+- **Women's testimony** (`women-as-witnesses`, `womens-testimony-half`): the majority did not accept women's testimony in *hudud*; the entries now concede this instead of saying 2:282 extends to it.
+- **Morality police** (`modesty-and-the-morality-police`): the classical *hisba* office and modern Sunni bodies are acknowledged; the sectarian line is gone.
+- **Tone**: the fear doubt and the Irtidad page no longer read fear as attachment or promise that "nobody is coming for you"; they acknowledge real danger and point to help. The credential entries no longer say a person who left "never met Islam".
+- Seeding never overwrites, so these corrections reach new installs; an existing site keeps its posts until an editor updates them.
+
+### Added (content)
+- **Nine doubts:** `if-it-was-all-written`, `why-so-much-suffering`, `born-into-it`, `verses-that-were-cancelled`, `the-music-i-love`, `written-down-centuries-later`, `alone-on-the-other-side` (Identity), `can-i-come-back` (Identity), `doubting-through-ramadan` (Emotional).
+- **Eight rebuttals:** `qadar-and-the-charge-of-fatalism`, `the-argument-from-evil`, `why-this-religion-and-not-another`, `abrogation-and-the-edited-book`, `music-images-and-the-schools`, `return-after-leaving`, `hadith-and-the-two-centuries-gap`, `finite-sins-and-the-fire`. Each is paired with its companion-site article through `ce_slug` where one exists, and compresses what that article argues.
+
 ### Tests
 - `tests/LoginTest.php` (+3): the brand panel escapes its line, falls back to the tagline, adds no second link home and goes away with the switch; the privacy note is on all three forms and can be switched off; the stylesheet has pills and focus rings, stays light, and its `.min` twin is current.
 
