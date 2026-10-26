@@ -35,7 +35,10 @@ final class QuranTextTest extends TestCase {
 			preg_match_all( '/([^{}]+)\{[^}]*var\(--murtadd-font-quran\)[^}]*\}/', $css, $uses );
 			foreach ( $uses[1] as $selector ) {
 				$selector = trim( $selector );
-				$this->assertMatchesRegularExpression( '/^(\.murtadd-ayah:lang\(ar\)|\.murtadd-verse p:lang\(ar\))$/', $selector, basename( $file ) . ': ' . $selector );
+				// Only text the mapper has fitted to the face's encoding gets the
+				// face; unmapped Tanzil text in it shows round sukun and stray
+				// ornaments, so it keeps the Arabic stack.
+				$this->assertMatchesRegularExpression( '/^(\.murtadd-ayah\[data-quran-encoding="kfgqpc"\]:lang\(ar\)|\.murtadd-verse p\[data-quran-encoding="kfgqpc"\]:lang\(ar\))$/', $selector, basename( $file ) . ': ' . $selector );
 			}
 			if ( 'tokens.css' !== basename( $file ) ) {
 				$this->assertStringNotContainsString( 'KFGQPC', $css, basename( $file ) . ' names the face directly' );
@@ -46,8 +49,8 @@ final class QuranTextTest extends TestCase {
 
 	public function test_min_twins_carry_the_face_and_the_rules() {
 		$this->assertStringContainsString( 'kfgqpc-hafs-uthmanic-script.woff2', $this->css( 'tokens.min' ) );
-		$this->assertStringContainsString( '.murtadd-ayah:lang(ar){font-family:var(--murtadd-font-quran)', $this->css( 'main.min' ) );
-		$this->assertStringContainsString( '.murtadd-verse p:lang(ar){font-family:var(--murtadd-font-quran)', $this->css( 'rail.min' ) );
+		$this->assertStringContainsString( '.murtadd-ayah[data-quran-encoding="kfgqpc"]:lang(ar){font-family:var(--murtadd-font-quran)}', $this->css( 'main.min' ) );
+		$this->assertStringContainsString( '.murtadd-verse p[data-quran-encoding="kfgqpc"]:lang(ar){font-family:var(--murtadd-font-quran)}', $this->css( 'rail.min' ) );
 	}
 
 	public function test_tanzil_marks_map_to_the_complex_encoding() {

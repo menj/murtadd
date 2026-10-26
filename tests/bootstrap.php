@@ -244,6 +244,10 @@ $GLOBALS['murtadd_settings_errors'] = array(); // Codes passed to add_settings_e
 function current_user_can( $cap ) {
 	return in_array( $cap, $GLOBALS['murtadd_test_caps'], true );
 }
+$GLOBALS['murtadd_test_user'] = 0; // ID of the logged-in user; 0 is a visitor.
+function is_user_logged_in() {
+	return ! empty( $GLOBALS['murtadd_test_user'] );
+}
 function wp_doing_ajax() {
 	return false;
 }

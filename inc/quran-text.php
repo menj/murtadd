@@ -33,7 +33,9 @@ defined( 'ABSPATH' ) || exit;
  * @return string
  */
 function murtadd_quran_text_for_font( $text ) {
-	$text = (string) preg_replace( '/[\x{FD3E}\x{FD3F}]\s*([\x{0660}-\x{0669}]+)\s*[\x{FD3E}\x{FD3F}]/u', '$1', (string) $text );
+	$text = (string) $text;
+	// On malformed UTF-8 the /u pattern returns null: keep the text as it came.
+	$text = preg_replace( '/[\x{FD3E}\x{FD3F}]\s*([\x{0660}-\x{0669}]+)\s*[\x{FD3E}\x{FD3F}]/u', '$1', $text ) ?? $text;
 	if ( false !== strpos( $text, "\u{06E1}" ) ) {
 		return $text;
 	}
@@ -60,7 +62,9 @@ function murtadd_quran_verses( $html ) {
 	if ( false === strpos( $html, 'murtadd-ayah' ) ) {
 		return $html;
 	}
-	return (string) preg_replace_callback(
+	// On malformed UTF-8 anywhere in the markup the /u pattern returns null;
+	// the markup is then returned as it came, never emptied.
+	return preg_replace_callback(
 		'#(<(p|span|div|blockquote)\b[^>]*\bclass=(["\'])(?:(?!\3).)*\bmurtadd-ayah\b(?!-)(?:(?!\3).)*\3[^>]*)(>)(.*?)(</\2>)#su',
 		static function ( $m ) {
 			if ( false !== strpos( $m[1], 'data-quran-encoding=' ) ) {
@@ -69,7 +73,7 @@ function murtadd_quran_verses( $html ) {
 			return $m[1] . ' data-quran-encoding="kfgqpc"' . $m[4] . murtadd_quran_text_for_font( $m[5] ) . $m[6];
 		},
 		$html
-	);
+	) ?? $html;
 }
 
 /**

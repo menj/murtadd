@@ -82,8 +82,8 @@
 	color: var(--murtadd-text);
 	text-wrap: pretty;
 }
+.murtadd-verse p[data-quran-encoding="kfgqpc"]:lang(ar) { font-family: var(--murtadd-font-quran); }
 .murtadd-verse p:lang(ar) {
-	font-family: var(--murtadd-font-quran);
 	font-size: 22px;
 	line-height: 2.2;
 	letter-spacing: 0;

@@ -348,10 +348,13 @@ h1, h2, h3 { font-family: var(--murtadd-font-serif); line-height: 1.25; }
 .murtadd-ayah { font-size: 19px; margin: 0 0 8px; color: var(--murtadd-accent); }
 
 /* Arabic. Every Arabic run gets the system Arabic stack; only a Qur'anic
-   verse (class murtadd-ayah, in the body or the box) gets the KFGQPC face. */
+   verse (class murtadd-ayah, in the body or the box) gets the KFGQPC face,
+   and only once inc/quran-text.php has fitted its text to the face's encoding
+   (data-quran-encoding). Unfitted Tanzil text in the face shows round sukun
+   and stray ornaments, so it keeps the Arabic stack. */
 :lang(ar) { font-family: var(--murtadd-font-arabic); letter-spacing: 0; }
+.murtadd-ayah[data-quran-encoding="kfgqpc"]:lang(ar) { font-family: var(--murtadd-font-quran); }
 .murtadd-ayah:lang(ar) {
-	font-family: var(--murtadd-font-quran);
 	font-size: 24px;
 	font-weight: 400;
 	line-height: 2.2;

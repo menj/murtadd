@@ -18,6 +18,7 @@ final class HardeningTest extends TestCase {
 	protected function setUp(): void {
 		$GLOBALS['murtadd_options']         = array();
 		$GLOBALS['murtadd_test_caps']       = array();
+		$GLOBALS['murtadd_test_user']       = 0;
 		$GLOBALS['murtadd_settings_errors'] = array();
 		$GLOBALS['murtadd_posts']           = array();
 	}
@@ -45,6 +46,7 @@ final class HardeningTest extends TestCase {
 	}
 
 	public function test_rest_user_routes_stay_for_those_who_may_list_users() {
+		$GLOBALS['murtadd_test_user'] = 1;
 		$GLOBALS['murtadd_test_caps'] = array( 'list_users' );
 		$this->assertSame( array_keys( $this->routes() ), array_keys( murtadd_hardening_rest_endpoints( $this->routes() ) ) );
 	}

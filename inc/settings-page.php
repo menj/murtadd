@@ -43,13 +43,13 @@ function murtadd_sanitize_cross_links( $input ) {
 function murtadd_sanitize_contextual_links( $input ) {
 	$input = is_array( $input ) ? $input : array();
 	$extra = array();
-	foreach ( preg_split( '/\R/u', (string) ( $input['extra'] ?? '' ) ) as $line ) {
+	foreach ( preg_split( '/\r\n|\r|\n/', (string) ( $input['extra'] ?? '' ) ) as $line ) {
 		$line = sanitize_text_field( $line );
 		if ( '' !== $line && murtadd_ctx_parse_line( $line ) ) {
 			$extra[] = $line;
 		}
 	}
-	$excluded = array_filter( array_map( 'sanitize_title', preg_split( '/\R/u', (string) ( $input['excluded'] ?? '' ) ) ) );
+	$excluded = array_filter( array_map( 'sanitize_title', preg_split( '/\r\n|\r|\n/', (string) ( $input['excluded'] ?? '' ) ) ) );
 	return array(
 		'own_enabled'    => empty( $input['own_enabled'] ) ? 0 : 1,
 		'sister_enabled' => empty( $input['sister_enabled'] ) ? 0 : 1,

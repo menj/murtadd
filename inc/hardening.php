@@ -56,13 +56,15 @@ function murtadd_security( $key ) {
 /* ---------- Author enumeration ---------- */
 
 /**
- * Remove the user routes from the REST API for anyone who cannot list users.
+ * Remove the user routes from the REST API for visitors. Anyone logged in
+ * keeps them: the block editor reads /wp/v2/users for the author panel and the
+ * current user, and core already limits what each role may see there.
  *
  * @param array $endpoints Registered routes.
  * @return array
  */
 function murtadd_hardening_rest_endpoints( $endpoints ) {
-	if ( ! murtadd_security( 'hide_authors' ) || current_user_can( 'list_users' ) ) {
+	if ( ! murtadd_security( 'hide_authors' ) || is_user_logged_in() ) {
 		return $endpoints;
 	}
 	foreach ( array_keys( (array) $endpoints ) as $route ) {

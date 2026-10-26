@@ -61,6 +61,91 @@ function murtadd_ctx_key( $text ) {
 }
 
 /**
+ * The entry a matched phrase leads to. Without mbstring the key lower-cases
+ * ASCII only, so a match in non-ASCII capitals ("IBN ISḤĀQ") misses its key;
+ * the phrases are then compared one by one, without regard to capitals.
+ *
+ * @param array  $index Key to entry, from murtadd_ctx_compile().
+ * @param string $text  Matched text.
+ * @return array|null
+ */
+function murtadd_ctx_lookup( array $index, $text ) {
+	$key = murtadd_ctx_key( $text );
+	if ( isset( $index[ $key ] ) ) {
+		return $index[ $key ];
+	}
+	foreach ( $index as $phrase_key => $entry ) {
+		if ( 1 === preg_match( '/^' . preg_quote( $phrase_key, '/' ) . '$/iu', $key ) ) {
+			return $entry;
+		}
+	}
+	return null;
+}
+
+/**
+ * Split alternatives into patterns that each compile. One pattern of every
+ * phrase is the fast path; past the PCRE size limit (about 58 KB of pattern,
+ * reachable through extra phrases on the tab) it would fail to compile, so it
+ * is halved until each part compiles. A single phrase that cannot compile is
+ * left out.
+ *
+ * @param string[] $alts Escaped phrase alternatives, longest first.
+ * @return string[]
+ */
+function murtadd_ctx_patterns( array $alts ) {
+	if ( ! $alts ) {
+		return array();
+	}
+	$pattern = '/(?<![\p{L}\p{N}])(?:' . implode( '|', $alts ) . ')(?![\p{L}\p{N}])/iu';
+	if ( false !== @preg_match( $pattern, '' ) ) { // phpcs:ignore WordPress.PHP.NoSilencedErrors -- a failed compile is the expected signal.
+		return array( $pattern );
+	}
+	if ( 1 === count( $alts ) ) {
+		return array();
+	}
+	$half = (int) ceil( count( $alts ) / 2 );
+	return array_merge( murtadd_ctx_patterns( array_slice( $alts, 0, $half ) ), murtadd_ctx_patterns( array_slice( $alts, $half ) ) );
+}
+
+/**
+ * Every phrase match in a run of text, left to right, never overlapping; at
+ * the same offset the longer match wins, as in one longest-first pattern. A
+ * pattern that fails on the text (malformed UTF-8) contributes nothing.
+ *
+ * @param string[] $patterns From murtadd_ctx_patterns().
+ * @param string   $text     Plain text between tags.
+ * @return array<int,array{0:string,1:int}> Matched text and byte offset.
+ */
+function murtadd_ctx_matches( array $patterns, $text ) {
+	$found = array();
+	foreach ( $patterns as $pattern ) {
+		$m = array();
+		if ( preg_match_all( $pattern, $text, $m, PREG_OFFSET_CAPTURE ) ) {
+			foreach ( $m[0] as $match ) {
+				$found[] = $match;
+			}
+		}
+	}
+	if ( count( $patterns ) > 1 ) {
+		usort(
+			$found,
+			static function ( $a, $b ) {
+				return $a[1] === $b[1] ? strlen( $b[0] ) - strlen( $a[0] ) : $a[1] - $b[1];
+			}
+		);
+	}
+	$out = array();
+	$end = 0;
+	foreach ( $found as $match ) {
+		if ( $match[1] >= $end ) {
+			$out[] = $match;
+			$end   = $match[1] + strlen( $match[0] );
+		}
+	}
+	return $out;
+}
+
+/**
  * Parse one admin line, "phrase | /path/" or "phrase | https://sister/path/".
  *
  * A full URL is accepted only on a host in the map's `sites` table; this
@@ -105,7 +190,7 @@ function murtadd_ctx_entries() {
 	$own_key  = murtadd_ctx_site_key();
 	$entries  = array();
 
-	foreach ( preg_split( '/\R/u', (string) $settings['extra'] ) as $line ) {
+	foreach ( preg_split( '/\r\n|\r|\n/', (string) $settings['extra'] ) as $line ) {
 		$entry = murtadd_ctx_parse_line( $line );
 		if ( $entry ) {
 			$entries[] = $entry;
@@ -158,9 +243,13 @@ function murtadd_ctx_compile( array $entries ) {
 		},
 		$phrases
 	);
+	$patterns = murtadd_ctx_patterns( $alts );
+	if ( ! $patterns ) {
+		return null;
+	}
 	return array(
-		'pattern' => '/(?<![\p{L}\p{N}])(?:' . implode( '|', $alts ) . ')(?![\p{L}\p{N}])/iu',
-		'index'   => $index,
+		'patterns' => $patterns,
+		'index'    => $index,
 	);
 }
 
@@ -256,37 +345,40 @@ function murtadd_ctx_apply( $html, array $entries, array $args ) {
 			$out .= $piece;
 			continue;
 		}
-		$out .= preg_replace_callback(
-			$matcher['pattern'],
-			static function ( $m ) use ( $matcher, $caps, $here, &$done, &$made, &$blocks ) {
-				$entry = $matcher['index'][ murtadd_ctx_key( $m[0] ) ] ?? null;
-				if ( ! $entry ) {
-					return $m[0];
-				}
-				$kind = $entry['own'] ? 'own' : 'sister';
-				if ( isset( $done[ $entry['url'] ] )
-					|| $made[ $kind ] >= $caps[ $kind ]
-					|| ( $blocks && in_array( true, $blocks, true ) )
-					|| ( '' !== $here && murtadd_ctx_normalise_url( $entry['url'] ) === $here ) ) {
-					return $m[0];
-				}
-				$done[ $entry['url'] ] = true;
-				++$made[ $kind ];
-				$blocks = array_fill( 0, count( $blocks ), true );
-				if ( $entry['own'] ) {
-					return '<a class="murtadd-ctx-link" href="' . esc_url( $entry['url'] ) . '">' . $m[0] . '</a>';
-				}
-				return '<a class="murtadd-ctx-link murtadd-ctx-link--sister" href="' . esc_url( $entry['url'] ) . '" rel="noopener">' . $m[0] . '</a>';
-			},
-			$piece
-		);
+		// The text is rebuilt from the matches; with no match (or a pattern
+		// that fails on malformed UTF-8) the piece is kept as it came.
+		$at = 0;
+		foreach ( murtadd_ctx_matches( $matcher['patterns'], $piece ) as $match ) {
+			list( $text, $offset ) = $match;
+			$out  .= substr( $piece, $at, $offset - $at );
+			$at    = $offset + strlen( $text );
+			$entry = murtadd_ctx_lookup( $matcher['index'], $text );
+			$kind  = $entry && $entry['own'] ? 'own' : 'sister';
+			if ( ! $entry
+				|| isset( $done[ $entry['url'] ] )
+				|| $made[ $kind ] >= $caps[ $kind ]
+				|| ( $blocks && in_array( true, $blocks, true ) )
+				|| ( '' !== $here && murtadd_ctx_normalise_url( $entry['url'] ) === $here ) ) {
+				$out .= $text;
+				continue;
+			}
+			$done[ $entry['url'] ] = true;
+			++$made[ $kind ];
+			$blocks = array_fill( 0, count( $blocks ), true );
+			if ( $entry['own'] ) {
+				$out .= '<a class="murtadd-ctx-link" href="' . esc_url( $entry['url'] ) . '">' . $text . '</a>';
+			} else {
+				$out .= '<a class="murtadd-ctx-link murtadd-ctx-link--sister" href="' . esc_url( $entry['url'] ) . '" rel="noopener">' . $text . '</a>';
+			}
+		}
+		$out .= substr( $piece, $at );
 	}
 	return $out;
 }
 
 /** True when the slug is on the excluded list (one slug per line). */
 function murtadd_ctx_is_excluded( $slug, $excluded ) {
-	$list = array_filter( array_map( 'sanitize_title', preg_split( '/\R/u', (string) $excluded ) ) );
+	$list = array_filter( array_map( 'sanitize_title', preg_split( '/\r\n|\r|\n/', (string) $excluded ) ) );
 	return '' !== (string) $slug && in_array( (string) $slug, $list, true );
 }
 
