@@ -22,8 +22,8 @@ final class SeedDataTest extends TestCase {
 
 	/** The loaders return what the files hold. */
 	public function test_loaders_return_the_file_contents() {
-		$this->assertCount( count( murtadd_seed_read_json( 'rebuttals' ) ), murtadd_seed_rebuttals() );
-		$this->assertCount( count( murtadd_seed_read_json( 'doubts' ) ), murtadd_seed_doubts() );
+		$this->assertSame( murtadd_seed_read_json( 'rebuttals' ), murtadd_seed_rebuttals() );
+		$this->assertSame( murtadd_seed_read_json( 'doubts' ), murtadd_seed_doubts() );
 		$this->assertSame( murtadd_seed_read_json( 'topics' ), murtadd_starter_topics() );
 		$this->assertSame( array_keys( murtadd_seed_read_json( 'pages' ) ), array_keys( murtadd_seed_page_bodies() ) );
 	}
