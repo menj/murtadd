@@ -54,5 +54,11 @@ final class SeedDataTest extends TestCase {
 		$this->assertFalse( murtadd_seed_entry_valid( array( 'slug' => 1 ), array( 'slug' => 'string' ) ) );
 		$this->assertFalse( murtadd_seed_entry_valid( array( 'slug' => 'a', 'ce_slug' => array() ), array( 'slug' => 'string' ), array( 'ce_slug' => 'string' ) ) );
 		$this->assertTrue( murtadd_seed_entry_valid( array( 'slug' => 'a' ), array( 'slug' => 'string' ), array( 'ce_slug' => 'string' ) ) );
+		// Lists are checked item by item: a malformed source row or topic rejects the entry.
+		$src = array( 'sources' => 'sources', 'topics' => 'strings' );
+		$this->assertTrue( murtadd_seed_entry_valid( array( 'sources' => array( array( 'citation_text' => 'a', 'url' => '' ) ), 'topics' => array( 'x' ) ), $src ) );
+		$this->assertFalse( murtadd_seed_entry_valid( array( 'sources' => array( array( 'citation_text' => array(), 'url' => '' ) ), 'topics' => array( 'x' ) ), $src ) );
+		$this->assertFalse( murtadd_seed_entry_valid( array( 'sources' => array( 'text' ), 'topics' => array( 'x' ) ), $src ) );
+		$this->assertFalse( murtadd_seed_entry_valid( array( 'sources' => array(), 'topics' => array( 1 ) ), $src ) );
 	}
 }

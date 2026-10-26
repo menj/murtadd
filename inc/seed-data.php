@@ -38,10 +38,37 @@ function murtadd_seed_read_json( $name ) {
 }
 
 /**
+ * Whether a value has the given type: 'string', 'array', 'strings' (a list of
+ * strings) or 'sources' (a list of citation rows, each a citation_text and a
+ * url, both strings).
+ *
+ * @param mixed  $value Candidate value.
+ * @param string $type  Type name.
+ * @return bool
+ */
+function murtadd_seed_value_valid( $value, $type ) {
+	if ( 'strings' === $type || 'sources' === $type ) {
+		if ( ! is_array( $value ) || array_values( $value ) !== $value ) {
+			return false;
+		}
+		foreach ( $value as $item ) {
+			$ok = 'strings' === $type
+				? is_string( $item )
+				: is_array( $item ) && isset( $item['citation_text'], $item['url'] ) && is_string( $item['citation_text'] ) && is_string( $item['url'] ) && 2 === count( $item );
+			if ( ! $ok ) {
+				return false;
+			}
+		}
+		return true;
+	}
+	return gettype( $value ) === $type;
+}
+
+/**
  * Whether every listed key of $entry holds a value of the given type.
  *
  * @param mixed                $entry    Candidate entry.
- * @param array<string,string> $required Key => 'string' or 'array'.
+ * @param array<string,string> $required Key => type (see murtadd_seed_value_valid()).
  * @param array<string,string> $optional Key => type, checked only when present.
  * @return bool
  */
@@ -50,12 +77,12 @@ function murtadd_seed_entry_valid( $entry, $required, $optional = array() ) {
 		return false;
 	}
 	foreach ( $required as $key => $type ) {
-		if ( ! array_key_exists( $key, $entry ) || gettype( $entry[ $key ] ) !== $type ) {
+		if ( ! array_key_exists( $key, $entry ) || ! murtadd_seed_value_valid( $entry[ $key ], $type ) ) {
 			return false;
 		}
 	}
 	foreach ( $optional as $key => $type ) {
-		if ( array_key_exists( $key, $entry ) && gettype( $entry[ $key ] ) !== $type ) {
+		if ( array_key_exists( $key, $entry ) && ! murtadd_seed_value_valid( $entry[ $key ], $type ) ) {
 			return false;
 		}
 	}
@@ -146,8 +173,8 @@ function murtadd_seed_rebuttals() {
 				'title'       => 'string',
 				'claim'       => 'string',
 				'source_type' => 'string',
-				'topics'      => 'array',
-				'sources'     => 'array',
+				'topics'      => 'strings',
+				'sources'     => 'sources',
 				'body'        => 'string',
 			),
 			array( 'ce_slug' => 'string' )
@@ -171,7 +198,7 @@ function murtadd_seed_doubts() {
 				'title'     => 'string',
 				'statement' => 'string',
 				'category'  => 'string',
-				'topics'    => 'array',
+				'topics'    => 'strings',
 				'related'   => 'string',
 				'response'  => 'string',
 			),
