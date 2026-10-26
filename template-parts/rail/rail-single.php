@@ -27,7 +27,11 @@ $murtadd_verse_ref  = isset( $murtadd_display['scripture_ref'] ) ? $murtadd_disp
 	<?php if ( $murtadd_show_verse && $murtadd_verse ) : ?>
 		<div class="murtadd-rail-card murtadd-rail-card--verse">
 			<blockquote class="murtadd-verse">
-				<p><?php echo esc_html( $murtadd_verse ); ?></p>
+				<?php if ( murtadd_is_arabic( $murtadd_verse ) ) : ?>
+					<p lang="ar" dir="rtl" data-quran-encoding="kfgqpc"><?php echo esc_html( murtadd_quran_text_for_font( $murtadd_verse ) ); ?></p>
+				<?php else : ?>
+					<p><?php echo esc_html( $murtadd_verse ); ?></p>
+				<?php endif; ?>
 				<cite><?php echo esc_html( $murtadd_verse_ref ); ?></cite>
 			</blockquote>
 		</div>

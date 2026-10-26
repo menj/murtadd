@@ -36,7 +36,7 @@ get_header();
 	</div>
 	<aside class="murtadd-blog-rail">
 		<div class="murtadd-ayah-box">
-			<p class="murtadd-ayah" lang="ar" dir="rtl">الْحَقُّ مِن رَّبِّكَ فَلَا تَكُونَنَّ مِنَ الْمُمْتَرِينَ</p>
+			<?php echo murtadd_quran_verses( '<p class="murtadd-ayah" lang="ar" dir="rtl">الْحَقُّ مِن رَّبِّكَ فَلَا تَكُونَنَّ مِنَ الْمُمْتَرِينَ</p>' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- fixed markup. ?>
 			<p class="murtadd-ayah-tr"><?php esc_html_e( '“The truth is from your Lord — so never be among the doubters.” — Qur’an 2:147', 'murtadd' ); ?></p>
 		</div>
 		<div class="murtadd-rail-recent">

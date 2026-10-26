@@ -103,6 +103,8 @@ Taxonomies: `murtadd_topic` (shared, flat, seeded 6 terms, `/topic/`), `murtadd_
 
 `inc/activation.php` scaffolds the site on `after_switch_theme`: pages, footer menu, Reading options, rewrite flush. Two invariants govern it and must not be broken: **it never overwrites** (existing pages, an assigned menu, and Reading options already chosen are all skipped) and **it never destroys** (no deletes, no trashing, no unpublishing). Re-activation is therefore idempotent.
 
+**The one exception: retiring the placeholders (1.41.0).** Before 1.41.0 activation published five pages reading "Placeholder. Replace this text." and seeded two lorem-ipsum letters. `murtadd_retire_placeholder_copy()` runs once on `admin_init` (flag `murtadd_placeholder_copy_retired`): a page whose text, compared as a reader sees it, is still exactly the placeholder gets its written copy, and a letter whose text still matches the seeded lorem goes back to draft. Anything an editor has changed fails the comparison and is left as it is. No other code may overwrite or unpublish. Letters are no longer seeded at all, and the fatwa index renders an "in preparation" state, `noindex`, while it has no published entry (`murtadd_fatwa_index_has_entries()`).
+
 It is re-runnable from Appearance → Murtadd → Setup, because upgrading the theme in place does not fire `after_switch_theme` and would otherwise leave an existing site unscaffolded. Any template that depends on a page must degrade visibly, not silently: when a required page is absent, `murtadd_setup_needed_notice()` says so in the admin.
 
 Ordering matters. `after_switch_theme` fires on `after_setup_theme` (99), before `init`, so the routine only raises the `murtadd_needs_setup` flag there. The work itself runs on `init` at 90 — after the CPTs and taxonomies register — and clears `murtadd_rewrite_version` so the `init`/99 flusher writes a complete rule set.
@@ -141,7 +143,7 @@ Where no image is set, `inc/social-card.php` generates a card carrying the doubt
 
 ## Stylesheet ownership
 
-`assets/css/tokens.css` owns the `:root` design tokens and both `@font-face` declarations. `assets/css/logo.css` owns the wordmark component. **Both are loaded by the front end and by the Theme Options screen** (`tokens → logo → main`, `tokens → logo → admin`). The login screen loads `tokens → login`, and the standalone error pages link `tokens.min.css` from the theme.
+`assets/css/tokens.css` owns the `:root` design tokens and the three `@font-face` declarations (Source Serif 4, Public Sans, and the Qur'an face). `assets/css/logo.css` owns the wordmark component. **Both are loaded by the front end and by the Theme Options screen** (`tokens → logo → main`, `tokens → logo → admin`). The login screen loads `tokens → login`, and the standalone error pages link `tokens.min.css` from the theme.
 
 There is exactly one definition of the mark and one of the brand colours in this codebase. Never restate either. The wordmark has now drifted twice by being hand-copied into a second context — once into the footer, once into the admin hero — and this structure is what makes a third time impossible. A rule that styles a *placement* (the footer's `:not(.murtadd-logo)` exclusion, a size override) belongs with its consumer; a rule that defines the *mark* belongs in `logo.css`.
 
@@ -200,7 +202,7 @@ Tabs run in the order the work is done: Setup, Content, Topics & schools, Linked
 
 **No testimonials.** Do not add a testimonials section, post type, or archive: no wall of personal accounts from people who doubted, left, or stayed. The site answers questions; it does not collect people.
 
-Both are owner decisions, recorded 2026-07-13. Do not re-propose either in reviews or enhancement lists.
+Both are owner decisions, recorded 2026-07-13. Do not re-propose either in reviews or enhancement lists. The 1.41.0 pages (login, error, maintenance, 410) follow the first: light only.
 
 ## Design tokens
 
@@ -208,7 +210,15 @@ Defined once in `css/main.css` `:root`. Accent `#0f6e56` (green), tint `#eefaf7`
 
 ## Branding assets
 
-`screenshot.png` (1200×900) is the Appearance → Themes preview. `assets/icons/` holds the site-icon mark: `site-icon.svg` is the source, with 512/192/180/32/16 PNGs and `favicon.ico` derived from it. `inc/site-icon.php` serves them only while no core Site Icon is configured; `has_site_icon()` short-circuits the whole module the moment one is set. Fonts are self-hosted in `/fonts/` under the OFL.
+`screenshot.png` (1200×900) is the Appearance → Themes preview. `assets/icons/` holds the site-icon mark: `site-icon.svg` is the source, with 512/192/180/32/16 PNGs and `favicon.ico` derived from it. `inc/site-icon.php` serves them only while no core Site Icon is configured; `has_site_icon()` short-circuits the whole module the moment one is set. Fonts are self-hosted in `assets/fonts/`: Source Serif 4 and Public Sans under the OFL, and the Qur'an face below under its own licence.
+
+## Arabic and the Qur'an face
+
+**Qur'anic verses in Arabic, and nothing else, are set in KFGQPC HAFS Uthmanic Script** (King Fahd Glorious Quran Printing Complex), shared with the six sister themes. Token `--murtadd-font-quran`, used only by `.murtadd-ayah:lang(ar)` (`main.css`) and `.murtadd-verse p:lang(ar)` (`rail.css`, when the owner sets the rail verse in Arabic). Every other Arabic run, a hadith or a term in a sentence, takes `--murtadd-font-arabic`, a system Arabic stack, through `:lang(ar)`. `tests/QuranTextTest.php` fails if the Qur'an token appears on any other selector or the face is named outside `tokens.css`. Verses are set at line-height 2.2, right to left, with no letter-spacing. Not preloaded: the file is fetched only on a page that shows a verse.
+
+**The licence decision.** The owner chose on 2026-10-26 to serve a WOFF2 conversion of the font (`assets/fonts/kfgqpc-hafs-uthmanic-script.woff2`, 107 KB, from the 298 KB TrueType file), accepting that the KFGQPC licence forbids modifying the font. The conversion is lossless for glyphs, character map and OpenType layout; the digital signature (DSIG) is dropped. The licence text ships beside it.
+
+**Verse encoding** (`inc/quran-text.php`). The face follows the Complex's encoding (Madani sukun U+06E1, rounded zero U+0652) and draws U+06DF as a spacing ornament and Arabic-Indic digits as the ayah medallion. Verse text in the common Tanzil encoding (sukun U+0652, rounded zero U+06DF) is mapped as it renders, and ornate brackets round an ayah number are dropped; the stored text is never changed. Text already holding U+06E1 is left alone, and a mapped element is marked `data-quran-encoding="kfgqpc"` so no later pass maps it twice. Runs on `the_content` at 6, inside the doubt short response and the fatwa position summary, on the homepage ayah, and on an Arabic rail verse. Write a verse as `<p class="murtadd-ayah" lang="ar" dir="rtl">`, with bare digits for the ayah number and no U+06DD.
 
 ## Data removal
 

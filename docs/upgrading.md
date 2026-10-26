@@ -1,5 +1,17 @@
 # Upgrading — Murtadd
 
+## 1.40.0 → 1.41.0
+
+Additive, with one narrow content step. Upload the whole theme folder: new files are `inc/hardening.php`, `inc/hide-login.php`, `inc/login.php`, `inc/rank-math.php`, `inc/gone.php`, `inc/maintenance.php`, `inc/quran-text.php`, `410.php`, `dropins/`, `assets/css/login.css`, `assets/css/error-page.css`, `assets/fonts/kfgqpc-hafs-uthmanic-script.woff2` and its licence.
+
+1. **Security tab (new).** On by default: author names kept private (`?author=` and author archives now 301 to the home page; the REST user list and users sitemap close), XML-RPC off, security headers. Check that nothing on the site relied on XML-RPC (the Jetpack app, old blog editors) before leaving it off.
+2. **Private login address (off).** If you set one, `wp-login.php` and `wp-admin` stop answering visitors. If the address is lost, add `define( 'MURTADD_HIDE_LOGIN', false );` to `wp-config.php` and log in at `wp-login.php`. It stands down while the WPS Hide Login plugin is active.
+3. **Rank Math.** With Rank Math active, the theme no longer prints its own description, Open Graph tags or JSON-LD graph; it adds its QAPage, Claim and fatwa fields into Rank Math's graph. If you had switched the theme's tags off by hand as the old docs asked, nothing more is needed. Check one doubt and one rebuttal in a structured-data validator.
+4. **Upkeep tab (new).** Maintenance mode is off. Branded error pages are on: on the first admin page after the update the theme writes `maintenance.php`, `php-error.php` and `db-error.php` (and their stylesheet) into `wp-content`. It never overwrites a file it did not write; if you already have one, the tab says so and leaves it. The tab has a button to write them now. The 410 list ships empty; add spam paths there as you find them.
+5. **Placeholder pages and letters.** On the first admin page after the update, each of `irtidad`, `about`, `faq`, `contact` and `privacy` that still reads exactly "Placeholder. Replace this text." gets its written copy, and each of the two lorem-ipsum letters still unedited goes to draft. Pages and letters you have edited are left alone. Then add a contact method to Contact and the host and plugin details to Privacy (see the comments in each, visible in the editor).
+6. **Fatwa index.** While no Fatwa entry is published, `/fatwa/` says it is in preparation and the Fatwa links leave the sidebar, front-page footer, search page and 404 page.
+7. **Qur'an face.** Verses in Arabic now use KFGQPC HAFS Uthmanic Script. Mark a verse as `<p class="murtadd-ayah" lang="ar" dir="rtl">` with bare digits for its number. Clear any page cache so visitors fetch the new stylesheets.
+
 ## 1.39.0 → 1.40.0
 
 Additive. No content, template-structure or existing-option changes.

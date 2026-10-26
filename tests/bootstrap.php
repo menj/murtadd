@@ -231,6 +231,7 @@ function get_post( $post_id = 0 ) {
 
 require_once __DIR__ . '/../inc/template-tags.php';
 require_once __DIR__ . '/../inc/contextual-links.php';
+require_once __DIR__ . '/../inc/quran-text.php';
 
 
 // ---- Security: hardening and the private login address. ----

@@ -346,6 +346,20 @@ h1, h2, h3 { font-family: var(--murtadd-font-serif); line-height: 1.25; }
 .murtadd-blog-thumb img { border-radius: 10px; display: block; }
 .murtadd-ayah-box { background: var(--murtadd-surface); border: 1px solid var(--murtadd-border); border-radius: 12px; padding: 18px 20px; margin-top: 56px; }
 .murtadd-ayah { font-size: 19px; margin: 0 0 8px; color: var(--murtadd-accent); }
+
+/* Arabic. Every Arabic run gets the system Arabic stack; only a Qur'anic
+   verse (class murtadd-ayah, in the body or the box) gets the KFGQPC face. */
+:lang(ar) { font-family: var(--murtadd-font-arabic); letter-spacing: 0; }
+.murtadd-ayah:lang(ar) {
+	font-family: var(--murtadd-font-quran);
+	font-size: 24px;
+	font-weight: 400;
+	line-height: 2.2;
+	letter-spacing: 0;
+	direction: rtl;
+	unicode-bidi: isolate;
+	text-align: right;
+}
 .murtadd-ayah-tr { margin: 0; font-style: italic; font-family: var(--murtadd-font-serif); font-size: 13.5px; color: var(--murtadd-accent); }
 .murtadd-rail-recent { margin-top: 24px; }
 .murtadd-rail-recent ul { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-direction: column; }

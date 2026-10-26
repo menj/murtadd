@@ -1,5 +1,53 @@
 # Changelog — Murtadd
 
+## 1.41.0 — 2026-10-26
+Hardening, Rank Math, upkeep pages, written pages, and the Qur'an face. The placeholders are retired. Activation published five pages reading "Placeholder. Replace this text." and two lorem-ipsum letters, all public the moment the theme was switched on, and /irtidad/ is both the second route from Start Here and the target of the legacy redirects. Every page now ships with its copy written, and nothing the theme seeds says it is a placeholder.
+
+### Added
+- **Security tab** (`murtadd_security`, `inc/hardening.php`). The site at this domain was compromised in August 2024; the defaults now close what WordPress leaves open, each behind its own switch.
+  - **Author names kept private** (on): the REST user list, `?author=` addresses and author archives (301 to the home page), and the users sitemap are closed. Feeds and oEmbed name the author from the Profiles tab, or the site. wp-admin keeps the real names.
+  - **XML-RPC off** (on): no method answers, and the `X-Pingback` header and RSD link are removed.
+  - **Security headers** (on): `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options` and `Permissions-Policy` on every front-end response. A header the server already sends is not sent twice. Filter: `murtadd_security_headers`.
+- **Private login address** (`inc/hide-login.php`), a port of the WPS Hide Login request handling. Off until an address is saved. A reserved, malformed or page-colliding address is refused and the previous one kept. `define( 'MURTADD_HIDE_LOGIN', false );` in `wp-config.php` turns it off whatever is saved. It stands down while the WPS Hide Login plugin is active.
+- **Rank Math compatibility** (`inc/rank-math.php`). With Rank Math active, the page used to carry two descriptions, two Open Graph blocks and two JSON-LD graphs, and the docs asked the owner to switch the theme's tags off by hand. Now the meta tags stand down by themselves and the page carries one graph, Rank Math's. A theme node is added only when Rank Math's graph has no node of its family, and otherwise fills empty fields without overwriting any: a doubt adds its QAPage; a rebuttal's Article gains its Claim and sources; a fatwa entry's Article gains its subject and primary source. An empty Rank Math description is filled from the content model, and search results and 404s stay noindex. With Rank Math's Schema module off, the theme prints its own graph as before.
+
+### Changed
+- **`inc/schema.php` builds the graph apart from printing it.** `murtadd_structured_data_node()` returns the node; `murtadd_structured_data()` prints it unless Rank Math is printing structured data.
+
+### Added (Upkeep)
+- **Upkeep tab** (`murtadd_upkeep`) with **Removed for good (410)**. Addresses that never belonged to this site, such as spam pages left by the 2024 compromise, are answered `410 Gone` with `noindex` and a branded page (`410.php`, built from the 404's classes), so search engines drop them instead of returning. One per line, exact or a prefix ending in `*`. It runs only on a 404, and after the legacy redirects, so a live page or a recovered pre-2024 address is never retired. The list ships empty, because no spam path from the compromise survives in the record.
+- **Maintenance mode** (Upkeep tab, off). Visitors get a branded "Back shortly" page with `503` and `Retry-After`, so search engines keep the pages; anyone who can change the theme's options sees the site, and the admin bar says maintenance is on. The login screen stays open.
+- **Branded error pages** (Upkeep tab, on, `inc/maintenance.php`, `dropins/`). After a compromise, a bare "critical error" screen reads as the site being hacked again. WordPress updates, fatal PHP errors (`503` for an upload in progress, `500` otherwise) and database failures now show one calm page in the theme's colours and fonts. The theme writes the three drop-ins and their stylesheet into `wp-content` from wp-admin, refreshes them when the version, site name or addresses change, never overwrites a file it did not write, and removes its copies when switched off or when the theme changes. A table on the tab shows each file's state, with a button to write them now. The pages carry no inline style or script.
+- **Branded login screen** (Security tab, on, `inc/login.php`, `assets/css/login.css`). The login screen now looks like the site: ivory ground, a white card with the accent on its upper edge, and the self-hosted Source Serif and Public Sans. The mark is the custom logo, then the Site Icon, then the theme's own mark. It links to the site rather than WordPress.org and carries the site name, and the accents follow the Colours tab. It covers every screen `wp-login.php` serves and works at the private login address. An optional plain-text note can be set to show above the form.
+
+### Changed
+- **`/irtidad/` written.** The two words and their root; what the classical law meant by apostasy, from the confessional-state framing and the conditions the jurists attached; what does not take a person out of Islam (a question, a verdict pronounced over oneself, a registry entry, the fear); the law as it stands across Muslim-majority states; and a closing word for the reader tonight. It links into `apostasy-and-the-classical-law`, `religion-by-registration`, `i-was-never-asked`, `afraid-of-what-happens-if-i-leave`, `what-leaving-actually-costs`, `the-hadith-about-leaving`, `the-death-threat-charge` and the Apostasy law topic. Every claim rests on a source the seed already cites.
+- **`/about/` and `/faq/` written** from what `docs/ssot.md` says the site is and does: the four content types, the forensic register, no individuals named, Malaysia as home and not frame, no testimonials, no tracking. The FAQ answers only questions the docs answer, and its support answer reuses the struggling notice's wording and the Talian Kasih example from the seed.
+- **`/contact/` written** for readers (corrections with sources, questions not yet answered, and do not wait for a reply in a crisis). It invents no address: an HTML comment, which does not render, tells the owner to add a form or an address.
+- **`/privacy/` written** from what the theme demonstrably does: no analytics or tracking scripts, self-hosted fonts, share buttons as plain links, generated share images, on-site search kept out of search engines, WordPress's own comment storage and Gravatar avatars, no theme cookies. An HTML comment lists what the owner must add (host and server logs, plugins, legal basis, retention, a contact route).
+- **Letters are no longer seeded.** `murtadd_seed_letters()` and `murtadd_seed_letter_posts()` are gone, the seeder's report drops its `letters` count, and the Setup tab counts doubts and rebuttals only.
+- **The empty fatwa index says so.** With no published entry, `/fatwa/` shows that the index is in preparation, links to the rebuttals and to Irtidad, hides the filter form, and is `noindex`. The sidebar, the front-page footer, the search page and the 404 page leave the Fatwa link out until the first entry is published (`murtadd_fatwa_index_has_entries()`). No fatwa entry is invented to fill it.
+- **Activation and Setup notices** now ask for a contact method and the Privacy details in place of "replace the placeholder copy".
+
+### Upgrading
+- **`murtadd_retire_placeholder_copy()`** runs once on `admin_init` (flag `murtadd_placeholder_copy_retired`). A page that still holds the exact placeholder text, compared as a reader sees it so that one opened and saved unchanged in the block editor still counts, gets its written copy. Each lorem-ipsum letter whose text still matches the seeded body goes back to draft. Any page or letter an editor has changed fails the comparison and is left exactly as it is. This is the one narrow exception to "never overwrite, never destroy", and `inc/activation.php` says so.
+
+### Tests
+- `tests/PageCopyTest.php` (10 tests): no seeded text is placeholder or lorem; every rendered page has copy of substance; house style (no em dash, no contraction, no "actually"); every link in the page copy leads to seeded content; Contact and Privacy carry owner notes and no invented address; a fresh install gets the written copy; retirement replaces only unedited pages, drafts only unedited letters, is idempotent, and does nothing on an empty site. Mutation-checked: removing either comparison guard, the letter status check, or restoring a placeholder each fails the suite.
+- `tests/SeedTest.php` updated for the retired letters.
+
+### Added (Qur'an face)
+- **Qur'anic verses in KFGQPC HAFS Uthmanic Script**, the face all seven sister themes use for the Arabic of a verse and for nothing else. Token `--murtadd-font-quran` on `.murtadd-ayah:lang(ar)` and on an Arabic rail verse; every other Arabic run, a hadith or a term, takes a system Arabic stack (`--murtadd-font-arabic`). Verses are set right to left at line-height 2.2 with no letter-spacing. Not preloaded.
+- **Served as WOFF2** (`assets/fonts/kfgqpc-hafs-uthmanic-script.woff2`, 107 KB), with its licence text beside it. The owner chose this on 2026-10-26, accepting that the KFGQPC licence forbids modifying the font; the conversion keeps every glyph, the character map and the OpenType layout, and drops the digital signature.
+- **`inc/quran-text.php`** maps verse text in the Tanzil encoding to the face's own as it renders (sukun U+0652 to U+06E1, rounded zero U+06DF to U+0652) and drops ornate brackets round an ayah number, which the face already draws as a medallion. Without it every sukun draws as a circle and every silent letter carries a stray ornament. Stored text is unchanged; a mapped element is marked `data-quran-encoding="kfgqpc"` so no pass maps it twice. Runs on `the_content` (6), the doubt short response, the fatwa position summary, the homepage ayah and an Arabic rail verse.
+
+### Changed (housekeeping)
+- **`languages/murtadd.pot`** regenerated from the code: 389 strings (was 296, last built at 1.23.0).
+- **readme.txt** lists the new options to delete when the theme is retired: `murtadd_security`, `murtadd_upkeep`, `murtadd_dropins_stamp`, `murtadd_dropins_status`, `murtadd_placeholder_copy_retired`.
+
+### Tests
+- Suite: 145 tests. New: `HardeningTest`, `RankMathTest`, `GoneTest`, `MaintenanceTest`, `LoginTest`, `PageCopyTest`, `QuranTextTest`.
+
 ## 1.40.0 — 2026-10-26
 Contextual links. In the running text of a single entry, the first mention of a known phrase now links to the page that treats it: another rebuttal or doubt here, or the inner page on one of the six sister sites. No section, widget or list is added; the links sit in the prose.
 

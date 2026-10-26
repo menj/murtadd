@@ -1,8 +1,8 @@
 # Copyright (C) 2026 Langgam Fikir Enterprise
 msgid ""
 msgstr ""
-"Project-Id-Version: Murtadd 1.23.0\n"
-"POT-Creation-Date: 2026-07-13\n"
+"Project-Id-Version: Murtadd 1.41.0\n"
+"POT-Creation-Date: 2026-10-26\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -17,26 +17,32 @@ msgstr ""
 msgid "The link may be old, or the page may have moved. Search, or pick a door below."
 msgstr ""
 
-#: 404.php:22
-#: sidebar.php:20
-#: template-parts/rail/rail-single.php:43
+#: 404.php:22 410.php:24 sidebar.php:20 template-parts/rail/rail-single.php:47
 msgid "Start here"
 msgstr ""
 
-#: 404.php:24
-#: search.php:45
+#: 404.php:24 410.php:26 search.php:45
 msgid "Browse doubts"
 msgstr ""
 
-#: 404.php:25
-#: search.php:46
+#: 404.php:25 search.php:46
 msgid "Browse rebuttals"
 msgstr ""
 
-#: 404.php:26
-#: archive-murtadd_fatwa.php:19
-#: search.php:47
+#: 404.php:27 archive-murtadd_fatwa.php:33 search.php:48
 msgid "Fatwa index"
+msgstr ""
+
+#: 410.php:15
+msgid "That page has been removed."
+msgstr ""
+
+#: 410.php:16
+msgid "It is gone for good, and was never part of this site as it stands. Search, or pick a door below."
+msgstr ""
+
+#: 410.php:27 inc/activation.php:44 sidebar.php:27
+msgid "Home"
 msgstr ""
 
 #: archive-murtadd_doubt.php:27
@@ -65,7 +71,9 @@ msgstr ""
 
 #: archive-murtadd_doubt.php:72
 msgid "%d doubt answered so far."
-msgstr ""
+msgid_plural "%d doubts answered so far."
+msgstr[0] ""
+msgstr[1] ""
 
 #: archive-murtadd_doubt.php:76
 msgid "If yours is not here, it is not because it cannot be answered."
@@ -75,85 +83,79 @@ msgstr ""
 msgid "No doubts filed yet."
 msgstr ""
 
-#: archive-murtadd_fatwa.php:20
+#: archive-murtadd_fatwa.php:34
 msgid "Scholarly positions summarized in our own words, each linked to its primary source. A reference, not a verdict."
 msgstr ""
 
-#: archive-murtadd_fatwa.php:25
-#: archive-murtadd_fatwa.php:65
-#: inc/taxonomy-school.php:17
-#: taxonomy-murtadd_school.php:24
-msgid "School"
-msgstr ""
-
-#: archive-murtadd_fatwa.php:27
-msgid "All schools"
-msgstr ""
-
-#: archive-murtadd_fatwa.php:38
-#: archive-murtadd_fatwa.php:66
-#: inc/meta-boxes.php:111
-#: inc/settings-page.php:256
-msgid "Era"
-msgstr ""
-
-#: archive-murtadd_fatwa.php:40
-msgid "All eras"
+#: archive-murtadd_fatwa.php:39
+msgid "The index is in preparation. Each entry is added once its summary has been checked against the primary source it links to, and none has been published yet. Until then, every rebuttal on this site cites its own sources."
 msgstr ""
 
 #: archive-murtadd_fatwa.php:41
-#: inc/meta-boxes.php:113
-#: single-murtadd_fatwa.php:24
-#: template-parts/rows/row-fatwa-entry.php:18
-msgid "Classical"
+msgid "Read the rebuttals"
 msgstr ""
 
-#: archive-murtadd_fatwa.php:42
-#: inc/meta-boxes.php:114
-#: single-murtadd_fatwa.php:24
-#: template-parts/rows/row-fatwa-entry.php:18
-msgid "Modern"
+#: archive-murtadd_fatwa.php:44
+msgid "What irtidad means"
 msgstr ""
 
-#: archive-murtadd_fatwa.php:46
-#: inc/taxonomy-topic.php:18
-msgid "Topic"
-msgstr ""
-
-#: archive-murtadd_fatwa.php:48
-msgid "All topics"
+#: archive-murtadd_fatwa.php:56 archive-murtadd_fatwa.php:96 inc/taxonomy-school.php:17 taxonomy-murtadd_school.php:24
+msgid "School"
 msgstr ""
 
 #: archive-murtadd_fatwa.php:58
+msgid "All schools"
+msgstr ""
+
+#: archive-murtadd_fatwa.php:69 archive-murtadd_fatwa.php:97 inc/meta-boxes.php:116 inc/settings-page.php:485 taxonomy-murtadd_school.php:25
+msgid "Era"
+msgstr ""
+
+#: archive-murtadd_fatwa.php:71
+msgid "All eras"
+msgstr ""
+
+#: archive-murtadd_fatwa.php:72 inc/meta-boxes.php:118 single-murtadd_fatwa.php:24 template-parts/rows/row-fatwa-entry.php:18
+msgid "Classical"
+msgstr ""
+
+#: archive-murtadd_fatwa.php:73 inc/meta-boxes.php:119 single-murtadd_fatwa.php:24 template-parts/rows/row-fatwa-entry.php:18
+msgid "Modern"
+msgstr ""
+
+#: archive-murtadd_fatwa.php:77 inc/taxonomy-topic.php:18
+msgid "Topic"
+msgstr ""
+
+#: archive-murtadd_fatwa.php:79
+msgid "All topics"
+msgstr ""
+
+#: archive-murtadd_fatwa.php:89
 msgid "Filter"
 msgstr ""
 
-#: archive-murtadd_fatwa.php:64
-#: taxonomy-murtadd_school.php:23
+#: archive-murtadd_fatwa.php:95 taxonomy-murtadd_school.php:23
 msgid "Scholar / body"
 msgstr ""
 
-#: archive-murtadd_fatwa.php:67
-#: taxonomy-murtadd_school.php:26
+#: archive-murtadd_fatwa.php:98 taxonomy-murtadd_school.php:26
 msgid "Position"
 msgstr ""
 
-#: archive-murtadd_fatwa.php:68
-#: taxonomy-murtadd_school.php:27
+#: archive-murtadd_fatwa.php:99 taxonomy-murtadd_school.php:27
 msgid "Link"
 msgstr ""
 
-#: archive-murtadd_fatwa.php:76
+#: archive-murtadd_fatwa.php:107
 msgid "No positions match these filters."
 msgstr ""
 
-#: archive-murtadd_fatwa.php:78
+#: archive-murtadd_fatwa.php:109
 msgid "Clear filters"
 msgstr ""
 
-#: archive-murtadd_letter.php:16
-#: inc/cpt-letter.php:33
-#: sidebar.php:73
+#: archive-murtadd_letter.php:16 inc/cpt-letter.php:33 sidebar.php:75
 msgid "Letters"
 msgstr ""
 
@@ -161,8 +163,7 @@ msgstr ""
 msgid "Correspondence and opinion pieces published in other outlets, archived here in their original form. Each is dated, and each is a position taken at a particular moment. They are kept as a record rather than offered as an answer to anyone’s doubt — for that, start with the doubts."
 msgstr ""
 
-#: archive-murtadd_letter.php:38
-#: single-murtadd_letter.php:32
+#: archive-murtadd_letter.php:38 single-murtadd_letter.php:32
 msgid "In reply to: %s"
 msgstr ""
 
@@ -170,10 +171,7 @@ msgstr ""
 msgid "No letters archived yet."
 msgstr ""
 
-#: archive-murtadd_rebuttal.php:13
-#: front-page.php:65
-#: inc/cpt-rebuttal.php:15
-#: sidebar.php:69
+#: archive-murtadd_rebuttal.php:13 front-page.php:65 inc/cpt-rebuttal.php:15 inc/settings-page.php:202 sidebar.php:71
 msgid "Rebuttals"
 msgstr ""
 
@@ -189,10 +187,11 @@ msgstr ""
 msgid "Nothing filed here yet."
 msgstr ""
 
-#: comments.php:23
-#: template-parts/cards/card-doubt-category.php:22
+#: comments.php:23 template-parts/cards/card-doubt-category.php:22
 msgid "%d response"
-msgstr ""
+msgid_plural "%d responses"
+msgstr[0] ""
+msgstr[1] ""
 
 #: comments.php:40
 msgid "Comments navigation"
@@ -234,6 +233,10 @@ msgstr ""
 msgid "Secondary"
 msgstr ""
 
+#: footer.php:36
+msgid "Author profiles"
+msgstr ""
+
 #: front-page.php:14
 msgid "Doubts, taken seriously."
 msgstr ""
@@ -255,15 +258,15 @@ msgid "This site gives the short answer"
 msgstr ""
 
 #: front-page.php:44
-msgid "When a short answer isn't enough, these carry the full argument."
+msgid "This site answers what is said against Islam. These two carry the arguments it sits on top of."
 msgstr ""
 
 #: front-page.php:48
-msgid "The full evidential case"
+msgid "The questions beneath this one"
 msgstr ""
 
 #: front-page.php:48
-msgid "Manuscripts, history, prophecy — the long-form argument for why Islam is true."
+msgid "Does God exist, why is there suffering, can ethics stand without Him. The upstream arguments, at length."
 msgstr ""
 
 #: front-page.php:49
@@ -278,50 +281,39 @@ msgstr ""
 msgid "Browse"
 msgstr ""
 
-#: front-page.php:63
-#: home.php:15
-#: inc/activation.php:40
-#: inc/template-tags.php:136
+#: front-page.php:63 home.php:15 inc/activation.php:49 inc/template-tags.php:136 sidebar.php:28
 msgid "Blog"
 msgstr ""
 
-#: front-page.php:64
-#: inc/cpt-doubt.php:15
-#: sidebar.php:57
+#: front-page.php:64 inc/cpt-doubt.php:15 inc/settings-page.php:198 sidebar.php:59
 msgid "Doubts"
 msgstr ""
 
-#: front-page.php:66
-#: inc/cpt-fatwa.php:17
-#: inc/template-tags.php:135
-#: sidebar.php:44
+#: front-page.php:67 inc/cpt-fatwa.php:17 inc/template-tags.php:135 sidebar.php:45
 msgid "Fatwa"
 msgstr ""
 
-#: front-page.php:70
-#: inc/taxonomy-topic.php:17
-#: sidebar.php:31
+#: front-page.php:72 inc/taxonomy-topic.php:17 sidebar.php:31
 msgid "Topics"
 msgstr ""
 
-#: front-page.php:83
-#: inc/activation.php:129
+#: front-page.php:85 inc/activation.php:138
 msgid "Site"
 msgstr ""
 
-#: functions.php:60
+#: functions.php:71
 msgid "Primary (sidebar)"
 msgstr ""
 
-#: functions.php:61
+#: functions.php:72
 msgid "Footer — Site column"
 msgstr ""
 
-#: functions.php:180
+#: functions.php:221
 msgid "Over the soft cap — consider trimming. Saving is not blocked."
 msgstr ""
 
-#: functions.php:181
+#: functions.php:222
 msgid "words"
 msgstr ""
 
@@ -337,127 +329,113 @@ msgstr ""
 msgid "“The truth is from your Lord — so never be among the doubters.” — Qur’an 2:147"
 msgstr ""
 
-#: home.php:43
-#: inc/settings-page.php:257
-#: template-parts/rail/rail-single.php:59
+#: home.php:43 inc/settings-page.php:486 template-parts/rail/rail-single.php:63
 msgid "Recently added"
 msgstr ""
 
-#: inc/activation.php:35
-#: sidebar.php:27
-msgid "Home"
-msgstr ""
-
-#: inc/activation.php:36
+#: inc/activation.php:45
 msgid "This page exists so WordPress has a static front page to point at. The homepage is rendered by the theme (front-page.php); nothing written here is displayed."
 msgstr ""
 
-#: inc/activation.php:41
+#: inc/activation.php:50
 msgid "This page exists so WordPress has a posts page to point at. The blog index is rendered by the theme (home.php); nothing written here is displayed."
 msgstr ""
 
-#: inc/activation.php:45
+#: inc/activation.php:54
 msgid "Start Here"
 msgstr ""
 
-#: inc/activation.php:46
+#: inc/activation.php:55
 msgid "The three routes on this page are rendered by the theme (page-start-here.php); nothing written here is displayed."
 msgstr ""
 
-#: inc/activation.php:50
+#: inc/activation.php:59
 msgid "Irtidad"
 msgstr ""
 
-#: inc/activation.php:51
-msgid "Placeholder. This page carries the second route from Start Here: what irtidad actually is, and what does not take a person out of Islam. Replace this text."
-msgstr ""
-
-#: inc/activation.php:55
-#: inc/template-tags.php:232
+#: inc/activation.php:64 inc/template-tags.php:232
 msgid "About"
 msgstr ""
 
-#: inc/activation.php:56
-#: inc/activation.php:61
-#: inc/activation.php:66
-#: inc/activation.php:71
-msgid "Placeholder. Replace this text."
-msgstr ""
-
-#: inc/activation.php:60
-#: inc/template-tags.php:233
+#: inc/activation.php:69 inc/template-tags.php:233
 msgid "FAQ"
 msgstr ""
 
-#: inc/activation.php:65
-#: inc/template-tags.php:234
+#: inc/activation.php:74 inc/template-tags.php:234
 msgid "Contact"
 msgstr ""
 
-#: inc/activation.php:70
-#: inc/template-tags.php:235
+#: inc/activation.php:79 inc/template-tags.php:235
 msgid "Privacy"
 msgstr ""
 
-#: inc/activation.php:179
+#: inc/activation.php:188
 msgid "front page set to “Home”"
 msgstr ""
 
-#: inc/activation.php:184
+#: inc/activation.php:193
 msgid "posts page set to “Blog”"
 msgstr ""
 
-#: inc/activation.php:266
+#: inc/activation.php:275
 msgid "You do not have permission to do that."
 msgstr ""
 
-#: inc/activation.php:308
+#: inc/activation.php:317
 msgid "Murtadd is missing pages it needs."
 msgstr ""
 
-#: inc/activation.php:312
+#: inc/activation.php:321
 msgid "These are absent: %s. Until they exist, the \"Start here\" button and the footer links do not appear."
 msgstr ""
 
-#: inc/activation.php:317
+#: inc/activation.php:326
 msgid "Run setup →"
 msgstr ""
 
-#: inc/activation.php:337
+#: inc/activation.php:346
 msgid "Pages created: %s."
 msgstr ""
 
-#: inc/activation.php:342
+#: inc/activation.php:351
 msgid "Footer menu created and assigned."
 msgstr ""
 
-#: inc/activation.php:347
+#: inc/activation.php:356
 msgid "Reading settings: %s."
 msgstr ""
 
-#: inc/activation.php:354
-msgid "Starter content added: %1$d doubts, %2$d rebuttals, and %3$d placeholder letters (lorem ipsum — replace or delete them)."
+#: inc/activation.php:363
+msgid "Starter content added: %1$d doubts and %2$d rebuttals."
 msgstr ""
 
-#: inc/activation.php:362
+#: inc/activation.php:370
 msgid "Everything the theme needs was already in place. Nothing was changed."
 msgstr ""
 
-#: inc/activation.php:364
-msgid "New pages carry placeholder text. Replace it before announcing the site."
+#: inc/activation.php:372
+msgid "Before announcing the site, add a contact method to the Contact page and your host and plugin details to the Privacy page."
 msgstr ""
 
-#: inc/activation.php:369
+#: inc/activation.php:377
 msgid "Murtadd is set up."
 msgstr ""
 
-#: inc/analytics.php:100
-#: inc/template-tags.php:57
-msgid "%d min read"
+#: inc/activation.php:429
+msgid "Placeholder. This page carries the second route from Start Here: what irtidad actually is, and what does not take a person out of Islam. Replace this text."
 msgstr ""
 
-#: inc/cpt-doubt.php:16
-#: inc/template-tags.php:133
+#: inc/activation.php:430 inc/activation.php:431 inc/activation.php:432 inc/activation.php:433
+msgid "Placeholder. Replace this text."
+msgstr ""
+
+#: inc/analytics.php:100 inc/template-tags.php:57
+msgid "%d min read"
+msgid_plural "%d min read"
+msgstr[0] ""
+msgstr[1] ""
+
+#: inc/cpt-doubt.php:16 inc/template-tags.php:133
 msgid "Doubt"
 msgstr ""
 
@@ -537,8 +515,7 @@ msgstr ""
 msgid "Use this where an archived position needs framing for a reader who arrives at it today."
 msgstr ""
 
-#: inc/cpt-rebuttal.php:16
-#: inc/template-tags.php:134
+#: inc/cpt-rebuttal.php:16 inc/template-tags.php:134
 msgid "Rebuttal"
 msgstr ""
 
@@ -570,8 +547,88 @@ msgstr ""
 msgid "No gaps. Every door is populated, every doubt routes onward, every rebuttal is sourced."
 msgstr ""
 
+#: inc/docs.php:35
+msgid "Overview"
+msgstr ""
+
+#: inc/docs.php:36
+msgid "What the theme is and what it assumes."
+msgstr ""
+
+#: inc/docs.php:40 inc/settings-page.php:151
+msgid "Setup"
+msgstr ""
+
+#: inc/docs.php:41
+msgid "Getting a site standing from a fresh activation."
+msgstr ""
+
+#: inc/docs.php:45
+msgid "Content model"
+msgstr ""
+
+#: inc/docs.php:46
+msgid "The post types, their fields, and how they link."
+msgstr ""
+
+#: inc/docs.php:50
+msgid "Settings"
+msgstr ""
+
+#: inc/docs.php:51
+msgid "Every option on this screen, explained."
+msgstr ""
+
+#: inc/docs.php:55 inc/settings-page.php:505
+msgid "Reference"
+msgstr ""
+
+#: inc/docs.php:56
+msgid "The single source of truth: hooks, options, templates."
+msgstr ""
+
+#: inc/docs.php:60
+msgid "Upgrading"
+msgstr ""
+
+#: inc/docs.php:61
+msgid "Version-to-version steps, including manual ones."
+msgstr ""
+
+#: inc/docs.php:65
+msgid "Changelog"
+msgstr ""
+
+#: inc/docs.php:66
+msgid "What changed, when, and why."
+msgstr ""
+
+#: inc/docs.php:176 inc/settings-page.php:369
+msgid "Documentation"
+msgstr ""
+
+#: inc/docs.php:187
+msgid "File missing from this build."
+msgstr ""
+
+#: inc/docs.php:203
+msgid "Could not read %s. The docs directory ships with the theme; if it was removed to save space, restore it from the original archive."
+msgstr ""
+
 #: inc/feeds.php:63
 msgid "The claim: %s"
+msgstr ""
+
+#: inc/gone.php:149
+msgid "Page removed"
+msgstr ""
+
+#: inc/maintenance.php:193
+msgid "You are not allowed to do that."
+msgstr ""
+
+#: inc/maintenance.php:274
+msgid "Maintenance mode is on"
 msgstr ""
 
 #: inc/meta-boxes.php:14
@@ -606,9 +663,7 @@ msgstr ""
 msgid "Related rebuttal (primary \"go deeper\" target)"
 msgstr ""
 
-#: inc/meta-boxes.php:46
-#: inc/meta-boxes.php:94
-#: inc/meta-boxes.php:97
+#: inc/meta-boxes.php:46 inc/meta-boxes.php:99 inc/meta-boxes.php:102
 msgid "— None —"
 msgstr ""
 
@@ -616,77 +671,79 @@ msgstr ""
 msgid "External deep link (optional, secondary)"
 msgstr ""
 
-#: inc/meta-boxes.php:61
-#: single-murtadd_rebuttal.php:20
+#: inc/meta-boxes.php:62 single-murtadd_rebuttal.php:20
 msgid "Online commentary"
 msgstr ""
 
-#: inc/meta-boxes.php:62
-#: single-murtadd_rebuttal.php:21
+#: inc/meta-boxes.php:63 single-murtadd_rebuttal.php:21
 msgid "Academic"
 msgstr ""
 
-#: inc/meta-boxes.php:63
-#: single-murtadd_rebuttal.php:22
+#: inc/meta-boxes.php:64 single-murtadd_rebuttal.php:22
 msgid "Forum"
 msgstr ""
 
-#: inc/meta-boxes.php:64
-#: single-murtadd_rebuttal.php:23
+#: inc/meta-boxes.php:65 single-murtadd_rebuttal.php:23
 msgid "Pamphlet"
 msgstr ""
 
-#: inc/meta-boxes.php:65
-#: single-murtadd_rebuttal.php:24
+#: inc/meta-boxes.php:66 single-murtadd_rebuttal.php:24
 msgid "Other"
 msgstr ""
 
-#: inc/meta-boxes.php:71
+#: inc/meta-boxes.php:72
 msgid "The claim — stated fairly, as circulated. No named individuals."
 msgstr ""
 
-#: inc/meta-boxes.php:74
+#: inc/meta-boxes.php:75
+msgid "Counterpart on the linked long-form site"
+msgstr ""
+
+#: inc/meta-boxes.php:77
+msgid "Article slug only, no URL. Sharing a topic with the companion site is fine; sharing an argument is not. If the counterpart already makes a point, compress it to a sentence and spend this entry on what only this site can say: the specific charge, its primary evidence, the law across Muslim-majority states, the verdict. Leave blank if there is no counterpart."
+msgstr ""
+
+#: inc/meta-boxes.php:79
 msgid "Claim source type"
 msgstr ""
 
-#: inc/meta-boxes.php:81
-#: single-murtadd_rebuttal.php:65
+#: inc/meta-boxes.php:86 single-murtadd_rebuttal.php:65
 msgid "Sources"
 msgstr ""
 
-#: inc/meta-boxes.php:81
+#: inc/meta-boxes.php:86
 msgid "citation text required per row; URL optional"
 msgstr ""
 
-#: inc/meta-boxes.php:85
+#: inc/meta-boxes.php:90
 msgid "Citation text"
 msgstr ""
 
-#: inc/meta-boxes.php:87
+#: inc/meta-boxes.php:92
 msgid "Remove source"
 msgstr ""
 
-#: inc/meta-boxes.php:91
+#: inc/meta-boxes.php:96
 msgid "Add source"
 msgstr ""
 
-#: inc/meta-boxes.php:93
+#: inc/meta-boxes.php:98
 msgid "Related fatwa (optional)"
 msgstr ""
 
-#: inc/meta-boxes.php:96
+#: inc/meta-boxes.php:101
 msgid "Related doubt (back-link, optional)"
 msgstr ""
 
-#: inc/meta-boxes.php:108
+#: inc/meta-boxes.php:113
 msgid "Scholar or body"
 msgstr ""
 
-#: inc/meta-boxes.php:117
+#: inc/meta-boxes.php:122
 msgid "Position summary — own words, never verbatim; ~80 word soft cap"
 msgstr ""
 
-#: inc/meta-boxes.php:120
+#: inc/meta-boxes.php:125
 msgid "Citation link to primary source (required)"
 msgstr ""
 
@@ -719,257 +776,504 @@ msgid "Essays and notes from murtadd.org."
 msgstr ""
 
 #: inc/settings-page.php:13
-#: inc/settings-page.php:13
-#: inc/settings-page.php:67
 msgid "Murtadd"
 msgstr ""
 
-#: inc/settings-page.php:57
-msgid "Colours"
+#: inc/settings-page.php:75
+msgid "That login address is reserved, malformed, or already the address of a page. It was not saved; the previous one is kept."
 msgstr ""
 
-#: inc/settings-page.php:58
-msgid "Cross-links"
+#: inc/settings-page.php:152
+msgid "Content"
 msgstr ""
 
-#: inc/settings-page.php:59
-msgid "Content display"
-msgstr ""
-
-#: inc/settings-page.php:60
-msgid "Taxonomies"
-msgstr ""
-
-#: inc/settings-page.php:61
-msgid "Setup"
-msgstr ""
-
-#: inc/settings-page.php:68
-msgid "Colours, cross-site links, content behavior, and taxonomy management."
-msgstr ""
-
-#: inc/settings-page.php:77
-msgid "Setup complete."
-msgstr ""
-
-#: inc/settings-page.php:80
-msgid "Site scaffolding"
-msgstr ""
-
-#: inc/settings-page.php:82
-msgid "The theme creates these on activation. Upgrading the theme in place does not re-run that, so this button does it without switching themes away and back. It never overwrites: anything already present is left exactly as it is."
-msgstr ""
-
-#: inc/settings-page.php:90
-#: inc/template-tags.php:137
-msgid "Page"
-msgstr ""
-
-#: inc/settings-page.php:91
-msgid "Status"
-msgstr ""
-
-#: inc/settings-page.php:104
-msgid "Exists — edit"
-msgstr ""
-
-#: inc/settings-page.php:106
-msgid "Missing"
-msgstr ""
-
-#: inc/settings-page.php:112
-msgid "Footer menu"
-msgstr ""
-
-#: inc/settings-page.php:115
-msgid "Assigned"
-msgstr ""
-
-#: inc/settings-page.php:117
-msgid "Not assigned"
-msgstr ""
-
-#: inc/settings-page.php:123
-msgid "Starter content"
-msgstr ""
-
-#: inc/settings-page.php:128
-msgid "%1$d doubts, %2$d rebuttals, %3$d placeholder letters"
-msgstr ""
-
-#: inc/settings-page.php:139
-msgid "All present — view"
-msgstr ""
-
-#: inc/settings-page.php:145
-msgid "%d entry missing"
+#: inc/settings-page.php:153
+msgid "Topics & schools"
 msgstr ""
 
 #: inc/settings-page.php:154
-msgid "Reading settings"
+msgid "Linked sites"
 msgstr ""
 
-#: inc/settings-page.php:157
-msgid "Front page and posts page are set"
+#: inc/settings-page.php:155
+msgid "Contextual links"
+msgstr ""
+
+#: inc/settings-page.php:156
+msgid "Colours"
+msgstr ""
+
+#: inc/settings-page.php:157 inc/settings-page.php:332
+msgid "Profiles"
+msgstr ""
+
+#: inc/settings-page.php:158
+msgid "Security"
 msgstr ""
 
 #: inc/settings-page.php:159
-msgid "Not fully set"
+msgid "Upkeep"
 msgstr ""
 
-#: inc/settings-page.php:167
-msgid "The \"Start here\" button in the sidebar renders only when the start-here page exists. That is why it is absent right now."
+#: inc/settings-page.php:160
+msgid "Docs"
 msgstr ""
 
-#: inc/settings-page.php:173
-msgid "Create anything missing"
+#: inc/settings-page.php:193
+msgid "Doubts, taken seriously. Theme options."
 msgstr ""
 
-#: inc/settings-page.php:177
-msgid "New pages are published immediately and carry placeholder text. Replace the copy before announcing the site. Starter content is published as written and can be edited freely: nothing here ever overwrites a post that already exists, so editing a doubt and running this again will not undo the edit."
+#: inc/settings-page.php:206
+msgid "Content gaps"
 msgstr ""
 
-#: inc/settings-page.php:181
-msgid "Term management"
-msgstr ""
-
-#: inc/settings-page.php:182
-msgid "Terms are managed on the native WordPress screens — nothing is duplicated here."
-msgstr ""
-
-#: inc/settings-page.php:184
-msgid "Manage Topics →"
-msgstr ""
-
-#: inc/settings-page.php:185
-msgid "Manage Schools →"
-msgstr ""
-
-#: inc/settings-page.php:186
-msgid "Doubt categories are locked — four fixed terms power the homepage grid."
-msgstr ""
-
-#: inc/settings-page.php:197
-msgid "Accent colour"
-msgstr ""
-
-#: inc/settings-page.php:200
-msgid "Used for links, buttons, and the sidebar. Applied via wp_add_inline_style."
-msgstr ""
-
-#: inc/settings-page.php:204
-msgid "Accent tint"
-msgstr ""
-
-#: inc/settings-page.php:208
-msgid "Contrast check"
-msgstr ""
-
-#: inc/settings-page.php:218
-msgid "Evidential case base URL"
+#: inc/settings-page.php:211
+msgid "Colours, cross-site links, content behavior, and taxonomy management."
 msgstr ""
 
 #: inc/settings-page.php:221
-msgid "Used by the homepage \"full argument\" card and doubt pages\\' outbound deep links. Cleared = links hidden."
+msgid "Setup complete."
 msgstr ""
 
-#: inc/settings-page.php:225
-msgid "Polemics base URL"
+#: inc/settings-page.php:224
+msgid "Site scaffolding"
 msgstr ""
 
-#: inc/settings-page.php:228
-msgid "All outbound links open in a new tab with rel=\"noopener\". No relationship is stated on the frontend."
+#: inc/settings-page.php:226
+msgid "The theme creates these on activation. Upgrading the theme in place does not re-run that, so this button does it without switching themes away and back. It never overwrites: anything already present is left exactly as it is."
 msgstr ""
 
-#: inc/settings-page.php:238
-msgid "Short response word cap"
+#: inc/settings-page.php:234 inc/template-tags.php:137
+msgid "Page"
 msgstr ""
 
-#: inc/settings-page.php:241
-msgid "Soft cap. The doubt editor shows a live word count and warns past this — it never blocks saving."
-msgstr ""
-
-#: inc/settings-page.php:245
-msgid "\"If you are struggling\" notice"
-msgstr ""
-
-#: inc/settings-page.php:247
-msgid "Show on Emotional and Identity doubt pages"
+#: inc/settings-page.php:235
+msgid "Status"
 msgstr ""
 
 #: inc/settings-page.php:248
+msgid "Exists — edit"
+msgstr ""
+
+#: inc/settings-page.php:250
+msgid "Missing"
+msgstr ""
+
+#: inc/settings-page.php:256
+msgid "Footer menu"
+msgstr ""
+
+#: inc/settings-page.php:259
+msgid "Assigned"
+msgstr ""
+
+#: inc/settings-page.php:261
+msgid "Not assigned"
+msgstr ""
+
+#: inc/settings-page.php:267
+msgid "Starter content"
+msgstr ""
+
+#: inc/settings-page.php:272
+msgid "%1$d doubts, %2$d rebuttals"
+msgstr ""
+
+#: inc/settings-page.php:282
+msgid "All present — view"
+msgstr ""
+
+#: inc/settings-page.php:288
+msgid "%d entry missing"
+msgid_plural "%d entries missing"
+msgstr[0] ""
+msgstr[1] ""
+
+#: inc/settings-page.php:297
+msgid "Reading settings"
+msgstr ""
+
+#: inc/settings-page.php:300
+msgid "Front page and posts page are set"
+msgstr ""
+
+#: inc/settings-page.php:302
+msgid "Not fully set"
+msgstr ""
+
+#: inc/settings-page.php:310
+msgid "The \"Start here\" button in the sidebar renders only when the start-here page exists. That is why it is absent right now."
+msgstr ""
+
+#: inc/settings-page.php:316
+msgid "Create anything missing"
+msgstr ""
+
+#: inc/settings-page.php:320
+msgid "New pages are published immediately with their copy written. Before announcing the site, add a contact method to the Contact page and your host and plugin details to the Privacy page; each carries a note in the editor saying what is needed. Starter content is published as written and can be edited freely: nothing here ever overwrites a post that already exists, so editing a doubt and running this again will not undo the edit."
+msgstr ""
+
+#: inc/settings-page.php:324
+msgid "Term management"
+msgstr ""
+
+#: inc/settings-page.php:325
+msgid "Terms are managed on the native WordPress screens — nothing is duplicated here."
+msgstr ""
+
+#: inc/settings-page.php:327
+msgid "Manage Topics →"
+msgstr ""
+
+#: inc/settings-page.php:328
+msgid "Manage Schools →"
+msgstr ""
+
+#: inc/settings-page.php:329
+msgid "Doubt categories are locked — four fixed terms power the homepage grid."
+msgstr ""
+
+#: inc/settings-page.php:334
+msgid "A link for any platform the author is on. Every URL entered here does two jobs at once: it appears as an icon in the site footer, and it is emitted as a sameAs entry on the author in the structured data, so search engines and AI systems can connect this site to the same person elsewhere. Leave a field blank and it appears in neither place."
+msgstr ""
+
+#: inc/settings-page.php:340
+msgid "Author name"
+msgstr ""
+
+#: inc/settings-page.php:342
+msgid "The person these profiles belong to. Named as the author in the structured data, with the links below as their sameAs set. Leave blank to attribute everything to the site instead."
+msgstr ""
+
+#: inc/settings-page.php:371
+msgid "The theme's own manual, rendered from the markdown that ships inside it. There is no second copy to fall out of date."
+msgstr ""
+
+#: inc/settings-page.php:387
+msgid "Accent colour"
+msgstr ""
+
+#: inc/settings-page.php:390
+msgid "Used for links, buttons, and the sidebar. Applied via wp_add_inline_style."
+msgstr ""
+
+#: inc/settings-page.php:394
+msgid "Accent tint"
+msgstr ""
+
+#: inc/settings-page.php:398
+msgid "Contrast check"
+msgstr ""
+
+#: inc/settings-page.php:408
+msgid "Evidential case base URL"
+msgstr ""
+
+#: inc/settings-page.php:411
+msgid "Used by the homepage \"full argument\" card and doubt pages' outbound deep links. Cleared = links hidden."
+msgstr ""
+
+#: inc/settings-page.php:415
+msgid "Polemics base URL"
+msgstr ""
+
+#: inc/settings-page.php:418
+msgid "All outbound links open in a new tab with rel=\"noopener\". No relationship is stated on the frontend."
+msgstr ""
+
+#: inc/settings-page.php:426
+msgid "In the running text of a single entry, the first mention of a known phrase links to the page that treats it, on this site or on one of the six sister sites. Links are added as the page renders; stored text is never changed. Headings, quotations, Qur’anic text, Arabic, sources and existing links are never touched, and Emotional and Identity doubts get no links at all."
+msgstr ""
+
+#: inc/settings-page.php:429
+msgid "Links to this site"
+msgstr ""
+
+#: inc/settings-page.php:431
+msgid "Link phrases to other doubts and rebuttals here"
+msgstr ""
+
+#: inc/settings-page.php:432 inc/settings-page.php:439
+msgid "At most"
+msgstr ""
+
+#: inc/settings-page.php:432
+msgid "a page (0 to 15)"
+msgstr ""
+
+#: inc/settings-page.php:436
+msgid "Links to sister sites"
+msgstr ""
+
+#: inc/settings-page.php:438
+msgid "Link phrases to the page on a sister site that treats them"
+msgstr ""
+
+#: inc/settings-page.php:439
+msgid "a page (0 to 10)"
+msgstr ""
+
+#: inc/settings-page.php:443
+msgid "Extra phrases"
+msgstr ""
+
+#: inc/settings-page.php:445
+msgid "tudung | /rebuttals/the-head-cover-and-modesty/"
+msgstr ""
+
+#: inc/settings-page.php:446
+msgid "One per line: phrase | address. A path such as /rebuttals/slug/ is this site; a full address must be on one of the sister sites. These are tried before the shared list, so they win. Lines in any other shape are dropped on save."
+msgstr ""
+
+#: inc/settings-page.php:450
+msgid "Never link on"
+msgstr ""
+
+#: inc/settings-page.php:453
+msgid "Slugs of entries or pages that get no contextual links, one per line."
+msgstr ""
+
+#: inc/settings-page.php:467
+msgid "Short response word cap"
+msgstr ""
+
+#: inc/settings-page.php:470
+msgid "Soft cap. The doubt editor shows a live word count and warns past this — it never blocks saving."
+msgstr ""
+
+#: inc/settings-page.php:474
+msgid "\"If you are struggling\" notice"
+msgstr ""
+
+#: inc/settings-page.php:476
+msgid "Show on Emotional and Identity doubt pages"
+msgstr ""
+
+#: inc/settings-page.php:477
 msgid "A quiet crisis-support block. No tracking, no preaching."
 msgstr ""
 
-#: inc/settings-page.php:252
+#: inc/settings-page.php:481
 msgid "Fatwa index default sort"
 msgstr ""
 
-#: inc/settings-page.php:255
+#: inc/settings-page.php:484
 msgid "Scholar A–Z"
 msgstr ""
 
-#: inc/settings-page.php:262
+#: inc/settings-page.php:491
 msgid "Footer heritage note"
 msgstr ""
 
-#: inc/settings-page.php:266
+#: inc/settings-page.php:495
 msgid "Scripture box"
 msgstr ""
 
-#: inc/settings-page.php:270
+#: inc/settings-page.php:499
 msgid "Show the scripture box in the rail on doubt and rebuttal pages"
 msgstr ""
 
-#: inc/settings-page.php:273
-#: template-parts/rail/rail-single.php:22
+#: inc/settings-page.php:502 template-parts/rail/rail-single.php:22
 msgid "Let there be no compulsion in religion."
 msgstr ""
 
-#: inc/settings-page.php:273
+#: inc/settings-page.php:502
 msgid "The verse, in whichever rendering you prefer"
 msgstr ""
 
-#: inc/settings-page.php:276
-#: template-parts/rail/rail-single.php:23
+#: inc/settings-page.php:505 template-parts/rail/rail-single.php:23
 msgid "Qur’an 2:256"
 msgstr ""
 
-#: inc/settings-page.php:276
-msgid "Reference"
-msgstr ""
-
-#: inc/settings-page.php:279
+#: inc/settings-page.php:508
 msgid "Choose the rendering yourself. The wording of a translation is an editorial decision and belongs to you, not to the theme."
 msgstr ""
 
-#: inc/share.php:67
+#: inc/settings-page.php:536
+msgid "The site at this address was compromised in 2024. These switches close what WordPress leaves open by default. Each is independent."
+msgstr ""
+
+#: inc/settings-page.php:539
+msgid "Author names"
+msgstr ""
+
+#: inc/settings-page.php:541
+msgid "Keep account names private"
+msgstr ""
+
+#: inc/settings-page.php:542
+msgid "Closes the REST user list, ?author= addresses and author archives, and the users sitemap. Feeds and embeds name the author from the Profiles tab, or the site."
+msgstr ""
+
+#: inc/settings-page.php:546
+msgid "XML-RPC"
+msgstr ""
+
+#: inc/settings-page.php:548
+msgid "Switch XML-RPC off"
+msgstr ""
+
+#: inc/settings-page.php:549
+msgid "The endpoint password-guessing scripts use. Leave it on only if you publish from the WordPress mobile app or Jetpack."
+msgstr ""
+
+#: inc/settings-page.php:553
+msgid "Security headers"
+msgstr ""
+
+#: inc/settings-page.php:555
+msgid "Send security headers on every page"
+msgstr ""
+
+#: inc/settings-page.php:556
+msgid "X-Content-Type-Options, Referrer-Policy, X-Frame-Options and Permissions-Policy. A header the server already sends is left alone."
+msgstr ""
+
+#: inc/settings-page.php:560
+msgid "Private login address"
+msgstr ""
+
+#: inc/settings-page.php:562
+msgid "leave empty to keep wp-login.php"
+msgstr ""
+
+#: inc/settings-page.php:564
+msgid "Write the address down before saving."
+msgstr ""
+
+#: inc/settings-page.php:564
+msgid "Once set, wp-login.php and wp-admin show a page not found to anyone not logged in. Off while the field is empty."
+msgstr ""
+
+#: inc/settings-page.php:565
+msgid "Locked out? Add define( 'MURTADD_HIDE_LOGIN', false ); to wp-config.php, log in at wp-login.php, clear this field, then remove the line."
+msgstr ""
+
+#: inc/settings-page.php:568
+msgid "Inactive: MURTADD_HIDE_LOGIN is false in wp-config.php, or the WPS Hide Login plugin is handling the login address."
+msgstr ""
+
+#: inc/settings-page.php:573
+msgid "Your login address: %s"
+msgstr ""
+
+#: inc/settings-page.php:580
+msgid "Login page"
+msgstr ""
+
+#: inc/settings-page.php:582
+msgid "Dress the login screen in the site's colours and type"
+msgstr ""
+
+#: inc/settings-page.php:583
+msgid "The mark is the custom logo, then the Site Icon, then the theme's own mark, and links to the site. The accents follow the Colours tab. Works at the private login address too."
+msgstr ""
+
+#: inc/settings-page.php:584
+msgid "Note above the form"
+msgstr ""
+
+#: inc/settings-page.php:586
+msgid "Plain text, up to 500 characters, shown on the log-in screen only. Leave empty for none."
+msgstr ""
+
+#: inc/settings-page.php:600
+msgid "Maintenance mode"
+msgstr ""
+
+#: inc/settings-page.php:602
+msgid "Show visitors the \"Back shortly\" page"
+msgstr ""
+
+#: inc/settings-page.php:603
+msgid "Visitors get the maintenance page with a 503, so search engines keep the pages and come back. Anyone who can change these options still sees the site, and the admin bar says maintenance is on. The login screen stays open."
+msgstr ""
+
+#: inc/settings-page.php:607
+msgid "Error pages"
+msgstr ""
+
+#: inc/settings-page.php:609
+msgid "Use the branded pages for updates, PHP errors and database errors"
+msgstr ""
+
+#: inc/settings-page.php:610
+msgid "The theme writes maintenance.php, php-error.php and db-error.php into wp-content, where WordPress looks for them, and never overwrites a file it did not write. Switching this off, or switching theme, removes its copies."
+msgstr ""
+
+#: inc/settings-page.php:614
+msgid "Removed for good (410)"
+msgstr ""
+
+#: inc/settings-page.php:617
+msgid "Addresses that never belonged to this site, such as spam pages left by the 2024 compromise, answered 410 Gone so search engines drop them. One per line: an exact path (/cheap-pills/), or a prefix ending in * (/shop/* covers /shop/ and everything under it). Applies only where the site has no page: a live page, and any old address the legacy redirects recover, are never touched. \"/\" and \"/*\" alone are refused."
+msgstr ""
+
+#: inc/settings-page.php:630
+msgid "Written by the theme"
+msgstr ""
+
+#: inc/settings-page.php:631
+msgid "Another file is there; left alone"
+msgstr ""
+
+#: inc/settings-page.php:632
+msgid "Could not be written: wp-content is not writable"
+msgstr ""
+
+#: inc/settings-page.php:635
+msgid "Error pages in wp-content"
+msgstr ""
+
+#: inc/settings-page.php:637
+msgid "The error pages were written again."
+msgstr ""
+
+#: inc/settings-page.php:642
+msgid "File"
+msgstr ""
+
+#: inc/settings-page.php:643
+msgid "State"
+msgstr ""
+
+#: inc/settings-page.php:660
+msgid "Not there"
+msgstr ""
+
+#: inc/settings-page.php:669
+msgid "Write the error pages now"
+msgstr ""
+
+#: inc/share.php:74
 msgid "WhatsApp"
 msgstr ""
 
-#: inc/share.php:71
+#: inc/share.php:78
 msgid "Telegram"
 msgstr ""
 
-#: inc/share.php:75
+#: inc/share.php:82
 msgid "Email"
 msgstr ""
 
-#: inc/share.php:81
+#: inc/share.php:88
 msgid "Send this to someone"
 msgstr ""
 
-#: inc/share.php:94
+#: inc/share.php:101
 msgid "Copy link"
 msgstr ""
 
-#: inc/share.php:98
+#: inc/share.php:105
 msgid "These are plain links. Nothing here tracks you, and nobody is told that you shared it."
 msgstr ""
 
 #: inc/social-card.php:138
 msgid "%d min read · sourced"
-msgstr ""
+msgid_plural "%d min read · sourced"
+msgstr[0] ""
+msgstr[1] ""
 
 #: inc/social-card.php:141
 msgid "Sourced"
@@ -1077,14 +1381,15 @@ msgstr ""
 
 #: search.php:26
 msgid "%d result across doubts, rebuttals, fatwa entries, and the blog."
-msgstr ""
+msgid_plural "%d results across doubts, rebuttals, fatwa entries, and the blog."
+msgstr[0] ""
+msgstr[1] ""
 
 #: search.php:43
 msgid "Nothing matched that search. Try a broader term, or start from one of these."
 msgstr ""
 
-#: searchform.php:12
-#: searchform.php:14
+#: searchform.php:12 searchform.php:14
 msgid "Search"
 msgstr ""
 
@@ -1200,6 +1505,18 @@ msgstr ""
 msgid "Nothing filed under this topic yet."
 msgstr ""
 
+#: template-parts/counterpart.php:30
+msgid "The same question, at length"
+msgstr ""
+
+#: template-parts/counterpart.php:32
+msgid "This page answers the charge. If you want the question itself worked through slowly, rather than the objection answered, the companion site takes it up there."
+msgstr ""
+
+#: template-parts/counterpart.php:35
+msgid "Read it on Compelling Evidence"
+msgstr ""
+
 #: template-parts/notices/notice-struggling.php:12
 msgid "Support"
 msgstr ""
@@ -1216,11 +1533,11 @@ msgstr ""
 msgid "Related"
 msgstr ""
 
-#: template-parts/rail/rail-single.php:41
+#: template-parts/rail/rail-single.php:45
 msgid "New here"
 msgstr ""
 
-#: template-parts/rail/rail-single.php:42
+#: template-parts/rail/rail-single.php:46
 msgid "Three routes in, depending on where you actually are."
 msgstr ""
 
@@ -1259,4 +1576,3 @@ msgstr ""
 #: templates/page-start-here.php:49
 msgid "The claims, stated as fairly as they circulate — then answered with sources you can check yourself."
 msgstr ""
-
