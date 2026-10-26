@@ -153,7 +153,7 @@ if ( '' !== murtadd_login_slug() ) {
 			// A password for a protected post goes through untouched. The posted
 			// action, when there is one, must be postpass too, or a POST carrying
 			// action=login would reach the login handler at the public address.
-			if ( isset( $_GET['action'], $_POST['post_password'] ) && 'postpass' === $_GET['action'] && 'postpass' === ( $_POST['action'] ?? 'postpass' ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			if ( isset( $_GET['action'], $_POST['post_password'] ) && 'postpass' === $_GET['action'] && 'postpass' === wp_unslash( $_POST['action'] ?? 'postpass' ) ) { // phpcs:ignore WordPress.Security.NonceVerification, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- compared to a literal exactly; sanitize_key() would lowercase "POSTPASS" and let it through to the login handler.
 				return;
 			}
 			$options_path = wp_parse_url( admin_url( 'options.php' ), PHP_URL_PATH );
@@ -172,7 +172,7 @@ if ( '' !== murtadd_login_slug() ) {
 			if ( ! empty( $GLOBALS['murtadd_login_blocked'] ) ) {
 				$pagenow = 'index.php'; // phpcs:ignore WordPress.WP.GlobalVariablesOverride
 				if ( ! defined( 'WP_USE_THEMES' ) ) {
-					define( 'WP_USE_THEMES', true );
+					define( 'WP_USE_THEMES', true ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound -- core's own constant, read by template-loader.php.
 				}
 				wp();
 				require_once ABSPATH . WPINC . '/template-loader.php';

@@ -291,7 +291,7 @@ function murtadd_ctx_apply( $html, array $entries, array $args ) {
 	}
 
 	static $compiled = array();
-	$sig = md5( serialize( $entries ) );
+	$sig = md5( (string) wp_json_encode( $entries ) );
 	if ( ! array_key_exists( $sig, $compiled ) ) {
 		$compiled[ $sig ] = murtadd_ctx_compile( $entries );
 	}
