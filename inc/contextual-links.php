@@ -119,34 +119,37 @@ function murtadd_ctx_patterns( array $alts ) {
  * @return array<int,array{0:string,1:int}> Matched text and byte offset.
  */
 function murtadd_ctx_matches( array $patterns, $text ) {
-	if ( 1 === count( $patterns ) ) {
-		$m = array();
-		return preg_match_all( $patterns[0], $text, $m, PREG_OFFSET_CAPTURE ) ? $m[0] : array();
-	}
-	// Split patterns are scanned together from the end of the last match, as
-	// one pattern would be. Each pattern's own preg_match_all() would consume a
-	// match the merge later drops as overlapping, and hide one inside it.
 	$out = array();
 	$pos = 0;
-	$len = strlen( $text );
-	while ( $pos < $len ) {
-		$best = null;
-		foreach ( $patterns as $pattern ) {
-			$m = array();
-			if ( 1 === preg_match( $pattern, $text, $m, PREG_OFFSET_CAPTURE, $pos ) ) {
-				$hit = $m[0];
-				if ( null === $best || $hit[1] < $best[1] || ( $hit[1] === $best[1] && strlen( $hit[0] ) > strlen( $best[0] ) ) ) {
-					$best = $hit;
-				}
-			}
-		}
-		if ( null === $best || '' === $best[0] ) {
-			break;
-		}
+	while ( null !== ( $best = murtadd_ctx_next( $patterns, $text, $pos ) ) ) {
 		$out[] = $best;
 		$pos   = $best[1] + strlen( $best[0] );
 	}
 	return $out;
+}
+
+/**
+ * The first phrase match at or after a byte offset, the longest where several
+ * start there. Split patterns are searched together from the offset, as one
+ * pattern would be; a pattern that fails on the text contributes nothing.
+ *
+ * @param string[] $patterns From murtadd_ctx_patterns().
+ * @param string   $text     Plain text between tags.
+ * @param int      $from     Byte offset, on a character boundary.
+ * @return array{0:string,1:int}|null Matched text and byte offset.
+ */
+function murtadd_ctx_next( array $patterns, $text, $from ) {
+	$best = null;
+	foreach ( $patterns as $pattern ) {
+		$m = array();
+		if ( 1 === preg_match( $pattern, $text, $m, PREG_OFFSET_CAPTURE, $from ) ) {
+			$hit = $m[0];
+			if ( null === $best || $hit[1] < $best[1] || ( $hit[1] === $best[1] && strlen( $hit[0] ) > strlen( $best[0] ) ) ) {
+				$best = $hit;
+			}
+		}
+	}
+	return null === $best || '' === $best[0] ? null : $best;
 }
 
 /**
@@ -356,21 +359,32 @@ function murtadd_ctx_apply( $html, array $entries, array $args ) {
 		}
 		// The text is rebuilt from the matches; with no match (or a pattern
 		// that fails on malformed UTF-8) the piece is kept as it came.
-		$at = 0;
-		foreach ( murtadd_ctx_matches( $matcher['patterns'], $piece ) as $match ) {
+		// A match passed over resumes the search one character on, so a phrase
+		// running past its end ("Paul of Tarsus" after "Peter and Paul") can
+		// still link; one wholly inside it ("Barnabas" in "Gospel of Barnabas")
+		// stays part of that name.
+		$at     = 0;
+		$pos    = 0;
+		$shadow = 0;
+		while ( null !== ( $match = murtadd_ctx_next( $matcher['patterns'], $piece, $pos ) ) ) {
 			list( $text, $offset ) = $match;
-			$out  .= substr( $piece, $at, $offset - $at );
-			$at    = $offset + strlen( $text );
+			$end   = $offset + strlen( $text );
 			$entry = murtadd_ctx_lookup( $matcher['index'], $text );
 			$kind  = $entry && $entry['own'] ? 'own' : 'sister';
-			if ( ! $entry
+			if ( $end <= $shadow
+				|| ! $entry
 				|| isset( $done[ $entry['url'] ] )
 				|| $made[ $kind ] >= $caps[ $kind ]
 				|| ( $blocks && in_array( true, $blocks, true ) )
 				|| ( '' !== $here && murtadd_ctx_normalise_url( $entry['url'] ) === $here ) ) {
-				$out .= $text;
+				$shadow = max( $shadow, $end );
+				$byte   = ord( $piece[ $offset ] );
+				$pos    = $offset + ( $byte >= 0xF0 ? 4 : ( $byte >= 0xE0 ? 3 : ( $byte >= 0xC0 ? 2 : 1 ) ) );
 				continue;
 			}
+			$out .= substr( $piece, $at, $offset - $at );
+			$at   = $end;
+			$pos  = $end;
 			$done[ $entry['url'] ] = true;
 			++$made[ $kind ];
 			$blocks = array_fill( 0, count( $blocks ), true );

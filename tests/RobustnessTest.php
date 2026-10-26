@@ -136,6 +136,24 @@ final class RobustnessTest extends TestCase {
 		$this->assertSame( $html, murtadd_ctx_apply( $html, $this->entries(), array() ) );
 	}
 
+	public function test_a_passed_over_match_never_hides_an_overlapping_phrase() {
+		$entries = array(
+			array( 'phrase' => 'Peter and Paul', 'url' => 'https://abrahamic-religions.com/journal/paul-and-peter-two-missions/', 'own' => false ),
+			array( 'phrase' => 'Paul of Tarsus', 'url' => 'https://apostleofdoom.org/the-man/who-was-paul-of-tarsus/', 'own' => false ),
+		);
+		$out = murtadd_ctx_apply( '<p>Peter and Paul met.</p><p>Then Peter and Paul of Tarsus parted.</p>', $entries, array() );
+		$this->assertStringContainsString( 'who-was-paul-of-tarsus', $out );
+	}
+
+	public function test_a_phrase_wholly_inside_a_passed_over_match_stays_unlinked() {
+		$entries = array(
+			array( 'phrase' => 'Gospel of Barnabas', 'url' => 'https://abrahamic-religions.com/journal/the-gospel-of-barnabas/', 'own' => false ),
+			array( 'phrase' => 'Barnabas', 'url' => 'https://apostleofdoom.org/the-charges/the-parting-with-barnabas/', 'own' => false ),
+		);
+		$out = murtadd_ctx_apply( '<p>The Gospel of Barnabas is late.</p><p>Again the Gospel of Barnabas.</p>', $entries, array() );
+		$this->assertStringNotContainsString( 'parting-with-barnabas', $out );
+	}
+
 	public function test_rest_user_routes_still_go_for_visitors() {
 		$routes = array( '/wp/v2/posts' => array(), '/wp/v2/users' => array() );
 		$this->assertSame( array( '/wp/v2/posts' ), array_keys( murtadd_hardening_rest_endpoints( $routes ) ) );
