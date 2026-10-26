@@ -220,11 +220,10 @@ function murtadd_render_settings_page() {
 							<code>
 								<?php
 								printf(
-									/* translators: 1: doubt count, 2: rebuttal count, 3: letter count */
-									esc_html__( '%1$d doubts, %2$d rebuttals, %3$d placeholder letters', 'murtadd' ),
+									/* translators: 1: doubt count, 2: rebuttal count */
+									esc_html__( '%1$d doubts, %2$d rebuttals', 'murtadd' ),
 									count( murtadd_seed_doubts() ),
-									count( murtadd_seed_rebuttals() ),
-									count( murtadd_seed_letters() )
+									count( murtadd_seed_rebuttals() )
 								);
 								?>
 							</code>
@@ -270,7 +269,7 @@ function murtadd_render_settings_page() {
 			</form>
 
 			<p class="description" style="margin-top:12px;">
-				<?php esc_html_e( 'New pages are published immediately and carry placeholder text. Replace the copy before announcing the site. Starter content is published as written and can be edited freely: nothing here ever overwrites a post that already exists, so editing a doubt and running this again will not undo the edit.', 'murtadd' ); ?>
+				<?php esc_html_e( 'New pages are published immediately with their copy written. Before announcing the site, add a contact method to the Contact page and your host and plugin details to the Privacy page; each carries a note in the editor saying what is needed. Starter content is published as written and can be edited freely: nothing here ever overwrites a post that already exists, so editing a doubt and running this again will not undo the edit.', 'murtadd' ); ?>
 			</p>
 
 		<?php elseif ( 'taxonomies' === $active ) : ?>

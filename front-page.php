@@ -63,7 +63,9 @@ if ( $murtadd_ce || $murtadd_bismika ) :
 			<li><a href="<?php echo esc_url( home_url( '/blog/' ) ); ?>"><?php esc_html_e( 'Blog', 'murtadd' ); ?></a></li>
 			<li><a href="<?php echo esc_url( get_post_type_archive_link( 'murtadd_doubt' ) ); ?>"><?php esc_html_e( 'Doubts', 'murtadd' ); ?></a></li>
 			<li><a href="<?php echo esc_url( get_post_type_archive_link( 'murtadd_rebuttal' ) ); ?>"><?php esc_html_e( 'Rebuttals', 'murtadd' ); ?></a></li>
+			<?php if ( murtadd_fatwa_index_has_entries() ) : ?>
 			<li><a href="<?php echo esc_url( get_post_type_archive_link( 'murtadd_fatwa' ) ); ?>"><?php esc_html_e( 'Fatwa', 'murtadd' ); ?></a></li>
+			<?php endif; ?>
 		</ul>
 	</div>
 	<div class="murtadd-footer-col">

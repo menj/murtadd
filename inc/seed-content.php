@@ -185,73 +185,23 @@ function murtadd_seed_doubt_posts() {
 }
 
 /**
- * Insert the placeholder letters.
- *
- * Lorem ipsum, so the Letters templates render and the layout can be reviewed.
- * Same rule as everything else here: a letter already at that slug is skipped,
- * so editing or deleting a placeholder is permanent and setup will not
- * resurrect it against you.
- *
- * @return int Number created on this run.
- */
-function murtadd_seed_letter_posts() {
-	$created = 0;
-
-	foreach ( murtadd_seed_letters() as $l ) {
-		if ( murtadd_slug_was_seeded( 'murtadd_letter', $l['slug'] ) ) {
-			continue; // Seeded once already. If it is gone, an editor removed it.
-		}
-		if ( get_page_by_path( $l['slug'], OBJECT, 'murtadd_letter' ) ) {
-			murtadd_mark_slug_seeded( 'murtadd_letter', $l['slug'] ); // Pre-record install: adopt it.
-			continue;
-		}
-
-		$post_id = wp_insert_post(
-			array(
-				'post_type'    => 'murtadd_letter',
-				'post_name'    => $l['slug'],
-				'post_title'   => $l['title'],
-				'post_content' => $l['body'],
-				'post_status'  => 'publish',
-			)
-		);
-
-		if ( is_wp_error( $post_id ) || ! $post_id ) {
-			continue;
-		}
-
-		murtadd_mark_slug_seeded( 'murtadd_letter', $l['slug'] );
-		update_post_meta( $post_id, '_murtadd_letter_outlet', $l['outlet'] );
-		update_post_meta( $post_id, '_murtadd_letter_date', $l['date'] );
-		update_post_meta( $post_id, '_murtadd_letter_replying_to', $l['replying_to'] );
-		update_post_meta( $post_id, '_murtadd_letter_url', $l['url'] );
-		update_post_meta( $post_id, '_murtadd_letter_note', $l['note'] );
-		wp_set_object_terms( $post_id, $l['topics'], 'murtadd_topic' );
-
-		++$created;
-	}
-
-	return $created;
-}
-
-/**
  * Seed the starter content. Idempotent.
  *
- * @return array{doubts:int,rebuttals:int,letters:int}
+ * Letters are not seeded: the archive holds real correspondence or nothing.
+ *
+ * @return array{doubts:int,rebuttals:int}
  */
 function murtadd_seed_content() {
 	murtadd_seed_terms();
 
 	$rebuttals = murtadd_seed_rebuttal_posts();
 	$doubts    = murtadd_seed_doubt_posts();
-	$letters   = murtadd_seed_letter_posts();
 
 	update_option( 'murtadd_content_seeded', 1 );
 
 	return array(
 		'doubts'    => $doubts,
 		'rebuttals' => $rebuttals,
-		'letters'   => $letters,
 	);
 }
 
@@ -270,11 +220,6 @@ function murtadd_seed_missing_count() {
 	}
 	foreach ( murtadd_seed_doubts() as $d ) {
 		if ( ! murtadd_slug_was_seeded( 'murtadd_doubt', $d['slug'] ) && ! get_page_by_path( $d['slug'], OBJECT, 'murtadd_doubt' ) ) {
-			++$missing;
-		}
-	}
-	foreach ( murtadd_seed_letters() as $l ) {
-		if ( ! murtadd_slug_was_seeded( 'murtadd_letter', $l['slug'] ) && ! get_page_by_path( $l['slug'], OBJECT, 'murtadd_letter' ) ) {
 			++$missing;
 		}
 	}

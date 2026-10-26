@@ -8,6 +8,20 @@
 
 defined( 'ABSPATH' ) || exit;
 
+$murtadd_fatwa_ready = murtadd_fatwa_index_has_entries();
+
+// An index in preparation is not a page to send searchers to.
+if ( ! $murtadd_fatwa_ready ) {
+	add_filter(
+		'wp_robots',
+		static function ( $robots ) {
+			$robots['noindex'] = true;
+			$robots['follow']  = true;
+			return $robots;
+		}
+	);
+}
+
 get_header();
 
 $murtadd_sel_school = isset( $_GET['school'] ) ? sanitize_key( wp_unslash( $_GET['school'] ) ) : '';
@@ -19,6 +33,23 @@ $murtadd_sel_topic  = isset( $_GET['topic'] ) ? sanitize_key( wp_unslash( $_GET[
 	<h1><?php esc_html_e( 'Fatwa index', 'murtadd' ); ?></h1>
 	<p class="murtadd-subtitle"><?php esc_html_e( 'Scholarly positions summarized in our own words, each linked to its primary source. A reference, not a verdict.', 'murtadd' ); ?></p>
 </header>
+
+<?php if ( ! $murtadd_fatwa_ready ) : ?>
+	<div class="murtadd-no-results">
+		<p class="murtadd-empty"><?php esc_html_e( 'The index is in preparation. Each entry is added once its summary has been checked against the primary source it links to, and none has been published yet. Until then, every rebuttal on this site cites its own sources.', 'murtadd' ); ?></p>
+		<div class="murtadd-suggest-routes">
+			<a class="murtadd-btn" href="<?php echo esc_url( get_post_type_archive_link( 'murtadd_rebuttal' ) ); ?>"><?php esc_html_e( 'Read the rebuttals', 'murtadd' ); ?></a>
+			<?php $murtadd_irtidad = get_page_by_path( 'irtidad' ); ?>
+			<?php if ( $murtadd_irtidad ) : ?>
+				<a class="murtadd-btn murtadd-btn--outline" href="<?php echo esc_url( get_permalink( $murtadd_irtidad ) ); ?>"><?php esc_html_e( 'What irtidad means', 'murtadd' ); ?></a>
+			<?php endif; ?>
+		</div>
+	</div>
+	<?php
+	get_footer();
+	return;
+endif;
+?>
 
 <form class="murtadd-fatwa-filters" method="get" action="<?php echo esc_url( get_post_type_archive_link( 'murtadd_fatwa' ) ); ?>">
 	<label>

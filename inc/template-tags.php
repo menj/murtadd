@@ -426,3 +426,17 @@ function murtadd_doubt_category_tabs() {
 	}
 	echo '</div>';
 }
+
+/**
+ * Whether the fatwa index has a published entry.
+ *
+ * While it has none, the index says it is in preparation instead of showing
+ * an empty table, asks search engines not to index it, and the navigation
+ * leaves it out, so no route on the site leads a reader to a blank page.
+ *
+ * @return bool
+ */
+function murtadd_fatwa_index_has_entries() {
+	$counts = wp_count_posts( 'murtadd_fatwa' );
+	return isset( $counts->publish ) && (int) $counts->publish > 0;
+}
