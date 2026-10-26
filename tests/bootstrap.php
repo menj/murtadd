@@ -220,3 +220,33 @@ function get_post( $post_id = 0 ) {
 
 require_once __DIR__ . '/../inc/template-tags.php';
 require_once __DIR__ . '/../inc/contextual-links.php';
+
+
+// ---- Security: hardening and the private login address. ----
+$GLOBALS['murtadd_test_caps']       = array(); // Capabilities the current user has.
+$GLOBALS['murtadd_settings_errors'] = array(); // Codes passed to add_settings_error().
+function current_user_can( $cap ) {
+	return in_array( $cap, $GLOBALS['murtadd_test_caps'], true );
+}
+function wp_doing_ajax() {
+	return false;
+}
+function remove_action( $hook, $cb, $priority = 10 ) {
+	return true;
+}
+function trailingslashit( $s ) {
+	return rtrim( (string) $s, '/\\' ) . '/';
+}
+function untrailingslashit( $s ) {
+	return rtrim( (string) $s, '/\\' );
+}
+function add_settings_error( $setting, $code, $message, $type = 'error' ) {
+	$GLOBALS['murtadd_settings_errors'][] = $code;
+}
+function sanitize_textarea_field( $s ) {
+	return trim( strip_tags( (string) $s ) );
+}
+
+require_once __DIR__ . '/../inc/hardening.php';
+require_once __DIR__ . '/../inc/hide-login.php';
+require_once __DIR__ . '/../inc/settings-page.php';

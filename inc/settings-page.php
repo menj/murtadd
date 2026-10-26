@@ -1,7 +1,7 @@
 <?php
 /**
  * Settings page — Appearance → Murtadd. Settings API, tabbed.
- * One option array per tab: murtadd_colours, murtadd_cross_links, murtadd_contextual_links, murtadd_content_display.
+ * One option array per tab: murtadd_colours, murtadd_cross_links, murtadd_contextual_links, murtadd_content_display, murtadd_security.
  * Taxonomies tab deep-links to native term screens (no duplicate CRUD).
  *
  * @package murtadd
@@ -21,6 +21,7 @@ function murtadd_register_settings() {
 	register_setting( 'murtadd_content_display', 'murtadd_content_display', array( 'sanitize_callback' => 'murtadd_sanitize_content_display' ) );
 	register_setting( 'murtadd_profiles', 'murtadd_profiles', array( 'sanitize_callback' => 'murtadd_sanitize_profiles' ) );
 	register_setting( 'murtadd_profiles', 'murtadd_author_name', array( 'sanitize_callback' => 'sanitize_text_field' ) );
+	register_setting( 'murtadd_security', 'murtadd_security', array( 'sanitize_callback' => 'murtadd_sanitize_security' ) );
 }
 add_action( 'admin_init', 'murtadd_register_settings' );
 
@@ -55,6 +56,35 @@ function murtadd_sanitize_contextual_links( $input ) {
 		'sister_max'     => max( 0, min( 10, absint( $input['sister_max'] ?? 3 ) ) ),
 		'extra'          => implode( "\n", $extra ),
 		'excluded'       => implode( "\n", array_unique( $excluded ) ),
+	);
+}
+
+/**
+ * Security tab. A login address that is reserved, malformed or already a
+ * page's address is refused with a notice, and the saved one is kept, so a
+ * typo can never move the login screen somewhere nobody knows.
+ *
+ * @param mixed $input Submitted values.
+ * @return array
+ */
+function murtadd_sanitize_security( $input ) {
+	$input = is_array( $input ) ? $input : array();
+	$slug  = sanitize_title( (string) ( $input['login_slug'] ?? '' ) );
+	if ( '' !== $slug && ( ! murtadd_login_slug_valid( $slug ) || get_page_by_path( $slug ) ) ) {
+		add_settings_error( 'murtadd_security', 'murtadd-login-slug', __( 'That login address is reserved, malformed, or already the address of a page. It was not saved; the previous one is kept.', 'murtadd' ) );
+		$slug = (string) murtadd_security( 'login_slug' );
+	}
+	$message = sanitize_textarea_field( (string) ( $input['login_message'] ?? '' ) );
+	if ( function_exists( 'mb_substr' ) ) {
+		$message = mb_substr( $message, 0, 500 );
+	}
+	return array(
+		'hide_authors'  => empty( $input['hide_authors'] ) ? 0 : 1,
+		'xmlrpc_off'    => empty( $input['xmlrpc_off'] ) ? 0 : 1,
+		'headers'       => empty( $input['headers'] ) ? 0 : 1,
+		'login_slug'    => $slug,
+		'login_design'  => empty( $input['login_design'] ) ? 0 : 1,
+		'login_message' => $message,
 	);
 }
 
@@ -109,6 +139,7 @@ function murtadd_render_settings_page() {
 		'contextual_links' => __( 'Contextual links', 'murtadd' ), // Link inside the text.
 		'colours'         => __( 'Colours', 'murtadd' ),         // Make it yours.
 		'profiles'        => __( 'Profiles', 'murtadd' ),        // The author's links, shown and structured.
+		'security'        => __( 'Security', 'murtadd' ),        // Close what WordPress leaves open.
 		'docs'            => __( 'Docs', 'murtadd' ),            // Look something up.
 	);
 	$requested = isset( $_GET['tab'] ) ? sanitize_key( wp_unslash( $_GET['tab'] ) ) : '';
@@ -408,6 +439,8 @@ function murtadd_render_settings_page() {
 						</tr>
 					</table>
 					<?php
+				} elseif ( 'security' === $active ) {
+					murtadd_render_security_tab();
 				} else {
 					$o = get_option( 'murtadd_content_display', array() );
 					?>
@@ -467,5 +500,59 @@ function murtadd_render_settings_page() {
 		<?php endif; ?>
 		</div><!-- .murtadd-admin-panel -->
 	</div>
+	<?php
+}
+
+/**
+ * The Security tab's fields (inside the tab's settings form).
+ */
+function murtadd_render_security_tab() {
+	$slug      = (string) murtadd_security( 'login_slug' );
+	$available = murtadd_hide_login_available();
+	?>
+	<p class="description"><?php esc_html_e( 'The site at this address was compromised in 2024. These switches close what WordPress leaves open by default. Each is independent.', 'murtadd' ); ?></p>
+	<table class="form-table" role="presentation">
+		<tr>
+			<th scope="row"><?php esc_html_e( 'Author names', 'murtadd' ); ?></th>
+			<td>
+				<label><input type="checkbox" name="murtadd_security[hide_authors]" value="1" <?php checked( (bool) murtadd_security( 'hide_authors' ) ); ?>> <?php esc_html_e( 'Keep account names private', 'murtadd' ); ?></label>
+				<p class="description"><?php esc_html_e( 'Closes the REST user list, ?author= addresses and author archives, and the users sitemap. Feeds and embeds name the author from the Profiles tab, or the site.', 'murtadd' ); ?></p>
+			</td>
+		</tr>
+		<tr>
+			<th scope="row"><?php esc_html_e( 'XML-RPC', 'murtadd' ); ?></th>
+			<td>
+				<label><input type="checkbox" name="murtadd_security[xmlrpc_off]" value="1" <?php checked( (bool) murtadd_security( 'xmlrpc_off' ) ); ?>> <?php esc_html_e( 'Switch XML-RPC off', 'murtadd' ); ?></label>
+				<p class="description"><?php esc_html_e( 'The endpoint password-guessing scripts use. Leave it on only if you publish from the WordPress mobile app or Jetpack.', 'murtadd' ); ?></p>
+			</td>
+		</tr>
+		<tr>
+			<th scope="row"><?php esc_html_e( 'Security headers', 'murtadd' ); ?></th>
+			<td>
+				<label><input type="checkbox" name="murtadd_security[headers]" value="1" <?php checked( (bool) murtadd_security( 'headers' ) ); ?>> <?php esc_html_e( 'Send security headers on every page', 'murtadd' ); ?></label>
+				<p class="description"><?php esc_html_e( 'X-Content-Type-Options, Referrer-Policy, X-Frame-Options and Permissions-Policy. A header the server already sends is left alone.', 'murtadd' ); ?></p>
+			</td>
+		</tr>
+		<tr>
+			<th scope="row"><label for="murtadd_login_slug"><?php esc_html_e( 'Private login address', 'murtadd' ); ?></label></th>
+			<td>
+				<code><?php echo esc_html( home_url( '/' ) ); ?></code> <input type="text" id="murtadd_login_slug" name="murtadd_security[login_slug]" value="<?php echo esc_attr( $slug ); ?>" class="regular-text code" placeholder="<?php esc_attr_e( 'leave empty to keep wp-login.php', 'murtadd' ); ?>">
+				<div class="murtadd-admin-warning">
+					<p><strong><?php esc_html_e( 'Write the address down before saving.', 'murtadd' ); ?></strong> <?php esc_html_e( 'Once set, wp-login.php and wp-admin show a page not found to anyone not logged in. Off while the field is empty.', 'murtadd' ); ?></p>
+					<p><?php esc_html_e( 'Locked out? Add define( \'MURTADD_HIDE_LOGIN\', false ); to wp-config.php, log in at wp-login.php, clear this field, then remove the line.', 'murtadd' ); ?></p>
+				</div>
+				<?php if ( ! $available ) : ?>
+					<p class="murtadd-status-missing"><?php esc_html_e( 'Inactive: MURTADD_HIDE_LOGIN is false in wp-config.php, or the WPS Hide Login plugin is handling the login address.', 'murtadd' ); ?></p>
+				<?php elseif ( '' !== murtadd_login_slug() ) : ?>
+					<p class="murtadd-status-ok">
+						<?php
+						/* translators: %s: the private login address. */
+						printf( esc_html__( 'Your login address: %s', 'murtadd' ), '<code>' . esc_html( murtadd_login_url() ) . '</code>' );
+						?>
+					</p>
+				<?php endif; ?>
+			</td>
+		</tr>
+	</table>
 	<?php
 }

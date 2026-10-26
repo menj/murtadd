@@ -24,6 +24,8 @@ require_once get_stylesheet_directory() . '/inc/taxonomy-school.php';
 require_once get_stylesheet_directory() . '/inc/taxonomy-doubt-category.php';
 require_once get_stylesheet_directory() . '/inc/meta-boxes.php';
 require_once get_stylesheet_directory() . '/inc/settings-page.php';
+require_once get_stylesheet_directory() . '/inc/hardening.php';
+require_once get_stylesheet_directory() . '/inc/hide-login.php';
 require_once get_stylesheet_directory() . '/inc/docs.php';
 require_once get_stylesheet_directory() . '/inc/legacy-redirects.php';
 require_once get_stylesheet_directory() . '/inc/social.php';

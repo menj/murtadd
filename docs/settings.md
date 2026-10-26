@@ -1,6 +1,6 @@
 # Settings — Appearance → Murtadd
 
-Four tabs, Settings API throughout, one option array per tab.
+Settings API throughout, one option array per tab.
 
 ## Colours (`murtadd_colours`)
 - **Accent colour** — links, buttons, sidebar panel. Live WCAG AA contrast check against white (warns below 4.5:1, never blocks). Injected via `wp_add_inline_style` as `--murtadd-accent`.
@@ -22,6 +22,13 @@ In the running text of a single entry, the first mention of a known phrase links
 - **"If you are struggling" notice** — toggle for the crisis-support block on Emotional and Identity doubt pages.
 - **Fatwa index default sort** — Scholar A–Z / Era / Recently added.
 - **Footer heritage note** — free text in the slim footer bar.
+
+## Security (`murtadd_security`)
+Each switch is independent.
+- **Author names** (on) — closes the REST user list, `?author=` addresses and author archives (301 to the home page), and the users sitemap. Feeds and oEmbed name the author from the Profiles tab, or the site. wp-admin keeps the real names.
+- **XML-RPC** (off) — `xmlrpc.php` answers no method, and the `X-Pingback` header and RSD link go. Switch it back on only for the WordPress mobile app or Jetpack.
+- **Security headers** (on) — `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, `X-Frame-Options: SAMEORIGIN`, `Permissions-Policy` (camera, microphone, geolocation, payment, USB off). A header the server already sends is not sent again. Filter: `murtadd_security_headers`.
+- **Private login address** (empty, so off) — once saved, the login screen moves there and `wp-login.php`, `wp-register.php` and wp-admin show a page not found to anyone not logged in. A reserved, malformed or page-colliding address is refused on save and the previous one kept. **Locked out:** add `define( 'MURTADD_HIDE_LOGIN', false );` to `wp-config.php`, log in at `wp-login.php`, clear the field, remove the line. Stands down while the WPS Hide Login plugin is active.
 
 ## Taxonomies
 Read-only tab: deep links to the native term screens for Topics and Schools. Doubt Categories are locked — four fixed terms power the homepage grid.
