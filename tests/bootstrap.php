@@ -261,3 +261,28 @@ function sanitize_textarea_field( $s ) {
 require_once __DIR__ . '/../inc/hardening.php';
 require_once __DIR__ . '/../inc/hide-login.php';
 require_once __DIR__ . '/../inc/settings-page.php';
+
+
+// ---- Upkeep: maintenance mode and the error-page drop-ins. ----
+define( 'WP_CONTENT_DIR', sys_get_temp_dir() . '/murtadd-test-content-' . getmypid() );
+if ( ! defined( 'MURTADD_ASSET_SUFFIX' ) ) {
+	define( 'MURTADD_ASSET_SUFFIX', '.min' );
+}
+function content_url( $path = '' ) {
+	return 'https://murtadd.org/wp-content' . $path;
+}
+function wp_specialchars_decode( $s, $q = ENT_NOQUOTES ) {
+	return htmlspecialchars_decode( (string) $s, $q );
+}
+function is_multisite() {
+	return false;
+}
+function is_main_site() {
+	return true;
+}
+function delete_option( $name ) {
+	unset( $GLOBALS['murtadd_options'][ $name ] );
+	return true;
+}
+
+require_once __DIR__ . '/../inc/maintenance.php';

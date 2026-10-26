@@ -33,6 +33,9 @@ Each switch is independent.
 ## Upkeep (`murtadd_upkeep`)
 - **Removed for good (410)** (empty) — addresses that never belonged to the site, such as spam pages from the 2024 compromise, answered `410 Gone` with `noindex` so search engines drop them. One per line: an exact path (`/cheap-pills/`, trailing slash and capitals ignored) or a prefix ending in `*` (`/shop/*` covers `/shop` and everything under it, not `/shopping`). Applies only where the site has nothing to serve, and after the legacy redirects, so a live page or a recovered pre-2024 address is never answered 410. `/` and `/*` alone are refused; at most 200 lines. The page is `410.php`, built from the 404's classes.
 
+- **Maintenance mode** (off) — visitors get the "Back shortly" page with `503` and `Retry-After: 600`, so search engines keep the pages and return. Anyone who can change the theme's options sees the site, and the admin bar says maintenance is on. The login screen, wp-admin, REST and cron stay open.
+- **Error pages** (on) — the theme writes `maintenance.php`, `php-error.php` and `db-error.php` (with `murtadd-error-page.css`) into `wp-content`, where WordPress looks for them: one branded page for core, plugin and theme updates, fatal PHP errors (`503` when it looks like an upload in progress, `500` otherwise) and database failures. Written the first time an administrator opens wp-admin, and again whenever the version, site name or addresses change. A file the theme did not write is never overwritten. Below the form, a table shows each file's state, with a button to write them now. Switching this off, or switching theme, removes the theme's copies.
+
 ## Taxonomies
 Read-only tab: deep links to the native term screens for Topics and Schools. Doubt Categories are locked — four fixed terms power the homepage grid.
 

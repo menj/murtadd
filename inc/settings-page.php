@@ -516,6 +516,11 @@ function murtadd_render_settings_page() {
 				submit_button();
 				?>
 			</form>
+			<?php
+			if ( 'upkeep' === $active ) {
+				murtadd_render_dropins_status();
+			}
+			?>
 		<?php endif; ?>
 		</div><!-- .murtadd-admin-panel -->
 	</div>
@@ -583,6 +588,20 @@ function murtadd_render_upkeep_tab() {
 	?>
 	<table class="form-table" role="presentation">
 		<tr>
+			<th scope="row"><?php esc_html_e( 'Maintenance mode', 'murtadd' ); ?></th>
+			<td>
+				<label><input type="checkbox" name="murtadd_upkeep[maintenance]" value="1" <?php checked( (bool) murtadd_upkeep( 'maintenance' ) ); ?>> <?php esc_html_e( 'Show visitors the "Back shortly" page', 'murtadd' ); ?></label>
+				<p class="description"><?php esc_html_e( 'Visitors get the maintenance page with a 503, so search engines keep the pages and come back. Anyone who can change these options still sees the site, and the admin bar says maintenance is on. The login screen stays open.', 'murtadd' ); ?></p>
+			</td>
+		</tr>
+		<tr>
+			<th scope="row"><?php esc_html_e( 'Error pages', 'murtadd' ); ?></th>
+			<td>
+				<label><input type="checkbox" name="murtadd_upkeep[error_pages]" value="1" <?php checked( (bool) murtadd_upkeep( 'error_pages' ) ); ?>> <?php esc_html_e( 'Use the branded pages for updates, PHP errors and database errors', 'murtadd' ); ?></label>
+				<p class="description"><?php esc_html_e( 'The theme writes maintenance.php, php-error.php and db-error.php into wp-content, where WordPress looks for them, and never overwrites a file it did not write. Switching this off, or switching theme, removes its copies.', 'murtadd' ); ?></p>
+			</td>
+		</tr>
+		<tr>
 			<th scope="row"><label for="murtadd_gone_paths"><?php esc_html_e( 'Removed for good (410)', 'murtadd' ); ?></label></th>
 			<td>
 				<textarea id="murtadd_gone_paths" name="murtadd_upkeep[gone_paths]" rows="8" class="large-text code" placeholder="<?php echo esc_attr( "/cheap-pills/\n/shop/*" ); ?>"><?php echo esc_textarea( (string) murtadd_upkeep( 'gone_paths' ) ); ?></textarea>
@@ -590,5 +609,56 @@ function murtadd_render_upkeep_tab() {
 			</td>
 		</tr>
 	</table>
+	<?php
+}
+
+/**
+ * The error pages' state in wp-content, and a button to write them now. Its
+ * own form, outside the settings form.
+ */
+function murtadd_render_dropins_status() {
+	$labels = array(
+		'written' => __( 'Written by the theme', 'murtadd' ),
+		'kept'    => __( 'Another file is there; left alone', 'murtadd' ),
+		'failed'  => __( 'Could not be written: wp-content is not writable', 'murtadd' ),
+	);
+	?>
+	<h2><?php esc_html_e( 'Error pages in wp-content', 'murtadd' ); ?></h2>
+	<?php if ( isset( $_GET['murtadd_dropins'] ) ) : // phpcs:ignore WordPress.Security.NonceVerification.Recommended ?>
+		<div class="notice notice-success"><p><?php esc_html_e( 'The error pages were written again.', 'murtadd' ); ?></p></div>
+	<?php endif; ?>
+	<table class="widefat striped murtadd-admin-table">
+		<thead>
+			<tr>
+				<th scope="col"><?php esc_html_e( 'File', 'murtadd' ); ?></th>
+				<th scope="col"><?php esc_html_e( 'State', 'murtadd' ); ?></th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php foreach ( array_keys( murtadd_dropin_files() ) as $murtadd_name ) : ?>
+				<?php
+				$murtadd_path = WP_CONTENT_DIR . '/' . $murtadd_name;
+				if ( ! file_exists( $murtadd_path ) ) {
+					$murtadd_state = 'missing';
+				} elseif ( murtadd_dropin_is_ours( $murtadd_path ) ) {
+					$murtadd_state = 'written';
+				} else {
+					$murtadd_state = 'kept';
+				}
+				?>
+				<tr>
+					<td><code><?php echo esc_html( $murtadd_name ); ?></code></td>
+					<td class="<?php echo esc_attr( 'written' === $murtadd_state ? 'murtadd-status-ok' : 'murtadd-status-missing' ); ?>"><?php echo esc_html( $labels[ $murtadd_state ] ?? __( 'Not there', 'murtadd' ) ); ?></td>
+				</tr>
+			<?php endforeach; ?>
+		</tbody>
+	</table>
+	<?php if ( murtadd_upkeep( 'error_pages' ) ) : ?>
+		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="murtadd-admin-inline-form">
+			<input type="hidden" name="action" value="murtadd_write_dropins">
+			<?php wp_nonce_field( 'murtadd_write_dropins' ); ?>
+			<?php submit_button( __( 'Write the error pages now', 'murtadd' ), 'secondary', 'submit', false ); ?>
+		</form>
+	<?php endif; ?>
 	<?php
 }
