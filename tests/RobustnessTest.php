@@ -30,7 +30,9 @@ final class RobustnessTest extends TestCase {
 
 	public function test_a_malformed_byte_never_blanks_the_post_in_the_verse_mapper() {
 		$html = "<p>Opening.</p><p class=\"murtadd-ayah\" lang=\"ar\">قُلْ</p><p>Old text \xE2\x80 broken.</p>";
-		$this->assertSame( $html, murtadd_quran_verses( $html ) );
+		$out  = murtadd_quran_verses( $html );
+		$this->assertStringContainsString( '<p>Opening.</p>', $out );
+		$this->assertStringContainsString( "<p>Old text \xE2\x80 broken.</p>", $out );
 	}
 
 	public function test_a_malformed_byte_never_blanks_a_rail_verse() {
@@ -84,6 +86,41 @@ final class RobustnessTest extends TestCase {
 		$GLOBALS['murtadd_test_caps'] = array( 'edit_posts' );
 		$routes = array( '/wp/v2/posts' => array(), '/wp/v2/users' => array(), '/wp/v2/users/me' => array() );
 		$this->assertSame( array_keys( $routes ), array_keys( murtadd_hardening_rest_endpoints( $routes ) ), 'The block editor needs /wp/v2/users for authors and editors.' );
+	}
+
+	public function test_split_patterns_never_hide_a_match_a_single_pattern_finds() {
+		// One pattern of every phrase finds "alpha beta" at 0, then "gamma" at
+		// 11. Split, the second pattern's own scan takes "beta gamma" at 6,
+		// which the merge drops as overlapping, and must still report "gamma".
+		$patterns = array(
+			'/(?<![\p{L}\p{N}])(?:alpha beta)(?![\p{L}\p{N}])/iu',
+			'/(?<![\p{L}\p{N}])(?:beta gamma|gamma)(?![\p{L}\p{N}])/iu',
+		);
+		$this->assertSame( array( array( 'alpha beta', 0 ), array( 'gamma', 11 ) ), murtadd_ctx_matches( $patterns, 'alpha beta gamma' ) );
+	}
+
+	public function test_split_patterns_keep_the_longest_match_at_one_offset() {
+		$patterns = array(
+			'/(?<![\p{L}\p{N}])(?:ibn)(?![\p{L}\p{N}])/iu',
+			'/(?<![\p{L}\p{N}])(?:ibn ishaq)(?![\p{L}\p{N}])/iu',
+		);
+		$this->assertSame( array( array( 'Ibn Ishaq', 4 ) ), murtadd_ctx_matches( $patterns, 'See Ibn Ishaq.' ) );
+	}
+
+	public function test_a_malformed_byte_elsewhere_still_fits_and_marks_the_verse() {
+		// The verse must still be fitted and marked, or the face (which needs the
+		// mark) drops to Naskh on every verse of a post with one stray byte.
+		$out = murtadd_quran_verses( "<p class=\"murtadd-ayah\" lang=\"ar\">قُلْ</p><p>Old text \xE2\x80 broken.</p>" );
+		$this->assertStringContainsString( 'data-quran-encoding="kfgqpc">قُلۡ</p>', $out );
+		$this->assertStringContainsString( "Old text \xE2\x80 broken.", $out );
+	}
+
+	public function test_saved_extra_lines_keep_percent_encoded_addresses() {
+		$saved = murtadd_sanitize_contextual_links(
+			array( 'extra' => "Arabic page | https://injil.help/gospels/%D8%A7/\nown page | /doubts/%d8%a7/" )
+		);
+		$this->assertStringContainsString( 'https://injil.help/gospels/%D8%A7/', $saved['extra'] );
+		$this->assertStringContainsString( '/doubts/%d8%a7/', $saved['extra'] );
 	}
 
 	public function test_rest_user_routes_still_go_for_visitors() {

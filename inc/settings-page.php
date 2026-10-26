@@ -44,7 +44,10 @@ function murtadd_sanitize_contextual_links( $input ) {
 	$input = is_array( $input ) ? $input : array();
 	$extra = array();
 	foreach ( preg_split( '/\r\n|\r|\n/', (string) ( $input['extra'] ?? '' ) ) as $line ) {
-		$line = sanitize_text_field( $line );
+		// The phrase and the address are cleaned apart: sanitize_text_field()
+		// strips every percent-encoded octet, which would break an encoded path.
+		$parts = explode( '|', (string) $line, 2 );
+		$line  = 2 === count( $parts ) ? sanitize_text_field( $parts[0] ) . ' | ' . esc_url_raw( trim( wp_check_invalid_utf8( $parts[1] ) ) ) : '';
 		if ( '' !== $line && murtadd_ctx_parse_line( $line ) ) {
 			$extra[] = $line;
 		}

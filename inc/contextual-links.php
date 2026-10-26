@@ -117,30 +117,32 @@ function murtadd_ctx_patterns( array $alts ) {
  * @return array<int,array{0:string,1:int}> Matched text and byte offset.
  */
 function murtadd_ctx_matches( array $patterns, $text ) {
-	$found = array();
-	foreach ( $patterns as $pattern ) {
+	if ( 1 === count( $patterns ) ) {
 		$m = array();
-		if ( preg_match_all( $pattern, $text, $m, PREG_OFFSET_CAPTURE ) ) {
-			foreach ( $m[0] as $match ) {
-				$found[] = $match;
-			}
-		}
+		return preg_match_all( $patterns[0], $text, $m, PREG_OFFSET_CAPTURE ) ? $m[0] : array();
 	}
-	if ( count( $patterns ) > 1 ) {
-		usort(
-			$found,
-			static function ( $a, $b ) {
-				return $a[1] === $b[1] ? strlen( $b[0] ) - strlen( $a[0] ) : $a[1] - $b[1];
-			}
-		);
-	}
+	// Split patterns are scanned together from the end of the last match, as
+	// one pattern would be. Each pattern's own preg_match_all() would consume a
+	// match the merge later drops as overlapping, and hide one inside it.
 	$out = array();
-	$end = 0;
-	foreach ( $found as $match ) {
-		if ( $match[1] >= $end ) {
-			$out[] = $match;
-			$end   = $match[1] + strlen( $match[0] );
+	$pos = 0;
+	$len = strlen( $text );
+	while ( $pos < $len ) {
+		$best = null;
+		foreach ( $patterns as $pattern ) {
+			$m = array();
+			if ( 1 === preg_match( $pattern, $text, $m, PREG_OFFSET_CAPTURE, $pos ) ) {
+				$hit = $m[0];
+				if ( null === $best || $hit[1] < $best[1] || ( $hit[1] === $best[1] && strlen( $hit[0] ) > strlen( $best[0] ) ) ) {
+					$best = $hit;
+				}
+			}
 		}
+		if ( null === $best || '' === $best[0] ) {
+			break;
+		}
+		$out[] = $best;
+		$pos   = $best[1] + strlen( $best[0] );
 	}
 	return $out;
 }

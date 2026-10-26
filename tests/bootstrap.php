@@ -96,8 +96,19 @@ function wp_strip_all_tags( $s ) {
 function wp_kses_no_tags( $s ) {
 	return strip_tags( (string) $s );
 }
+function wp_check_invalid_utf8( $s ) {
+	// As core without $strip: invalid UTF-8 gives an empty string.
+	$s = (string) $s;
+	return ( '' === $s || preg_match( '//u', $s ) ) ? $s : '';
+}
 function sanitize_text_field( $s ) {
-	return trim( strip_tags( (string) $s ) );
+	// As core's _sanitize_text_fields(): tags out, whitespace collapsed, and
+	// every percent-encoded octet removed.
+	$s = trim( (string) preg_replace( '/[\r\n\t ]+/', ' ', strip_tags( (string) $s ) ) );
+	while ( preg_match( '/%[a-f0-9]{2}/i', $s, $m ) ) {
+		$s = str_replace( $m[0], '', $s );
+	}
+	return trim( (string) preg_replace( '/ +/', ' ', $s ) );
 }
 function sanitize_title( $s ) {
 	return strtolower( preg_replace( '/[^a-z0-9]+/i', '-', (string) $s ) );

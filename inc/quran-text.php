@@ -62,10 +62,12 @@ function murtadd_quran_verses( $html ) {
 	if ( false === strpos( $html, 'murtadd-ayah' ) ) {
 		return $html;
 	}
-	// On malformed UTF-8 anywhere in the markup the /u pattern returns null;
-	// the markup is then returned as it came, never emptied.
+	// Byte-wise (no /u): every literal in the pattern is ASCII and the mapping
+	// is strtr(), so a malformed byte elsewhere in the post neither stops the
+	// verses being fitted and marked nor, through a null result, empties the
+	// markup (which is then returned as it came).
 	return preg_replace_callback(
-		'#(<(p|span|div|blockquote)\b[^>]*\bclass=(["\'])(?:(?!\3).)*\bmurtadd-ayah\b(?!-)(?:(?!\3).)*\3[^>]*)(>)(.*?)(</\2>)#su',
+		'#(<(p|span|div|blockquote)\b[^>]*\bclass=(["\'])(?:(?!\3).)*\bmurtadd-ayah\b(?!-)(?:(?!\3).)*\3[^>]*)(>)(.*?)(</\2>)#s',
 		static function ( $m ) {
 			if ( false !== strpos( $m[1], 'data-quran-encoding=' ) ) {
 				return $m[0];
