@@ -83,6 +83,10 @@ function murtadd_sanitize_security( $input ) {
 	if ( preg_match( '/^.{0,500}/su', $message, $murtadd_cut ) ) {
 		$message = $murtadd_cut[0];
 	}
+	$tagline = sanitize_text_field( (string) ( $input['login_tagline'] ?? '' ) );
+	if ( preg_match( '/^.{0,160}/su', $tagline, $murtadd_cut ) ) {
+		$tagline = $murtadd_cut[0];
+	}
 	return array(
 		'hide_authors'  => empty( $input['hide_authors'] ) ? 0 : 1,
 		'xmlrpc_off'    => empty( $input['xmlrpc_off'] ) ? 0 : 1,
@@ -90,6 +94,8 @@ function murtadd_sanitize_security( $input ) {
 		'login_slug'    => $slug,
 		'login_design'  => empty( $input['login_design'] ) ? 0 : 1,
 		'login_message' => $message,
+		'login_tagline' => $tagline,
+		'login_privacy' => empty( $input['login_privacy'] ) ? 0 : 1,
 	);
 }
 
@@ -600,10 +606,14 @@ function murtadd_render_security_tab() {
 			<th scope="row"><?php esc_html_e( 'Login page', 'murtadd' ); ?></th>
 			<td>
 				<label><input type="checkbox" name="murtadd_security[login_design]" value="1" <?php checked( (bool) murtadd_security( 'login_design' ) ); ?>> <?php esc_html_e( 'Dress the login screen in the site\'s colours and type', 'murtadd' ); ?></label>
-				<p class="description"><?php esc_html_e( 'The mark is the custom logo, then the Site Icon, then the theme\'s own mark, and links to the site. The accents follow the Colours tab. Works at the private login address too.', 'murtadd' ); ?></p>
+				<p class="description"><?php esc_html_e( 'A green brand panel beside a rounded form card, on every login screen (log in, lost password, reset, register). The mark is the custom logo, then the Site Icon, then the theme\'s own mark, and links to the site. The accents follow the Colours tab. Works at the private login address too.', 'murtadd' ); ?></p>
 				<p><label for="murtadd_login_message"><?php esc_html_e( 'Note above the form', 'murtadd' ); ?></label></p>
 				<textarea id="murtadd_login_message" name="murtadd_security[login_message]" rows="3" class="large-text"><?php echo esc_textarea( (string) murtadd_security( 'login_message' ) ); ?></textarea>
 				<p class="description"><?php esc_html_e( 'Plain text, up to 500 characters, shown on the log-in screen only. Leave empty for none.', 'murtadd' ); ?></p>
+				<p><label for="murtadd_login_tagline"><?php esc_html_e( 'Line on the brand panel', 'murtadd' ); ?></label></p>
+				<input type="text" id="murtadd_login_tagline" name="murtadd_security[login_tagline]" value="<?php echo esc_attr( (string) murtadd_security( 'login_tagline' ) ); ?>" class="large-text" maxlength="160" placeholder="<?php echo esc_attr( (string) get_bloginfo( 'description' ) ); ?>">
+				<p class="description"><?php esc_html_e( 'Plain text, up to 160 characters, beside the form on wide screens and above it on phones. Leave empty to use the site tagline.', 'murtadd' ); ?></p>
+				<p><label><input type="checkbox" name="murtadd_security[login_privacy]" value="1" <?php checked( (bool) murtadd_security( 'login_privacy' ) ); ?>> <?php esc_html_e( 'Show a privacy note under the log-in, lost-password and registration forms', 'murtadd' ); ?></label></p>
 			</td>
 		</tr>
 	</table>

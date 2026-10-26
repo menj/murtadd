@@ -13,7 +13,12 @@
  * Site Icon, then the theme's own mark, the same order inc/site-icon.php
  * follows for the browser tab. Colours come from tokens.css and the Colours
  * tab; the fonts are the self-hosted pair tokens.css declares. Light only,
- * per the owner's decision (docs/ssot.md, Exclusions).
+ * per the owner's decision (docs/ssot.md, Exclusions): a visitor whose device
+ * prefers dark gets the same ivory and green screen.
+ *
+ * Layout (1.43.0): a green brand panel (the wordmark, a line of text) beside
+ * a rounded form card with pill buttons on wide screens; on phones the panel
+ * is a band above the card. A privacy note sits under each form.
  *
  * @package murtadd
  */
@@ -78,7 +83,8 @@ function murtadd_login_assets() {
 		return;
 	}
 	wp_enqueue_style( 'murtadd-tokens', get_stylesheet_directory_uri() . '/assets/css/tokens' . MURTADD_ASSET_SUFFIX . '.css', array(), MURTADD_VERSION );
-	wp_enqueue_style( 'murtadd-login', get_stylesheet_directory_uri() . '/assets/css/login' . MURTADD_ASSET_SUFFIX . '.css', array( 'login', 'murtadd-tokens' ), MURTADD_VERSION );
+	wp_enqueue_style( 'murtadd-logo', get_stylesheet_directory_uri() . '/assets/css/logo' . MURTADD_ASSET_SUFFIX . '.css', array( 'murtadd-tokens' ), MURTADD_VERSION );
+	wp_enqueue_style( 'murtadd-login', get_stylesheet_directory_uri() . '/assets/css/login' . MURTADD_ASSET_SUFFIX . '.css', array( 'login', 'murtadd-tokens', 'murtadd-logo' ), MURTADD_VERSION );
 	wp_add_inline_style( 'murtadd-login', murtadd_login_inline_css() );
 }
 add_action( 'login_enqueue_scripts', 'murtadd_login_assets' );
@@ -149,3 +155,66 @@ function murtadd_login_message( $message ) {
 	return $message . '<p class="message murtadd-login-message">' . nl2br( esc_html( $note ) ) . '</p>';
 }
 add_filter( 'login_message', 'murtadd_login_message' );
+
+/**
+ * The line on the brand panel: the owner's, else the site tagline.
+ *
+ * @return string Plain text.
+ */
+function murtadd_login_tagline() {
+	$line = trim( (string) murtadd_security( 'login_tagline' ) );
+	return '' !== $line ? $line : trim( (string) get_bloginfo( 'description' ) );
+}
+
+/**
+ * The brand panel, printed by login_header before core's #login box. It is
+ * decoration plus one line of text: the link home stays on core's h1, so a
+ * keyboard user meets one way out, not two.
+ *
+ * @return string HTML.
+ */
+function murtadd_login_panel_html() {
+	if ( ! murtadd_login_design_on() ) {
+		return '';
+	}
+	$word = sprintf(
+		'<span class="murtadd-logo murtadd-logo--on-dark murtadd-login-panel__mark"><span class="murtadd-logo-word">%s</span><span class="murtadd-logo-stop">.</span></span>',
+		esc_html__( 'murtadd', 'murtadd' )
+	);
+	$line = murtadd_login_tagline();
+	$out  = '<aside class="murtadd-login-panel" aria-label="' . esc_attr( get_bloginfo( 'name' ) ) . '"><div class="murtadd-login-panel__inner">' . $word;
+	if ( '' !== $line ) {
+		$out .= '<p class="murtadd-login-panel__line">' . esc_html( $line ) . '</p>';
+	}
+	return $out . '</div></aside>';
+}
+
+/**
+ * Print the brand panel.
+ */
+function murtadd_login_panel() {
+	echo murtadd_login_panel_html(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- built from escaped parts above.
+}
+add_action( 'login_header', 'murtadd_login_panel' );
+
+/**
+ * The privacy note under the log-in, lost-password and registration forms.
+ *
+ * @return string HTML.
+ */
+function murtadd_login_privacy_html() {
+	if ( ! murtadd_login_design_on() || ! murtadd_security( 'login_privacy' ) ) {
+		return '';
+	}
+	return '<p class="murtadd-login-privacy">' . esc_html__( 'Signing in sets only the cookies WordPress needs to keep you signed in. Nothing here tracks you.', 'murtadd' ) . '</p>';
+}
+
+/**
+ * Print the privacy note.
+ */
+function murtadd_login_privacy() {
+	echo murtadd_login_privacy_html(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped above.
+}
+add_action( 'login_form', 'murtadd_login_privacy', 99 );
+add_action( 'lostpassword_form', 'murtadd_login_privacy', 99 );
+add_action( 'register_form', 'murtadd_login_privacy', 99 );

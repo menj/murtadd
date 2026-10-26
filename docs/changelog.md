@@ -1,5 +1,18 @@
 # Changelog — Murtadd
 
+## 1.43.0 — 2026-10-26
+
+### Changed (login screen)
+- **Rebuilt login screen, in line with the sister themes.** A green brand panel (the wordmark, a line of text, a soft gradient and ring) sits beside the form on wide screens and becomes a rounded band above it on phones. The form is a rounded card with 48px rounded inputs, pill buttons, a pill show-password toggle and accessible focus rings in the accent. Every screen wp-login.php serves uses it: log in, lost password, reset password, registration. The interim (session expired) login hides the panel.
+- **Notices:** the owner's note, information, success and error messages are rounded cards with a coloured dot. Errors are tinted in the strike red, and core's flagged fields take a red border.
+- **Privacy note** under the log-in, lost-password and registration forms (Theme Options → Security → Login page, on by default). It is always the last item in the card.
+- **New setting: "Line on the brand panel"** (plain text, up to 160 characters). When it is empty, the site tagline is used.
+- The links under the card are pills, and the language switcher is styled to match. Colours still come from tokens.css and the Colours tab through `wp_add_inline_style`. The wordmark's `logo.css` is now enqueued on the login screen.
+- Still light only, per the Exclusions in docs/ssot.md: the screen declares `color-scheme: light`, so a device set to dark gets the same ivory and green screen. The hide-login address keeps working, because the screen is styled only through core's login hooks and builds no login URL of its own.
+
+### Tests
+- `tests/LoginTest.php` (+3): the brand panel escapes its line, falls back to the tagline, adds no second link home and goes away with the switch; the privacy note is on all three forms and can be switched off; the stylesheet has pills and focus rings, stays light, and its `.min` twin is current.
+
 ## 1.42.1 — 2026-10-26
 Security hardening. The starter content is data again, not code: no seeded article or page is executed as PHP to be loaded. Nothing that is seeded changes.
 

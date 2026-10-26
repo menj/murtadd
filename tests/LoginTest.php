@@ -94,4 +94,38 @@ final class LoginTest extends TestCase {
 		}
 		$this->assertDoesNotMatchRegularExpression( "/['\"][^'\"]*wp-login\.php/", $code, 'A hard-coded wp-login.php link would break at the private login address.' );
 	}
+
+	public function test_brand_panel_escapes_the_line_and_falls_back_to_the_tagline() {
+		$GLOBALS['murtadd_options']['murtadd_security'] = array( 'login_tagline' => '<script>x</script> Plain' );
+		$out = murtadd_login_panel_html();
+		$this->assertStringContainsString( 'class="murtadd-login-panel"', $out );
+		$this->assertStringContainsString( '&lt;script&gt;', $out );
+		$this->assertStringNotContainsString( '<script>', $out );
+		$this->assertStringNotContainsString( '<a ', $out, 'The link home stays on core h1; the panel adds no second one.' );
+		$GLOBALS['murtadd_options']['murtadd_security'] = array();
+		$this->assertSame( 'Murtadd', murtadd_login_tagline() );
+		$this->assertNotNull( murtadd_test_hook_priority( 'login_header', 'murtadd_login_panel' ) );
+		$GLOBALS['murtadd_options']['murtadd_security'] = array( 'login_design' => 0 );
+		$this->assertSame( '', murtadd_login_panel_html() );
+	}
+
+	public function test_privacy_note_on_every_form_and_switchable() {
+		$this->assertStringContainsString( 'class="murtadd-login-privacy"', murtadd_login_privacy_html() );
+		foreach ( array( 'login_form', 'lostpassword_form', 'register_form' ) as $hook ) {
+			$this->assertNotNull( murtadd_test_hook_priority( $hook, 'murtadd_login_privacy' ), $hook );
+		}
+		$GLOBALS['murtadd_options']['murtadd_security'] = array( 'login_privacy' => 0 );
+		$this->assertSame( '', murtadd_login_privacy_html() );
+	}
+
+	public function test_stylesheet_has_pills_focus_rings_and_stays_light() {
+		$this->assertStringContainsString( 'border-radius: 999px', $this->css );
+		$this->assertStringContainsString( ':focus-visible', $this->css );
+		$this->assertStringContainsString( 'color-scheme: light', $this->css );
+		$this->assertStringNotContainsString( 'prefers-color-scheme', $this->css, 'Light only (docs/ssot.md, Exclusions).' );
+		$min = file_get_contents( dirname( __DIR__ ) . '/assets/css/login.min.css' );
+		foreach ( array( 'murtadd-login-panel', 'murtadd-login-privacy', '#login_error' ) as $needle ) {
+			$this->assertStringContainsString( $needle, $min, 'The .min twin is current.' );
+		}
+	}
 }
