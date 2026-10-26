@@ -57,6 +57,8 @@ function murtadd_ctx_network() {
 function murtadd_ctx_key( $text ) {
 	$text = html_entity_decode( (string) $text, ENT_QUOTES | ENT_HTML5, 'UTF-8' );
 	$text = str_replace( array( '’', '‘', 'ʼ' ), "'", $text );
+	// A non-breaking space (decoded from &nbsp; or &#160; above) is a space.
+	$text = preg_replace( '/[\s\x{00A0}]+/u', ' ', $text ) ?? $text;
 	return function_exists( 'mb_strtolower' ) ? mb_strtolower( $text, 'UTF-8' ) : strtolower( $text );
 }
 
@@ -239,9 +241,12 @@ function murtadd_ctx_compile( array $entries ) {
 	// Text reaching the_content has been texturised, so an apostrophe may
 	// arrive straight, curly, or as an entity.
 	$apostrophe = "(?:'|’|‘|ʼ|&\\#8217;|&\\#8216;|&\\#039;|&\\#39;|&rsquo;|&lsquo;|&apos;)";
-	$alts       = array_map(
-		static function ( $p ) use ( $apostrophe ) {
-			return str_replace( array( "'", '’', '‘', 'ʼ' ), $apostrophe, preg_quote( $p, '/' ) );
+	// A space may arrive as a non-breaking space, written or as an entity.
+	$space = '(?:\s|&nbsp;|&\#160;|\x{00A0})+';
+	$alts  = array_map(
+		static function ( $p ) use ( $apostrophe, $space ) {
+			$alt = str_replace( array( "'", '’', '‘', 'ʼ' ), $apostrophe, preg_quote( $p, '/' ) );
+			return (string) preg_replace( '/ +/', $space, $alt );
 		},
 		$phrases
 	);
@@ -304,7 +309,9 @@ function murtadd_ctx_apply( $html, array $entries, array $args ) {
 	$skips  = 0;       // How many open elements forbid links.
 	$blocks = array(); // Per open <p>/<li>/<dd>: has it a link yet.
 
-	$pieces = preg_split( '/(<!--.*?-->|<[^>]+>)/s', $html, -1, PREG_SPLIT_DELIM_CAPTURE );
+	// A tag ends at the first ">" outside quotes, so a ">" inside an attribute
+	// value never turns the rest of the value into linkable text.
+	$pieces = preg_split( '/(<!--.*?-->|<(?:[^>"\']|"[^"]*"|\'[^\']*\')+>)/s', $html, -1, PREG_SPLIT_DELIM_CAPTURE );
 	if ( false === $pieces ) {
 		return $html;
 	}

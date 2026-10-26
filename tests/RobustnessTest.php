@@ -123,6 +123,19 @@ final class RobustnessTest extends TestCase {
 		$this->assertStringContainsString( '/doubts/%d8%a7/', $saved['extra'] );
 	}
 
+	public function test_a_phrase_matches_across_a_non_breaking_space() {
+		$entries = array( array( 'phrase' => 'Ibn Isḥāq', 'url' => 'https://bestofislam.org/sira-ibn-ishaq-hisham-tabari/', 'own' => false ) );
+		foreach ( array( 'Ibn&nbsp;Isḥāq', 'Ibn&#160;Isḥāq', "Ibn\u{00A0}Isḥāq" ) as $written ) {
+			$out = murtadd_ctx_apply( '<p>As ' . $written . ' tells it.</p>', $entries, array() );
+			$this->assertStringContainsString( '>' . $written . '</a>', $out, $written );
+		}
+	}
+
+	public function test_a_greater_than_inside_a_quoted_attribute_never_gets_a_link() {
+		$html = '<p><span title="a > the jizya">Plain words.</span></p>';
+		$this->assertSame( $html, murtadd_ctx_apply( $html, $this->entries(), array() ) );
+	}
+
 	public function test_rest_user_routes_still_go_for_visitors() {
 		$routes = array( '/wp/v2/posts' => array(), '/wp/v2/users' => array() );
 		$this->assertSame( array( '/wp/v2/posts' ), array_keys( murtadd_hardening_rest_endpoints( $routes ) ) );
