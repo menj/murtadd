@@ -51,7 +51,9 @@ Every `murtadd-` class a template emits must have a rule in a stylesheet that is
 
 ## Starter content
 
-`inc/seed-data.php` holds the content, `inc/seed-content.php` inserts it, and both run from the same setup routine as the page scaffolding, under the same two invariants: never overwrite, never destroy. Rebuttals must be inserted before Doubts, since a Doubt stores its related Rebuttal by ID.
+The content is JSON in `inc/data/seed/` (`topics.json`, `rebuttals.json`, `doubts.json`, `pages.json`), read and decoded by the loaders in `inc/seed-data.php` and never executed as PHP. `inc/seed-content.php` inserts it, and both run from the same setup routine as the page scaffolding, under the same two invariants: never overwrite, never destroy. Rebuttals must be inserted before Doubts, since a Doubt stores its related Rebuttal by ID.
+
+Links in `pages.json` are written as `{{url:/path/}}` tokens; `murtadd_seed_page_bodies()` resolves each with `esc_url( home_url() )` when the copy is loaded, so a site in a subdirectory links correctly. A seed file that is missing, not valid JSON or not the expected shape loads as an empty array, and the seeder then creates nothing from it.
 
 Two constraints on the data. Every Doubt's `related` slug must name a Rebuttal that exists, and all four doubt categories must be populated, because the homepage grid renders a count for each of the four and an empty one reads as a dead door.
 

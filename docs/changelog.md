@@ -1,5 +1,17 @@
 # Changelog — Murtadd
 
+## 1.42.1 — 2026-10-26
+Security hardening. The starter content is data again, not code: no seeded article or page is executed as PHP to be loaded. Nothing that is seeded changes.
+
+### Changed
+- **Seed data is JSON.** The topics, rebuttals, doubts and page copy that lived as PHP arrays and strings in `inc/seed-data.php` (some 1,200 lines) are now `inc/data/seed/topics.json`, `rebuttals.json`, `doubts.json` and `pages.json`. `inc/seed-data.php` keeps only the loaders, with the same names and return shapes as before (`murtadd_starter_topics()`, `murtadd_seed_rebuttals()`, `murtadd_seed_doubts()`, `murtadd_seed_page_bodies()`), so `inc/seed-content.php`, `inc/activation.php` and the tests are unchanged. Each file is read with `file_get_contents()`, decoded with `json_decode()` and cached for the request. The same change the sister theme Abrahamic made to its seed files.
+- **Links in the page copy are tokens.** `pages.json` writes each internal link as `{{url:/path/}}`; `murtadd_seed_page_bodies()` resolves it with `esc_url( home_url() )` on each call, as the `home_url()` closure did before, so a site in a subdirectory still links correctly.
+- **A broken seed file seeds nothing instead of failing.** A file that is missing, unreadable, not valid JSON, or not the expected shape (an entry without its slug, a page body that is not a string) loads as an empty array. Activation then skips the written page it cannot fill, so it is created with its copy on a later run instead of empty and then never overwritten.
+- **Verified identical.** The old functions and the new loaders return byte-identical values (compared with `serialize()` under WordPress stubs, at three `home_url()` bases with `esc_url()` marked on every link), so pages, entries, the placeholder retirement and its md5 comparisons behave exactly as in 1.42.0.
+
+### Tests
+- `tests/SeedDataTest.php` (4 tests): the seed files decode and the data directory holds no PHP; the loaders return what the files hold; every `{{url:}}` token resolves through `home_url()`; a missing file or a malformed entry loads as nothing.
+
 ## 1.42.0 — 2026-10-26
 Breadcrumbs, FAQ structured data, a glossary of terms, and the tooling to test the theme in CI. The settings screen takes the name the other themes of the network use: Theme Options.
 
