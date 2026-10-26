@@ -80,10 +80,11 @@ function murtadd_meta_description() {
  * Print description, Open Graph, and Twitter tags.
  *
  * Skipped on search results and 404s, which are noindexed below and have
- * nothing worth unfurling.
+ * nothing worth unfurling, and whenever Rank Math is active.
  */
 function murtadd_meta_tags() {
-	if ( is_search() || is_404() ) {
+	// Rank Math prints these itself; see inc/rank-math.php.
+	if ( murtadd_rank_math_active() || is_search() || is_404() ) {
 		return;
 	}
 

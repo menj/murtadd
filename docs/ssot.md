@@ -43,7 +43,9 @@ Every `murtadd-` class a template emits must have a rule in a stylesheet that is
 
 ## Head output
 
-`inc/meta-tags.php` owns the description/OG/Twitter tags and the robots rules; `inc/schema.php` owns JSON-LD. If a general SEO plugin is ever installed, disable the former, keep the latter (its QAPage/Claim markup is content-model-specific and no plugin will replicate it).
+`inc/meta-tags.php` owns the description/OG/Twitter tags and the robots rules; `inc/schema.php` owns JSON-LD, built by `murtadd_structured_data_node()` and printed by `murtadd_structured_data()`.
+
+**With Rank Math active** (`inc/rank-math.php`, detected by `RANK_MATH_VERSION`) nothing needs switching off by hand. The meta tags stand down, and the page carries one graph, Rank Math's. The theme's nodes go into it through `rank_math/json_ld` by one rule: a node is added only when the graph has no node of its family, and where it has one the theme fills empty fields (`about`, `citation`) and overwrites nothing. In practice a doubt adds its QAPage, a rebuttal's Article gains its Claim and sources, a fatwa entry's Article gains its subject and primary source, and the front page adds nothing. An empty Rank Math description is filled from the content model; search results and 404s stay noindex. With Rank Math's Schema module off, the theme prints its own graph as before. Pinned in `tests/RankMathTest.php`.
 
 ## Starter content
 

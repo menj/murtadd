@@ -32,6 +32,7 @@ require_once get_stylesheet_directory() . '/inc/social.php';
 require_once get_stylesheet_directory() . '/inc/site-icon.php';
 require_once get_stylesheet_directory() . '/inc/activation.php';
 require_once get_stylesheet_directory() . '/inc/schema.php';
+require_once get_stylesheet_directory() . '/inc/rank-math.php';
 require_once get_stylesheet_directory() . '/inc/seed-content.php';
 require_once get_stylesheet_directory() . '/inc/search.php';
 require_once get_stylesheet_directory() . '/inc/meta-tags.php';

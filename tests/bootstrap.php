@@ -190,6 +190,7 @@ function get_bloginfo( $k = '' ) { return 'Murtadd'; }
 function get_site_icon_url( $s = 512 ) { return ''; }
 
 require_once __DIR__ . '/../inc/schema.php';
+require_once __DIR__ . '/../inc/rank-math.php';
 
 require_once __DIR__ . '/../inc/seed-data.php';
 require_once __DIR__ . '/../inc/analytics.php';

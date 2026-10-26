@@ -88,39 +88,41 @@ function murtadd_author_node() {
 }
 
 /**
- * Emit the appropriate graph for the current view.
+ * The graph for the current view, or null where the view has none.
+ *
+ * Built apart from printing so the same nodes can be printed as the theme's
+ * own JSON-LD or handed to Rank Math's graph (inc/rank-math.php).
+ *
+ * @return array|null A node or a graph, with its @context.
  */
-function murtadd_structured_data() {
+function murtadd_structured_data_node() {
 	if ( is_front_page() ) {
-		murtadd_print_jsonld(
-			array(
-				'@context' => 'https://schema.org',
-				'@graph'   => array(
-					array(
-						'@type'       => 'WebSite',
-						'@id'         => home_url( '/#website' ),
-						'url'         => home_url( '/' ),
-						'name'        => get_bloginfo( 'name' ),
-						'description' => get_bloginfo( 'description' ),
-						'publisher'   => array( '@id' => home_url( '/#organization' ) ),
-						'potentialAction' => array(
-							'@type'       => 'SearchAction',
-							'target'      => array(
-								'@type'       => 'EntryPoint',
-								'urlTemplate' => home_url( '/?s={search_term_string}' ),
-							),
-							'query-input' => 'required name=search_term_string',
+		return array(
+			'@context' => 'https://schema.org',
+			'@graph'   => array(
+				array(
+					'@type'       => 'WebSite',
+					'@id'         => home_url( '/#website' ),
+					'url'         => home_url( '/' ),
+					'name'        => get_bloginfo( 'name' ),
+					'description' => get_bloginfo( 'description' ),
+					'publisher'   => array( '@id' => home_url( '/#organization' ) ),
+					'potentialAction' => array(
+						'@type'       => 'SearchAction',
+						'target'      => array(
+							'@type'       => 'EntryPoint',
+							'urlTemplate' => home_url( '/?s={search_term_string}' ),
 						),
+						'query-input' => 'required name=search_term_string',
 					),
-					murtadd_organization_node(),
 				),
-			)
+				murtadd_organization_node(),
+			),
 		);
-		return;
 	}
 
 	if ( ! is_singular( array( 'murtadd_doubt', 'murtadd_rebuttal', 'murtadd_fatwa' ) ) ) {
-		return;
+		return null;
 	}
 
 	$post_id = get_the_ID();
@@ -132,30 +134,27 @@ function murtadd_structured_data() {
 		$answer   = get_post_meta( $post_id, '_murtadd_short_response', true );
 
 		if ( ! $question || ! $answer ) {
-			return;
+			return null;
 		}
 
-		murtadd_print_jsonld(
-			array(
-				'@context'   => 'https://schema.org',
-				'@type'      => 'QAPage',
-				'@id'        => get_permalink() . '#qa',
-				'mainEntity' => array(
-					'@type'          => 'Question',
-					'name'           => wp_strip_all_tags( $question ),
-					'text'           => wp_strip_all_tags( $question ),
-					'answerCount'    => 1,
-					'datePublished'  => get_the_date( 'c' ),
-					'acceptedAnswer' => array(
-						'@type' => 'Answer',
-						'text'  => wp_strip_all_tags( $answer ),
-						'url'   => get_permalink(),
-					),
+		return array(
+			'@context'   => 'https://schema.org',
+			'@type'      => 'QAPage',
+			'@id'        => get_permalink() . '#qa',
+			'mainEntity' => array(
+				'@type'          => 'Question',
+				'name'           => wp_strip_all_tags( $question ),
+				'text'           => wp_strip_all_tags( $question ),
+				'answerCount'    => 1,
+				'datePublished'  => get_the_date( 'c' ),
+				'acceptedAnswer' => array(
+					'@type' => 'Answer',
+					'text'  => wp_strip_all_tags( $answer ),
+					'url'   => get_permalink(),
 				),
-				'publisher'  => murtadd_organization_node(),
-			)
+			),
+			'publisher'  => murtadd_organization_node(),
 		);
-		return;
 	}
 
 	// A Rebuttal assesses a specific claim. ClaimReview is the honest shape:
@@ -193,8 +192,7 @@ function murtadd_structured_data() {
 			$node['citation'] = $citations;
 		}
 
-		murtadd_print_jsonld( $node );
-		return;
+		return $node;
 	}
 
 	// Fatwa entry.
@@ -218,6 +216,21 @@ function murtadd_structured_data() {
 		$node['citation'] = esc_url_raw( $citation );
 	}
 
-	murtadd_print_jsonld( $node );
+	return $node;
+}
+
+/**
+ * Print the graph, unless Rank Math is printing structured data: then the
+ * nodes it lacks are added to its graph instead (inc/rank-math.php), so the
+ * page carries one graph, not two.
+ */
+function murtadd_structured_data() {
+	if ( function_exists( 'murtadd_rank_math_schema_active' ) && murtadd_rank_math_schema_active() ) {
+		return;
+	}
+	$node = murtadd_structured_data_node();
+	if ( $node ) {
+		murtadd_print_jsonld( $node );
+	}
 }
 add_action( 'wp_head', 'murtadd_structured_data' );
