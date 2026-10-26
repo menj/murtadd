@@ -50,4 +50,16 @@ final class AssetsTest extends TestCase {
 			$this->assertStringContainsString( 'msgid "' . $msg . '"', $pot );
 		}
 	}
+
+	/** The editor canvas loads the front end's tokens and the editor type, both shipped minified. */
+	public function test_editor_styles_are_registered() {
+		$php = (string) file_get_contents( dirname( __DIR__ ) . '/functions.php' );
+		$this->assertStringContainsString( "add_theme_support( 'editor-styles' )", $php );
+		$this->assertMatchesRegularExpression( "#add_editor_style\\(\\s*array\\(\\s*'assets/css/tokens' \\. MURTADD_ASSET_SUFFIX \\. '\\.css',\\s*'assets/css/editor' \\. MURTADD_ASSET_SUFFIX \\. '\\.css'#", $php );
+		foreach ( array( 'editor.css', 'editor.min.css' ) as $file ) {
+			$css = (string) file_get_contents( dirname( __DIR__ ) . '/assets/css/' . $file );
+			$this->assertStringContainsString( 'var(--murtadd-font-serif)', $css, $file );
+			$this->assertStringNotContainsString( 'murtadd-font-quran', $css, $file . ' must not set the Qur\'anic face on unfitted verse text.' );
+		}
+	}
 }

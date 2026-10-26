@@ -143,7 +143,7 @@ Where no image is set, `inc/social-card.php` generates a card carrying the doubt
 
 ## Stylesheet ownership
 
-`assets/css/tokens.css` owns the `:root` design tokens and the three `@font-face` declarations (Source Serif 4, Public Sans, and the Qur'an face). `assets/css/logo.css` owns the wordmark component. **Both are loaded by the front end and by the Theme Options screen** (`tokens → logo → main`, `tokens → logo → admin`). The login screen loads `tokens → login`, and the standalone error pages link `tokens.min.css` from the theme.
+`assets/css/tokens.css` owns the `:root` design tokens and the three `@font-face` declarations (Source Serif 4, Public Sans, and the Qur'an face). `assets/css/logo.css` owns the wordmark component. **Both are loaded by the front end and by the Theme Options screen** (`tokens → logo → main`, `tokens → logo → admin`). The login screen loads `tokens → login`, and the standalone error pages link `tokens.min.css` from the theme. The block editor canvas loads `tokens → editor` through `add_editor_style()` (`assets/css/editor.css`: the body, links, headings, quotations and Arabic of the front end), so an editor writes in the faces a reader sees; it never sets the Qur'an face, because the editor shows verse text the mapper has not fitted.
 
 There is exactly one definition of the mark and one of the brand colours in this codebase. Never restate either. The wordmark has now drifted twice by being hand-copied into a second context — once into the footer, once into the admin hero — and this structure is what makes a third time impossible. A rule that styles a *placement* (the footer's `:not(.murtadd-logo)` exclusion, a size override) belongs with its consumer; a rule that defines the *mark* belongs in `logo.css`.
 
@@ -188,7 +188,7 @@ Extra phrases from the tab ("phrase | /path/" for this site, "phrase | https://�
 
 The **Docs tab** is the exception to the Settings API pattern: it registers no setting group and renders `/docs/*.md` through `inc/docs.php` (Parsedown 1.8.0, vendored at `vendor/parsedown/`, safe mode + `wp_kses()`). Adding or renaming a document means editing `murtadd_docs_manifest()`; nothing else knows the filenames. The docs directory and `vendor/` must both ship in the build, or the tab renders an explanatory notice instead of the manual.
 
-Appearance → Murtadd is the Settings API with a skin (`assets/css/admin.css`), not a custom framework. The markup stays `form-table`, so fields, nonces, sanitisers, and capability checks keep working; only the surface is restyled, and everything is scoped under `.murtadd-admin` so nothing leaks into the rest of wp-admin.
+Appearance → Murtadd is the Settings API with a skin (`assets/css/admin.css`), not a custom framework. The markup stays `form-table`, so fields, nonces, sanitisers, and capability checks keep working; only the surface is restyled, and everything is scoped under `.murtadd-admin` so nothing leaks into the rest of wp-admin. No admin markup carries a `style` attribute (`tests/AssetsTest.php`): states use `murtadd-status-missing` and `murtadd-status-ok`, and the dashboard's content-gaps widget, the one rule set outside `.murtadd-admin`, is scoped under `#dashboard-widgets` (`murtadd-gaps-*`).
 
 The gradient appears in exactly three places: the hero, the active tab, and the primary button. Do not spread it further. Restraint governs the admin as it governs the front end.
 

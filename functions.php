@@ -66,6 +66,10 @@ function murtadd_setup() {
 	add_theme_support( 'html5', array( 'search-form', 'gallery', 'caption', 'style', 'script', 'comment-form', 'comment-list' ) );
 	add_theme_support( 'automatic-feed-links' );
 
+	// The editor canvas shows the front end's colours, faces and body type.
+	add_theme_support( 'editor-styles' );
+	add_editor_style( array( 'assets/css/tokens' . MURTADD_ASSET_SUFFIX . '.css', 'assets/css/editor' . MURTADD_ASSET_SUFFIX . '.css' ) );
+
 	register_nav_menus(
 		array(
 			'primary'     => __( 'Primary (sidebar)', 'murtadd' ),
