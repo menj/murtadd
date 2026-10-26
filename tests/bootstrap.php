@@ -251,6 +251,9 @@ function get_post_type( $post_id = 0 ) {
 	return $GLOBALS['murtadd_test_types'][ $post_id ] ?? 'post';
 }
 function get_post_field( $field, $post_id = 0 ) {
+	if ( isset( $GLOBALS['murtadd_test_fields'][ $post_id ][ $field ] ) ) {
+		return $GLOBALS['murtadd_test_fields'][ $post_id ][ $field ];
+	}
 	return 'post_name' === $field ? ( $GLOBALS['murtadd_test_slugs'][ $post_id ] ?? '' ) : '';
 }
 function get_post( $post_id = 0 ) {
@@ -260,6 +263,39 @@ function get_post( $post_id = 0 ) {
 require_once __DIR__ . '/../inc/template-tags.php';
 require_once __DIR__ . '/../inc/contextual-links.php';
 require_once __DIR__ . '/../inc/quran-text.php';
+
+// The request a page render sees: a single entry's own view unless a test says otherwise.
+function murtadd_test_request( $key, $default ) {
+	return $GLOBALS['murtadd_test_request'][ $key ] ?? $default;
+}
+function is_feed() {
+	return murtadd_test_request( 'feed', false );
+}
+function is_singular( $types = '' ) {
+	return murtadd_test_request( 'singular', true );
+}
+function is_main_query() {
+	return murtadd_test_request( 'main', true );
+}
+function is_front_page() {
+	return murtadd_test_request( 'front', false );
+}
+function doing_filter( $hook = null ) {
+	return murtadd_test_request( 'excerpt', false ) && 'get_the_excerpt' === $hook;
+}
+function get_queried_object_id() {
+	return murtadd_test_request( 'queried', 0 );
+}
+function get_post_meta( $post_id, $key = '', $single = false ) {
+	return $GLOBALS['murtadd_test_meta'][ $post_id ][ $key ] ?? '';
+}
+function wp_enqueue_style( $handle, $src = '', $deps = array(), $ver = false ) {
+	$GLOBALS['murtadd_test_enqueued'][] = 'style:' . $handle;
+}
+function wp_enqueue_script( $handle, $src = '', $deps = array(), $ver = false, $footer = false ) {
+	$GLOBALS['murtadd_test_enqueued'][] = 'script:' . $handle;
+}
+require_once __DIR__ . '/../inc/glossary.php';
 
 
 // ---- Security: hardening and the private login address. ----

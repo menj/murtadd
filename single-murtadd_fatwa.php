@@ -30,7 +30,7 @@ while ( have_posts() ) :
 
 		<h2 class="murtadd-kicker murtadd-kicker--accent"><?php esc_html_e( 'Position summary — in our own words', 'murtadd' ); ?></h2>
 		<div class="murtadd-position-summary">
-			<?php echo murtadd_ctx_render( murtadd_quran_verses( wp_kses_post( wpautop( $murtadd_summary ) ) ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- kses'd, then only escaped anchors added. ?>
+			<?php echo murtadd_glossary_render( murtadd_ctx_render( murtadd_quran_verses( wp_kses_post( wpautop( $murtadd_summary ) ) ) ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- kses'd, then only escaped anchors and definitions added. ?>
 			<p class="murtadd-disclaimer"><?php esc_html_e( 'This position is summarized in our own words, not quoted verbatim, and represents its reasoning on its own terms — not a verdict this site issues or endorses on any individual.', 'murtadd' ); ?></p>
 		</div>
 

@@ -20,6 +20,7 @@ In the running text of a single entry, the first mention of a known phrase links
 ## Content display (`murtadd_content_display`)
 - **Short response word cap** — soft cap for the doubt editor's live word count (default 400; warns, never blocks).
 - **"If you are struggling" notice** — toggle for the crisis-support block on Emotional and Identity doubt pages.
+- **Glossary of terms** — on by default. The first mention of an Arabic or Malay term on an entry gets a short definition and its source, on hover, focus or tap. Never on Emotional or Identity doubts. The terms are in `inc/data/glossary.json`.
 - **Fatwa index default sort** — Scholar A–Z / Era / Recently added.
 - **Footer heritage note** — free text in the slim footer bar.
 

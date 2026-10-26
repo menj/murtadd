@@ -20,10 +20,10 @@ function murtadd_the_doubt_statement( $post_id = 0 ) {
 	echo esc_html( $val ?: get_the_title( $post_id ) );
 }
 
-/** Short response, paragraphs preserved. It never passes through the_content, so contextual links are added here. */
+/** Short response, paragraphs preserved. It never passes through the_content, so contextual links and term definitions are added here. */
 function murtadd_the_short_response( $post_id = 0 ) {
 	$post_id = $post_id ?: get_the_ID();
-	echo murtadd_ctx_render( murtadd_quran_verses( wp_kses_post( wpautop( get_post_meta( $post_id, '_murtadd_short_response', true ) ) ) ), $post_id ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- kses'd, then only escaped anchors added.
+	echo murtadd_glossary_render( murtadd_ctx_render( murtadd_quran_verses( wp_kses_post( wpautop( get_post_meta( $post_id, '_murtadd_short_response', true ) ) ) ), $post_id ), $post_id ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- kses'd, then only escaped anchors and definitions added.
 }
 
 /** Outbound link — new tab, rel=noopener. */
