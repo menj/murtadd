@@ -129,6 +129,7 @@ function murtadd_sanitize_content_display( $input ) {
 		'short_response_word_cap'  => max( 50, absint( $input['short_response_word_cap'] ?? 400 ) ),
 		'show_struggling_notice'   => ! empty( $input['show_struggling_notice'] ) ? 1 : 0,
 		'show_breadcrumbs'         => ! empty( $input['show_breadcrumbs'] ) ? 1 : 0,
+		'glossary_terms'           => empty( $input['glossary_terms'] ) ? 0 : 1,
 		'fatwa_index_default_sort' => in_array( $sort, $sorts, true ) ? $sort : 'scholar_az',
 		'footer_heritage_note'     => sanitize_text_field( $input['footer_heritage_note'] ?? 'online since 2004' ),
 		'show_scripture'           => empty( $input['show_scripture'] ) ? 0 : 1,
@@ -487,6 +488,13 @@ function murtadd_render_settings_page() {
 							<td>
 								<label><input type="checkbox" name="murtadd_content_display[show_breadcrumbs]" value="1" <?php checked( ! empty( $o['show_breadcrumbs'] ?? 1 ) ); ?>> <?php esc_html_e( 'Show the trail above entries, pages and archives', 'murtadd' ); ?></label>
 								<p class="description"><?php esc_html_e( 'The same trail is given to search engines as a BreadcrumbList. With Rank Math\'s breadcrumbs switched on, Rank Math\'s trail is shown instead.', 'murtadd' ); ?></p>
+							</td>
+						</tr>
+						<tr>
+							<th scope="row"><?php esc_html_e( 'Glossary of terms', 'murtadd' ); ?></th>
+							<td>
+								<label><input type="checkbox" name="murtadd_content_display[glossary_terms]" value="1" <?php checked( ! isset( $o['glossary_terms'] ) || $o['glossary_terms'] ); ?>> <?php esc_html_e( 'Define Arabic and Malay terms where they first appear', 'murtadd' ); ?></label>
+								<p class="description"><?php esc_html_e( 'The first mention of a term on a page gets a short definition and its source, shown on hover, focus or tap. Never on Emotional or Identity doubts.', 'murtadd' ); ?></p>
 							</td>
 						</tr>
 						<tr>

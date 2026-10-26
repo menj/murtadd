@@ -1,0 +1,143 @@
+/**
+ * Glossary of terms: the first mention of a term carries a short definition,
+ * shown on hover, focus or tap. The definition is positioned over the text,
+ * so opening it never moves a line.
+ */
+
+.murtadd-term {
+	position: relative;
+	display: inline;
+}
+
+/* The term reads as text, marked by a dotted underline. */
+.murtadd-term__word {
+	appearance: none;
+	background: none;
+	border: 0;
+	padding: 0;
+	margin: 0;
+	font: inherit;
+	color: inherit;
+	line-height: inherit;
+	letter-spacing: inherit;
+	text-align: inherit;
+	cursor: help;
+	text-decoration: underline dotted var(--murtadd-accent);
+	text-decoration-thickness: 1px;
+	text-underline-offset: 0.2em;
+}
+
+.murtadd-term__word:hover,
+.murtadd-term.is-open .murtadd-term__word {
+	text-decoration-style: solid;
+}
+
+.murtadd-term__tip {
+	position: absolute;
+	z-index: 30;
+	left: 50%;
+	bottom: calc(100% + 0.5rem);
+	transform: translateX(-50%);
+	width: max-content;
+	max-width: min(20rem, calc(100vw - 2rem));
+	padding: 0.75rem 0.875rem;
+	background: var(--murtadd-surface);
+	color: var(--murtadd-text);
+	border: 1px solid var(--murtadd-border);
+	border-top: 3px solid var(--murtadd-accent);
+	border-radius: 4px;
+	box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+	font-family: var(--murtadd-font-sans);
+	font-size: 0.875rem;
+	font-style: normal;
+	font-weight: 400;
+	line-height: 1.5;
+	text-align: left;
+	white-space: normal;
+}
+
+.murtadd-term:hover .murtadd-term__tip,
+.murtadd-term__word:focus-visible + .murtadd-term__tip,
+.murtadd-term.is-open .murtadd-term__tip {
+	display: block;
+}
+
+/* Escape dismisses it while the pointer or focus stays on the term. */
+.murtadd-term.is-dismissed .murtadd-term__tip {
+	display: none;
+}
+
+/* A bridge over the gap, so the pointer can move onto the definition. */
+.murtadd-term__tip::before {
+	content: "";
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 100%;
+	height: 0.75rem;
+}
+
+.murtadd-term__tip.is-below::before {
+	top: auto;
+	bottom: 100%;
+}
+
+/* Kept inside the viewport by the script when it would run off an edge. */
+.murtadd-term__tip.is-start {
+	left: 0;
+	transform: none;
+}
+
+.murtadd-term__tip.is-end {
+	left: auto;
+	right: 0;
+	transform: none;
+}
+
+.murtadd-term__tip.is-below {
+	bottom: auto;
+	top: calc(100% + 0.5rem);
+}
+
+.murtadd-term__def {
+	display: block;
+}
+
+.murtadd-term__src {
+	display: block;
+	margin-top: 0.5rem;
+	padding-top: 0.5rem;
+	border-top: 1px solid var(--murtadd-border);
+	color: var(--murtadd-text-muted);
+	font-size: 0.8125rem;
+}
+
+[dir="rtl"] .murtadd-term__tip {
+	text-align: right;
+}
+
+@media print {
+	.murtadd-term__word {
+		text-decoration: none;
+	}
+
+	.murtadd-term__tip {
+		display: none !important;
+	}
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	.murtadd-term__tip {
+		animation: murtadd-term-in 0.12s ease-out;
+	}
+
+	@keyframes murtadd-term-in {
+		from {
+			opacity: 0;
+		}
+
+		to {
+			opacity: 1;
+		}
+	}
+}
