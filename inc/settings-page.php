@@ -1,7 +1,7 @@
 <?php
 /**
- * Settings page — Appearance → Murtadd. Settings API, tabbed.
- * One option array per tab: murtadd_colours, murtadd_cross_links, murtadd_content_display.
+ * Settings page — Appearance → Theme Options. Settings API, tabbed.
+ * One option array per tab: murtadd_colours, murtadd_cross_links, murtadd_contextual_links, murtadd_content_display, murtadd_security, murtadd_upkeep.
  * Taxonomies tab deep-links to native term screens (no duplicate CRUD).
  *
  * @package murtadd
@@ -10,16 +10,19 @@
 defined( 'ABSPATH' ) || exit;
 
 function murtadd_add_settings_page() {
-	add_theme_page( __( 'Murtadd', 'murtadd' ), __( 'Murtadd', 'murtadd' ), 'manage_options', 'murtadd', 'murtadd_render_settings_page' );
+	add_theme_page( __( 'Theme Options', 'murtadd' ), __( 'Theme Options', 'murtadd' ), 'manage_options', 'murtadd', 'murtadd_render_settings_page' );
 }
 add_action( 'admin_menu', 'murtadd_add_settings_page' );
 
 function murtadd_register_settings() {
 	register_setting( 'murtadd_colours', 'murtadd_colours', array( 'sanitize_callback' => 'murtadd_sanitize_colours' ) );
 	register_setting( 'murtadd_cross_links', 'murtadd_cross_links', array( 'sanitize_callback' => 'murtadd_sanitize_cross_links' ) );
+	register_setting( 'murtadd_contextual_links', 'murtadd_contextual_links', array( 'sanitize_callback' => 'murtadd_sanitize_contextual_links' ) );
 	register_setting( 'murtadd_content_display', 'murtadd_content_display', array( 'sanitize_callback' => 'murtadd_sanitize_content_display' ) );
 	register_setting( 'murtadd_profiles', 'murtadd_profiles', array( 'sanitize_callback' => 'murtadd_sanitize_profiles' ) );
 	register_setting( 'murtadd_profiles', 'murtadd_author_name', array( 'sanitize_callback' => 'sanitize_text_field' ) );
+	register_setting( 'murtadd_security', 'murtadd_security', array( 'sanitize_callback' => 'murtadd_sanitize_security' ) );
+	register_setting( 'murtadd_upkeep', 'murtadd_upkeep', array( 'sanitize_callback' => 'murtadd_sanitize_upkeep' ) );
 }
 add_action( 'admin_init', 'murtadd_register_settings' );
 
@@ -34,6 +37,74 @@ function murtadd_sanitize_cross_links( $input ) {
 	return array(
 		'ce_base_url'      => esc_url_raw( $input['ce_base_url'] ?? '' ),
 		'bismika_base_url' => esc_url_raw( $input['bismika_base_url'] ?? '' ),
+	);
+}
+
+function murtadd_sanitize_contextual_links( $input ) {
+	$input = is_array( $input ) ? $input : array();
+	$extra = array();
+	foreach ( preg_split( '/\r\n|\r|\n/', (string) ( $input['extra'] ?? '' ) ) as $line ) {
+		// The phrase and the address are cleaned apart: sanitize_text_field()
+		// strips every percent-encoded octet, which would break an encoded path.
+		$parts = explode( '|', (string) $line, 2 );
+		$line  = 2 === count( $parts ) ? sanitize_text_field( $parts[0] ) . ' | ' . esc_url_raw( trim( wp_check_invalid_utf8( $parts[1] ) ) ) : '';
+		if ( '' !== $line && murtadd_ctx_parse_line( $line ) ) {
+			$extra[] = $line;
+		}
+	}
+	$excluded = array_filter( array_map( 'sanitize_title', preg_split( '/\r\n|\r|\n/', (string) ( $input['excluded'] ?? '' ) ) ) );
+	return array(
+		'own_enabled'    => empty( $input['own_enabled'] ) ? 0 : 1,
+		'sister_enabled' => empty( $input['sister_enabled'] ) ? 0 : 1,
+		'own_max'        => max( 0, min( 15, absint( $input['own_max'] ?? 4 ) ) ),
+		'sister_max'     => max( 0, min( 10, absint( $input['sister_max'] ?? 3 ) ) ),
+		'extra'          => implode( "\n", $extra ),
+		'excluded'       => implode( "\n", array_unique( $excluded ) ),
+	);
+}
+
+/**
+ * Security tab. A login address that is reserved, malformed or already a
+ * page's address is refused with a notice, and the saved one is kept, so a
+ * typo can never move the login screen somewhere nobody knows.
+ *
+ * @param mixed $input Submitted values.
+ * @return array
+ */
+function murtadd_sanitize_security( $input ) {
+	$input = is_array( $input ) ? $input : array();
+	$slug  = sanitize_title( (string) ( $input['login_slug'] ?? '' ) );
+	if ( '' !== $slug && ( ! murtadd_login_slug_valid( $slug ) || get_page_by_path( $slug ) ) ) {
+		add_settings_error( 'murtadd_security', 'murtadd-login-slug', __( 'That login address is reserved, malformed, or already the address of a page. It was not saved; the previous one is kept.', 'murtadd' ) );
+		$slug = (string) murtadd_security( 'login_slug' );
+	}
+	$message = sanitize_textarea_field( (string) ( $input['login_message'] ?? '' ) );
+	// PCRE in UTF-8 mode counts characters with or without mbstring.
+	if ( preg_match( '/^.{0,500}/su', $message, $murtadd_cut ) ) {
+		$message = $murtadd_cut[0];
+	}
+	return array(
+		'hide_authors'  => empty( $input['hide_authors'] ) ? 0 : 1,
+		'xmlrpc_off'    => empty( $input['xmlrpc_off'] ) ? 0 : 1,
+		'headers'       => empty( $input['headers'] ) ? 0 : 1,
+		'login_slug'    => $slug,
+		'login_design'  => empty( $input['login_design'] ) ? 0 : 1,
+		'login_message' => $message,
+	);
+}
+
+/**
+ * Upkeep tab.
+ *
+ * @param mixed $input Submitted values.
+ * @return array
+ */
+function murtadd_sanitize_upkeep( $input ) {
+	$input = is_array( $input ) ? $input : array();
+	return array(
+		'gone_paths'  => murtadd_gone_clean( (string) ( $input['gone_paths'] ?? '' ) ),
+		'maintenance' => empty( $input['maintenance'] ) ? 0 : 1,
+		'error_pages' => empty( $input['error_pages'] ) ? 0 : 1,
 	);
 }
 
@@ -57,6 +128,8 @@ function murtadd_sanitize_content_display( $input ) {
 	return array(
 		'short_response_word_cap'  => max( 50, absint( $input['short_response_word_cap'] ?? 400 ) ),
 		'show_struggling_notice'   => ! empty( $input['show_struggling_notice'] ) ? 1 : 0,
+		'show_breadcrumbs'         => ! empty( $input['show_breadcrumbs'] ) ? 1 : 0,
+		'glossary_terms'           => empty( $input['glossary_terms'] ) ? 0 : 1,
 		'fatwa_index_default_sort' => in_array( $sort, $sorts, true ) ? $sort : 'scholar_az',
 		'footer_heritage_note'     => sanitize_text_field( $input['footer_heritage_note'] ?? 'online since 2004' ),
 		'show_scripture'           => empty( $input['show_scripture'] ) ? 0 : 1,
@@ -85,8 +158,11 @@ function murtadd_render_settings_page() {
 		'content_display' => __( 'Content', 'murtadd' ),         // Decide what it shows.
 		'taxonomies'      => __( 'Topics & schools', 'murtadd' ), // File the content.
 		'cross_links'     => __( 'Linked sites', 'murtadd' ),    // Point outward.
+		'contextual_links' => __( 'Contextual links', 'murtadd' ), // Link inside the text.
 		'colours'         => __( 'Colours', 'murtadd' ),         // Make it yours.
 		'profiles'        => __( 'Profiles', 'murtadd' ),        // The author's links, shown and structured.
+		'security'        => __( 'Security', 'murtadd' ),        // Close what WordPress leaves open.
+		'upkeep'          => __( 'Upkeep', 'murtadd' ),          // Removed pages, outages, maintenance.
 		'docs'            => __( 'Docs', 'murtadd' ),            // Look something up.
 	);
 	$requested = isset( $_GET['tab'] ) ? sanitize_key( wp_unslash( $_GET['tab'] ) ) : '';
@@ -158,7 +234,7 @@ function murtadd_render_settings_page() {
 
 			<?php $murtadd_missing = murtadd_missing_pages(); ?>
 
-			<table class="widefat striped" style="max-width:640px;margin:16px 0;">
+			<table class="widefat striped murtadd-admin-table">
 				<thead>
 					<tr>
 						<th scope="col"><?php esc_html_e( 'Page', 'murtadd' ); ?></th>
@@ -177,7 +253,7 @@ function murtadd_render_settings_page() {
 								<?php if ( $murtadd_existing ) : ?>
 									<a href="<?php echo esc_url( get_edit_post_link( $murtadd_existing->ID ) ); ?>"><?php esc_html_e( 'Exists — edit', 'murtadd' ); ?></a>
 								<?php else : ?>
-									<span style="color:#8a4b00;font-weight:600;"><?php esc_html_e( 'Missing', 'murtadd' ); ?></span>
+									<span class="murtadd-status-missing"><?php esc_html_e( 'Missing', 'murtadd' ); ?></span>
 								<?php endif; ?>
 							</td>
 						</tr>
@@ -188,7 +264,7 @@ function murtadd_render_settings_page() {
 							<?php if ( has_nav_menu( 'footer_site' ) ) : ?>
 								<?php esc_html_e( 'Assigned', 'murtadd' ); ?>
 							<?php else : ?>
-								<span style="color:#8a4b00;font-weight:600;"><?php esc_html_e( 'Not assigned', 'murtadd' ); ?></span>
+								<span class="murtadd-status-missing"><?php esc_html_e( 'Not assigned', 'murtadd' ); ?></span>
 							<?php endif; ?>
 						</td>
 					</tr>
@@ -198,11 +274,10 @@ function murtadd_render_settings_page() {
 							<code>
 								<?php
 								printf(
-									/* translators: 1: doubt count, 2: rebuttal count, 3: letter count */
-									esc_html__( '%1$d doubts, %2$d rebuttals, %3$d placeholder letters', 'murtadd' ),
+									/* translators: 1: doubt count, 2: rebuttal count */
+									esc_html__( '%1$d doubts, %2$d rebuttals', 'murtadd' ),
 									count( murtadd_seed_doubts() ),
-									count( murtadd_seed_rebuttals() ),
-									count( murtadd_seed_letters() )
+									count( murtadd_seed_rebuttals() )
 								);
 								?>
 							</code>
@@ -212,7 +287,7 @@ function murtadd_render_settings_page() {
 							<?php if ( 0 === $murtadd_missing_content ) : ?>
 								<a href="<?php echo esc_url( admin_url( 'edit.php?post_type=murtadd_doubt' ) ); ?>"><?php esc_html_e( 'All present — view', 'murtadd' ); ?></a>
 							<?php else : ?>
-								<span style="color:#8a4b00;font-weight:600;">
+								<span class="murtadd-status-missing">
 									<?php
 									printf(
 										/* translators: %d: number of missing entries */
@@ -230,7 +305,7 @@ function murtadd_render_settings_page() {
 							<?php if ( 'page' === get_option( 'show_on_front' ) && (int) get_option( 'page_for_posts' ) ) : ?>
 								<?php esc_html_e( 'Front page and posts page are set', 'murtadd' ); ?>
 							<?php else : ?>
-								<span style="color:#8a4b00;font-weight:600;"><?php esc_html_e( 'Not fully set', 'murtadd' ); ?></span>
+								<span class="murtadd-status-missing"><?php esc_html_e( 'Not fully set', 'murtadd' ); ?></span>
 							<?php endif; ?>
 						</td>
 					</tr>
@@ -247,8 +322,8 @@ function murtadd_render_settings_page() {
 				<?php submit_button( __( 'Create anything missing', 'murtadd' ), 'primary', 'submit', false ); ?>
 			</form>
 
-			<p class="description" style="margin-top:12px;">
-				<?php esc_html_e( 'New pages are published immediately and carry placeholder text. Replace the copy before announcing the site. Starter content is published as written and can be edited freely: nothing here ever overwrites a post that already exists, so editing a doubt and running this again will not undo the edit.', 'murtadd' ); ?>
+			<p class="description murtadd-admin-note">
+				<?php esc_html_e( 'New pages are published immediately with their copy written. Before announcing the site, add a contact method to the Contact page and your host and plugin details to the Privacy page; each carries a note in the editor saying what is needed. Starter content is published as written and can be edited freely: nothing here ever overwrites a post that already exists, so editing a doubt and running this again will not undo the edit.', 'murtadd' ); ?>
 			</p>
 
 		<?php elseif ( 'taxonomies' === $active ) : ?>
@@ -351,6 +426,45 @@ function murtadd_render_settings_page() {
 						</tr>
 					</table>
 					<?php
+				} elseif ( 'contextual_links' === $active ) {
+					$o = murtadd_ctx_settings();
+					?>
+					<p class="description"><?php esc_html_e( 'In the running text of a single entry, the first mention of a known phrase links to the page that treats it, on this site or on one of the six sister sites. Links are added as the page renders; stored text is never changed. Headings, quotations, Qur’anic text, Arabic, sources and existing links are never touched, and Emotional and Identity doubts get no links at all.', 'murtadd' ); ?></p>
+					<table class="form-table" role="presentation">
+						<tr>
+							<th scope="row"><?php esc_html_e( 'Links to this site', 'murtadd' ); ?></th>
+							<td>
+								<label><input type="checkbox" name="murtadd_contextual_links[own_enabled]" value="1" <?php checked( ! empty( $o['own_enabled'] ) ); ?>> <?php esc_html_e( 'Link phrases to other doubts and rebuttals here', 'murtadd' ); ?></label>
+								<p><label for="murtadd_ctx_own_max"><?php esc_html_e( 'At most', 'murtadd' ); ?></label> <input type="number" id="murtadd_ctx_own_max" name="murtadd_contextual_links[own_max]" value="<?php echo esc_attr( $o['own_max'] ); ?>" min="0" max="15" step="1" class="small-text"> <?php esc_html_e( 'a page (0 to 15)', 'murtadd' ); ?></p>
+							</td>
+						</tr>
+						<tr>
+							<th scope="row"><?php esc_html_e( 'Links to sister sites', 'murtadd' ); ?></th>
+							<td>
+								<label><input type="checkbox" name="murtadd_contextual_links[sister_enabled]" value="1" <?php checked( ! empty( $o['sister_enabled'] ) ); ?>> <?php esc_html_e( 'Link phrases to the page on a sister site that treats them', 'murtadd' ); ?></label>
+								<p><label for="murtadd_ctx_sister_max"><?php esc_html_e( 'At most', 'murtadd' ); ?></label> <input type="number" id="murtadd_ctx_sister_max" name="murtadd_contextual_links[sister_max]" value="<?php echo esc_attr( $o['sister_max'] ); ?>" min="0" max="10" step="1" class="small-text"> <?php esc_html_e( 'a page (0 to 10)', 'murtadd' ); ?></p>
+							</td>
+						</tr>
+						<tr>
+							<th scope="row"><label for="murtadd_ctx_extra"><?php esc_html_e( 'Extra phrases', 'murtadd' ); ?></label></th>
+							<td>
+								<textarea id="murtadd_ctx_extra" name="murtadd_contextual_links[extra]" rows="8" class="large-text code" placeholder="<?php esc_attr_e( 'tudung | /rebuttals/the-head-cover-and-modesty/', 'murtadd' ); ?>"><?php echo esc_textarea( $o['extra'] ); ?></textarea>
+								<p class="description"><?php esc_html_e( 'One per line: phrase | address. A path such as /rebuttals/slug/ is this site; a full address must be on one of the sister sites. These are tried before the shared list, so they win. Lines in any other shape are dropped on save.', 'murtadd' ); ?></p>
+							</td>
+						</tr>
+						<tr>
+							<th scope="row"><label for="murtadd_ctx_excluded"><?php esc_html_e( 'Never link on', 'murtadd' ); ?></label></th>
+							<td>
+								<textarea id="murtadd_ctx_excluded" name="murtadd_contextual_links[excluded]" rows="4" class="large-text code"><?php echo esc_textarea( $o['excluded'] ); ?></textarea>
+								<p class="description"><?php esc_html_e( 'Slugs of entries or pages that get no contextual links, one per line.', 'murtadd' ); ?></p>
+							</td>
+						</tr>
+					</table>
+					<?php
+				} elseif ( 'security' === $active ) {
+					murtadd_render_security_tab();
+				} elseif ( 'upkeep' === $active ) {
+					murtadd_render_upkeep_tab();
 				} else {
 					$o = get_option( 'murtadd_content_display', array() );
 					?>
@@ -367,6 +481,20 @@ function murtadd_render_settings_page() {
 							<td>
 								<label><input type="checkbox" name="murtadd_content_display[show_struggling_notice]" value="1" <?php checked( ! empty( $o['show_struggling_notice'] ?? 1 ) ); ?>> <?php esc_html_e( 'Show on Emotional and Identity doubt pages', 'murtadd' ); ?></label>
 								<p class="description"><?php esc_html_e( 'A quiet crisis-support block. No tracking, no preaching.', 'murtadd' ); ?></p>
+							</td>
+						</tr>
+						<tr>
+							<th scope="row"><?php esc_html_e( 'Breadcrumbs', 'murtadd' ); ?></th>
+							<td>
+								<label><input type="checkbox" name="murtadd_content_display[show_breadcrumbs]" value="1" <?php checked( ! empty( $o['show_breadcrumbs'] ?? 1 ) ); ?>> <?php esc_html_e( 'Show the trail above entries, pages and archives', 'murtadd' ); ?></label>
+								<p class="description"><?php esc_html_e( 'The same trail is given to search engines as a BreadcrumbList. With Rank Math\'s breadcrumbs switched on, Rank Math\'s trail is shown instead.', 'murtadd' ); ?></p>
+							</td>
+						</tr>
+						<tr>
+							<th scope="row"><?php esc_html_e( 'Glossary of terms', 'murtadd' ); ?></th>
+							<td>
+								<label><input type="checkbox" name="murtadd_content_display[glossary_terms]" value="1" <?php checked( ! isset( $o['glossary_terms'] ) || $o['glossary_terms'] ); ?>> <?php esc_html_e( 'Define Arabic and Malay terms where they first appear', 'murtadd' ); ?></label>
+								<p class="description"><?php esc_html_e( 'The first mention of a term on a page gets a short definition and its source, shown on hover, focus or tap. Never on Emotional or Identity doubts.', 'murtadd' ); ?></p>
 							</td>
 						</tr>
 						<tr>
@@ -390,7 +518,7 @@ function murtadd_render_settings_page() {
 									<input type="checkbox" name="murtadd_content_display[show_scripture]" value="1" <?php checked( ! isset( $o['show_scripture'] ) || $o['show_scripture'] ); ?>>
 									<?php esc_html_e( 'Show the scripture box in the rail on doubt and rebuttal pages', 'murtadd' ); ?>
 								</label>
-								<p style="margin-top:10px;">
+								<p class="murtadd-admin-spaced">
 									<input type="text" name="murtadd_content_display[scripture_text]" value="<?php echo esc_attr( $o['scripture_text'] ?? __( 'Let there be no compulsion in religion.', 'murtadd' ) ); ?>" class="large-text" placeholder="<?php esc_attr_e( 'The verse, in whichever rendering you prefer', 'murtadd' ); ?>">
 								</p>
 								<p>
@@ -407,8 +535,159 @@ function murtadd_render_settings_page() {
 				submit_button();
 				?>
 			</form>
+			<?php
+			if ( 'upkeep' === $active ) {
+				murtadd_render_dropins_status();
+			}
+			?>
 		<?php endif; ?>
 		</div><!-- .murtadd-admin-panel -->
 	</div>
+	<?php
+}
+
+/**
+ * The Security tab's fields (inside the tab's settings form).
+ */
+function murtadd_render_security_tab() {
+	$slug      = (string) murtadd_security( 'login_slug' );
+	$available = murtadd_hide_login_available();
+	?>
+	<p class="description"><?php esc_html_e( 'The site at this address was compromised in 2024. These switches close what WordPress leaves open by default. Each is independent.', 'murtadd' ); ?></p>
+	<table class="form-table" role="presentation">
+		<tr>
+			<th scope="row"><?php esc_html_e( 'Author names', 'murtadd' ); ?></th>
+			<td>
+				<label><input type="checkbox" name="murtadd_security[hide_authors]" value="1" <?php checked( (bool) murtadd_security( 'hide_authors' ) ); ?>> <?php esc_html_e( 'Keep account names private', 'murtadd' ); ?></label>
+				<p class="description"><?php esc_html_e( 'Closes the REST user list, ?author= addresses and author archives, and the users sitemap. Feeds and embeds name the author from the Profiles tab, or the site.', 'murtadd' ); ?></p>
+			</td>
+		</tr>
+		<tr>
+			<th scope="row"><?php esc_html_e( 'XML-RPC', 'murtadd' ); ?></th>
+			<td>
+				<label><input type="checkbox" name="murtadd_security[xmlrpc_off]" value="1" <?php checked( (bool) murtadd_security( 'xmlrpc_off' ) ); ?>> <?php esc_html_e( 'Switch XML-RPC off', 'murtadd' ); ?></label>
+				<p class="description"><?php esc_html_e( 'The endpoint password-guessing scripts use. Leave it on only if you publish from the WordPress mobile app or Jetpack.', 'murtadd' ); ?></p>
+			</td>
+		</tr>
+		<tr>
+			<th scope="row"><?php esc_html_e( 'Security headers', 'murtadd' ); ?></th>
+			<td>
+				<label><input type="checkbox" name="murtadd_security[headers]" value="1" <?php checked( (bool) murtadd_security( 'headers' ) ); ?>> <?php esc_html_e( 'Send security headers on every page', 'murtadd' ); ?></label>
+				<p class="description"><?php esc_html_e( 'X-Content-Type-Options, Referrer-Policy, X-Frame-Options and Permissions-Policy. A header the server already sends is left alone.', 'murtadd' ); ?></p>
+			</td>
+		</tr>
+		<tr>
+			<th scope="row"><label for="murtadd_login_slug"><?php esc_html_e( 'Private login address', 'murtadd' ); ?></label></th>
+			<td>
+				<code><?php echo esc_html( home_url( '/' ) ); ?></code> <input type="text" id="murtadd_login_slug" name="murtadd_security[login_slug]" value="<?php echo esc_attr( $slug ); ?>" class="regular-text code" placeholder="<?php esc_attr_e( 'leave empty to keep wp-login.php', 'murtadd' ); ?>">
+				<div class="murtadd-admin-warning">
+					<p><strong><?php esc_html_e( 'Write the address down before saving.', 'murtadd' ); ?></strong> <?php esc_html_e( 'Once set, wp-login.php and wp-admin show a page not found to anyone not logged in. Off while the field is empty.', 'murtadd' ); ?></p>
+					<p><?php esc_html_e( 'Locked out? Add define( \'MURTADD_HIDE_LOGIN\', false ); to wp-config.php, log in at wp-login.php, clear this field, then remove the line.', 'murtadd' ); ?></p>
+				</div>
+				<?php if ( ! $available ) : ?>
+					<p class="murtadd-status-missing"><?php esc_html_e( 'Inactive: MURTADD_HIDE_LOGIN is false in wp-config.php, or the WPS Hide Login plugin is handling the login address.', 'murtadd' ); ?></p>
+				<?php elseif ( '' !== murtadd_login_slug() ) : ?>
+					<p class="murtadd-status-ok">
+						<?php
+						/* translators: %s: the private login address. */
+						printf( esc_html__( 'Your login address: %s', 'murtadd' ), '<code>' . esc_html( murtadd_login_url() ) . '</code>' );
+						?>
+					</p>
+				<?php endif; ?>
+			</td>
+		</tr>
+		<tr>
+			<th scope="row"><?php esc_html_e( 'Login page', 'murtadd' ); ?></th>
+			<td>
+				<label><input type="checkbox" name="murtadd_security[login_design]" value="1" <?php checked( (bool) murtadd_security( 'login_design' ) ); ?>> <?php esc_html_e( 'Dress the login screen in the site\'s colours and type', 'murtadd' ); ?></label>
+				<p class="description"><?php esc_html_e( 'The mark is the custom logo, then the Site Icon, then the theme\'s own mark, and links to the site. The accents follow the Colours tab. Works at the private login address too.', 'murtadd' ); ?></p>
+				<p><label for="murtadd_login_message"><?php esc_html_e( 'Note above the form', 'murtadd' ); ?></label></p>
+				<textarea id="murtadd_login_message" name="murtadd_security[login_message]" rows="3" class="large-text"><?php echo esc_textarea( (string) murtadd_security( 'login_message' ) ); ?></textarea>
+				<p class="description"><?php esc_html_e( 'Plain text, up to 500 characters, shown on the log-in screen only. Leave empty for none.', 'murtadd' ); ?></p>
+			</td>
+		</tr>
+	</table>
+	<?php
+}
+
+/**
+ * The Upkeep tab's fields (inside the tab's settings form).
+ */
+function murtadd_render_upkeep_tab() {
+	?>
+	<table class="form-table" role="presentation">
+		<tr>
+			<th scope="row"><?php esc_html_e( 'Maintenance mode', 'murtadd' ); ?></th>
+			<td>
+				<label><input type="checkbox" name="murtadd_upkeep[maintenance]" value="1" <?php checked( (bool) murtadd_upkeep( 'maintenance' ) ); ?>> <?php esc_html_e( 'Show visitors the "Back shortly" page', 'murtadd' ); ?></label>
+				<p class="description"><?php esc_html_e( 'Visitors get the maintenance page with a 503, so search engines keep the pages and come back. Anyone who can change these options still sees the site, and the admin bar says maintenance is on. The login screen stays open.', 'murtadd' ); ?></p>
+			</td>
+		</tr>
+		<tr>
+			<th scope="row"><?php esc_html_e( 'Error pages', 'murtadd' ); ?></th>
+			<td>
+				<label><input type="checkbox" name="murtadd_upkeep[error_pages]" value="1" <?php checked( (bool) murtadd_upkeep( 'error_pages' ) ); ?>> <?php esc_html_e( 'Use the branded pages for updates, PHP errors and database errors', 'murtadd' ); ?></label>
+				<p class="description"><?php esc_html_e( 'The theme writes maintenance.php, php-error.php and db-error.php into wp-content, where WordPress looks for them, and never overwrites a file it did not write. Switching this off, or switching theme, removes its copies.', 'murtadd' ); ?></p>
+			</td>
+		</tr>
+		<tr>
+			<th scope="row"><label for="murtadd_gone_paths"><?php esc_html_e( 'Removed for good (410)', 'murtadd' ); ?></label></th>
+			<td>
+				<textarea id="murtadd_gone_paths" name="murtadd_upkeep[gone_paths]" rows="8" class="large-text code" placeholder="<?php echo esc_attr( "/cheap-pills/\n/shop/*" ); ?>"><?php echo esc_textarea( (string) murtadd_upkeep( 'gone_paths' ) ); ?></textarea>
+				<p class="description"><?php esc_html_e( 'Addresses that never belonged to this site, such as spam pages left by the 2024 compromise, answered 410 Gone so search engines drop them. One per line: an exact path (/cheap-pills/), or a prefix ending in * (/shop/* covers /shop/ and everything under it). Applies only where the site has no page: a live page, and any old address the legacy redirects recover, are never touched. "/" and "/*" alone are refused.', 'murtadd' ); ?></p>
+			</td>
+		</tr>
+	</table>
+	<?php
+}
+
+/**
+ * The error pages' state in wp-content, and a button to write them now. Its
+ * own form, outside the settings form.
+ */
+function murtadd_render_dropins_status() {
+	$labels = array(
+		'written' => __( 'Written by the theme', 'murtadd' ),
+		'kept'    => __( 'Another file is there; left alone', 'murtadd' ),
+		'failed'  => __( 'Could not be written: wp-content is not writable', 'murtadd' ),
+	);
+	?>
+	<h2><?php esc_html_e( 'Error pages in wp-content', 'murtadd' ); ?></h2>
+	<?php if ( isset( $_GET['murtadd_dropins'] ) ) : // phpcs:ignore WordPress.Security.NonceVerification.Recommended ?>
+		<div class="notice notice-success"><p><?php esc_html_e( 'The error pages were written again.', 'murtadd' ); ?></p></div>
+	<?php endif; ?>
+	<table class="widefat striped murtadd-admin-table">
+		<thead>
+			<tr>
+				<th scope="col"><?php esc_html_e( 'File', 'murtadd' ); ?></th>
+				<th scope="col"><?php esc_html_e( 'State', 'murtadd' ); ?></th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php foreach ( array_keys( murtadd_dropin_files() ) as $murtadd_name ) : ?>
+				<?php
+				$murtadd_path = WP_CONTENT_DIR . '/' . $murtadd_name;
+				if ( ! file_exists( $murtadd_path ) ) {
+					$murtadd_state = 'missing';
+				} elseif ( murtadd_dropin_is_ours( $murtadd_path ) ) {
+					$murtadd_state = 'written';
+				} else {
+					$murtadd_state = 'kept';
+				}
+				?>
+				<tr>
+					<td><code><?php echo esc_html( $murtadd_name ); ?></code></td>
+					<td class="<?php echo esc_attr( 'written' === $murtadd_state ? 'murtadd-status-ok' : 'murtadd-status-missing' ); ?>"><?php echo esc_html( $labels[ $murtadd_state ] ?? __( 'Not there', 'murtadd' ) ); ?></td>
+				</tr>
+			<?php endforeach; ?>
+		</tbody>
+	</table>
+	<?php if ( murtadd_upkeep( 'error_pages' ) ) : ?>
+		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="murtadd-admin-inline-form">
+			<input type="hidden" name="action" value="murtadd_write_dropins">
+			<?php wp_nonce_field( 'murtadd_write_dropins' ); ?>
+			<?php submit_button( __( 'Write the error pages now', 'murtadd' ), 'secondary', 'submit', false ); ?>
+		</form>
+	<?php endif; ?>
 	<?php
 }

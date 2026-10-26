@@ -44,7 +44,9 @@ $murtadd_query = get_search_query();
 			<div class="murtadd-suggest-routes">
 				<a class="murtadd-btn murtadd-btn--outline" href="<?php echo esc_url( get_post_type_archive_link( 'murtadd_doubt' ) ); ?>"><?php esc_html_e( 'Browse doubts', 'murtadd' ); ?></a>
 				<a class="murtadd-btn murtadd-btn--outline" href="<?php echo esc_url( get_post_type_archive_link( 'murtadd_rebuttal' ) ); ?>"><?php esc_html_e( 'Browse rebuttals', 'murtadd' ); ?></a>
-				<a class="murtadd-btn murtadd-btn--outline" href="<?php echo esc_url( get_post_type_archive_link( 'murtadd_fatwa' ) ); ?>"><?php esc_html_e( 'Fatwa index', 'murtadd' ); ?></a>
+				<?php if ( murtadd_fatwa_index_has_entries() ) : ?>
+					<a class="murtadd-btn murtadd-btn--outline" href="<?php echo esc_url( get_post_type_archive_link( 'murtadd_fatwa' ) ); ?>"><?php esc_html_e( 'Fatwa index', 'murtadd' ); ?></a>
+				<?php endif; ?>
 			</div>
 		</div>
 	<?php endif; ?>

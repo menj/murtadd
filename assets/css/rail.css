@@ -82,6 +82,16 @@
 	color: var(--murtadd-text);
 	text-wrap: pretty;
 }
+.murtadd-verse p[data-quran-encoding="kfgqpc"]:lang(ar) { font-family: var(--murtadd-font-quran); }
+.murtadd-verse p:lang(ar) {
+	font-size: 22px;
+	line-height: 2.2;
+	letter-spacing: 0;
+	direction: rtl;
+	unicode-bidi: isolate;
+	text-align: right;
+	text-wrap: wrap;
+}
 .murtadd-verse cite {
 	font: 600 11px var(--murtadd-font-sans);
 	letter-spacing: 0.08em;

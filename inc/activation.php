@@ -12,8 +12,14 @@
  *      run repeatedly; it only ever fills gaps.
  *   2. Never destroy. Nothing in this file deletes or unpublishes anything.
  *
- * Pages are created with placeholder text and are immediately public. Replace
- * the placeholder copy before announcing the site.
+ * One narrow exception, murtadd_retire_placeholder_copy(): text the theme
+ * itself once seeded as a placeholder, and that nobody has edited since, is
+ * replaced (pages) or taken back to draft (the lorem-ipsum letters). Anything
+ * an editor has touched fails the comparison and is left exactly as it is.
+ *
+ * Pages are created with their copy written and are immediately public. The
+ * Contact and Privacy pages carry notes for the owner, in HTML comments that
+ * do not render, naming the facts only the owner can supply.
  *
  * @package murtadd
  */
@@ -23,13 +29,16 @@ defined( 'ABSPATH' ) || exit;
 /**
  * The pages the theme expects, in menu order.
  *
- * 'template' assigns a page template. 'body' is placeholder copy, shown only on
- * pages whose template actually renders the_content(); the home and start-here
- * templates do not, so their copy is a note to whoever opens them in the editor.
+ * 'template' assigns a page template. 'body' is shown only on pages whose
+ * template renders the_content(); the home, blog and start-here templates do
+ * not, so their copy is a note to whoever opens them in the editor. The copy
+ * of the rest lives in murtadd_seed_page_bodies() (inc/seed-data.php).
  *
  * @return array<string,array>
  */
 function murtadd_required_pages() {
+	$bodies = murtadd_seed_page_bodies();
+
 	return array(
 		'home'       => array(
 			'title'    => __( 'Home', 'murtadd' ),
@@ -48,27 +57,27 @@ function murtadd_required_pages() {
 		),
 		'irtidad'    => array(
 			'title'    => __( 'Irtidad', 'murtadd' ),
-			'body'     => __( 'Placeholder. This page carries the second route from Start Here: what irtidad actually is, and what does not take a person out of Islam. Replace this text.', 'murtadd' ),
+			'body'     => $bodies['irtidad'],
 			'template' => '',
 		),
 		'about'      => array(
 			'title'    => __( 'About', 'murtadd' ),
-			'body'     => __( 'Placeholder. Replace this text.', 'murtadd' ),
+			'body'     => $bodies['about'],
 			'template' => '',
 		),
 		'faq'        => array(
 			'title'    => __( 'FAQ', 'murtadd' ),
-			'body'     => __( 'Placeholder. Replace this text.', 'murtadd' ),
+			'body'     => $bodies['faq'],
 			'template' => '',
 		),
 		'contact'    => array(
 			'title'    => __( 'Contact', 'murtadd' ),
-			'body'     => __( 'Placeholder. Replace this text.', 'murtadd' ),
+			'body'     => $bodies['contact'],
 			'template' => '',
 		),
 		'privacy'    => array(
 			'title'    => __( 'Privacy', 'murtadd' ),
-			'body'     => __( 'Placeholder. Replace this text.', 'murtadd' ),
+			'body'     => $bodies['privacy'],
 			'template' => '',
 		),
 	);
@@ -348,20 +357,19 @@ function murtadd_activation_notice() {
 			implode( ', ', $report['reading'] )
 		);
 	}
-	if ( ! empty( $report['content']['doubts'] ) || ! empty( $report['content']['rebuttals'] ) || ! empty( $report['content']['letters'] ) ) {
+	if ( ! empty( $report['content']['doubts'] ) || ! empty( $report['content']['rebuttals'] ) ) {
 		$lines[] = sprintf(
-			/* translators: 1: doubts, 2: rebuttals, 3: placeholder letters */
-			__( 'Starter content added: %1$d doubts, %2$d rebuttals, and %3$d placeholder letters (lorem ipsum — replace or delete them).', 'murtadd' ),
+			/* translators: 1: doubts, 2: rebuttals */
+			__( 'Starter content added: %1$d doubts and %2$d rebuttals.', 'murtadd' ),
 			(int) $report['content']['doubts'],
-			(int) $report['content']['rebuttals'],
-			(int) $report['content']['letters']
+			(int) $report['content']['rebuttals']
 		);
 	}
 
 	if ( ! $lines ) {
 		$lines[] = __( 'Everything the theme needs was already in place. Nothing was changed.', 'murtadd' );
 	} else {
-		$lines[] = __( 'New pages carry placeholder text. Replace it before announcing the site.', 'murtadd' );
+		$lines[] = __( 'Before announcing the site, add a contact method to the Contact page and your host and plugin details to the Privacy page.', 'murtadd' );
 	}
 
 	printf(
@@ -402,3 +410,172 @@ function murtadd_migrate_template_paths() {
 	}
 }
 add_action( 'admin_init', 'murtadd_migrate_template_paths' );
+
+/**
+ * The two placeholder strings earlier releases seeded, through __() in the
+ * locale currently loaded. Literals, so the POT keeps them.
+ *
+ * @return array{page:string,irtidad:string}
+ */
+function murtadd_legacy_placeholder_strings() {
+	return array(
+		'page'    => __( 'Placeholder. Replace this text.', 'murtadd' ),
+		'irtidad' => __( 'Placeholder. This page carries the second route from Start Here: what irtidad actually is, and what does not take a person out of Islam. Replace this text.', 'murtadd' ),
+	);
+}
+
+/**
+ * The placeholder copy earlier releases seeded, for comparison only.
+ *
+ * Each string is taken as written, in the current locale, and in every
+ * language installed on the site: a site activated under another locale
+ * stored that locale's text, and only a genuine translation of the
+ * placeholder can match, so no page an editor wrote is ever mistaken for it.
+ * Nothing here is ever written to the database.
+ *
+ * @return array{pages:array<string,string[]>,letters:array<string,string>}
+ */
+function murtadd_legacy_placeholder_copy() {
+	$sets = array(
+		array(
+			'page'    => 'Placeholder. Replace this text.',
+			'irtidad' => 'Placeholder. This page carries the second route from Start Here: what irtidad actually is, and what does not take a person out of Islam. Replace this text.',
+		),
+		murtadd_legacy_placeholder_strings(),
+	);
+	if ( function_exists( 'get_available_languages' ) && function_exists( 'switch_to_locale' ) ) {
+		foreach ( (array) get_available_languages() as $locale ) {
+			if ( switch_to_locale( $locale ) ) {
+				$sets[] = murtadd_legacy_placeholder_strings();
+				restore_previous_locale();
+			}
+		}
+	}
+	$page = array_values( array_unique( array_column( $sets, 'page' ) ) );
+	$irt  = array_values( array_unique( array_column( $sets, 'irtidad' ) ) );
+
+	return array(
+		'pages'   => array(
+			'irtidad' => $irt,
+			'about'   => $page,
+			'faq'     => $page,
+			'contact' => $page,
+			'privacy' => $page,
+		),
+		// md5 of each lorem-ipsum letter body after murtadd_normalise_copy().
+		'letters' => array(
+			'placeholder-letter-one' => '94db0922d2af59c87c5db80c48682f13',
+			'placeholder-letter-two' => '1974a0723228ce8b00a1e34b0560d993',
+		),
+	);
+}
+
+/**
+ * Text reduced to what a reader sees, for comparing stored copy.
+ *
+ * Tags and block-editor comments go, entities are decoded and whitespace is
+ * collapsed, so a page opened in the editor and saved unchanged (which wraps
+ * it in a paragraph block) still counts as unedited.
+ *
+ * @param string $html Stored content.
+ * @return string
+ */
+function murtadd_normalise_copy( $html ) {
+	$text = html_entity_decode( strip_tags( (string) $html ), ENT_QUOTES, 'UTF-8' );
+	return trim( (string) preg_replace( '/\s+/u', ' ', $text ) );
+}
+
+/**
+ * Whether stored copy carries markup the theme never seeded.
+ *
+ * The seeded copy is plain paragraphs. A link, an image or any other element
+ * an editor added means the copy was edited, even when the visible text still
+ * matches, so it is never treated as the placeholder.
+ *
+ * @param string $html Stored content.
+ * @return bool
+ */
+function murtadd_copy_has_added_markup( $html ) {
+	$rest = (string) preg_replace( '#<!--.*?-->|</?p\b[^>]*>|<br\s*/?>#is', '', (string) $html );
+	return strip_tags( $rest ) !== $rest;
+}
+
+/**
+ * Retire the placeholder copy on sites set up before 1.41.0.
+ *
+ * Pages still holding the exact placeholder text get their written copy, and
+ * the two lorem-ipsum letters go back to draft. A page or letter that differs
+ * from what the theme seeded in any visible character has been edited, and is
+ * not touched. Runs until every write has landed; running it again would
+ * change nothing anyway.
+ *
+ * @return array{pages:string[],letters:string[]} What changed on this run.
+ */
+function murtadd_retire_placeholder_copy() {
+	$done = array(
+		'pages'   => array(),
+		'letters' => array(),
+	);
+	if ( get_option( 'murtadd_placeholder_copy_retired' ) ) {
+		return $done;
+	}
+	$failed = false;
+
+	$legacy = murtadd_legacy_placeholder_copy();
+	$bodies = murtadd_seed_page_bodies();
+
+	foreach ( $legacy['pages'] as $slug => $old ) {
+		$page = get_page_by_path( $slug );
+		if ( ! $page || ! isset( $bodies[ $slug ] ) ) {
+			continue;
+		}
+		$current = murtadd_normalise_copy( $page->post_content );
+		if ( murtadd_normalise_copy( $bodies[ $slug ] ) === $current ) {
+			continue; // Already the written copy.
+		}
+		$known = ! murtadd_copy_has_added_markup( $page->post_content ) && in_array( $current, array_map( 'murtadd_normalise_copy', $old ), true );
+		if ( ! $known ) {
+			continue; // Edited. Leave it alone.
+		}
+		$written = wp_update_post(
+			array(
+				'ID'           => $page->ID,
+				'post_content' => $bodies[ $slug ],
+			)
+		);
+		if ( ! $written || is_wp_error( $written ) ) {
+			$failed = true;
+			continue;
+		}
+		$done['pages'][] = $slug;
+	}
+
+	foreach ( $legacy['letters'] as $slug => $hash ) {
+		$letter = get_page_by_path( $slug, OBJECT, 'murtadd_letter' );
+		if ( ! $letter || 'publish' !== $letter->post_status ) {
+			continue;
+		}
+		if ( murtadd_copy_has_added_markup( $letter->post_content ) || md5( murtadd_normalise_copy( $letter->post_content ) ) !== $hash ) {
+			continue; // Real text has replaced the lorem. Leave it alone.
+		}
+		$written = wp_update_post(
+			array(
+				'ID'          => $letter->ID,
+				'post_status' => 'draft',
+			)
+		);
+		if ( ! $written || is_wp_error( $written ) ) {
+			$failed = true;
+			continue;
+		}
+		$done['letters'][] = $slug;
+	}
+
+	// Marked done only when every write landed; a failed one is retried on
+	// the next admin request, and the comparison keeps the retry harmless.
+	if ( ! $failed ) {
+		update_option( 'murtadd_placeholder_copy_retired', 1 );
+	}
+	return $done;
+}
+add_action( 'admin_init', 'murtadd_retire_placeholder_copy' );

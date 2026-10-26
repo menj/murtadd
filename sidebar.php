@@ -40,6 +40,7 @@ $murtadd_start = get_page_by_path( 'start-here' );
 				</ul>
 			</li>
 
+			<?php if ( murtadd_fatwa_index_has_entries() ) : ?>
 			<li class="has-sub">
 				<a<?php murtadd_nav_state( 'fatwa' ); ?> href="<?php echo esc_url( get_post_type_archive_link( 'murtadd_fatwa' ) ); ?>"><?php esc_html_e( 'Fatwa', 'murtadd' ); ?> <span class="murtadd-caret" aria-hidden="true">▾</span></a>
 				<ul class="murtadd-sub">
@@ -52,6 +53,7 @@ $murtadd_start = get_page_by_path( 'start-here' );
 						<?php endforeach; endif; ?>
 				</ul>
 			</li>
+			<?php endif; ?>
 
 			<li class="has-sub">
 				<a<?php murtadd_nav_state( 'doubts' ); ?> href="<?php echo esc_url( get_post_type_archive_link( 'murtadd_doubt' ) ); ?>"><?php esc_html_e( 'Doubts', 'murtadd' ); ?> <span class="murtadd-caret" aria-hidden="true">▾</span></a>

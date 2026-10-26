@@ -10,13 +10,20 @@
 		return;
 	}
 
+	var l10n = window.murtaddLongform || {};
+	var text = {
+		progress: l10n.progress || 'Reading progress',
+		toc: l10n.toc || 'On this page',
+		top: l10n.top || 'Back to top'
+	};
+
 	var reduced = window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches;
 
 	/* ---------- Progress ---------- */
 	var bar = document.createElement( 'div' );
 	bar.className = 'murtadd-progress';
 	bar.setAttribute( 'role', 'progressbar' );
-	bar.setAttribute( 'aria-label', 'Reading progress' );
+	bar.setAttribute( 'aria-label', text.progress );
 	bar.innerHTML = '<span class="murtadd-progress-fill"></span>';
 	document.body.appendChild( bar );
 	var fill = bar.querySelector( '.murtadd-progress-fill' );
@@ -28,7 +35,7 @@
 	if ( headings.length >= 2 ) {
 		toc = document.createElement( 'nav' );
 		toc.className = 'murtadd-toc';
-		toc.setAttribute( 'aria-label', 'On this page' );
+		toc.setAttribute( 'aria-label', text.toc );
 
 		var list = document.createElement( 'ol' );
 		headings.forEach( function ( heading, i ) {
@@ -45,7 +52,7 @@
 
 		var label = document.createElement( 'h2' );
 		label.className = 'murtadd-toc-label';
-		label.textContent = 'On this page';
+		label.textContent = text.toc;
 		toc.appendChild( label );
 		toc.appendChild( list );
 
@@ -59,7 +66,7 @@
 	var top = document.createElement( 'button' );
 	top.type = 'button';
 	top.className = 'murtadd-top';
-	top.setAttribute( 'aria-label', 'Back to top' );
+	top.setAttribute( 'aria-label', text.top );
 	top.innerHTML = '<span aria-hidden="true">&uarr;</span>';
 	document.body.appendChild( top );
 

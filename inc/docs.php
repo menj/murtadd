@@ -1,6 +1,6 @@
 <?php
 /**
- * Documentation viewer — Appearance → Murtadd → Docs.
+ * Documentation viewer — Appearance → Theme Options → Docs.
  *
  * Renders the theme's own /docs/*.md, so the manual and the code ship in one
  * artefact and cannot drift apart. There is no second copy to update: edit the

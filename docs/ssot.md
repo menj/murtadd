@@ -1,6 +1,6 @@
 # Murtadd — Single Source of Truth
 
-Version 1.39.0 · Child theme of Twenty Twenty-Five · murtadd.org
+Version 1.40.0 · Child theme of Twenty Twenty-Five · murtadd.org
 
 ## What this theme is
 
@@ -20,10 +20,10 @@ Six files state the version: `style.css`, `functions.php`, `readme.txt`, `docs/r
 2. **Conditional loading.** Per-template CSS (`doubt-template.css`, `rebuttal-template.css`, `fatwa-index.css`, `comments.css`) enqueues only on its views. Admin JS enqueues only on `appearance_page_murtadd` and `murtadd_*` edit screens.
 3. **Progressive enhancement.** Every front-end behaviour works with JavaScript disabled. The fatwa filters are a plain GET form; JS only auto-submits on change and hides the button.
 4. **Escaped output.** All front-end output flows through the helpers in `inc/template-tags.php` or direct `esc_*` calls.
-5. **Settings.** Settings API only. One option array per tab: `murtadd_colours`, `murtadd_cross_links`, `murtadd_content_display`. Tabbed screen at Appearance → Murtadd; the Taxonomies tab links to native term screens and duplicates no CRUD.
+5. **Settings.** Settings API only. One option array per tab: `murtadd_colours`, `murtadd_cross_links`, `murtadd_contextual_links`, `murtadd_content_display`, `murtadd_security`, `murtadd_upkeep`. Tabbed screen at Appearance → Theme Options; the Taxonomies tab links to native term screens and duplicates no CRUD.
 6. **Doubt Categories are locked.** Exactly four terms (intellectual, scriptural, emotional, identity), capabilities set to `do_not_allow`, seeded once. They power the homepage grid and the support-notice logic.
 7. **Word caps are soft.** The short-response cap warns in the editor and never blocks saving.
-8. **Cross-links state no relationship.** Outbound cards and deep links open in a new tab with `rel="noopener"`; the front end never declares an affiliation.
+8. **Cross-links state no relationship.** Outbound cards and deep links open in a new tab with `rel="noopener"`; the front end never declares an affiliation. Contextual links inside the text are the one exception to the new tab: they open in the same tab, like any link in running prose, carry `rel="noopener"` when they leave the site, and look the same whichever site they lead to.
 
 ## File structure
 
@@ -43,7 +43,11 @@ Every `murtadd-` class a template emits must have a rule in a stylesheet that is
 
 ## Head output
 
-`inc/meta-tags.php` owns the description/OG/Twitter tags and the robots rules; `inc/schema.php` owns JSON-LD. If a general SEO plugin is ever installed, disable the former, keep the latter (its QAPage/Claim markup is content-model-specific and no plugin will replicate it).
+`inc/meta-tags.php` owns the description/OG/Twitter tags and the robots rules; `inc/schema.php` owns JSON-LD, built by `murtadd_structured_data_node()` and printed by `murtadd_structured_data()`. The graph is the view's main node (`murtadd_structured_data_primary_node()`) plus the BreadcrumbList (`murtadd_breadcrumb_node()`); a view with one node prints it alone, as before.
+
+**Breadcrumbs.** `murtadd_breadcrumb_trail()` (`inc/template-tags.php`) builds the trail and `murtadd_breadcrumbs()` prints it at the top of the entry or archive header, styled by `assets/css/breadcrumbs.css`. Doubt: Doubts, its doubt category. Rebuttal: Rebuttals, its topic. Fatwa entry: the fatwa index, its school; the index is left out while it has no published entry, as the navigation leaves it out. Letter: Letters. Page: its parent pages. Post: the posts page. Taxonomy and post-type archives: the archive above them. The BreadcrumbList is built from the same trail, so the two cannot disagree; switching breadcrumbs off on the Content tab removes both. With Rank Math's breadcrumbs on (`murtadd_rank_math_breadcrumbs_active()`), Rank Math's trail is shown and its BreadcrumbList stands. Pinned in `tests/BreadcrumbsTest.php`.
+
+**With Rank Math active** (`inc/rank-math.php`, detected by `RANK_MATH_VERSION`) nothing needs switching off by hand. The meta tags stand down, and the page carries one graph, Rank Math's. The theme's nodes go into it through `rank_math/json_ld` by one rule: a node is added only when the graph has no node of its family, and where it has one the theme fills empty fields (`about`, `citation`) and overwrites nothing. In practice a doubt adds its QAPage, a rebuttal's Article gains its Claim and sources, a fatwa entry's Article gains its subject and primary source, the front page adds nothing, and a BreadcrumbList is added only when Rank Math's graph has none. An empty Rank Math description is filled from the content model; search results and 404s stay noindex. With Rank Math's Schema module off, the theme prints its own graph as before. Pinned in `tests/RankMathTest.php`.
 
 ## Starter content
 
@@ -77,6 +81,9 @@ Taxonomies: `murtadd_topic` (shared, flat, seeded 6 terms, `/topic/`), `murtadd_
 |---|---|---|
 | murtadd_colours | accent, accent_tint | #0f6e56, #eefaf7 |
 | murtadd_cross_links | ce_base_url, bismika_base_url | empty (links hidden) |
+| murtadd_contextual_links | own_enabled, sister_enabled, own_max, sister_max, extra, excluded | 1, 1, 4, 3, empty, empty |
+| murtadd_security | hide_authors, xmlrpc_off, headers, login_slug, login_design, login_message | 1, 1, 1, empty (private login off), 1, empty |
+| murtadd_upkeep | gone_paths, maintenance, error_pages | empty, 0, 1 |
 | murtadd_content_display | short_response_word_cap, show_struggling_notice, fatwa_index_default_sort, footer_heritage_note | 400, 1, scholar_az, "online since 2004" |
 | murtadd_topics_seeded / murtadd_schools_seeded / murtadd_doubt_categories_seeded | flag | 1 after first init |
 
@@ -98,7 +105,9 @@ Taxonomies: `murtadd_topic` (shared, flat, seeded 6 terms, `/topic/`), `murtadd_
 
 `inc/activation.php` scaffolds the site on `after_switch_theme`: pages, footer menu, Reading options, rewrite flush. Two invariants govern it and must not be broken: **it never overwrites** (existing pages, an assigned menu, and Reading options already chosen are all skipped) and **it never destroys** (no deletes, no trashing, no unpublishing). Re-activation is therefore idempotent.
 
-It is re-runnable from Appearance → Murtadd → Setup, because upgrading the theme in place does not fire `after_switch_theme` and would otherwise leave an existing site unscaffolded. Any template that depends on a page must degrade visibly, not silently: when a required page is absent, `murtadd_setup_needed_notice()` says so in the admin.
+**The one exception: retiring the placeholders (1.41.0).** Before 1.41.0 activation published five pages reading "Placeholder. Replace this text." and seeded two lorem-ipsum letters. `murtadd_retire_placeholder_copy()` runs on `admin_init` until every write has landed (flag `murtadd_placeholder_copy_retired`, set only then): a page whose text, compared as a reader sees it, is still exactly the placeholder gets its written copy, and a letter whose text still matches the seeded lorem goes back to draft. Anything an editor has changed fails the comparison, and so does copy carrying markup the theme never seeded (a link, an image), and is left as it is. A page activated under another locale stored that locale's placeholder, which the English and current-locale forms do not match; it is matched against the placeholder as translated in every language installed on the site (`murtadd_legacy_placeholder_strings()` under `switch_to_locale()`), so only a genuine translation can match; a page that is no translation of the placeholder, however short or unedited, keeps its content. Lorem letters were never translated, so they have no such case. No other code may overwrite or unpublish. Letters are no longer seeded at all, and the fatwa index renders an "in preparation" state, `noindex`, while it has no published entry (`murtadd_fatwa_index_has_entries()`).
+
+It is re-runnable from Appearance → Theme Options → Setup, because upgrading the theme in place does not fire `after_switch_theme` and would otherwise leave an existing site unscaffolded. Any template that depends on a page must degrade visibly, not silently: when a required page is absent, `murtadd_setup_needed_notice()` says so in the admin.
 
 Ordering matters. `after_switch_theme` fires on `after_setup_theme` (99), before `init`, so the routine only raises the `murtadd_needs_setup` flag there. The work itself runs on `init` at 90 — after the CPTs and taxonomies register — and clears `murtadd_rewrite_version` so the `init`/99 flusher writes a complete rule set.
 
@@ -136,7 +145,7 @@ Where no image is set, `inc/social-card.php` generates a card carrying the doubt
 
 ## Stylesheet ownership
 
-`assets/css/tokens.css` owns the `:root` design tokens and both `@font-face` declarations. `assets/css/logo.css` owns the wordmark component. **Both are loaded by the front end and by the Theme Options screen** (`tokens → logo → main`, `tokens → logo → admin`).
+`assets/css/tokens.css` owns the `:root` design tokens and the three `@font-face` declarations (Source Serif 4, Public Sans, and the Qur'an face). `assets/css/logo.css` owns the wordmark component. **Both are loaded by the front end and by the Theme Options screen** (`tokens → logo → main`, `tokens → logo → admin`). The login screen loads `tokens → login`, and the standalone error pages link `tokens.min.css` from the theme. The block editor canvas loads `tokens → editor` through `add_editor_style()` (`assets/css/editor.css`: the body, links, headings, quotations and Arabic of the front end), so an editor writes in the faces a reader sees; it never sets the Qur'an face, because the editor shows verse text the mapper has not fitted.
 
 There is exactly one definition of the mark and one of the brand colours in this codebase. Never restate either. The wordmark has now drifted twice by being hand-copied into a second context — once into the footer, once into the admin hero — and this structure is what makes a third time impossible. A rule that styles a *placement* (the footer's `:not(.murtadd-logo)` exclusion, a size override) belongs with its consumer; a rule that defines the *mark* belongs in `logo.css`.
 
@@ -161,17 +170,35 @@ The operative test before publishing a paired entry: **if the companion article 
 
 **Counterpart links.** `_murtadd_ce_slug` on rebuttals and doubts stores a bare article slug on the companion site; `template-parts/counterpart.php` renders it as `{ce_base_url}/articles/{slug}/`. Both the slug and the base URL must be present or nothing renders. The two sites overlap on roughly two thirds of this site's entries by design: this one answers charges in a forensic register, the other works the same questions through pastorally.
 
+**Contextual links** (`inc/contextual-links.php`). In the running text of a single entry, the first mention of a known phrase links to the page that treats it, on this site or on one of the six sister sites. The phrases are in `inc/data/network-links.json`, **a shared file kept byte-for-byte identical across all seven themes** (abrahamic, bestofislam, injil.help, paulus, compelling-evidence, murtadd, lailatulqadar). Never edit it here alone: change it in all seven or in none. Its `sites` table names each site's address; entries for `murtadd` resolve through `home_url()`, so staging links stay on staging, and every other entry resolves against its site's address. Each phrase belongs to exactly one page across the network.
+
+Rules, all enforced in code and pinned in `tests/ContextualLinksTest.php`: a phrase is matched whole, capitals and apostrophe form aside; each address is linked once a page, at its first mention; never the page itself; at most one added link a paragraph or list item; at most four links to this site and three to sister sites a page, set separately on the tab. Nothing is linked inside a link, heading, quotation, figure, caption, citation, code, table, a `lang="ar"` (or Hebrew, Greek, Syriac) element, a verse or ayah box, the sources panel, or the fatwa disclaimer.
+
+Three render paths: `the_content` at priority 20 (after `wpautop` and shortcodes, so paragraphs exist to count; the theme runs no other `the_content` filter), the doubt short response in `murtadd_the_short_response()`, and the fatwa position summary in `single-murtadd_fatwa.php`. The last two never pass through `the_content`, which is why they call `murtadd_ctx_render()` themselves. Only the queried entry is linked: never a feed, an excerpt, an archive, the front page, or another post rendered on the same request.
+
+**Emotional and Identity doubts get no contextual links,** and no doubt in either category may be a target in the shared map (the test fails if one is). They are written care-first and left deliberately unlinked, the precedent set by the fear and grief doubts: a grief is not a claim awaiting refutation. The counterpart box and the homepage cross-link cards are separate and unchanged.
+
+Extra phrases from the tab ("phrase | /path/" for this site, "phrase | https://…" for a sister site) are tried before the shared map, so they win; a full address on any host outside the `sites` table is dropped on save. Filters: `murtadd_contextual_links_map` (the entries), `murtadd_contextual_links_enabled` (per post).
+
+**Glossary of terms** (`inc/glossary.php`, `inc/data/glossary.json`, `assets/css/glossary.css`, `assets/js/glossary.js`). The entries use Arabic and Malay terms (irtidad, nafaqah, 'ayb, tudung, hudud) without stopping to define them. The first mention of each on a page carries a short definition and its source, shown on hover, keyboard focus or tap. The definition says what the word means in the sense the entries use it, never what a ruling is, and its source is a work the seed already cites or the entry that explains the term ("(this site)"); a test fails if a term appears nowhere in the seed or a "(this site)" source names no entry. Rules, pinned in `tests/GlossaryTest.php`: one definition per term per page across every render path (the_content at 21, after the contextual links; the doubt short response; the fatwa summary); never inside a link, heading, quotation, verse, the sources panel, the disclaimer, a button or any region the contextual links skip; a mention the text glosses itself ("hudud (fixed prescribed penalties)") is left as written and a later one may carry the definition; **never on Emotional or Identity doubts**, for the reason they carry no contextual links. The markup is a `<button>` with `aria-describedby` and `aria-expanded` and a `role="tooltip"` span marked `hidden`, positioned over the text so nothing moves; hover and focus work through CSS alone, the script adds tap, Escape and keeping the box inside the viewport. The stylesheet and script load only on an entry whose content, short response or fatwa summary mentions a term. Switch: Content tab, Glossary of terms (on by default). Filters: `murtadd_glossary_terms`, `murtadd_glossary_enabled` (per post).
+
+**Security** (`inc/hardening.php`, `inc/hide-login.php`). The site at this domain was compromised in August 2024, so the defaults close what WordPress leaves open: author enumeration (REST users for visitors; logged-in users keep them for the block editor, `?author=`, author archives, the users sitemap, account names in feeds and oEmbed), XML-RPC, and four response headers. Every switch reads through `murtadd_security( $key )`, whose defaults live in `murtadd_security_defaults()`. The private login address is a port of the WPS Hide Login request handling and is **off until an address is saved**; `define( 'MURTADD_HIDE_LOGIN', false );` in `wp-config.php` turns the module off whatever is saved, which is the documented way back in. It stands down while the WPS Hide Login plugin is active. Pinned in `tests/HardeningTest.php`. The login screen (`inc/login.php`, `assets/css/login.css`) is styled through WordPress's own login hooks and builds no login address, so it works at the private address; it loads `tokens → login` on `login_enqueue_scripts` only, every rule is scoped under `body.murtadd-login`, and the Colours tab's accents and the mark (custom logo, Site Icon, theme mark) arrive as custom properties through `wp_add_inline_style`. Pinned in `tests/LoginTest.php`.
+
 **Legacy redirects** (`inc/legacy-redirects.php`) map the pre-2024 murtadd.org paths, recovered from sitemap caches in an old backup, onto current pages and topic archives. Descriptors resolve at request time; a missing target is skipped, never chained. Depends on the `irtidad` page and the `apostasy-law` topic term both existing. Filter: `murtadd_legacy_redirect_map`.
+
+**410 Gone** (`inc/gone.php`, `410.php`) answers the paths on the Upkeep tab with `410 Gone`. Two rules keep it from ever retiring a real page, and both are pinned in `tests/GoneTest.php`: it runs only on a 404, and at `template_redirect` priority 20, after the legacy redirects at 10, which exit when they redirect. The list ships empty: no spam path from the compromise survives in the record.
+
+**Maintenance and error pages** (`inc/maintenance.php`, `dropins/`, `assets/css/error-page.css`). The three `dropins/*.php` files are the sources of WordPress drop-ins that `murtadd_maybe_install_dropins()` copies into `wp-content`, filling `{{SITE_NAME}}`, `{{HOME_URL}}`, `{{TOKENS_URL}}` and `{{CSS_URL}}`. Rules, pinned in `tests/MaintenanceTest.php`: each file runs on its own with nothing from WordPress; every file the theme writes carries the marker `Murtadd error page drop-in`, and nothing without it is overwritten or removed; writes happen only in wp-admin for an administrator, by temporary file and rename, and on a network only from the main site. The pages link the theme's `tokens.min.css` for the brand colours and fonts, and `error-page.css` falls back to the same values when that file cannot load, which is the one place a token value is restated, deliberately: the pages appear exactly when the theme may be half uploaded. Light only, per the Exclusions. Maintenance mode serves the same template from the theme at `template_redirect` priority 0.
 
 The **Docs tab** is the exception to the Settings API pattern: it registers no setting group and renders `/docs/*.md` through `inc/docs.php` (Parsedown 1.8.0, vendored at `vendor/parsedown/`, safe mode + `wp_kses()`). Adding or renaming a document means editing `murtadd_docs_manifest()`; nothing else knows the filenames. The docs directory and `vendor/` must both ship in the build, or the tab renders an explanatory notice instead of the manual.
 
-Appearance → Murtadd is the Settings API with a skin (`assets/css/admin.css`), not a custom framework. The markup stays `form-table`, so fields, nonces, sanitisers, and capability checks keep working; only the surface is restyled, and everything is scoped under `.murtadd-admin` so nothing leaks into the rest of wp-admin.
+Appearance → Theme Options is the Settings API with a skin (`assets/css/admin.css`), not a custom framework. The markup stays `form-table`, so fields, nonces, sanitisers, and capability checks keep working; only the surface is restyled, and everything is scoped under `.murtadd-admin` so nothing leaks into the rest of wp-admin. No admin markup carries a `style` attribute (`tests/AssetsTest.php`): states use `murtadd-status-missing` and `murtadd-status-ok`, and the dashboard's content-gaps widget, the one rule set outside `.murtadd-admin`, is scoped under `#dashboard-widgets` (`murtadd-gaps-*`).
 
 The gradient appears in exactly three places: the hero, the active tab, and the primary button. Do not spread it further. Restraint governs the admin as it governs the front end.
 
 The version badge reads `MURTADD_VERSION` directly. It cannot drift, unlike the six files that state a version in text.
 
-Tabs run in the order the work is done: Setup, Content, Topics & schools, Linked sites, Colours. **The tab keys are load-bearing**: `settings_fields( 'murtadd_' . $active )` maps each key to its registered settings group, so relabel and reorder freely, but never rename a key — a renamed key silently detaches the tab from its settings and the fields will appear to save while going nowhere. Labels must name what a person has, not what WordPress calls it internally.
+Tabs run in the order the work is done: Setup, Content, Topics & schools, Linked sites, Contextual links, Colours, Profiles, Security, Upkeep, Docs. **The tab keys are load-bearing**: `settings_fields( 'murtadd_' . $active )` maps each key to its registered settings group, so relabel and reorder freely, but never rename a key — a renamed key silently detaches the tab from its settings and the fields will appear to save while going nowhere. Labels must name what a person has, not what WordPress calls it internally.
 
 ## Exclusions (binding)
 
@@ -179,7 +206,7 @@ Tabs run in the order the work is done: Setup, Content, Topics & schools, Linked
 
 **No testimonials.** Do not add a testimonials section, post type, or archive: no wall of personal accounts from people who doubted, left, or stayed. The site answers questions; it does not collect people.
 
-Both are owner decisions, recorded 2026-07-13. Do not re-propose either in reviews or enhancement lists.
+Both are owner decisions, recorded 2026-07-13. Do not re-propose either in reviews or enhancement lists. The 1.41.0 pages (login, error, maintenance, 410) follow the first: light only.
 
 ## Design tokens
 
@@ -187,7 +214,15 @@ Defined once in `css/main.css` `:root`. Accent `#0f6e56` (green), tint `#eefaf7`
 
 ## Branding assets
 
-`screenshot.png` (1200×900) is the Appearance → Themes preview. `assets/icons/` holds the site-icon mark: `site-icon.svg` is the source, with 512/192/180/32/16 PNGs and `favicon.ico` derived from it. `inc/site-icon.php` serves them only while no core Site Icon is configured; `has_site_icon()` short-circuits the whole module the moment one is set. Fonts are self-hosted in `/fonts/` under the OFL.
+`screenshot.png` (1200×900) is the Appearance → Themes preview. `assets/icons/` holds the site-icon mark: `site-icon.svg` is the source, with 512/192/180/32/16 PNGs and `favicon.ico` derived from it. `inc/site-icon.php` serves them only while no core Site Icon is configured; `has_site_icon()` short-circuits the whole module the moment one is set. Fonts are self-hosted in `assets/fonts/`: Source Serif 4 and Public Sans under the OFL, and the Qur'an face below under its own licence.
+
+## Arabic and the Qur'an face
+
+**Qur'anic verses in Arabic, and nothing else, are set in KFGQPC HAFS Uthmanic Script** (King Fahd Glorious Quran Printing Complex), shared with the six sister themes. Token `--murtadd-font-quran`, used only by `.murtadd-ayah[data-quran-encoding="kfgqpc"]:lang(ar)` (`main.css`) and `.murtadd-verse p[data-quran-encoding="kfgqpc"]:lang(ar)` (`rail.css`, when the owner sets the rail verse in Arabic): the face goes only on verse text `inc/quran-text.php` has fitted to its encoding, so a verse rendered where the mapper does not run keeps the Arabic stack rather than showing round sukun and stray ornaments. Every other Arabic run, a hadith or a term in a sentence, takes `--murtadd-font-arabic`, a system Arabic stack, through `:lang(ar)`. `tests/QuranTextTest.php` fails if the Qur'an token appears on any other selector or the face is named outside `tokens.css`. Verses are set at line-height 2.2, right to left, with no letter-spacing. Not preloaded: the file is fetched only on a page that shows a verse.
+
+**The licence decision.** The owner chose on 2026-10-26 to serve a WOFF2 conversion of the font (`assets/fonts/kfgqpc-hafs-uthmanic-script.woff2`, 107 KB, from the 298 KB TrueType file), accepting that the KFGQPC licence forbids modifying the font. The conversion is lossless for glyphs, character map and OpenType layout; the digital signature (DSIG) is dropped. The licence text ships beside it.
+
+**Verse encoding** (`inc/quran-text.php`). The face follows the Complex's encoding (Madani sukun U+06E1, rounded zero U+0652) and draws U+06DF as a spacing ornament and Arabic-Indic digits as the ayah medallion. Verse text in the common Tanzil encoding (sukun U+0652, rounded zero U+06DF) is mapped as it renders, and ornate brackets round an ayah number are dropped; the stored text is never changed. Text already holding U+06E1 is left alone, and a mapped element is marked `data-quran-encoding="kfgqpc"` so no later pass maps it twice. Runs on `the_content` at 6, inside the doubt short response and the fatwa position summary, on the homepage ayah, and on an Arabic rail verse. Write a verse as `<p class="murtadd-ayah" lang="ar" dir="rtl">`, with bare digits for the ayah number and no U+06DD.
 
 ## Data removal
 

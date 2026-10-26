@@ -1105,46 +1105,100 @@ function murtadd_seed_doubts() {
 	);
 }
 
+
 /**
- * Placeholder letters.
+ * The copy for the pages activation creates.
  *
- * Lorem ipsum, so the Letters templates render and the layout can be reviewed
- * before any real correspondence is filed. Both paths are exercised: one letter
- * carries an Editor's note, one does not.
+ * Only pages whose template renders the_content() are here: irtidad, about,
+ * faq, contact and privacy. Links are built with home_url() when the page is
+ * created, so a site installed in a subdirectory links correctly, and every
+ * path named here exists in the starter content (tests/PageCopyTest.php
+ * checks each one).
  *
- * These publish immediately and say plainly what they are. Replace or delete
- * them before announcing the site.
+ * Contact and Privacy carry HTML comments for the owner. Comments do not
+ * render, and the facts they ask for (an address, a host, a plugin list) are
+ * the owner's to supply; the theme does not invent them.
  *
- * @return array<int,array>
+ * @return array<string,string> Slug => HTML.
  */
-function murtadd_seed_letters() {
+function murtadd_seed_page_bodies() {
+	$u = static function ( $path ) {
+		return esc_url( home_url( $path ) );
+	};
+
 	return array(
-		array(
-			'slug'        => 'placeholder-letter-one',
-			'title'       => 'Placeholder letter (with editor\'s note)',
-			'outlet'      => 'Placeholder Publication',
-			'date'        => '2004-12-08',
-			'replying_to' => 'Placeholder: the title of the piece being answered',
-			'url'         => '',
-			'note'        => '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. This field is where the site speaks in its present voice above an archived text: standing context, or a note on where the position has since developed. Replace this placeholder, or clear the field to hide the note entirely.</p>',
-			'topics'      => array( 'reason-and-faith' ),
-			'body'        => '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-<p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-<p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
-<p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.</p>',
-		),
-		array(
-			'slug'        => 'placeholder-letter-two',
-			'title'       => 'Placeholder letter (no editor\'s note)',
-			'outlet'      => 'Placeholder Publication',
-			'date'        => '2004-12-17',
-			'replying_to' => '',
-			'url'         => '',
-			'note'        => '',
-			'topics'      => array( 'reason-and-faith' ),
-			'body'        => '<p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident.</p>
-<p>Similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio.</p>
-<p>Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus.</p>',
-		),
+		'irtidad' => '<p>If you came here afraid that you have already crossed a line, start with this: doubting is an offence nowhere. Asking a question is an offence nowhere. Reading this page is an offence nowhere. Nothing below describes a person who is unsure.</p>
+<h2>The words</h2>
+<p><em>Irtidad</em> and <em>riddah</em> both mean turning back, and both come from the Arabic root r-d-d. The jurists used them for a person who had professed Islam and then left it. The one who turns back is the <em>murtadd</em>, the word this site takes its name from.</p>
+<h2>What the classical law meant by it</h2>
+<p>The classical rulings on apostasy belong to the law of the confessional state. They were formed in the <em>riddah</em> wars, against armed secession from the nascent polity, and they treated leaving the religion as politico-religious rebellion. Every pre-modern confessional state ran the same logic, and Byzantine law in the Prophet\'s own epoch punished apostasy from the imperial sect with death. The jurists who transmitted the ruling attached conditions, waiting periods and distinctions to it across the centuries, and Hamidullah\'s judgement on the classical provision is that the necessity for it scarcely arose.</p>
+<p>Whether those rulings bind a modern constitutional state is argued among Muslim scholars now, in the open, with serious voices holding that the ruling concerned treason against a polity and not private belief, under the Qur\'anic principle that there is no compulsion in religion (2:256). That argument is not settled. Anyone who tells you it is, in either direction, is reporting a preference. The full treatment is in <a href="' . $u( '/rebuttals/apostasy-and-the-classical-law/' ) . '">Apostasy and the classical law</a>.</p>
+<h2>What does not take a person out of Islam</h2>
+<p>A question does not. <em>Iman</em>, faith, is <em>tasdiq</em>, the assent of the heart, and a question is not a renunciation of anything. The Qur\'an commands reflection on creation (3:190-191) and argument in the best manner (16:125). The tradition built <em>kalam</em> to dispute theology in public and the science of hadith so that any student could audit the chain behind any report. A religion that built that apparatus does not count the use of it as leaving.</p>
+<p>A verdict you pronounce over yourself at two in the morning does not. Declaring a person an unbeliever is reserved to those qualified to judge, and a frightened reader is not a court. The online voice that tells you that you have left has no standing under any school to say so.</p>
+<p>A field on a form does not, in either direction. A registry that recorded you as Muslim at birth made an administrative entry, and no ministry anywhere can issue the heart\'s assent or revoke it. That is set out in <a href="' . $u( '/rebuttals/religion-by-registration/' ) . '">Religion by registration</a> and <a href="' . $u( '/doubts/i-was-never-asked/' ) . '">I was never asked</a>.</p>
+<p>And the fear does not. A person who has walked away does not lie awake over the verdict of a tradition they no longer hold. The dread is evidence of attachment, and it is the subject of its own page: <a href="' . $u( '/doubts/afraid-of-what-happens-if-i-leave/' ) . '">The fear itself</a>.</p>
+<h2>The law as it stands</h2>
+<p>This site treats the question forensically and comparatively: the specific charge, its primary evidence, and the law as it stands across Muslim-majority states, with any one country as an example among several. Most Muslim-majority states attach no criminal penalty to leaving Islam. A minority retain the classical ruling in statute or in judicial practice, and a larger number attach civil consequences instead, to marriage, to inheritance, to the religion recorded on identity documents, or to the court with jurisdiction over family matters. Where legal consequences exist, they usually engage only when a person formally seeks to change a registered religion. A reader who needs to know his own position should look at the law of his own country, which varies more than the material circulating online suggests.</p>
+<p>What leaving costs, legally and otherwise, is in <a href="' . $u( '/rebuttals/what-leaving-actually-costs/' ) . '">What leaving costs</a>. The hadith most often quoted at readers is in <a href="' . $u( '/doubts/the-hadith-about-leaving/' ) . '">The hadith about leaving</a>. The charge that Muslims threaten critics, and what the law says of the man who does, is in <a href="' . $u( '/rebuttals/the-death-threat-charge/' ) . '">The death threat charge</a>. Every entry on the subject is gathered under <a href="' . $u( '/topic/apostasy-law/' ) . '">Apostasy law</a>.</p>
+<h2>For tonight</h2>
+<p>The legal question and your safety tonight are different questions, and this page has answered only the first. Whatever you believe right now, your life is not the debate. If you are in crisis, talk to someone today, and find a helpline near you. Do not carry this alone.</p>',
+
+		'about'   => '<p>Murtadd answers doubts about Islam and the claims that circulate against it. It is written for one reader in particular: someone who arrived carrying a question, who may be frightened, and who has not decided anything yet.</p>
+<h2>What is here</h2>
+<p><a href="' . $u( '/doubts/' ) . '">Doubts</a> are short answers to a question as a person would put it, in their own words. Each is kept to a length that can be read in a few minutes, because the reader is often reading late and alone, and a finite page is a kindness.</p>
+<p><a href="' . $u( '/rebuttals/' ) . '">Rebuttals</a> take a claim as it circulates, state it fairly, and answer it from its primary evidence. Each one cites its sources and ends with a verdict.</p>
+<p>The <a href="' . $u( '/fatwa/' ) . '">Fatwa index</a> summarises scholarly positions in our own words, each linked to its primary source. It is a reference, and it issues no rulings.</p>
+<p>Letters are correspondence published elsewhere, archived in their original form and dated. They record a position taken at a fixed moment, and they are kept apart from the answers for that reason.</p>
+<h2>How it is written</h2>
+<p>The register is forensic. An entry names the fallacy, cites scripture as evidence, with grades and numbers, and reaches a verdict. Where the honest answer is a concession, the entry concedes, and several entries retire arguments made on Islam\'s own side because the evidence does not support them.</p>
+<p>Arguments are answered as claims. No individual is named, described or profiled, and source material is used only to identify which arguments are in circulation.</p>
+<p>The ground is comparative. Malaysia is the site\'s home and it is not its frame: Malaysian law or usage may appear as one example among several, because the reader may be in Cairo, Jakarta, Lahore or London.</p>
+<p>Some entries point to a longer treatment of the same question elsewhere. Those links are offered because the question deserves the longer treatment, and they state no relationship.</p>
+<h2>What it does not do</h2>
+<p>It does not collect people. There are no testimonials here, and no wall of accounts from people who doubted, left or stayed. It does not use mood photography. And it does not track you: the share buttons are plain links, and nothing on the site tells anyone what you read. The <a href="' . $u( '/privacy/' ) . '">Privacy</a> page sets out what the site stores.</p>',
+
+		'faq'     => '<h2>Who is this site for?</h2>
+<p>Someone who arrived carrying a question about Islam, often frightened and undecided, and someone who wants to send a page to a friend who is struggling. Every page is written so that it can be handed to that friend.</p>
+<h2>What is the difference between a doubt and a rebuttal?</h2>
+<p>A <a href="' . $u( '/doubts/' ) . '">doubt</a> starts from a question in the reader\'s own words and answers it briefly, in a few minutes of reading. A <a href="' . $u( '/rebuttals/' ) . '">rebuttal</a> starts from a claim as it circulates, states it fairly, answers it from the primary evidence with sources, and reaches a verdict. Many doubts link to the rebuttal that takes the same ground at length.</p>
+<h2>Why do some doubts have no rebuttal?</h2>
+<p>Some doubts are not arguments. Grief, fear and the cost of leaving a family are not claims waiting to be refuted, and those pages answer the person and leave the debate alone.</p>
+<h2>Do you name the people who make these claims?</h2>
+<p>No. Every argument is answered as a claim. No individual is named, described or profiled.</p>
+<h2>What is the fatwa index?</h2>
+<p>A reference to scholarly positions, each summarised in our own words and linked to its primary source, so that you can read the source for yourself. Entries are added once a summary has been checked against the source it links to.</p>
+<h2>Does this site issue fatwas?</h2>
+<p>No. Positions in the index are summarised and not issued, and nothing on the site is a ruling on any individual.</p>
+<h2>Is it an offence to doubt, or to read this?</h2>
+<p>Doubting is an offence nowhere, and so is reading. No law in any country reaches a person who is unsure. What the classical law meant by apostasy, and what does not take a person out of Islam, is set out on <a href="' . $u( '/irtidad/' ) . '">Irtidad</a>.</p>
+<h2>Why do some pages link to another site?</h2>
+<p>Where another site works the same question through at greater length, the entry points to it. The link is there for the reader and states no relationship.</p>
+<h2>What are the letters?</h2>
+<p>Correspondence published in other outlets, archived in its original form, with the date it was first published. A letter records a position taken at that date, and it is kept out of the answers for that reason.</p>
+<h2>Does the site track me?</h2>
+<p>No. The share buttons are plain links, and nobody is told that you shared a page. The <a href="' . $u( '/privacy/' ) . '">Privacy</a> page sets out what the site does store.</p>
+<h2>I am struggling. What should I do?</h2>
+<p>Whatever you believe right now, your life is not the debate. If you are in crisis, talk to someone today, and find a helpline near you. Most countries have one; in Malaysia, for example, Talian Kasih (15999) takes calls about abuse, including abuse from long ago. A counsellor or doctor you trust can help you decide what to do next, and none of that requires you to have made up your mind about anything else.</p>',
+
+		'contact' => '<p>Corrections are welcome, and they are the most useful thing a reader can send. If an entry misstates a claim, a ruling or a source, say which entry, what it says, and what the source says instead. A correction that cites the source is checked against it.</p>
+<p>Suggestions for questions the site has not yet answered are welcome too. Put the question the way you would put it to a friend.</p>
+<p>If you are writing because you are in crisis, do not wait for a reply. Talk to someone today, and find a helpline near you.</p>
+<!-- Site owner: add a contact form or an address below this line. The theme supplies neither, and this page offers readers no way to write until one is added. -->',
+
+		'privacy' => '<!-- Site owner: this page describes only what the Murtadd theme itself does. Add your hosting provider and its server logs, any plugin that collects data (forms, analytics, security, caching or CDN services), the legal basis and retention periods that apply where you operate, and how readers can reach you about their data. -->
+<p>This page describes what the site stores and sends, and what it does not.</p>
+<h2>Reading the site</h2>
+<p>The theme loads no analytics, advertising or tracking scripts. Reading times are worked out on the server from the text of the page, and nothing about your visit is sent anywhere to do it.</p>
+<p>The typefaces are served from this site. Your browser does not contact a font service to display a page.</p>
+<p>The images shown when a page is shared are generated on this site from the page\'s own text.</p>
+<h2>Sharing</h2>
+<p>The share buttons are plain links. Nothing loads from WhatsApp, Telegram or any other service until you choose one, and choosing one opens that service, which then handles what you send under its own terms. The copy-link button uses your own browser\'s clipboard. Nobody is told that you shared a page.</p>
+<h2>Searching</h2>
+<p>Searches run on this site. The theme sends your search to no other service, and search results are kept out of search engines.</p>
+<h2>Comments</h2>
+<p>Where comments are open, WordPress stores the name, email address and comment you submit, and by default your IP address and browser details, to help detect spam. Your email address is never shown. WordPress may display an avatar next to a comment, and its default avatars are fetched from Gravatar, an outside service, using a scrambled form of the email address.</p>
+<h2>Cookies</h2>
+<p>The theme sets no cookies. WordPress sets cookies for people who log in, and remembers a commenter\'s name and email in a cookie only when the commenter asks it to.</p>',
 	);
 }

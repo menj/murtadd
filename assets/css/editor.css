@@ -1,0 +1,43 @@
+/*
+ * Block editor: the post body as a reader will see it.
+ *
+ * Loaded with tokens.css through add_editor_style(), which scopes both to the
+ * editor canvas, so the colours, the self-hosted faces and the type below are
+ * the front end's own. Mirrors main.css (body, links, headings, Arabic) and
+ * the long-form body of rebuttal-template.css; nothing here is editor-only
+ * decoration.
+ */
+
+body {
+	background: var(--murtadd-bg);
+	color: var(--murtadd-text);
+	font-family: var(--murtadd-font-serif);
+	font-size: 17px;
+	line-height: 1.75;
+}
+
+a { color: var(--murtadd-accent); }
+a:hover { color: #0a4f3e; }
+
+h1, h2, h3 { font-family: var(--murtadd-font-serif); line-height: 1.25; }
+h4, h5, h6 { font-family: var(--murtadd-font-sans); line-height: 1.35; }
+
+blockquote {
+	margin: 0 0 1.4em;
+	padding: 18px;
+	background: var(--murtadd-accent-tint);
+	font-style: italic;
+}
+
+/* Arabic: the system Arabic stack everywhere. The Qur'anic face is applied on
+   the front end only to verses inc/quran-text.php has fitted to it, which the
+   editor never shows, so the editor keeps the Arabic stack for verses too. */
+:lang(ar) { font-family: var(--murtadd-font-arabic); letter-spacing: 0; }
+.murtadd-ayah:lang(ar) {
+	font-size: 24px;
+	font-weight: 400;
+	line-height: 2.2;
+	direction: rtl;
+	unicode-bidi: isolate;
+	text-align: right;
+}

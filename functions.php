@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'MURTADD_VERSION', '1.39.0' );
+define( 'MURTADD_VERSION', '1.42.0' );
 
 /**
  * Asset suffix. Sources are served when SCRIPT_DEBUG is on, minified otherwise.
@@ -24,12 +24,18 @@ require_once get_stylesheet_directory() . '/inc/taxonomy-school.php';
 require_once get_stylesheet_directory() . '/inc/taxonomy-doubt-category.php';
 require_once get_stylesheet_directory() . '/inc/meta-boxes.php';
 require_once get_stylesheet_directory() . '/inc/settings-page.php';
+require_once get_stylesheet_directory() . '/inc/hardening.php';
+require_once get_stylesheet_directory() . '/inc/hide-login.php';
+require_once get_stylesheet_directory() . '/inc/login.php';
 require_once get_stylesheet_directory() . '/inc/docs.php';
 require_once get_stylesheet_directory() . '/inc/legacy-redirects.php';
+require_once get_stylesheet_directory() . '/inc/gone.php';
+require_once get_stylesheet_directory() . '/inc/maintenance.php';
 require_once get_stylesheet_directory() . '/inc/social.php';
 require_once get_stylesheet_directory() . '/inc/site-icon.php';
 require_once get_stylesheet_directory() . '/inc/activation.php';
 require_once get_stylesheet_directory() . '/inc/schema.php';
+require_once get_stylesheet_directory() . '/inc/rank-math.php';
 require_once get_stylesheet_directory() . '/inc/seed-content.php';
 require_once get_stylesheet_directory() . '/inc/search.php';
 require_once get_stylesheet_directory() . '/inc/meta-tags.php';
@@ -39,6 +45,9 @@ require_once get_stylesheet_directory() . '/inc/share.php';
 require_once get_stylesheet_directory() . '/inc/social-card.php';
 require_once get_stylesheet_directory() . '/inc/dashboard.php';
 require_once get_stylesheet_directory() . '/inc/relations.php';
+require_once get_stylesheet_directory() . '/inc/contextual-links.php';
+require_once get_stylesheet_directory() . '/inc/glossary.php';
+require_once get_stylesheet_directory() . '/inc/quran-text.php';
 require_once get_stylesheet_directory() . '/inc/template-tags.php';
 
 /**
@@ -57,6 +66,10 @@ function murtadd_setup() {
 	add_theme_support( 'post-thumbnails', array( 'post', 'page', 'murtadd_doubt', 'murtadd_rebuttal', 'murtadd_fatwa', 'murtadd_letter' ) );
 	add_theme_support( 'html5', array( 'search-form', 'gallery', 'caption', 'style', 'script', 'comment-form', 'comment-list' ) );
 	add_theme_support( 'automatic-feed-links' );
+
+	// The editor canvas shows the front end's colours, faces and body type.
+	add_theme_support( 'editor-styles' );
+	add_editor_style( array( 'assets/css/tokens' . MURTADD_ASSET_SUFFIX . '.css', 'assets/css/editor' . MURTADD_ASSET_SUFFIX . '.css' ) );
 
 	register_nav_menus(
 		array(
@@ -85,6 +98,10 @@ function murtadd_enqueue_assets() {
 	 */
 	if ( is_rtl() ) {
 		wp_enqueue_style( 'murtadd-rtl', get_stylesheet_directory_uri() . '/assets/css/main-rtl' . MURTADD_ASSET_SUFFIX . '.css', array( 'murtadd-main' ), MURTADD_VERSION );
+	}
+
+	if ( ! is_front_page() && function_exists( 'murtadd_breadcrumbs_enabled' ) && murtadd_breadcrumbs_enabled() ) {
+		wp_enqueue_style( 'murtadd-breadcrumbs', get_stylesheet_directory_uri() . '/assets/css/breadcrumbs' . MURTADD_ASSET_SUFFIX . '.css', array( 'murtadd-main' ), MURTADD_VERSION );
 	}
 
 	if ( is_singular( 'murtadd_doubt' ) ) {
@@ -116,6 +133,15 @@ function murtadd_enqueue_assets() {
 	if ( is_singular( 'murtadd_rebuttal' ) ) {
 		wp_enqueue_style( 'murtadd-longform', get_stylesheet_directory_uri() . '/assets/css/longform' . MURTADD_ASSET_SUFFIX . '.css', array( 'murtadd-main' ), MURTADD_VERSION );
 		wp_enqueue_script( 'murtadd-longform', get_stylesheet_directory_uri() . '/assets/js/longform' . MURTADD_ASSET_SUFFIX . '.js', array(), MURTADD_VERSION, true );
+		wp_localize_script(
+			'murtadd-longform',
+			'murtaddLongform',
+			array(
+				'progress' => __( 'Reading progress', 'murtadd' ),
+				'toc'      => __( 'On this page', 'murtadd' ),
+				'top'      => __( 'Back to top', 'murtadd' ),
+			)
+		);
 	}
 
 	if ( is_singular( array( 'murtadd_doubt', 'murtadd_rebuttal' ) ) ) {
@@ -200,6 +226,10 @@ function murtadd_admin_assets( $hook ) {
 				)
 			);
 		}
+	}
+	// The content-gaps dashboard widget's few rules live in admin.css.
+	if ( 'index.php' === $hook && current_user_can( 'edit_posts' ) ) {
+		wp_enqueue_style( 'murtadd-admin', get_stylesheet_directory_uri() . '/assets/css/admin' . MURTADD_ASSET_SUFFIX . '.css', array(), MURTADD_VERSION );
 	}
 	if ( in_array( $hook, array( 'post.php', 'post-new.php' ), true ) ) {
 		$screen = get_current_screen();

@@ -11,6 +11,7 @@ defined( 'ABSPATH' ) || exit;
 get_header();
 ?>
 <header class="murtadd-archive-header">
+	<?php murtadd_breadcrumbs(); ?>
 	<a class="murtadd-back" href="<?php echo esc_url( get_post_type_archive_link( 'murtadd_fatwa' ) ); ?>">← <?php esc_html_e( 'Full fatwa index', 'murtadd' ); ?></a>
 	<h1><?php single_term_title(); ?></h1>
 	<p class="murtadd-subtitle"><?php esc_html_e( 'Positions from this school, summarized in our own words, each linked to its primary source.', 'murtadd' ); ?></p>

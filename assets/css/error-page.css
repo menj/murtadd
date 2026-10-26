@@ -1,0 +1,87 @@
+/*
+ * The standalone error pages: maintenance, database error, PHP error
+ * (dropins/*.php, copied into wp-content by inc/maintenance.php).
+ *
+ * WordPress shows these when it cannot run the theme, so they cannot rely on
+ * anything the theme loads. They link tokens.min.css from the theme for the
+ * brand colours and the two fonts; every value here falls back to the same
+ * colour if that file is unreachable (the theme half uploaded), so the page
+ * still reads. The fallbacks mirror assets/css/tokens.css: change the brand
+ * there, and these follow the moment the theme is back.
+ *
+ * Light only: the owner's decision is no dark mode (docs/ssot.md, Exclusions).
+ */
+
+* { box-sizing: border-box; }
+
+html,
+body { margin: 0; min-height: 100%; }
+
+body.murtadd-error {
+	min-height: 100vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 24px;
+	background: var(--murtadd-bg, #fcf8ee);
+	color: var(--murtadd-text, #1a1a1a);
+	font-family: var(--murtadd-font-serif, Georgia, serif);
+	font-size: 1.0625rem;
+	line-height: 1.6;
+}
+
+.murtadd-error-card {
+	width: min(540px, 100%);
+	padding: 44px 40px 40px;
+	background: var(--murtadd-surface, #ffffff);
+	border: 1px solid var(--murtadd-border, #e3e3e3);
+	border-top: 4px solid var(--murtadd-accent, #0f6e56);
+	border-radius: 14px;
+	text-align: center;
+}
+
+.murtadd-error-name {
+	margin: 0;
+	font-family: var(--murtadd-font-sans, system-ui, sans-serif);
+	font-size: 1.35rem;
+	font-weight: 700;
+	letter-spacing: -0.01em;
+	color: var(--murtadd-accent, #0f6e56);
+}
+
+.murtadd-error-stop { color: var(--murtadd-accent-strike, #c0392b); }
+
+.murtadd-error-status {
+	margin: 22px 0 0;
+	font-family: var(--murtadd-font-sans, system-ui, sans-serif);
+	font-size: 0.78rem;
+	font-weight: 600;
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+	color: var(--murtadd-text-muted, #5a5a5a);
+}
+
+.murtadd-error-card h1 {
+	margin: 8px 0 14px;
+	font-size: clamp(1.6rem, 4vw, 2.1rem);
+	font-weight: 600;
+	line-height: 1.2;
+}
+
+.murtadd-error-card p { margin: 0 auto 10px; max-width: 40ch; color: var(--murtadd-text-muted, #5a5a5a); }
+
+.murtadd-error-again {
+	display: inline-block;
+	margin-top: 22px;
+	padding: 11px 26px;
+	border-radius: 8px;
+	background: var(--murtadd-accent, #0f6e56);
+	color: #ffffff;
+	font-family: var(--murtadd-font-sans, system-ui, sans-serif);
+	font-weight: 600;
+	text-decoration: none;
+}
+
+.murtadd-error-again:hover { background: var(--murtadd-text, #1a1a1a); }
+
+.murtadd-error-again:focus-visible { outline: 2px solid var(--murtadd-text, #1a1a1a); outline-offset: 3px; }

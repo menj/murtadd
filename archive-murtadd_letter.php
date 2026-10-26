@@ -13,6 +13,7 @@ defined( 'ABSPATH' ) || exit;
 get_header();
 ?>
 <header class="murtadd-archive-header">
+	<?php murtadd_breadcrumbs(); ?>
 	<h1><?php esc_html_e( 'Letters', 'murtadd' ); ?></h1>
 	<p class="murtadd-subtitle">
 		<?php esc_html_e( 'Correspondence and opinion pieces published in other outlets, archived here in their original form. Each is dated, and each is a position taken at a particular moment. They are kept as a record rather than offered as an answer to anyone’s doubt — for that, start with the doubts.', 'murtadd' ); ?>

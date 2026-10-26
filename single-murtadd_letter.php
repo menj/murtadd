@@ -23,6 +23,7 @@ while ( have_posts() ) :
 		<a class="murtadd-back" href="<?php echo esc_url( get_post_type_archive_link( 'murtadd_letter' ) ); ?>">← <?php esc_html_e( 'All letters', 'murtadd' ); ?></a>
 
 		<header class="murtadd-entry-header">
+			<?php murtadd_breadcrumbs(); ?>
 			<?php murtadd_letter_dateline(); ?>
 			<h1><?php the_title(); ?></h1>
 			<?php if ( $murtadd_replying ) : ?>

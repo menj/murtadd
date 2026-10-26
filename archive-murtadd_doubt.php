@@ -24,6 +24,7 @@ get_header();
 $murtadd_total = (int) wp_count_posts( 'murtadd_doubt' )->publish;
 ?>
 <header class="murtadd-archive-header">
+	<?php murtadd_breadcrumbs(); ?>
 	<h1><?php esc_html_e( 'The doubts', 'murtadd' ); ?></h1>
 	<p class="murtadd-subtitle">
 		<?php esc_html_e( 'Questions people actually carry, in the words they actually use. Each one has a short answer you can read in a few minutes, and sources you can check yourself. Find yours below.', 'murtadd' ); ?>

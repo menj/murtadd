@@ -14,6 +14,7 @@ while ( have_posts() ) :
 	?>
 	<article <?php post_class( 'murtadd-blog-post' ); ?>>
 		<header class="murtadd-entry-header">
+			<?php murtadd_breadcrumbs(); ?>
 			<a class="murtadd-back" href="<?php echo esc_url( home_url( '/blog/' ) ); ?>">← <?php esc_html_e( 'Back to blog', 'murtadd' ); ?></a>
 			<div class="murtadd-meta-row">
 				<span><?php echo esc_html( get_the_date() ); ?></span>

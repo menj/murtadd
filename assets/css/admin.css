@@ -334,6 +334,32 @@
 	box-shadow: none;
 }
 
+/* Security and Upkeep tabs: a caution box, and one-line states. */
+.murtadd-admin-warning {
+	max-width: 640px;
+	margin: 12px 0 0;
+	padding: 12px 16px;
+	border: 1px solid rgba( 138, 75, 0, 0.28 );
+	border-left: 4px solid #8a4b00;
+	border-radius: 10px;
+	background: #fdf6ec;
+}
+.murtadd-admin-warning p { margin: 0 0 6px; font-size: 13.5px; line-height: 1.55; color: var(--ma-ink); }
+.murtadd-admin-warning p:last-child { margin-bottom: 0; }
+.murtadd-status-ok { color: var(--ma-accent); font-weight: 600; }
+.murtadd-admin .murtadd-status-missing,
+.murtadd-status-missing { color: #8a4b00; font-weight: 600; }
+.widefat.murtadd-admin-table { max-width: 640px; margin: 16px 0; }
+.murtadd-admin-inline-form { margin: 12px 0 0; }
+p.description.murtadd-admin-note { margin-top: 12px; }
+.form-table td p.murtadd-admin-spaced,
+.murtadd-admin-spaced { margin-top: 10px; }
+
+/* Dashboard: the content-gaps widget. */
+#dashboard-widgets .murtadd-gaps-none { color: #0f6e56; font-weight: 600; }
+#dashboard-widgets .murtadd-gaps-label { margin: 14px 0 6px; }
+#dashboard-widgets .murtadd-gaps-list { margin: 0 0 4px 18px; list-style: disc; }
+
 @media ( prefers-reduced-motion: reduce ) {
 	.murtadd-admin * { transition: none !important; }
 	.murtadd-admin .button-primary:hover { transform: none; }

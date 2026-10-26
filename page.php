@@ -14,6 +14,7 @@ while ( have_posts() ) :
 	?>
 	<article <?php post_class( 'murtadd-page' ); ?>>
 		<header class="murtadd-entry-header">
+			<?php murtadd_breadcrumbs(); ?>
 			<h1><?php the_title(); ?></h1>
 		</header>
 		<div class="murtadd-page-body">

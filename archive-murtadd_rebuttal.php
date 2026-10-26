@@ -10,6 +10,7 @@ defined( 'ABSPATH' ) || exit;
 get_header();
 ?>
 <header class="murtadd-archive-header">
+	<?php murtadd_breadcrumbs(); ?>
 	<h1><?php esc_html_e( 'Rebuttals', 'murtadd' ); ?></h1>
 	<p class="murtadd-subtitle"><?php esc_html_e( 'Circulated claims, stated fairly — then answered with sources you can check yourself.', 'murtadd' ); ?></p>
 </header>

@@ -119,13 +119,13 @@ function murtadd_dashboard_widget_render() {
 	$gaps = murtadd_content_gaps();
 
 	if ( ! $gaps ) {
-		echo '<p style="color:#0f6e56;font-weight:600;">' . esc_html__( 'No gaps. Every door is populated, every doubt routes onward, every rebuttal is sourced.', 'murtadd' ) . '</p>';
+		echo '<p class="murtadd-gaps-none">' . esc_html__( 'No gaps. Every door is populated, every doubt routes onward, every rebuttal is sourced.', 'murtadd' ) . '</p>';
 		return;
 	}
 
 	foreach ( $gaps as $gap ) {
-		echo '<p style="margin:14px 0 6px;"><strong>' . esc_html( $gap['label'] ) . '</strong></p>';
-		echo '<ul style="margin:0 0 4px 18px;list-style:disc;">';
+		echo '<p class="murtadd-gaps-label"><strong>' . esc_html( $gap['label'] ) . '</strong></p>';
+		echo '<ul class="murtadd-gaps-list">';
 		foreach ( $gap['items'] as $item ) {
 			echo '<li>' . esc_html( $item ) . '</li>';
 		}

@@ -23,6 +23,10 @@
 	--murtadd-well: #f4efe0;
 	--murtadd-font-serif: 'Source Serif 4', Georgia, serif;
 	--murtadd-font-sans: 'Public Sans', system-ui, sans-serif;
+	/* Arabic that is not a Qur'anic verse (hadith, terms): system faces. */
+	--murtadd-font-arabic: 'Noto Naskh Arabic', 'Geeza Pro', 'Arabic Typesetting', 'Traditional Arabic', 'Segoe UI', serif;
+	/* Arabic Qur'anic verses only. */
+	--murtadd-font-quran: 'KFGQPC HAFS Uthmanic Script', var(--murtadd-font-arabic);
 }
 
 /* Self-hosted fonts — drop woff2 files in /fonts. */
@@ -39,5 +43,13 @@
 	font-family: 'Public Sans';
 	src: url('../fonts/PublicSans-Variable.woff2') format('woff2');
 	font-weight: 400 700;
+	font-display: swap;
+}
+/* Qur'anic verses only. Not preloaded: the file is fetched on a page that shows a verse. */
+@font-face {
+	font-family: 'KFGQPC HAFS Uthmanic Script';
+	src: url('../fonts/kfgqpc-hafs-uthmanic-script.woff2') format('woff2');
+	font-weight: 400;
+	font-style: normal;
 	font-display: swap;
 }
