@@ -1,0 +1,128 @@
+/*
+ * Contact form ([murtadd_contact], inc/contact.php).
+ *
+ * Loaded only on a page that carries the form. Light only, like the rest of
+ * the theme: no dark-mode variant (docs/ssot.md, Exclusions). Rounded fields,
+ * a pill button, notices in the accent tint.
+ */
+
+.murtadd-contact {
+	margin: 32px 0 8px;
+	padding: 24px;
+	background: var(--murtadd-surface);
+	border: 1px solid var(--murtadd-border);
+	border-radius: 16px;
+	font-family: var(--murtadd-font-sans);
+}
+
+.murtadd-contact__form { margin: 0; }
+
+.murtadd-contact__field { margin: 0 0 18px; }
+
+.murtadd-contact__field label {
+	display: block;
+	margin-bottom: 6px;
+	font: 600 14px var(--murtadd-font-sans);
+	color: var(--murtadd-text);
+}
+
+.murtadd-contact__hint {
+	font-weight: 400;
+	color: var(--murtadd-text-muted);
+}
+
+.murtadd-contact__field input,
+.murtadd-contact__field textarea {
+	display: block;
+	box-sizing: border-box;
+	width: 100%;
+	padding: 11px 14px;
+	font: 400 16px/1.5 var(--murtadd-font-sans);
+	color: var(--murtadd-text);
+	background: var(--murtadd-bg);
+	border: 1.5px solid var(--murtadd-border);
+	border-radius: 12px;
+}
+
+.murtadd-contact__field textarea {
+	min-height: 180px;
+	resize: vertical;
+}
+
+.murtadd-contact__field input:focus,
+.murtadd-contact__field textarea:focus {
+	outline: 2px solid var(--murtadd-accent);
+	outline-offset: 1px;
+	border-color: var(--murtadd-accent);
+}
+
+/* The honeypot: off-screen for people, still in the form for bots. */
+.murtadd-contact__trap {
+	position: absolute;
+	left: -10000px;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+}
+
+.murtadd-contact__actions { margin: 6px 0 0; }
+
+.murtadd-contact__submit {
+	display: inline-flex;
+	align-items: center;
+	padding: 12px 28px;
+	font: 600 15px var(--murtadd-font-sans);
+	color: #fff;
+	background: var(--murtadd-accent);
+	border: none;
+	border-radius: 999px;
+	cursor: pointer;
+}
+
+.murtadd-contact__submit:hover { filter: brightness(1.08); }
+
+.murtadd-contact__submit:focus-visible {
+	outline: 2px solid var(--murtadd-accent);
+	outline-offset: 3px;
+}
+
+.murtadd-contact__submit[disabled] {
+	cursor: progress;
+	opacity: 0.7;
+}
+
+.murtadd-contact__privacy {
+	margin: 14px 0 0;
+	font-size: 13px;
+	color: var(--murtadd-text-muted);
+}
+
+.murtadd-contact__privacy a {
+	color: var(--murtadd-accent);
+	font-weight: 600;
+}
+
+.murtadd-contact__notice {
+	margin: 0 0 18px;
+	padding: 12px 16px;
+	font-size: 15px;
+	line-height: 1.5;
+	border-radius: 12px;
+}
+
+.murtadd-contact__notice--success {
+	color: var(--murtadd-text);
+	background: var(--murtadd-accent-tint);
+	border: 1px solid var(--murtadd-accent);
+}
+
+.murtadd-contact__notice--error {
+	color: #7a1f1f;
+	background: #fdf0ee;
+	border: 1px solid #e3b4ad;
+}
+
+@media (max-width: 600px) {
+	.murtadd-contact { padding: 18px; }
+	.murtadd-contact__submit { width: 100%; justify-content: center; }
+}

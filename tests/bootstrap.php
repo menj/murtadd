@@ -501,3 +501,41 @@ function wp_unslash( $value ) {
 }
 
 require_once __DIR__ . '/../inc/login.php';
+
+
+// ---- The contact form. ----
+if ( ! defined( 'HOUR_IN_SECONDS' ) ) {
+	define( 'HOUR_IN_SECONDS', 3600 );
+}
+$GLOBALS['murtadd_transients'] = array(); // name => value.
+$GLOBALS['murtadd_mail']       = array(); // Each wp_mail() call.
+$GLOBALS['murtadd_mail_fails'] = false;
+function get_transient( $name ) {
+	return $GLOBALS['murtadd_transients'][ $name ] ?? false;
+}
+function set_transient( $name, $value, $expiry = 0 ) {
+	$GLOBALS['murtadd_transients'][ $name ] = $value;
+	return true;
+}
+function wp_mail( $to, $subject, $message, $headers = '' ) {
+	$GLOBALS['murtadd_mail'][] = compact( 'to', 'subject', 'message', 'headers' );
+	return ! $GLOBALS['murtadd_mail_fails'];
+}
+function is_email( $email ) {
+	return false !== filter_var( (string) $email, FILTER_VALIDATE_EMAIL ) ? $email : false;
+}
+function sanitize_email( $email ) {
+	// As core: characters outside the allowed set go, so no line break survives.
+	return (string) preg_replace( '/[^a-z0-9+_.@-]/i', '', (string) $email );
+}
+function wp_verify_nonce( $nonce, $action = -1 ) {
+	return 'nonce-' . $action === $nonce ? 1 : false;
+}
+function wp_salt( $scheme = 'auth' ) {
+	return 'test-salt-' . $scheme;
+}
+function add_shortcode( $tag, $cb ) {
+	$GLOBALS['murtadd_hooks'][] = array( 'shortcode:' . $tag, $cb, 10 );
+}
+
+require_once __DIR__ . '/../inc/contact.php';

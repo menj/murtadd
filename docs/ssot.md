@@ -51,7 +51,7 @@ Every `murtadd-` class a template emits must have a rule in a stylesheet that is
 
 ## Starter content
 
-The content is JSON in `inc/data/seed/` (`topics.json`, `rebuttals.json`, `doubts.json`, `pages.json`), read and decoded by the loaders in `inc/seed-data.php` and never executed as PHP. `inc/seed-content.php` inserts it, and both run from the same setup routine as the page scaffolding, under the same two invariants: never overwrite, never destroy. Rebuttals must be inserted before Doubts, since a Doubt stores its related Rebuttal by ID.
+The content is JSON in `inc/data/seed/` (`topics.json`, `rebuttals.json`, `doubts.json`, `pages.json`, `letters.json`), read and decoded by the loaders in `inc/seed-data.php` and never executed as PHP. `inc/seed-content.php` inserts it, and both run from the same setup routine as the page scaffolding, under the same two invariants: never overwrite, never destroy. Rebuttals must be inserted before Doubts, since a Doubt stores its related Rebuttal by ID.
 
 Links in `pages.json` are written as `{{url:/path/}}` tokens; `murtadd_seed_page_bodies()` resolves each with `esc_url( home_url() )` when the copy is loaded, so a site in a subdirectory links correctly. A seed file that is missing, not valid JSON or not the expected shape loads as an empty array, and the seeder then creates nothing from it.
 
@@ -59,7 +59,7 @@ Two constraints on the data. Every Doubt's `related` slug must name a Rebuttal t
 
 ## Letters, and why they are separate
 
-`murtadd_letter` (`/letters/`) archives correspondence published elsewhere. It is deliberately outside the triage architecture: absent from the homepage grid, from site search, from the main feed, and from the four doors; below a divider in the sidebar; carrying a mandatory dateline and an archival frame on the single view.
+`murtadd_letter` (`/letters/`) archives correspondence published elsewhere, and holds a few open letters the site writes in its own voice (kind `open`, `_murtadd_letter_kind`). An open letter is signed by the site, addressed to a situation ("To a parent whose child has stopped believing"), and says in its editor's note that it is not from a reader; its frame and dateline say so too. **Never seed or publish a letter presented as from a reader**: that would be a testimonial by another name (see Exclusions). The seeded open letters are `inc/data/seed/letters.json`, loaded by `murtadd_seed_letters()` and inserted by `murtadd_seed_letter_posts()` under the seeder's invariants. It is deliberately outside the triage architecture: absent from the homepage grid, from site search, from the main feed, and from the four doors; below a divider in the sidebar; carrying a mandatory dateline and an archival frame on the single view.
 
 The reasoning is binding and must not be quietly undone. The other three post types exist to meet a reader who arrived carrying a question, and the site's whole design assumes that reader is frightened and undecided. A letter is the author addressing an editor at a fixed past moment. Handing an archived letter to someone who searched their doubt would answer a question they did not ask, in a voice not written for them. Any change that surfaces Letters inside the triage path breaks that.
 
@@ -86,7 +86,7 @@ Taxonomies: `murtadd_topic` (shared, flat, seeded 6 terms, `/topic/`), `murtadd_
 | murtadd_contextual_links | own_enabled, sister_enabled, own_max, sister_max, extra, excluded | 1, 1, 4, 3, empty, empty |
 | murtadd_security | hide_authors, xmlrpc_off, headers, login_slug, login_design, login_message | 1, 1, 1, empty (private login off), 1, empty |
 | murtadd_upkeep | gone_paths, maintenance, error_pages | empty, 0, 1 |
-| murtadd_content_display | short_response_word_cap, show_struggling_notice, fatwa_index_default_sort, footer_heritage_note | 400, 1, scholar_az, "online since 2004" |
+| murtadd_content_display | short_response_word_cap, show_struggling_notice, fatwa_index_default_sort, footer_heritage_note, contact_recipient | 400, 1, scholar_az, "online since 2004", empty (administration email) |
 | murtadd_topics_seeded / murtadd_schools_seeded / murtadd_doubt_categories_seeded | flag | 1 after first init |
 
 ## Template map
@@ -108,6 +108,8 @@ Taxonomies: `murtadd_topic` (shared, flat, seeded 6 terms, `/topic/`), `murtadd_
 `inc/activation.php` scaffolds the site on `after_switch_theme`: pages, footer menu, Reading options, rewrite flush. Two invariants govern it and must not be broken: **it never overwrites** (existing pages, an assigned menu, and Reading options already chosen are all skipped) and **it never destroys** (no deletes, no trashing, no unpublishing). Re-activation is therefore idempotent.
 
 **The one exception: retiring the placeholders (1.41.0).** Before 1.41.0 activation published five pages reading "Placeholder. Replace this text." and seeded two lorem-ipsum letters. `murtadd_retire_placeholder_copy()` runs on `admin_init` until every write has landed (flag `murtadd_placeholder_copy_retired`, set only then): a page whose text, compared as a reader sees it, is still exactly the placeholder gets its written copy, and a letter whose text still matches the seeded lorem goes back to draft. Anything an editor has changed fails the comparison, and so does copy carrying markup the theme never seeded (a link, an image), and is left as it is. A page activated under another locale stored that locale's placeholder, which the English and current-locale forms do not match; it is matched against the placeholder as translated in every language installed on the site (`murtadd_legacy_placeholder_strings()` under `switch_to_locale()`), so only a genuine translation can match; a page that is no translation of the placeholder, however short or unedited, keeps its content. Lorem letters were never translated, so they have no such case. No other code may overwrite or unpublish. Letters are no longer seeded at all, and the fatwa index renders an "in preparation" state, `noindex`, while it has no published entry (`murtadd_fatwa_index_has_entries()`).
+
+**The second pass (1.43.0).** The Contact and Privacy copy seeded from 1.41.0 carried an HTML-comment note asking the owner for an address and a host. 1.43.0 ships a contact form and a Privacy page written from the code, so the same function replaces that copy too, when the stored page is exactly it: the comparison is an md5 of `murtadd_normalise_markup()` (block-editor comments dropped, whitespace collapsed, every element and comment kept) against the hashes in `murtadd_legacy_placeholder_copy()['written']`. Any edit, including deleting only the note, fails it. The flag now holds a version (`murtadd_placeholder_retire_version()`, 2); a site at 1 runs the pass once more, harmlessly.
 
 It is re-runnable from Appearance → Theme Options → Setup, because upgrading the theme in place does not fire `after_switch_theme` and would otherwise leave an existing site unscaffolded. Any template that depends on a page must degrade visibly, not silently: when a required page is absent, `murtadd_setup_needed_notice()` says so in the admin.
 
@@ -225,6 +227,10 @@ Defined once in `css/main.css` `:root`. Accent `#0f6e56` (green), tint `#eefaf7`
 **The licence decision.** The owner chose on 2026-10-26 to serve a WOFF2 conversion of the font (`assets/fonts/kfgqpc-hafs-uthmanic-script.woff2`, 107 KB, from the 298 KB TrueType file), accepting that the KFGQPC licence forbids modifying the font. The conversion is lossless for glyphs, character map and OpenType layout; the digital signature (DSIG) is dropped. The licence text ships beside it.
 
 **Verse encoding** (`inc/quran-text.php`). The face follows the Complex's encoding (Madani sukun U+06E1, rounded zero U+0652) and draws U+06DF as a spacing ornament and Arabic-Indic digits as the ayah medallion. Verse text in the common Tanzil encoding (sukun U+0652, rounded zero U+06DF) is mapped as it renders, and ornate brackets round an ayah number are dropped; the stored text is never changed. Text already holding U+06E1 is left alone, and a mapped element is marked `data-quran-encoding="kfgqpc"` so no later pass maps it twice. Runs on `the_content` at 6, inside the doubt short response and the fatwa position summary, on the homepage ayah, and on an Arabic rail verse. Write a verse as `<p class="murtadd-ayah" lang="ar" dir="rtl">`, with bare digits for the ayah number and no U+06DD.
+
+## Contact form
+
+`inc/contact.php` owns the `[murtadd_contact]` shortcode, on the seeded Contact page. The owner publishes no address, so the theme publishes none: messages go by `wp_mail()` to the Content tab's recipient or the administration email, and are never stored. A nonce, a honeypot and a per-connection hourly limit protect it; the limit is a transient keyed by an HMAC of the IP address (`wp_salt( 'nonce' )`), and the address itself is written nowhere. Handled on `template_redirect` (post, redirect, notice), so it works without JavaScript; `assets/js/contact.js` only prevents a double send. Styles in `assets/css/contact.css`, loaded only where the shortcode is. Light only. Pinned in `tests/ContactTest.php`. The Privacy page describes the form; change one and the other must follow.
 
 ## Data removal
 

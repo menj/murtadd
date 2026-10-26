@@ -132,12 +132,84 @@ final class PageCopyTest extends TestCase {
 		$this->assertGreaterThan( 10, $checked );
 	}
 
-	/** Contact and Privacy tell the owner what only the owner can supply. */
-	public function test_owner_notes_are_comments() {
+	/**
+	 * Contact and Privacy publish without an operator: no placeholder note,
+	 * no name to fill in, no invented address. The form replaced the
+	 * "add an address" note in 1.43.0, and Privacy is written from the code.
+	 */
+	public function test_contact_and_privacy_need_no_operator() {
 		$bodies = murtadd_seed_page_bodies();
 		foreach ( array( 'contact', 'privacy' ) as $slug ) {
-			$this->assertMatchesRegularExpression( '/<!-- Site owner:.+?-->/s', $bodies[ $slug ], "/$slug/ has no note for the owner." );
+			$this->assertDoesNotMatchRegularExpression( '/Site owner|<!--/i', $bodies[ $slug ], "/$slug/ still carries a note for the owner." );
 			$this->assertDoesNotMatchRegularExpression( '/@|mailto:/', $bodies[ $slug ], "/$slug/ invents an address." );
+		}
+		// Privacy covers what the theme does: the form, cookies, comments, fonts, analytics, Rank Math.
+		foreach ( array( 'contact form', 'cookies', 'comments', 'typefaces', 'analytics', 'Rank Math', 'one-way code' ) as $topic ) {
+			$this->assertStringContainsStringIgnoringCase( $topic, murtadd_normalise_copy( $bodies['privacy'] ), "/privacy/ says nothing about $topic." );
+		}
+	}
+
+	/** The About page is expanded, within bounds, and claims nothing about people. */
+	public function test_about_is_expanded_modestly() {
+		$words = str_word_count( murtadd_normalise_copy( murtadd_seed_page_bodies()['about'] ) );
+		$this->assertGreaterThanOrEqual( 500, $words );
+		$this->assertLessThanOrEqual( 720, $words );
+		$this->assertDoesNotMatchRegularExpression( '/\b(founded by|our team|qualified|degree|PhD|Dr\.|Shaykh|Ustaz)\b/i', murtadd_seed_page_bodies()['about'], '/about/ makes a claim about people or credentials.' );
+	}
+
+	/** The Contact and Privacy copy 1.41.0 to 1.43.0 seeded, as it was stored. */
+	private function written_141( $slug ) {
+		$old = json_decode( (string) file_get_contents( __DIR__ . '/fixtures/pages-1.41.json' ), true );
+		return $old[ $slug ];
+	}
+
+	/** An existing site still holding the 1.41.0 Contact and Privacy copy gets the new copy. */
+	public function test_retirement_replaces_unedited_141_contact_and_privacy() {
+		$this->legacy_post( 'page', 'contact', $this->written_141( 'contact' ) );
+		// Converted to blocks and saved: still unedited.
+		$this->legacy_post( 'page', 'privacy', "<!-- wp:html -->\n" . str_replace( '</p>', "</p>\n\n", $this->written_141( 'privacy' ) ) . "\n<!-- /wp:html -->" );
+		update_option( 'murtadd_placeholder_copy_retired', 1 ); // A site that ran the 1.41.0 pass.
+
+		$done   = murtadd_retire_placeholder_copy();
+		$bodies = murtadd_seed_page_bodies();
+
+		$this->assertSame( array( 'contact', 'privacy' ), $done['pages'] );
+		$this->assertSame( $bodies['contact'], get_page_by_path( 'contact' )->post_content );
+		$this->assertSame( $bodies['privacy'], get_page_by_path( 'privacy' )->post_content );
+		$this->assertSame( murtadd_placeholder_retire_version(), get_option( 'murtadd_placeholder_copy_retired' ) );
+	}
+
+	/** Any edit to that copy, even only removing the owner's note, keeps the page. */
+	public function test_retirement_keeps_edited_141_copy() {
+		$contact = str_replace( 'find a helpline near you.', 'call us on 0123.', $this->written_141( 'contact' ) );
+		$privacy = (string) preg_replace( '/<!--.*?-->\n?/s', '', $this->written_141( 'privacy' ) );
+		$this->legacy_post( 'page', 'contact', $contact );
+		$this->legacy_post( 'page', 'privacy', $privacy );
+		update_option( 'murtadd_placeholder_copy_retired', 1 );
+
+		$done = murtadd_retire_placeholder_copy();
+
+		$this->assertSame( array(), $done['pages'] );
+		$this->assertSame( $contact, get_page_by_path( 'contact' )->post_content, 'An edited Contact page was overwritten.' );
+		$this->assertSame( $privacy, get_page_by_path( 'privacy' )->post_content, 'An edited Privacy page was overwritten.' );
+	}
+
+	/** The new pass runs once on a site already marked done by 1.41.0, then stops. */
+	public function test_141_pass_is_idempotent() {
+		$this->legacy_post( 'page', 'contact', $this->written_141( 'contact' ) );
+		update_option( 'murtadd_placeholder_copy_retired', 1 );
+		$this->assertSame( array( 'contact' ), murtadd_retire_placeholder_copy()['pages'] );
+
+		$this->assertSame( array(), murtadd_retire_placeholder_copy()['pages'] );
+		update_option( 'murtadd_placeholder_copy_retired', 0 );
+		$this->assertSame( array(), murtadd_retire_placeholder_copy()['pages'], 'The current copy was treated as old.' );
+	}
+
+	/** The recorded hashes are of the copy as it shipped. */
+	public function test_141_hashes_match_the_shipped_copy() {
+		$written = murtadd_legacy_placeholder_copy()['written'];
+		foreach ( array( 'contact', 'privacy' ) as $slug ) {
+			$this->assertContains( md5( murtadd_normalise_markup( $this->written_141( $slug ) ) ), $written[ $slug ], "$slug hash does not match the 1.41.0 copy." );
 		}
 	}
 

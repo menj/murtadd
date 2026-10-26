@@ -142,6 +142,7 @@ function murtadd_sanitize_content_display( $input ) {
 		'show_scripture'           => empty( $input['show_scripture'] ) ? 0 : 1,
 		'scripture_text'           => sanitize_text_field( $input['scripture_text'] ?? '' ),
 		'scripture_ref'            => sanitize_text_field( $input['scripture_ref'] ?? '' ),
+		'contact_recipient'        => murtadd_contact_clean_recipient( $input['contact_recipient'] ?? '' ),
 	);
 }
 
@@ -330,7 +331,7 @@ function murtadd_render_settings_page() {
 			</form>
 
 			<p class="description murtadd-admin-note">
-				<?php esc_html_e( 'New pages are published immediately with their copy written. Before announcing the site, add a contact method to the Contact page and your host and plugin details to the Privacy page; each carries a note in the editor saying what is needed. Starter content is published as written and can be edited freely: nothing here ever overwrites a post that already exists, so editing a doubt and running this again will not undo the edit.', 'murtadd' ); ?>
+				<?php esc_html_e( 'New pages are published immediately with their copy written. Before announcing the site, send a test message through the form on the Contact page (it goes to the address on the Content tab, or the administration email), and check that the Privacy page still describes the site if you add plugins that collect data. Starter content is published as written and can be edited freely: nothing here ever overwrites a post that already exists, so editing a doubt and running this again will not undo the edit.', 'murtadd' ); ?>
 			</p>
 
 		<?php elseif ( 'taxonomies' === $active ) : ?>
@@ -509,6 +510,13 @@ function murtadd_render_settings_page() {
 							<td>
 								<label><input type="checkbox" name="murtadd_content_display[glossary_terms]" value="1" <?php checked( ! isset( $o['glossary_terms'] ) || $o['glossary_terms'] ); ?>> <?php esc_html_e( 'Define Arabic and Malay terms where they first appear', 'murtadd' ); ?></label>
 								<p class="description"><?php esc_html_e( 'The first mention of a term on a page gets a short definition and its source, shown on hover, focus or tap. Never on Emotional or Identity doubts.', 'murtadd' ); ?></p>
+							</td>
+						</tr>
+						<tr>
+							<th scope="row"><label for="murtadd_contact_recipient"><?php esc_html_e( 'Contact form recipient', 'murtadd' ); ?></label></th>
+							<td>
+								<input type="email" id="murtadd_contact_recipient" name="murtadd_content_display[contact_recipient]" value="<?php echo esc_attr( $o['contact_recipient'] ?? '' ); ?>" class="regular-text" placeholder="<?php echo esc_attr( get_option( 'admin_email' ) ); ?>">
+								<p class="description"><?php esc_html_e( 'Where messages from the contact form ([murtadd_contact]) are sent. Leave empty to use the administration email address under Settings, General. The address is never shown on the site.', 'murtadd' ); ?></p>
 							</td>
 						</tr>
 						<tr>

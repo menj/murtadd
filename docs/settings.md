@@ -25,6 +25,7 @@ In the running text of a single entry, the first mention of a known phrase links
 - **Glossary of terms** — on by default. The first mention of an Arabic or Malay term on an entry gets a short definition and its source, on hover, focus or tap. Never on Emotional or Identity doubts. The terms are in `inc/data/glossary.json`.
 - **Fatwa index default sort** — Scholar A–Z / Era / Recently added.
 - **Footer heritage note** — free text in the slim footer bar.
+- **Contact form recipient** (`contact_recipient`, empty) — where messages from the `[murtadd_contact]` form on the Contact page are sent. Empty, or not a valid address, uses the administration email under Settings → General. Saved only if it is a valid address. It is never printed on the site. See the Contact form section below.
 
 ## Security (`murtadd_security`)
 Each switch is independent.
@@ -49,6 +50,16 @@ Read-only tab: deep links to the native term screens for Topics and Schools. Dou
 Status of every page, menu, and Reading option the templates depend on, plus a button to create anything missing. Use it after upgrading the theme in place, since a file replacement does not fire the activation hook. It never overwrites and never deletes; pressing it on a configured site changes nothing.
 
 The sidebar's "Start here" button renders only when the `start-here` page exists. If it is absent from your site, that page is missing.
+
+## Contact form (`[murtadd_contact]`, `inc/contact.php`)
+
+The Contact page carries the shortcode; put it on any page to show the form there. Fields: name (optional), email (optional, for a reply) and message (required, up to 5,000 characters). It sends a plain-text email with `wp_mail()` to the recipient above, with the reader's address as `Reply-To` when one is given. Nothing is stored in the database.
+
+- **Protection:** a nonce; a honeypot field that people never see (a filled one is answered as sent and nothing is mailed); and at most 3 messages an hour from one connection, counted in a transient keyed by an HMAC of the IP address, so the address itself is never stored. A refused message (empty, or a malformed email) does not count.
+- **Notices:** a success notice after the redirect, and error notices (expired form, limit reached, empty message, malformed email, mail failure) with the reader's words kept in the fields.
+- **Caching:** a page with the form is sent with `nocache_headers()`. If a caching plugin or CDN caches pages regardless, exclude the Contact page, or the nonce will expire for visitors after a day.
+- **Mail delivery:** `wp_mail()` uses the server's mailer. If test messages do not arrive, configure an SMTP plugin; nothing in the theme needs to change.
+- **Filter:** `murtadd_contact_limits` (`per_hour`, `name`, `message`).
 
 ## Comments (Settings → Discussion)
 
