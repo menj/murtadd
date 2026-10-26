@@ -248,6 +248,92 @@ function murtadd_breadcrumb_node() {
 }
 
 /**
+ * Question and answer pairs from content written as questions under h2
+ * headings: each heading is a question, and the text up to the next heading
+ * is its answer.
+ *
+ * @param string $html Stored content.
+ * @return array<int,array> Question nodes.
+ */
+function murtadd_faq_pairs_from_html( $html ) {
+	$parts = preg_split( '#(<h2\b[^>]*>.*?</h2>)#is', (string) $html, -1, PREG_SPLIT_DELIM_CAPTURE );
+	if ( ! is_array( $parts ) ) {
+		return array();
+	}
+	$pairs = array();
+	$count = count( $parts );
+	for ( $i = 1; $i < $count; $i += 2 ) {
+		$question = trim( wp_strip_all_tags( $parts[ $i ] ) );
+		$answer   = trim( (string) preg_replace( '/\s+/u', ' ', wp_strip_all_tags( preg_replace( '#<!--.*?-->#s', '', $parts[ $i + 1 ] ?? '' ) ) ) );
+		if ( '' === $question || '' === $answer ) {
+			continue;
+		}
+		$pairs[] = array(
+			'@type'          => 'Question',
+			'name'           => $question,
+			'acceptedAnswer' => array(
+				'@type' => 'Answer',
+				'text'  => $answer,
+			),
+		);
+	}
+	return $pairs;
+}
+
+/**
+ * The FAQPage for a view written as questions and answers, or null.
+ *
+ * The FAQ page: its h2 questions and the answers under them. A doubt
+ * category archive: each listed doubt's statement, answered by the same
+ * excerpt of its short response the archive shows, so the data says nothing
+ * the page does not. The Emotional and Identity categories get none: their
+ * doubts are written care-first, a grief is not a question awaiting an
+ * answer box (docs/ssot.md), and they stay out of every answer feature the
+ * theme can keep them out of.
+ *
+ * @return array|null
+ */
+function murtadd_faq_node() {
+	$pairs = array();
+
+	if ( is_page( 'faq' ) ) {
+		$page  = get_queried_object();
+		$pairs = murtadd_faq_pairs_from_html( isset( $page->post_content ) ? $page->post_content : '' );
+	} elseif ( is_tax( 'murtadd_doubt_category' ) ) {
+		$term = get_queried_object();
+		if ( ! $term || in_array( $term->slug, array( 'emotional', 'identity' ), true ) ) {
+			return null;
+		}
+		$posts = isset( $GLOBALS['wp_query']->posts ) ? (array) $GLOBALS['wp_query']->posts : array();
+		foreach ( $posts as $post ) {
+			$question = trim( wp_strip_all_tags( (string) get_post_meta( $post->ID, '_murtadd_doubt_statement', true ) ) );
+			$response = (string) get_post_meta( $post->ID, '_murtadd_short_response', true );
+			if ( '' === $question || '' === trim( $response ) ) {
+				continue;
+			}
+			$pairs[] = array(
+				'@type'          => 'Question',
+				'name'           => $question,
+				'acceptedAnswer' => array(
+					'@type' => 'Answer',
+					'text'  => wp_trim_words( $response, 24 ),
+					'url'   => get_permalink( $post ),
+				),
+			);
+		}
+	}
+
+	if ( ! $pairs ) {
+		return null;
+	}
+	return array(
+		'@type'      => 'FAQPage',
+		'@id'        => murtadd_current_url() . '#faq',
+		'mainEntity' => $pairs,
+	);
+}
+
+/**
  * The address of the current view, for @id values and the last crumb.
  *
  * @return string

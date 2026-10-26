@@ -350,6 +350,9 @@ function get_permalink( $post = 0 ) {
 	if ( isset( $GLOBALS['murtadd_view']['links'][ $id ] ) ) {
 		return $GLOBALS['murtadd_view']['links'][ $id ];
 	}
+	if ( is_object( $post ) && isset( $post->post_name ) ) {
+		return $post->link ?? 'https://murtadd.org/x/' . $post->post_name . '/';
+	}
 	$p = $GLOBALS['murtadd_view']['post'] ?? null;
 	return $p ? ( $p->link ?? 'https://murtadd.org/' . $p->post_name . '/' ) : '';
 }
@@ -368,6 +371,13 @@ function get_the_date( $format = '' ) {
 }
 function get_the_modified_date( $format = '' ) {
 	return '2026-01-02T00:00:00+00:00';
+}
+function wp_trim_words( $text, $num_words = 55, $more = null ) {
+	$words = preg_split( '/[\n\r\t ]+/', trim( wp_strip_all_tags( (string) $text ) ), -1, PREG_SPLIT_NO_EMPTY );
+	if ( count( $words ) > $num_words ) {
+		return implode( ' ', array_slice( $words, 0, $num_words ) ) . ( null === $more ? '&hellip;' : $more );
+	}
+	return implode( ' ', $words );
 }
 function wp_kses_post( $html ) {
 	return $html;
