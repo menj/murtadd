@@ -32,7 +32,8 @@ defined( 'ABSPATH' ) || exit;
  * 'template' assigns a page template. 'body' is shown only on pages whose
  * template renders the_content(); the home, blog and start-here templates do
  * not, so their copy is a note to whoever opens them in the editor. The copy
- * of the rest lives in murtadd_seed_page_bodies() (inc/seed-data.php).
+ * of the rest lives in inc/data/seed/pages.json, loaded by
+ * murtadd_seed_page_bodies() (inc/seed-data.php).
  *
  * @return array<string,array>
  */
@@ -57,27 +58,27 @@ function murtadd_required_pages() {
 		),
 		'irtidad'    => array(
 			'title'    => __( 'Irtidad', 'murtadd' ),
-			'body'     => $bodies['irtidad'],
+			'body'     => isset( $bodies['irtidad'] ) ? $bodies['irtidad'] : '',
 			'template' => '',
 		),
 		'about'      => array(
 			'title'    => __( 'About', 'murtadd' ),
-			'body'     => $bodies['about'],
+			'body'     => isset( $bodies['about'] ) ? $bodies['about'] : '',
 			'template' => '',
 		),
 		'faq'        => array(
 			'title'    => __( 'FAQ', 'murtadd' ),
-			'body'     => $bodies['faq'],
+			'body'     => isset( $bodies['faq'] ) ? $bodies['faq'] : '',
 			'template' => '',
 		),
 		'contact'    => array(
 			'title'    => __( 'Contact', 'murtadd' ),
-			'body'     => $bodies['contact'],
+			'body'     => isset( $bodies['contact'] ) ? $bodies['contact'] : '',
 			'template' => '',
 		),
 		'privacy'    => array(
 			'title'    => __( 'Privacy', 'murtadd' ),
-			'body'     => $bodies['privacy'],
+			'body'     => isset( $bodies['privacy'] ) ? $bodies['privacy'] : '',
 			'template' => '',
 		),
 	);
@@ -97,6 +98,9 @@ function murtadd_create_missing_pages() {
 
 		if ( get_page_by_path( $slug ) ) {
 			continue; // Already there. Leave it alone.
+		}
+		if ( '' === $page['body'] ) {
+			continue; // Copy unavailable (inc/data/seed/pages.json unreadable): create it on a later run, never empty.
 		}
 
 		$post_id = wp_insert_post(

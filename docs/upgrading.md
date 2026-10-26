@@ -1,5 +1,11 @@
 # Upgrading — Murtadd
 
+## 1.42.0 → 1.42.1
+
+Drop-in. Upload the whole theme folder: new files are `inc/data/seed/topics.json`, `rebuttals.json`, `doubts.json` and `pages.json`, and `inc/seed-data.php` now holds only the code that reads them. Ship the four JSON files with it; without them the seeder creates no entries and activation leaves the five written pages uncreated until the files are back; nothing fails. No database step, and nothing already on the site changes.
+
+Where earlier notes say to paste a revised entry from `inc/seed-data.php`, take it from `inc/data/seed/rebuttals.json` or `doubts.json` instead.
+
 ## 1.41.0 → 1.42.0
 
 Additive. Upload the whole theme folder: new files are `inc/glossary.php`, `inc/data/glossary.json`, `assets/css/glossary.css`, `assets/js/glossary.js`, `assets/css/breadcrumbs.css`, `assets/css/editor.css` and their `.min` twins. No database step.
