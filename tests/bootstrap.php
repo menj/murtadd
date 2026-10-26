@@ -137,7 +137,7 @@ function add_theme_support() {}
 function register_nav_menus() {}
 function add_image_size() {}
 function get_the_ID() {
-	return 0;
+	return isset( $GLOBALS['murtadd_view']['post'] ) ? (int) $GLOBALS['murtadd_view']['post']->ID : 0;
 }
 function mb_strtoupper_shim( $s ) {
 	return function_exists( 'mb_strtoupper' ) ? mb_strtoupper( $s ) : strtoupper( $s );
@@ -248,6 +248,9 @@ function has_term( $terms, $taxonomy = '', $post_id = 0 ) {
 	return (bool) array_intersect( (array) $terms, $GLOBALS['murtadd_test_terms'][ $post_id ] ?? array() );
 }
 function get_post_type( $post_id = 0 ) {
+	if ( ! $post_id && isset( $GLOBALS['murtadd_view']['post'] ) ) {
+		return $GLOBALS['murtadd_view']['post']->post_type;
+	}
 	return $GLOBALS['murtadd_test_types'][ $post_id ] ?? 'post';
 }
 function get_post_field( $field, $post_id = 0 ) {
@@ -255,6 +258,129 @@ function get_post_field( $field, $post_id = 0 ) {
 }
 function get_post( $post_id = 0 ) {
 	return (object) array( 'ID' => $post_id );
+}
+
+
+/*
+ * The current view, for template tags and structured data. Tests set
+ * $GLOBALS['murtadd_view'] to array( 'front' => bool, 'post' => object,
+ * 'term' => object, 'archive' => post type ) and the conditionals below read it.
+ */
+$GLOBALS['murtadd_view'] = array();
+function murtadd_test_view( $view ) {
+	$GLOBALS['murtadd_view'] = $view;
+}
+function is_front_page() {
+	return ! empty( $GLOBALS['murtadd_view']['front'] );
+}
+function is_singular( $types = '' ) {
+	$post = $GLOBALS['murtadd_view']['post'] ?? null;
+	if ( ! $post ) {
+		return false;
+	}
+	return '' === $types || array() === $types || in_array( $post->post_type, (array) $types, true );
+}
+function is_page( $page = '' ) {
+	$post = $GLOBALS['murtadd_view']['post'] ?? null;
+	if ( ! $post || 'page' !== $post->post_type ) {
+		return false;
+	}
+	return '' === $page || in_array( $post->post_name, (array) $page, true ) || in_array( $post->ID, (array) $page, true );
+}
+function is_tax( $taxonomy = '' ) {
+	$term = $GLOBALS['murtadd_view']['term'] ?? null;
+	return $term && ( '' === $taxonomy || in_array( $term->taxonomy, (array) $taxonomy, true ) );
+}
+function is_category() {
+	return false;
+}
+function is_tag() {
+	return false;
+}
+function is_post_type_archive( $types = '' ) {
+	$type = $GLOBALS['murtadd_view']['archive'] ?? '';
+	return '' !== $type && ( '' === $types || in_array( $type, (array) $types, true ) );
+}
+function get_queried_object() {
+	$v = $GLOBALS['murtadd_view'];
+	if ( isset( $v['post'] ) ) {
+		return $v['post'];
+	}
+	if ( isset( $v['term'] ) ) {
+		return $v['term'];
+	}
+	if ( isset( $v['archive'] ) ) {
+		return get_post_type_object( $v['archive'] );
+	}
+	return null;
+}
+function get_queried_object_id() {
+	$o = get_queried_object();
+	return isset( $o->ID ) ? (int) $o->ID : ( isset( $o->term_id ) ? (int) $o->term_id : 0 );
+}
+function get_query_var( $var ) {
+	return 'post_type' === $var ? ( $GLOBALS['murtadd_view']['archive'] ?? '' ) : '';
+}
+function get_post_type_object( $type ) {
+	$names = array( 'murtadd_doubt' => 'Doubts', 'murtadd_rebuttal' => 'Rebuttals', 'murtadd_fatwa' => 'Fatwa', 'murtadd_letter' => 'Letters' );
+	return isset( $names[ $type ] ) ? (object) array( 'name' => $type, 'labels' => (object) array( 'name' => $names[ $type ] ) ) : null;
+}
+function get_post_type_archive_link( $type ) {
+	$slugs = array( 'murtadd_doubt' => 'doubts', 'murtadd_rebuttal' => 'rebuttals', 'murtadd_fatwa' => 'fatwa', 'murtadd_letter' => 'letters' );
+	return isset( $slugs[ $type ] ) ? 'https://murtadd.org/' . $slugs[ $type ] . '/' : false;
+}
+function get_the_terms( $post_id, $taxonomy ) {
+	return $GLOBALS['murtadd_view']['terms'][ $taxonomy ] ?? false;
+}
+function get_term_link( $term ) {
+	$bases = array( 'murtadd_doubt_category' => 'doubt-category', 'murtadd_topic' => 'topic', 'murtadd_school' => 'school' );
+	return 'https://murtadd.org/' . ( $bases[ $term->taxonomy ] ?? $term->taxonomy ) . '/' . $term->slug . '/';
+}
+function get_post_ancestors( $post ) {
+	return $GLOBALS['murtadd_view']['ancestors'] ?? array();
+}
+function get_the_title( $post = 0 ) {
+	if ( is_object( $post ) ) {
+		return $post->post_title ?? '';
+	}
+	return $GLOBALS['murtadd_view']['titles'][ $post ] ?? ( isset( $GLOBALS['murtadd_view']['post'] ) ? $GLOBALS['murtadd_view']['post']->post_title : '' );
+}
+function get_permalink( $post = 0 ) {
+	$id = is_object( $post ) ? $post->ID : (int) $post;
+	if ( isset( $GLOBALS['murtadd_view']['links'][ $id ] ) ) {
+		return $GLOBALS['murtadd_view']['links'][ $id ];
+	}
+	if ( is_object( $post ) && isset( $post->post_name ) ) {
+		return $post->link ?? 'https://murtadd.org/x/' . $post->post_name . '/';
+	}
+	$p = $GLOBALS['murtadd_view']['post'] ?? null;
+	return $p ? ( $p->link ?? 'https://murtadd.org/' . $p->post_name . '/' ) : '';
+}
+function wp_count_posts( $type ) {
+	return (object) array( 'publish' => $GLOBALS['murtadd_view']['published'][ $type ] ?? 0 );
+}
+function post_type_archive_title( $prefix = '', $display = true ) {
+	$o = get_post_type_object( $GLOBALS['murtadd_view']['archive'] ?? '' );
+	return $o ? $o->labels->name : '';
+}
+function get_post_meta( $post_id, $key = '', $single = false ) {
+	return $GLOBALS['murtadd_view']['meta'][ $post_id ][ $key ] ?? '';
+}
+function get_the_date( $format = '' ) {
+	return '2026-01-01T00:00:00+00:00';
+}
+function get_the_modified_date( $format = '' ) {
+	return '2026-01-02T00:00:00+00:00';
+}
+function wp_trim_words( $text, $num_words = 55, $more = null ) {
+	$words = preg_split( '/[\n\r\t ]+/', trim( wp_strip_all_tags( (string) $text ) ), -1, PREG_SPLIT_NO_EMPTY );
+	if ( count( $words ) > $num_words ) {
+		return implode( ' ', array_slice( $words, 0, $num_words ) ) . ( null === $more ? '&hellip;' : $more );
+	}
+	return implode( ' ', $words );
+}
+function wp_kses_post( $html ) {
+	return $html;
 }
 
 require_once __DIR__ . '/../inc/template-tags.php';

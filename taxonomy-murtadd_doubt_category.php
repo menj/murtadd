@@ -10,6 +10,7 @@ defined( 'ABSPATH' ) || exit;
 get_header();
 ?>
 <header class="murtadd-archive-header">
+	<?php murtadd_breadcrumbs(); ?>
 	<?php murtadd_doubt_category_tabs(); ?>
 	<h1><?php single_term_title(); ?></h1>
 	<?php the_archive_description( '<p class="murtadd-subtitle">', '</p>' ); ?>

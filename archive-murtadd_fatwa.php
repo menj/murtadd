@@ -30,6 +30,7 @@ $murtadd_sel_topic  = isset( $_GET['topic'] ) ? sanitize_key( wp_unslash( $_GET[
 ?>
 
 <header class="murtadd-archive-header">
+	<?php murtadd_breadcrumbs(); ?>
 	<h1><?php esc_html_e( 'Fatwa index', 'murtadd' ); ?></h1>
 	<p class="murtadd-subtitle"><?php esc_html_e( 'Scholarly positions summarized in our own words, each linked to its primary source. A reference, not a verdict.', 'murtadd' ); ?></p>
 </header>

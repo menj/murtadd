@@ -99,6 +99,10 @@ function murtadd_enqueue_assets() {
 		wp_enqueue_style( 'murtadd-rtl', get_stylesheet_directory_uri() . '/assets/css/main-rtl' . MURTADD_ASSET_SUFFIX . '.css', array( 'murtadd-main' ), MURTADD_VERSION );
 	}
 
+	if ( ! is_front_page() && function_exists( 'murtadd_breadcrumbs_enabled' ) && murtadd_breadcrumbs_enabled() ) {
+		wp_enqueue_style( 'murtadd-breadcrumbs', get_stylesheet_directory_uri() . '/assets/css/breadcrumbs' . MURTADD_ASSET_SUFFIX . '.css', array( 'murtadd-main' ), MURTADD_VERSION );
+	}
+
 	if ( is_singular( 'murtadd_doubt' ) ) {
 		wp_enqueue_style( 'murtadd-doubt', get_stylesheet_directory_uri() . '/assets/css/doubt-template' . MURTADD_ASSET_SUFFIX . '.css', array( 'murtadd-main' ), MURTADD_VERSION );
 	}

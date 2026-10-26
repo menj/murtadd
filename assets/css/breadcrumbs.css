@@ -1,0 +1,43 @@
+/* Breadcrumbs: one quiet line above the title. */
+.murtadd-breadcrumbs {
+	font-family: var(--murtadd-font-sans);
+	font-size: 13px;
+	color: var(--murtadd-text-muted);
+}
+.murtadd-breadcrumbs ol {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0 6px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+.murtadd-breadcrumbs li {
+	display: inline-flex;
+	align-items: baseline;
+	max-width: 100%;
+	min-width: 0;
+}
+.murtadd-breadcrumbs li + li::before {
+	content: "/";
+	margin-right: 6px;
+	color: var(--murtadd-border);
+}
+.murtadd-breadcrumbs a {
+	color: var(--murtadd-text-muted);
+	text-decoration: none;
+}
+.murtadd-breadcrumbs a:hover,
+.murtadd-breadcrumbs a:focus-visible {
+	color: var(--murtadd-accent);
+	text-decoration: underline;
+}
+.murtadd-breadcrumbs [aria-current="page"] {
+	color: var(--murtadd-text);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.murtadd-archive-header .murtadd-breadcrumbs {
+	margin-bottom: 16px;
+}

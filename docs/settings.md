@@ -20,6 +20,7 @@ In the running text of a single entry, the first mention of a known phrase links
 ## Content display (`murtadd_content_display`)
 - **Short response word cap** — soft cap for the doubt editor's live word count (default 400; warns, never blocks).
 - **"If you are struggling" notice** — toggle for the crisis-support block on Emotional and Identity doubt pages.
+- **Breadcrumbs** — the trail above entries, pages and archives, and the BreadcrumbList that mirrors it (on by default). With Rank Math's breadcrumbs switched on, Rank Math's trail is shown in its place.
 - **Fatwa index default sort** — Scholar A–Z / Era / Recently added.
 - **Footer heritage note** — free text in the slim footer bar.
 
