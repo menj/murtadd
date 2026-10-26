@@ -61,7 +61,20 @@ function update_option( $name, $value ) {
 	return true;
 }
 function __( $s, $d = null ) {
-	return $s;
+	$locale = $GLOBALS['murtadd_locale'] ?? 'en_US';
+	return $GLOBALS['murtadd_l10n'][ $locale ][ $s ] ?? $s;
+}
+function get_available_languages() {
+	return array_keys( $GLOBALS['murtadd_l10n'] ?? array() );
+}
+function switch_to_locale( $locale ) {
+	$GLOBALS['murtadd_locale_stack'][] = $GLOBALS['murtadd_locale'] ?? 'en_US';
+	$GLOBALS['murtadd_locale']         = $locale;
+	return true;
+}
+function restore_previous_locale() {
+	$GLOBALS['murtadd_locale'] = array_pop( $GLOBALS['murtadd_locale_stack'] ) ?? 'en_US';
+	return $GLOBALS['murtadd_locale'];
 }
 function _x( $s, $c, $d = null ) {
 	return $s;

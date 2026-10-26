@@ -412,25 +412,55 @@ function murtadd_migrate_template_paths() {
 add_action( 'admin_init', 'murtadd_migrate_template_paths' );
 
 /**
+ * The two placeholder strings earlier releases seeded, through __() in the
+ * locale currently loaded. Literals, so the POT keeps them.
+ *
+ * @return array{page:string,irtidad:string}
+ */
+function murtadd_legacy_placeholder_strings() {
+	return array(
+		'page'    => __( 'Placeholder. Replace this text.', 'murtadd' ),
+		'irtidad' => __( 'Placeholder. This page carries the second route from Start Here: what irtidad actually is, and what does not take a person out of Islam. Replace this text.', 'murtadd' ),
+	);
+}
+
+/**
  * The placeholder copy earlier releases seeded, for comparison only.
  *
- * Each string appears twice, as written and through __(), because a site
- * running a translation stored the translated text at activation. Nothing
- * here is ever written to the database.
+ * Each string is taken as written, in the current locale, and in every
+ * language installed on the site: a site activated under another locale
+ * stored that locale's text, and only a genuine translation of the
+ * placeholder can match, so no page an editor wrote is ever mistaken for it.
+ * Nothing here is ever written to the database.
  *
  * @return array{pages:array<string,string[]>,letters:array<string,string>}
  */
 function murtadd_legacy_placeholder_copy() {
-	$page = 'Placeholder. Replace this text.';
-	$irt  = 'Placeholder. This page carries the second route from Start Here: what irtidad actually is, and what does not take a person out of Islam. Replace this text.';
+	$sets = array(
+		array(
+			'page'    => 'Placeholder. Replace this text.',
+			'irtidad' => 'Placeholder. This page carries the second route from Start Here: what irtidad actually is, and what does not take a person out of Islam. Replace this text.',
+		),
+		murtadd_legacy_placeholder_strings(),
+	);
+	if ( function_exists( 'get_available_languages' ) && function_exists( 'switch_to_locale' ) ) {
+		foreach ( (array) get_available_languages() as $locale ) {
+			if ( switch_to_locale( $locale ) ) {
+				$sets[] = murtadd_legacy_placeholder_strings();
+				restore_previous_locale();
+			}
+		}
+	}
+	$page = array_values( array_unique( array_column( $sets, 'page' ) ) );
+	$irt  = array_values( array_unique( array_column( $sets, 'irtidad' ) ) );
 
 	return array(
 		'pages'   => array(
-			'irtidad' => array( $irt, __( 'Placeholder. This page carries the second route from Start Here: what irtidad actually is, and what does not take a person out of Islam. Replace this text.', 'murtadd' ) ),
-			'about'   => array( $page, __( 'Placeholder. Replace this text.', 'murtadd' ) ),
-			'faq'     => array( $page, __( 'Placeholder. Replace this text.', 'murtadd' ) ),
-			'contact' => array( $page, __( 'Placeholder. Replace this text.', 'murtadd' ) ),
-			'privacy' => array( $page, __( 'Placeholder. Replace this text.', 'murtadd' ) ),
+			'irtidad' => $irt,
+			'about'   => $page,
+			'faq'     => $page,
+			'contact' => $page,
+			'privacy' => $page,
 		),
 		// md5 of each lorem-ipsum letter body after murtadd_normalise_copy().
 		'letters' => array(
@@ -471,38 +501,6 @@ function murtadd_copy_has_added_markup( $html ) {
 }
 
 /**
- * Whether a theme page still holds what activation seeded, in any language.
- *
- * The placeholder is matched as written and in the current locale's
- * translation; a site activated under another locale stored that locale's
- * text, which neither form matches. Such a page still counts as an unseeded
- * placeholder when WordPress records no edit since it was created (its
- * modified time equals its creation time) and its copy is a single short
- * paragraph with nothing an editor added. Anything else keeps its content.
- *
- * @param WP_Post|object $page Page.
- * @return bool
- */
-function murtadd_page_is_unedited_seed( $page ) {
-	$created  = (string) ( $page->post_date_gmt ?? '' );
-	$modified = (string) ( $page->post_modified_gmt ?? '' );
-	if ( '' === $created || '0000-00-00 00:00:00' === $created || $created !== $modified ) {
-		return false;
-	}
-	$html = (string) $page->post_content;
-	if ( murtadd_copy_has_added_markup( $html ) ) {
-		return false;
-	}
-	$bare = (string) preg_replace( '#<!--.*?-->#s', '', $html );
-	if ( substr_count( strtolower( $bare ), '<p' ) > 1 || preg_match( '/\S\s*\R\s*\R\s*\S/u', strip_tags( $bare ) ) ) {
-		return false; // More than one paragraph: never what activation seeded.
-	}
-	$text = murtadd_normalise_copy( $html );
-	// The longest placeholder (irtidad) runs to about 150 characters in English.
-	return '' !== $text && ( function_exists( 'mb_strlen' ) ? mb_strlen( $text, 'UTF-8' ) : strlen( $text ) ) <= 300;
-}
-
-/**
  * Retire the placeholder copy on sites set up before 1.41.0.
  *
  * Pages still holding the exact placeholder text get their written copy, and
@@ -536,7 +534,7 @@ function murtadd_retire_placeholder_copy() {
 			continue; // Already the written copy.
 		}
 		$known = ! murtadd_copy_has_added_markup( $page->post_content ) && in_array( $current, array_map( 'murtadd_normalise_copy', $old ), true );
-		if ( ! $known && ! murtadd_page_is_unedited_seed( $page ) ) {
+		if ( ! $known ) {
 			continue; // Edited. Leave it alone.
 		}
 		$written = wp_update_post(
