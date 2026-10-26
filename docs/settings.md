@@ -8,6 +8,7 @@ Settings API throughout, one option array per tab.
 
 ## Cross-links (`murtadd_cross_links`)
 - **Evidential case base URL** — homepage "full argument" card and doubt-page deep links. Cleared = hidden.
+- **Counterpart link** (`show_counterpart`, on by default) — the "Read it on Compelling Evidence" aside on doubts and rebuttals that carry a `_murtadd_ce_slug`, linking to `<base>/articles/<slug>/`. Unticked = hidden.
 - **Polemics base URL** — second homepage card. All outbound links open in a new tab with `rel="noopener"`; no relationship is stated on the front end.
 
 ## Contextual links (`murtadd_contextual_links`)

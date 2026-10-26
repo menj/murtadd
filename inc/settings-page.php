@@ -37,6 +37,7 @@ function murtadd_sanitize_cross_links( $input ) {
 	return array(
 		'ce_base_url'      => esc_url_raw( $input['ce_base_url'] ?? '' ),
 		'bismika_base_url' => esc_url_raw( $input['bismika_base_url'] ?? '' ),
+		'show_counterpart' => empty( $input['show_counterpart'] ) ? '0' : '1',
 	);
 }
 
@@ -421,6 +422,13 @@ function murtadd_render_settings_page() {
 							<td>
 								<input type="url" id="murtadd_ce" name="murtadd_cross_links[ce_base_url]" value="<?php echo esc_url( $o['ce_base_url'] ?? 'https://compelling-evidence.com' ); ?>" class="regular-text">
 								<p class="description"><?php esc_html_e( 'Used by the homepage "full argument" card and doubt pages\' outbound deep links. Cleared = links hidden.', 'murtadd' ); ?></p>
+							</td>
+						</tr>
+						<tr>
+							<th scope="row"><?php esc_html_e( 'Counterpart link', 'murtadd' ); ?></th>
+							<td>
+								<label><input type="checkbox" name="murtadd_cross_links[show_counterpart]" value="1" <?php checked( '0' !== (string) ( $o['show_counterpart'] ?? '1' ) ); ?>> <?php esc_html_e( 'Show the counterpart link', 'murtadd' ); ?></label>
+								<p class="description"><?php esc_html_e( 'On doubts and rebuttals that name a Compelling Evidence article, an aside links to it at the evidential case base URL above (/articles/slug/). On by default.', 'murtadd' ); ?></p>
 							</td>
 						</tr>
 						<tr>

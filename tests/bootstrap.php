@@ -152,6 +152,7 @@ function murtadd_test_reset_posts() {
 	$GLOBALS['murtadd_posts']   = array();
 	$GLOBALS['murtadd_options'] = array();
 	$GLOBALS['murtadd_next_id'] = 1;
+	$GLOBALS['murtadd_written_meta'] = array();
 }
 function get_page_by_path( $slug, $output = OBJECT, $type = 'page' ) {
 	return $GLOBALS['murtadd_posts'][ $type ][ $slug ] ?? null;
@@ -169,6 +170,7 @@ function is_wp_error( $x ) {
 	return false;
 }
 function update_post_meta( $id, $k, $v ) {
+	$GLOBALS['murtadd_written_meta'][ $id ][ $k ] = $v;
 	return true;
 }
 function wp_set_object_terms( $id, $terms, $tax ) {
@@ -376,7 +378,7 @@ function post_type_archive_title( $prefix = '', $display = true ) {
 	return $o ? $o->labels->name : '';
 }
 function get_post_meta( $post_id, $key = '', $single = false ) {
-	return $GLOBALS['murtadd_view']['meta'][ $post_id ][ $key ] ?? $GLOBALS['murtadd_test_meta'][ $post_id ][ $key ] ?? '';
+	return $GLOBALS['murtadd_view']['meta'][ $post_id ][ $key ] ?? $GLOBALS['murtadd_test_meta'][ $post_id ][ $key ] ?? $GLOBALS['murtadd_written_meta'][ $post_id ][ $key ] ?? '';
 }
 function get_the_date( $format = '' ) {
 	return '2026-01-01T00:00:00+00:00';

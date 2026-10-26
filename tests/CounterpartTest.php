@@ -80,6 +80,51 @@ final class CounterpartTest extends TestCase {
 		}
 	}
 
+	/** Render the counterpart aside for a post with the given meta and options. */
+	private function render_counterpart( $ce_slug, array $cross_links ) {
+		$GLOBALS['murtadd_view']                     = array( 'post' => (object) array( 'ID' => 901 ) );
+		$GLOBALS['murtadd_view']['meta'][901]        = array( '_murtadd_ce_slug' => $ce_slug );
+		$GLOBALS['murtadd_options']['murtadd_cross_links'] = $cross_links;
+		ob_start();
+		include dirname( __DIR__ ) . '/template-parts/counterpart.php';
+		$html = ob_get_clean();
+		$GLOBALS['murtadd_view'] = array();
+		unset( $GLOBALS['murtadd_options']['murtadd_cross_links'] );
+		return $html;
+	}
+
+	/** The aside links to /articles/<slug>/ on the companion site, in a new tab. */
+	public function test_counterpart_renders_the_article_url() {
+		$html = $this->render_counterpart( 'hadith-reliability', array( 'ce_base_url' => 'https://compelling-evidence.com' ) );
+		$this->assertStringContainsString( 'href="https://compelling-evidence.com/articles/hadith-reliability/"', $html );
+		$this->assertStringContainsString( 'rel="noopener"', $html );
+		$this->assertStringContainsString( 'class="murtadd-counterpart"', $html );
+	}
+
+	/** Off by switch, by cleared base URL, or by missing slug: nothing renders. */
+	public function test_counterpart_can_be_switched_off() {
+		$this->assertSame( '', trim( $this->render_counterpart( 'hadith-reliability', array( 'ce_base_url' => 'https://compelling-evidence.com', 'show_counterpart' => '0' ) ) ) );
+		$this->assertSame( '', trim( $this->render_counterpart( 'hadith-reliability', array( 'ce_base_url' => '' ) ) ) );
+		$this->assertSame( '', trim( $this->render_counterpart( '', array( 'ce_base_url' => 'https://compelling-evidence.com' ) ) ) );
+		$this->assertNotSame( '', trim( $this->render_counterpart( 'hadith-reliability', array( 'ce_base_url' => 'https://compelling-evidence.com', 'show_counterpart' => '1' ) ) ) );
+	}
+
+	/** Both single templates pull the aside in. */
+	public function test_both_single_types_render_the_aside() {
+		foreach ( array( 'single-murtadd_doubt.php', 'single-murtadd_rebuttal.php' ) as $tpl ) {
+			$this->assertStringContainsString( "get_template_part( 'template-parts/counterpart' )", file_get_contents( dirname( __DIR__ ) . '/' . $tpl ), $tpl );
+		}
+	}
+
+	/** The settings sanitiser keeps the switch, and an unticked box means off. */
+	public function test_switch_survives_sanitising() {
+		if ( ! function_exists( 'murtadd_sanitize_cross_links' ) ) {
+			$this->markTestSkipped( 'Settings page not loaded in the test bootstrap.' );
+		}
+		$this->assertSame( '0', murtadd_sanitize_cross_links( array( 'ce_base_url' => 'https://x.test' ) )['show_counterpart'] );
+		$this->assertSame( '1', murtadd_sanitize_cross_links( array( 'show_counterpart' => '1' ) )['show_counterpart'] );
+	}
+
 	/**
 	 * Collect slug => counterpart across both post types.
 	 *

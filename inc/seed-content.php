@@ -226,3 +226,48 @@ function murtadd_seed_missing_count() {
 
 	return $missing;
 }
+
+/**
+ * Backfill the counterpart slug on posts the seeder created.
+ *
+ * The seeder never touches a post it has already created, so a ce_slug added
+ * to the seed data after a site was set up would never reach it. This fills
+ * `_murtadd_ce_slug` only where it is EMPTY, only on slugs recorded in
+ * murtadd_seeded_slugs, and only from the seed data. A value an editor typed,
+ * or cleared and then retyped, is never replaced; a post the editor deleted is
+ * simply not found. Re-running changes nothing, and the run is skipped
+ * entirely once the current mapping has been applied.
+ *
+ * @return int Number of posts that gained a ce_slug on this run.
+ */
+function murtadd_backfill_ce_slugs() {
+	$map = array(
+		'murtadd_rebuttal' => array_column( murtadd_seed_rebuttals(), 'ce_slug', 'slug' ),
+		'murtadd_doubt'    => array_column( murtadd_seed_doubts(), 'ce_slug', 'slug' ),
+	);
+	$hash = md5( (string) wp_json_encode( $map ) );
+	if ( get_option( 'murtadd_ce_slug_backfill' ) === $hash ) {
+		return 0;
+	}
+
+	$seeded = murtadd_seeded_slugs();
+	$filled = 0;
+
+	foreach ( $map as $type => $pairs ) {
+		foreach ( $pairs as $slug => $ce_slug ) {
+			if ( '' === (string) $ce_slug || ! in_array( $slug, isset( $seeded[ $type ] ) ? $seeded[ $type ] : array(), true ) ) {
+				continue;
+			}
+			$post = get_page_by_path( $slug, OBJECT, $type );
+			if ( ! $post || '' !== (string) get_post_meta( $post->ID, '_murtadd_ce_slug', true ) ) {
+				continue;
+			}
+			update_post_meta( $post->ID, '_murtadd_ce_slug', sanitize_title( $ce_slug ) );
+			++$filled;
+		}
+	}
+
+	update_option( 'murtadd_ce_slug_backfill', $hash );
+	return $filled;
+}
+add_action( 'admin_init', 'murtadd_backfill_ce_slugs' );

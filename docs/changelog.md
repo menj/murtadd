@@ -2,6 +2,12 @@
 
 ## 1.43.0 — 2026-10-26
 
+### Added (cross-links with Compelling Evidence)
+- **Counterpart switch.** Theme Options → Cross-links → "Show the counterpart link" (`murtadd_cross_links[show_counterpart]`, on by default) turns the "Read it on Compelling Evidence" aside off on every doubt and rebuttal without clearing the base URL. The aside still renders on both single types and links to `<ce_base_url>/articles/<ce_slug>/` with `rel="noopener"`.
+- **ce_slug backfill.** `murtadd_backfill_ce_slugs()` (on `admin_init`) writes the seed data's `ce_slug` into `_murtadd_ce_slug` on posts the seeder created (`murtadd_seeded_slugs`), only where the meta is empty, so a counterpart added to the seed data reaches existing installs without touching an editor's value. It records a hash of the mapping in `murtadd_ce_slug_backfill` and does nothing until the mapping changes.
+- Every `ce_slug` in the seed data was checked against the Compelling Evidence article batches: all exist. The six entries without one (sects, the movement, the dare, music) have no clearly matching article and stay unmapped. Compelling Evidence now links back from each mapped article (its `inc/data/murtadd-counterparts.json`).
+- Tests: `CeSlugBackfillTest`, and counterpart rendering, switch and sanitiser tests in `CounterpartTest`.
+
 ### Changed (login screen)
 - **Rebuilt login screen, in line with the sister themes.** A green brand panel (the wordmark, a line of text, a soft gradient and ring) sits beside the form on wide screens and becomes a rounded band above it on phones. The form is a rounded card with 48px rounded inputs, pill buttons, a pill show-password toggle and accessible focus rings in the accent. Every screen wp-login.php serves uses it: log in, lost password, reset password, registration. The interim (session expired) login hides the panel.
 - **Notices:** the owner's note, information, success and error messages are rounded cards with a coloured dot. Errors are tinted in the strike red, and core's flagged fields take a red border.
