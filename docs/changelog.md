@@ -30,7 +30,7 @@ Hardening, Rank Math, upkeep pages, written pages, and the Qur'an face. The plac
 - **Activation and Setup notices** now ask for a contact method and the Privacy details in place of "replace the placeholder copy".
 
 ### Upgrading
-- **`murtadd_retire_placeholder_copy()`** runs once on `admin_init` (flag `murtadd_placeholder_copy_retired`). A page that still holds the exact placeholder text, compared as a reader sees it so that one opened and saved unchanged in the block editor still counts, gets its written copy. Each lorem-ipsum letter whose text still matches the seeded body goes back to draft. Any page or letter an editor has changed fails the comparison and is left exactly as it is. This is the one narrow exception to "never overwrite, never destroy", and `inc/activation.php` says so.
+- **`murtadd_retire_placeholder_copy()`** runs on `admin_init` until every write has landed (flag `murtadd_placeholder_copy_retired`). A page that still holds the exact placeholder text, compared as a reader sees it so that one opened and saved unchanged in the block editor still counts, gets its written copy. Each lorem-ipsum letter whose text still matches the seeded body goes back to draft. Any page or letter an editor has changed fails the comparison and is left exactly as it is. This is the one narrow exception to "never overwrite, never destroy", and `inc/activation.php` says so.
 
 ### Tests
 - `tests/PageCopyTest.php` (10 tests): no seeded text is placeholder or lorem; every rendered page has copy of substance; house style (no em dash, no contraction, no "actually"); every link in the page copy leads to seeded content; Contact and Privacy carry owner notes and no invented address; a fresh install gets the written copy; retirement replaces only unedited pages, drafts only unedited letters, is idempotent, and does nothing on an empty site. Mutation-checked: removing either comparison guard, the letter status check, or restoring a placeholder each fails the suite.
@@ -45,8 +45,15 @@ Hardening, Rank Math, upkeep pages, written pages, and the Qur'an face. The plac
 - **`languages/murtadd.pot`** regenerated from the code: 389 strings (was 296, last built at 1.23.0).
 - **readme.txt** lists the new options to delete when the theme is retired: `murtadd_security`, `murtadd_upkeep`, `murtadd_dropins_stamp`, `murtadd_dropins_status`, `murtadd_placeholder_copy_retired`.
 
+### Fixed (review)
+- **The private login address can no longer take a page the theme creates.** `home`, `start-here`, `irtidad`, `about`, `faq`, `contact` and `privacy` join the reserved list. Before, a saved address matching one of those pages while the page was missing was accepted; when setup later created the page, the login screen answered at its address and the page could not be reached. A saved address that is now reserved is ignored, so the login screen returns to `wp-login.php` until a new one is saved.
+- **Placeholder retirement finishes before it marks itself done.** The flag `murtadd_placeholder_copy_retired` is set after the writes, and only when every one landed; a failed `wp_update_post()` is retried on the next admin request.
+- **Added markup counts as an edit.** A placeholder page or lorem letter that carries a link, an image or any element beyond the seeded paragraphs is left alone even when its visible text still matches (`murtadd_copy_has_added_markup()`).
+- **Switching Error pages off cleans up after a partial install.** A first install that wrote some drop-ins and failed on another saved a status but no stamp, so switching the pages off removed nothing and the written drop-ins stayed active. Removal now runs when either option is present.
+- **The login note is cut to 500 characters without mbstring too** (PCRE in UTF-8 mode in place of `mb_substr()`).
+
 ### Tests
-- Suite: 145 tests. New: `HardeningTest`, `RankMathTest`, `GoneTest`, `MaintenanceTest`, `LoginTest`, `PageCopyTest`, `QuranTextTest`.
+- Suite: 151 tests. New: `HardeningTest`, `RankMathTest`, `GoneTest`, `MaintenanceTest`, `LoginTest`, `PageCopyTest`, `QuranTextTest`. The `has_term()` stub now answers only for `murtadd_doubt_category`, so a guard querying the wrong taxonomy fails.
 
 ## 1.40.0 — 2026-10-26
 Contextual links. In the running text of a single entry, the first mention of a known phrase now links to the page that treats it: another rebuttal or doubt here, or the inner page on one of the six sister sites. No section, widget or list is added; the links sit in the prose.

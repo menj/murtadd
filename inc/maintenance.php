@@ -161,7 +161,9 @@ function murtadd_maybe_install_dropins( $force = false ) {
 		return;
 	}
 	if ( ! murtadd_upkeep( 'error_pages' ) ) {
-		if ( get_option( 'murtadd_dropins_stamp' ) ) {
+		// The status is saved on every attempt, the stamp only on full success,
+		// so a partial install is cleaned up too.
+		if ( get_option( 'murtadd_dropins_stamp' ) || get_option( 'murtadd_dropins_status' ) ) {
 			murtadd_remove_dropins( WP_CONTENT_DIR );
 			delete_option( 'murtadd_dropins_stamp' );
 			delete_option( 'murtadd_dropins_status' );

@@ -106,7 +106,7 @@ function wp_json_encode( $d, $f = 0 ) {
 	return json_encode( $d, $f );
 }
 function is_admin() {
-	return false;
+	return ! empty( $GLOBALS['murtadd_test_is_admin'] );
 }
 function load_theme_textdomain() {}
 function add_theme_support() {}
@@ -217,6 +217,10 @@ function absint( $n ) {
 	return abs( (int) $n );
 }
 function has_term( $terms, $taxonomy = '', $post_id = 0 ) {
+	// The fixtures are doubt categories; any other taxonomy holds none of them.
+	if ( 'murtadd_doubt_category' !== $taxonomy ) {
+		return false;
+	}
 	return (bool) array_intersect( (array) $terms, $GLOBALS['murtadd_test_terms'][ $post_id ] ?? array() );
 }
 function get_post_type( $post_id = 0 ) {

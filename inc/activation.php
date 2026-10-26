@@ -456,12 +456,28 @@ function murtadd_normalise_copy( $html ) {
 }
 
 /**
+ * Whether stored copy carries markup the theme never seeded.
+ *
+ * The seeded copy is plain paragraphs. A link, an image or any other element
+ * an editor added means the copy was edited, even when the visible text still
+ * matches, so it is never treated as the placeholder.
+ *
+ * @param string $html Stored content.
+ * @return bool
+ */
+function murtadd_copy_has_added_markup( $html ) {
+	$rest = (string) preg_replace( '#<!--.*?-->|</?p\b[^>]*>|<br\s*/?>#is', '', (string) $html );
+	return strip_tags( $rest ) !== $rest;
+}
+
+/**
  * Retire the placeholder copy on sites set up before 1.41.0.
  *
  * Pages still holding the exact placeholder text get their written copy, and
  * the two lorem-ipsum letters go back to draft. A page or letter that differs
  * from what the theme seeded in any visible character has been edited, and is
- * not touched. Runs once; running it again would change nothing anyway.
+ * not touched. Runs until every write has landed; running it again would
+ * change nothing anyway.
  *
  * @return array{pages:string[],letters:string[]} What changed on this run.
  */
@@ -473,7 +489,7 @@ function murtadd_retire_placeholder_copy() {
 	if ( get_option( 'murtadd_placeholder_copy_retired' ) ) {
 		return $done;
 	}
-	update_option( 'murtadd_placeholder_copy_retired', 1 );
+	$failed = false;
 
 	$legacy = murtadd_legacy_placeholder_copy();
 	$bodies = murtadd_seed_page_bodies();
@@ -484,15 +500,19 @@ function murtadd_retire_placeholder_copy() {
 			continue;
 		}
 		$current = murtadd_normalise_copy( $page->post_content );
-		if ( ! in_array( $current, array_map( 'murtadd_normalise_copy', $old ), true ) ) {
+		if ( murtadd_copy_has_added_markup( $page->post_content ) || ! in_array( $current, array_map( 'murtadd_normalise_copy', $old ), true ) ) {
 			continue; // Edited. Leave it alone.
 		}
-		wp_update_post(
+		$written = wp_update_post(
 			array(
 				'ID'           => $page->ID,
 				'post_content' => $bodies[ $slug ],
 			)
 		);
+		if ( ! $written || is_wp_error( $written ) ) {
+			$failed = true;
+			continue;
+		}
 		$done['pages'][] = $slug;
 	}
 
@@ -501,18 +521,27 @@ function murtadd_retire_placeholder_copy() {
 		if ( ! $letter || 'publish' !== $letter->post_status ) {
 			continue;
 		}
-		if ( md5( murtadd_normalise_copy( $letter->post_content ) ) !== $hash ) {
+		if ( murtadd_copy_has_added_markup( $letter->post_content ) || md5( murtadd_normalise_copy( $letter->post_content ) ) !== $hash ) {
 			continue; // Real text has replaced the lorem. Leave it alone.
 		}
-		wp_update_post(
+		$written = wp_update_post(
 			array(
 				'ID'          => $letter->ID,
 				'post_status' => 'draft',
 			)
 		);
+		if ( ! $written || is_wp_error( $written ) ) {
+			$failed = true;
+			continue;
+		}
 		$done['letters'][] = $slug;
 	}
 
+	// Marked done only when every write landed; a failed one is retried on
+	// the next admin request, and the comparison keeps the retry harmless.
+	if ( ! $failed ) {
+		update_option( 'murtadd_placeholder_copy_retired', 1 );
+	}
 	return $done;
 }
 add_action( 'admin_init', 'murtadd_retire_placeholder_copy' );

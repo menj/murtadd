@@ -76,8 +76,9 @@ function murtadd_sanitize_security( $input ) {
 		$slug = (string) murtadd_security( 'login_slug' );
 	}
 	$message = sanitize_textarea_field( (string) ( $input['login_message'] ?? '' ) );
-	if ( function_exists( 'mb_substr' ) ) {
-		$message = mb_substr( $message, 0, 500 );
+	// PCRE in UTF-8 mode counts characters with or without mbstring.
+	if ( preg_match( '/^.{0,500}/su', $message, $murtadd_cut ) ) {
+		$message = $murtadd_cut[0];
 	}
 	return array(
 		'hide_authors'  => empty( $input['hide_authors'] ) ? 0 : 1,

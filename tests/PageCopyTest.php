@@ -16,6 +16,9 @@ use PHPUnit\Framework\TestCase;
 
 if ( ! function_exists( 'wp_update_post' ) ) {
 	function wp_update_post( $args ) {
+		if ( ! empty( $GLOBALS['murtadd_fail_update'] ) ) {
+			return 0;
+		}
 		foreach ( $GLOBALS['murtadd_posts'] as $type => $posts ) {
 			foreach ( $posts as $slug => $post ) {
 				if ( $post->ID === $args['ID'] ) {
@@ -36,6 +39,7 @@ final class PageCopyTest extends TestCase {
 
 	protected function setUp(): void {
 		murtadd_test_reset_posts();
+		$GLOBALS['murtadd_fail_update'] = false;
 	}
 
 	/** Insert a post as an earlier release would have left it. */
@@ -196,5 +200,30 @@ final class PageCopyTest extends TestCase {
 	public function test_retirement_on_empty_site_does_nothing() {
 		$done = murtadd_retire_placeholder_copy();
 		$this->assertSame( array( 'pages' => array(), 'letters' => array() ), $done );
+	}
+
+	/** A failed write leaves the job unfinished, so the next admin request retries it. */
+	public function test_failed_write_is_retried() {
+		$this->legacy_post( 'page', 'about', 'Placeholder. Replace this text.' );
+
+		$GLOBALS['murtadd_fail_update'] = true;
+		$first = murtadd_retire_placeholder_copy();
+		$this->assertSame( array(), $first['pages'], 'A failed write was reported as done.' );
+		$this->assertEmpty( get_option( 'murtadd_placeholder_copy_retired' ), 'The flag was set although a write failed.' );
+
+		$GLOBALS['murtadd_fail_update'] = false;
+		$second = murtadd_retire_placeholder_copy();
+		$this->assertSame( array( 'about' ), $second['pages'] );
+		$this->assertNotEmpty( get_option( 'murtadd_placeholder_copy_retired' ) );
+	}
+
+	/** Markup the theme never seeded (a link, an image) means the page was edited. */
+	public function test_added_markup_counts_as_an_edit() {
+		$this->legacy_post( 'page', 'about', 'Placeholder. <a href="https://example.org/">Replace this text.</a>' );
+		$this->legacy_post( 'page', 'faq', '<p>Placeholder. Replace this text.</p><img src="x.png" alt="">' );
+
+		$done = murtadd_retire_placeholder_copy();
+
+		$this->assertSame( array(), $done['pages'], 'A page with added markup was overwritten.' );
 	}
 }

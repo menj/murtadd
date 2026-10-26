@@ -30,6 +30,7 @@ final class MaintenanceTest extends TestCase {
 	}
 
 	protected function tearDown(): void {
+		$GLOBALS['murtadd_test_is_admin'] = false;
 		foreach ( glob( $this->dir . '/*' ) as $file ) {
 			unlink( $file );
 		}
@@ -116,5 +117,22 @@ final class MaintenanceTest extends TestCase {
 
 	public function test_error_pages_are_on_by_default() {
 		$this->assertSame( 1, murtadd_upkeep( 'error_pages' ) );
+	}
+
+	public function test_switching_error_pages_off_after_a_partial_install_removes_what_was_written() {
+		$GLOBALS['murtadd_test_is_admin'] = true;
+		$GLOBALS['murtadd_test_caps']     = array( 'manage_options' );
+		// A first install that wrote some files and failed on one: status saved, no stamp.
+		murtadd_install_dropins( $this->dir );
+		unlink( $this->dir . '/db-error.php' );
+		update_option( 'murtadd_dropins_status', array( 'db-error.php' => 'failed' ) );
+		$this->assertFalse( get_option( 'murtadd_dropins_stamp' ) );
+
+		$GLOBALS['murtadd_options']['murtadd_upkeep'] = array( 'error_pages' => 0 );
+		murtadd_maybe_install_dropins();
+
+		$this->assertFileDoesNotExist( $this->dir . '/maintenance.php', 'A drop-in from the partial install stayed active.' );
+		$this->assertFileDoesNotExist( $this->dir . '/php-error.php' );
+		$this->assertFalse( get_option( 'murtadd_dropins_status' ) );
 	}
 }
