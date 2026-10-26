@@ -232,7 +232,7 @@ function murtadd_render_settings_page() {
 
 			<?php $murtadd_missing = murtadd_missing_pages(); ?>
 
-			<table class="widefat striped" style="max-width:640px;margin:16px 0;">
+			<table class="widefat striped murtadd-admin-table">
 				<thead>
 					<tr>
 						<th scope="col"><?php esc_html_e( 'Page', 'murtadd' ); ?></th>
@@ -251,7 +251,7 @@ function murtadd_render_settings_page() {
 								<?php if ( $murtadd_existing ) : ?>
 									<a href="<?php echo esc_url( get_edit_post_link( $murtadd_existing->ID ) ); ?>"><?php esc_html_e( 'Exists — edit', 'murtadd' ); ?></a>
 								<?php else : ?>
-									<span style="color:#8a4b00;font-weight:600;"><?php esc_html_e( 'Missing', 'murtadd' ); ?></span>
+									<span class="murtadd-status-missing"><?php esc_html_e( 'Missing', 'murtadd' ); ?></span>
 								<?php endif; ?>
 							</td>
 						</tr>
@@ -262,7 +262,7 @@ function murtadd_render_settings_page() {
 							<?php if ( has_nav_menu( 'footer_site' ) ) : ?>
 								<?php esc_html_e( 'Assigned', 'murtadd' ); ?>
 							<?php else : ?>
-								<span style="color:#8a4b00;font-weight:600;"><?php esc_html_e( 'Not assigned', 'murtadd' ); ?></span>
+								<span class="murtadd-status-missing"><?php esc_html_e( 'Not assigned', 'murtadd' ); ?></span>
 							<?php endif; ?>
 						</td>
 					</tr>
@@ -285,7 +285,7 @@ function murtadd_render_settings_page() {
 							<?php if ( 0 === $murtadd_missing_content ) : ?>
 								<a href="<?php echo esc_url( admin_url( 'edit.php?post_type=murtadd_doubt' ) ); ?>"><?php esc_html_e( 'All present — view', 'murtadd' ); ?></a>
 							<?php else : ?>
-								<span style="color:#8a4b00;font-weight:600;">
+								<span class="murtadd-status-missing">
 									<?php
 									printf(
 										/* translators: %d: number of missing entries */
@@ -303,7 +303,7 @@ function murtadd_render_settings_page() {
 							<?php if ( 'page' === get_option( 'show_on_front' ) && (int) get_option( 'page_for_posts' ) ) : ?>
 								<?php esc_html_e( 'Front page and posts page are set', 'murtadd' ); ?>
 							<?php else : ?>
-								<span style="color:#8a4b00;font-weight:600;"><?php esc_html_e( 'Not fully set', 'murtadd' ); ?></span>
+								<span class="murtadd-status-missing"><?php esc_html_e( 'Not fully set', 'murtadd' ); ?></span>
 							<?php endif; ?>
 						</td>
 					</tr>
@@ -320,7 +320,7 @@ function murtadd_render_settings_page() {
 				<?php submit_button( __( 'Create anything missing', 'murtadd' ), 'primary', 'submit', false ); ?>
 			</form>
 
-			<p class="description" style="margin-top:12px;">
+			<p class="description murtadd-admin-note">
 				<?php esc_html_e( 'New pages are published immediately with their copy written. Before announcing the site, add a contact method to the Contact page and your host and plugin details to the Privacy page; each carries a note in the editor saying what is needed. Starter content is published as written and can be edited freely: nothing here ever overwrites a post that already exists, so editing a doubt and running this again will not undo the edit.', 'murtadd' ); ?>
 			</p>
 
@@ -502,7 +502,7 @@ function murtadd_render_settings_page() {
 									<input type="checkbox" name="murtadd_content_display[show_scripture]" value="1" <?php checked( ! isset( $o['show_scripture'] ) || $o['show_scripture'] ); ?>>
 									<?php esc_html_e( 'Show the scripture box in the rail on doubt and rebuttal pages', 'murtadd' ); ?>
 								</label>
-								<p style="margin-top:10px;">
+								<p class="murtadd-admin-spaced">
 									<input type="text" name="murtadd_content_display[scripture_text]" value="<?php echo esc_attr( $o['scripture_text'] ?? __( 'Let there be no compulsion in religion.', 'murtadd' ) ); ?>" class="large-text" placeholder="<?php esc_attr_e( 'The verse, in whichever rendering you prefer', 'murtadd' ); ?>">
 								</p>
 								<p>

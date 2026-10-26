@@ -209,6 +209,10 @@ function murtadd_admin_assets( $hook ) {
 			);
 		}
 	}
+	// The content-gaps dashboard widget's few rules live in admin.css.
+	if ( 'index.php' === $hook && current_user_can( 'edit_posts' ) ) {
+		wp_enqueue_style( 'murtadd-admin', get_stylesheet_directory_uri() . '/assets/css/admin' . MURTADD_ASSET_SUFFIX . '.css', array(), MURTADD_VERSION );
+	}
 	if ( in_array( $hook, array( 'post.php', 'post-new.php' ), true ) ) {
 		$screen = get_current_screen();
 		if ( $screen && in_array( $screen->post_type, array( 'murtadd_doubt', 'murtadd_rebuttal', 'murtadd_fatwa' ), true ) ) {
