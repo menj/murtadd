@@ -530,7 +530,8 @@ function murtadd_retire_placeholder_copy() {
 
 	foreach ( $legacy['pages'] as $slug => $old ) {
 		$page = get_page_by_path( $slug );
-		if ( ! $page || ! isset( $bodies[ $slug ] ) ) {
+		// No copy, or blank copy, never replaces a placeholder.
+		if ( ! $page || ! isset( $bodies[ $slug ] ) || '' === trim( $bodies[ $slug ] ) ) {
 			continue;
 		}
 		$current = murtadd_normalise_copy( $page->post_content );
