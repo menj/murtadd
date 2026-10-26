@@ -51,11 +51,15 @@ Every `murtadd-` class a template emits must have a rule in a stylesheet that is
 
 ## Starter content
 
-The content is JSON in `inc/data/seed/` (`topics.json`, `rebuttals.json`, `doubts.json`, `pages.json`, `letters.json`), read and decoded by the loaders in `inc/seed-data.php` and never executed as PHP. `inc/seed-content.php` inserts it, and both run from the same setup routine as the page scaffolding, under the same two invariants: never overwrite, never destroy. Rebuttals must be inserted before Doubts, since a Doubt stores its related Rebuttal by ID.
+The content is JSON in `inc/data/seed/` (`topics.json`, `rebuttals.json`, `doubts.json`, `pages.json`, `letters.json`, `guides.json`), read and decoded by the loaders in `inc/seed-data.php` and never executed as PHP. `inc/seed-content.php` inserts it, and both run from the same setup routine as the page scaffolding, under the same two invariants: never overwrite, never destroy. Rebuttals must be inserted before Doubts, since a Doubt stores its related Rebuttal by ID.
 
 Links in `pages.json` are written as `{{url:/path/}}` tokens; `murtadd_seed_page_bodies()` resolves each with `esc_url( home_url() )` when the copy is loaded, so a site in a subdirectory links correctly. A seed file that is missing, not valid JSON or not the expected shape loads as an empty array, and the seeder then creates nothing from it.
 
 Two constraints on the data. Every Doubt's `related` slug must name a Rebuttal that exists, and all four doubt categories must be populated, because the homepage grid renders a count for each of the four and an empty one reads as a dead door.
+
+## Guides
+
+`murtadd_guide` (`/guides/{slug}/`, `inc/cpt-guide.php`) holds long-form guides (1,500 words and more) for a reader working through a question at length. They are a post type, not blog posts, because they are evergreen and the sister sites link to fixed addresses: `/guides/islamic-dilemma/` is linked from all six. Never change a guide's slug. Guides render through `single.php` and `archive.php` and share the `murtadd_topic` terms. Their copy is `inc/data/seed/guides.json`, loaded by `murtadd_seed_guides()` and inserted by `murtadd_seed_guide_posts()` (`inc/seed-guides.php`) under the same invariants as the rest of the starter content: never overwrite, never destroy, never resurrect (slugs recorded under `murtadd_guide` in `murtadd_seeded_slugs`). Links are `{{url:/path/}}` tokens, resolved when a guide is inserted, and the sources list is appended to the stored content. The guide rules arrived inside 1.43.0, so `murtadd_guide_rewrite_once()` clears the rewrite stamp once and the existing flusher does the flush. Guides are written care-first and carry safety guidance wherever they touch risk; every hadith carries a shamela.ws link, with al-Albani's grading where scholars differ. Pinned in `tests/GuidesTest.php`.
 
 ## Letters, and why they are separate
 
@@ -72,6 +76,7 @@ Where an archived position needs framing for a present-day reader, that is what 
 | `murtadd_doubt` | /doubts/ | doubt_statement, short_response, related_rebuttal, external_deep_link | topic, doubt_category |
 | `murtadd_rebuttal` | /rebuttals/ | claim, claim_source_type, sources (repeater), related_fatwa, related_doubt | topic |
 | `murtadd_fatwa` | /fatwa/ | scholar_or_body, era, position_summary, citation_link | topic, school |
+| `murtadd_guide` | /guides/ | sources | topic |
 
 Taxonomies: `murtadd_topic` (shared, flat, seeded 6 terms, `/topic/`), `murtadd_school` (fatwa, seeded 5 terms, `/school/`), `murtadd_doubt_category` (fixed 4 terms, locked, `/doubts/kind/`).
 
