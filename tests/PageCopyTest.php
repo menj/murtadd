@@ -43,14 +43,17 @@ final class PageCopyTest extends TestCase {
 	}
 
 	/** Insert a post as an earlier release would have left it. */
-	private function legacy_post( $type, $slug, $content, $status = 'publish' ) {
+	private function legacy_post( $type, $slug, $content, $status = 'publish', $extra = array() ) {
 		wp_insert_post(
-			array(
-				'post_type'    => $type,
-				'post_name'    => $slug,
-				'post_title'   => $slug,
-				'post_content' => $content,
-				'post_status'  => $status,
+			array_merge(
+				array(
+					'post_type'    => $type,
+					'post_name'    => $slug,
+					'post_title'   => $slug,
+					'post_content' => $content,
+					'post_status'  => $status,
+				),
+				$extra
 			)
 		);
 		return get_page_by_path( $slug, OBJECT, $type );
@@ -225,5 +228,63 @@ final class PageCopyTest extends TestCase {
 		$done = murtadd_retire_placeholder_copy();
 
 		$this->assertSame( array(), $done['pages'], 'A page with added markup was overwritten.' );
+	}
+
+	/** Dates for a page WordPress records as never edited, or as edited later. */
+	private function dates( $edited = false ) {
+		return array(
+			'post_date_gmt'     => '2025-01-10 08:00:00',
+			'post_modified_gmt' => $edited ? '2025-03-02 11:15:00' : '2025-01-10 08:00:00',
+		);
+	}
+
+	/** A placeholder stored under another locale, never edited, is retired. */
+	public function test_translated_placeholder_never_edited_is_retired() {
+		$this->legacy_post( 'page', 'about', 'Pemegang tempat. Gantikan teks ini.', 'publish', $this->dates() );
+		$this->legacy_post( 'page', 'irtidad', '<!-- wp:paragraph --><p>Pemegang tempat. Halaman ini membawa laluan kedua dari Mula Di Sini: apa sebenarnya irtidad, dan apa yang tidak mengeluarkan seseorang daripada Islam. Gantikan teks ini.</p><!-- /wp:paragraph -->', 'publish', $this->dates() );
+
+		$done   = murtadd_retire_placeholder_copy();
+		$bodies = murtadd_seed_page_bodies();
+
+		$this->assertSame( array( 'irtidad', 'about' ), $done['pages'] );
+		$this->assertSame( $bodies['about'], get_page_by_path( 'about' )->post_content );
+		$this->assertSame( $bodies['irtidad'], get_page_by_path( 'irtidad' )->post_content );
+	}
+
+	/** The same translated text on a page edited after seeding is kept. */
+	public function test_translated_placeholder_edited_later_is_kept() {
+		$this->legacy_post( 'page', 'about', 'Pemegang tempat. Gantikan teks ini.', 'publish', $this->dates( true ) );
+		$done = murtadd_retire_placeholder_copy();
+		$this->assertSame( array(), $done['pages'] );
+		$this->assertSame( 'Pemegang tempat. Gantikan teks ini.', get_page_by_path( 'about' )->post_content );
+	}
+
+	/** A short page an editor wrote, with a later modified date, is kept. */
+	public function test_short_editor_page_is_kept() {
+		$this->legacy_post( 'page', 'contact', '<p>Write to us by post.</p>', 'publish', $this->dates( true ) );
+		$done = murtadd_retire_placeholder_copy();
+		$this->assertSame( array(), $done['pages'] );
+		$this->assertSame( '<p>Write to us by post.</p>', get_page_by_path( 'contact' )->post_content );
+	}
+
+	/** Never-edited copy with a link, or with more than one paragraph, is kept. */
+	public function test_unedited_page_with_markup_or_paragraphs_is_kept() {
+		$this->legacy_post( 'page', 'faq', 'Lihat <a href="https://example.org/">soalan</a>.', 'publish', $this->dates() );
+		$this->legacy_post( 'page', 'privacy', "<p>Dasar privasi kami.</p>\n<p>Kami tidak menyimpan apa-apa.</p>", 'publish', $this->dates() );
+		$done = murtadd_retire_placeholder_copy();
+		$this->assertSame( array(), $done['pages'], 'A page with markup or two paragraphs was overwritten.' );
+	}
+
+	/** English placeholders still retire on never-edited pages, and a second pass changes nothing. */
+	public function test_english_still_retired_and_locale_path_is_idempotent() {
+		$this->legacy_post( 'page', 'about', 'Placeholder. Replace this text.', 'publish', $this->dates() );
+		$this->legacy_post( 'page', 'faq', 'Pemegang tempat. Gantikan teks ini.', 'publish', $this->dates() );
+
+		$first = murtadd_retire_placeholder_copy();
+		$this->assertSame( array( 'about', 'faq' ), $first['pages'] );
+
+		update_option( 'murtadd_placeholder_copy_retired', 0 );
+		$second = murtadd_retire_placeholder_copy();
+		$this->assertSame( array(), $second['pages'], 'Written copy was rewritten on a second pass.' );
 	}
 }
