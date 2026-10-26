@@ -17,6 +17,7 @@ while ( have_posts() ) :
 	?>
 	<article <?php post_class( 'murtadd-fatwa' ); ?>>
 		<header class="murtadd-entry-header">
+			<?php murtadd_breadcrumbs(); ?>
 			<a class="murtadd-back" href="<?php echo esc_url( get_post_type_archive_link( 'murtadd_fatwa' ) ); ?>">← <?php esc_html_e( 'Back to Fatwa index', 'murtadd' ); ?></a>
 			<div class="murtadd-chips">
 				<?php murtadd_term_chip( 'murtadd_school', 'murtadd-chip murtadd-chip--school' ); ?>

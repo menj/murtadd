@@ -19,6 +19,9 @@
  *  - Fatwa:     Rank Math's Article gains `about` (the scholar or body) and
  *               `citation` (the primary source).
  *  - Front page: Rank Math's WebSite and Organization stand.
+ *  - Breadcrumbs: the theme's BreadcrumbList is added only when Rank Math's
+ *               graph has none; with Rank Math's breadcrumbs on, its trail
+ *               is also the one shown (murtadd_breadcrumbs()).
  *
  * A description Rank Math leaves empty is filled from the content model, and
  * search results and 404s stay noindex. If Rank Math's Schema module is
@@ -52,6 +55,19 @@ function murtadd_rank_math_schema_active() {
 		return (bool) \RankMath\Helper::is_module_active( 'rich-snippet' );
 	}
 	return true;
+}
+
+/**
+ * Whether Rank Math's breadcrumbs are switched on. Then its trail is shown
+ * and its BreadcrumbList stands; the theme's yields under the family rule.
+ *
+ * @return bool
+ */
+function murtadd_rank_math_breadcrumbs_active() {
+	if ( ! murtadd_rank_math_active() ) {
+		return false;
+	}
+	return class_exists( '\RankMath\Helper' ) && method_exists( '\RankMath\Helper', 'is_breadcrumbs_enabled' ) && (bool) \RankMath\Helper::is_breadcrumbs_enabled();
 }
 
 /**

@@ -128,6 +128,7 @@ function murtadd_sanitize_content_display( $input ) {
 	return array(
 		'short_response_word_cap'  => max( 50, absint( $input['short_response_word_cap'] ?? 400 ) ),
 		'show_struggling_notice'   => ! empty( $input['show_struggling_notice'] ) ? 1 : 0,
+		'show_breadcrumbs'         => ! empty( $input['show_breadcrumbs'] ) ? 1 : 0,
 		'fatwa_index_default_sort' => in_array( $sort, $sorts, true ) ? $sort : 'scholar_az',
 		'footer_heritage_note'     => sanitize_text_field( $input['footer_heritage_note'] ?? 'online since 2004' ),
 		'show_scripture'           => empty( $input['show_scripture'] ) ? 0 : 1,
@@ -479,6 +480,13 @@ function murtadd_render_settings_page() {
 							<td>
 								<label><input type="checkbox" name="murtadd_content_display[show_struggling_notice]" value="1" <?php checked( ! empty( $o['show_struggling_notice'] ?? 1 ) ); ?>> <?php esc_html_e( 'Show on Emotional and Identity doubt pages', 'murtadd' ); ?></label>
 								<p class="description"><?php esc_html_e( 'A quiet crisis-support block. No tracking, no preaching.', 'murtadd' ); ?></p>
+							</td>
+						</tr>
+						<tr>
+							<th scope="row"><?php esc_html_e( 'Breadcrumbs', 'murtadd' ); ?></th>
+							<td>
+								<label><input type="checkbox" name="murtadd_content_display[show_breadcrumbs]" value="1" <?php checked( ! empty( $o['show_breadcrumbs'] ?? 1 ) ); ?>> <?php esc_html_e( 'Show the trail above entries, pages and archives', 'murtadd' ); ?></label>
+								<p class="description"><?php esc_html_e( 'The same trail is given to search engines as a BreadcrumbList. With Rank Math\'s breadcrumbs switched on, Rank Math\'s trail is shown instead.', 'murtadd' ); ?></p>
 							</td>
 						</tr>
 						<tr>

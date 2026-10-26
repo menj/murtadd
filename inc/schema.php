@@ -88,14 +88,12 @@ function murtadd_author_node() {
 }
 
 /**
- * The graph for the current view, or null where the view has none.
- *
- * Built apart from printing so the same nodes can be printed as the theme's
- * own JSON-LD or handed to Rank Math's graph (inc/rank-math.php).
+ * The view's main node: WebSite and Organization on the front page, a QAPage
+ * for a doubt, an Article for a rebuttal or a fatwa entry. Null elsewhere.
  *
  * @return array|null A node or a graph, with its @context.
  */
-function murtadd_structured_data_node() {
+function murtadd_structured_data_primary_node() {
 	if ( is_front_page() ) {
 		return array(
 			'@context' => 'https://schema.org',
@@ -217,6 +215,94 @@ function murtadd_structured_data_node() {
 	}
 
 	return $node;
+}
+
+/**
+ * The BreadcrumbList for the visible trail, or null where none is shown.
+ *
+ * @return array|null
+ */
+function murtadd_breadcrumb_node() {
+	if ( ! function_exists( 'murtadd_breadcrumbs_enabled' ) || ! murtadd_breadcrumbs_enabled() ) {
+		return null;
+	}
+	$trail = murtadd_breadcrumb_trail();
+	if ( count( $trail ) < 2 ) {
+		return null;
+	}
+	$here  = murtadd_current_url();
+	$items = array();
+	foreach ( array_values( $trail ) as $i => $crumb ) {
+		$items[] = array(
+			'@type'    => 'ListItem',
+			'position' => $i + 1,
+			'name'     => wp_strip_all_tags( $crumb[0] ),
+			'item'     => '' !== $crumb[1] ? $crumb[1] : $here,
+		);
+	}
+	return array(
+		'@type'           => 'BreadcrumbList',
+		'@id'             => $here . '#breadcrumb',
+		'itemListElement' => $items,
+	);
+}
+
+/**
+ * The address of the current view, for @id values and the last crumb.
+ *
+ * @return string
+ */
+function murtadd_current_url() {
+	if ( is_singular() ) {
+		return (string) get_permalink( get_queried_object_id() );
+	}
+	if ( is_tax() || is_category() || is_tag() ) {
+		$link = get_term_link( get_queried_object() );
+		return is_wp_error( $link ) ? home_url( '/' ) : $link;
+	}
+	if ( is_post_type_archive() ) {
+		$link = get_post_type_archive_link( (string) get_query_var( 'post_type' ) );
+		return $link ? $link : home_url( '/' );
+	}
+	return home_url( '/' );
+}
+
+/**
+ * The graph for the current view, or null where the view has none: the main
+ * node, the BreadcrumbList and, where the page is written as questions and
+ * answers, an FAQPage.
+ *
+ * Built apart from printing so the same nodes can be printed as the theme's
+ * own JSON-LD or handed to Rank Math's graph (inc/rank-math.php). A single
+ * node is returned as itself, so a view with only its main node prints as
+ * it always has.
+ *
+ * @return array|null A node or a graph, with its @context.
+ */
+function murtadd_structured_data_node() {
+	$nodes   = array();
+	$primary = murtadd_structured_data_primary_node();
+	if ( $primary ) {
+		foreach ( isset( $primary['@graph'] ) ? $primary['@graph'] : array( $primary ) as $node ) {
+			unset( $node['@context'] );
+			$nodes[] = $node;
+		}
+	}
+	foreach ( array( murtadd_breadcrumb_node(), function_exists( 'murtadd_faq_node' ) ? murtadd_faq_node() : null ) as $extra ) {
+		if ( $extra ) {
+			$nodes[] = $extra;
+		}
+	}
+	if ( ! $nodes ) {
+		return null;
+	}
+	if ( 1 === count( $nodes ) ) {
+		return array( '@context' => 'https://schema.org' ) + $nodes[0];
+	}
+	return array(
+		'@context' => 'https://schema.org',
+		'@graph'   => $nodes,
+	);
 }
 
 /**

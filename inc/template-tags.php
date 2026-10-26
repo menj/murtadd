@@ -440,3 +440,135 @@ function murtadd_fatwa_index_has_entries() {
 	$counts = wp_count_posts( 'murtadd_fatwa' );
 	return isset( $counts->publish ) && (int) $counts->publish > 0;
 }
+
+/**
+ * Whether breadcrumbs are shown (Content tab; on by default).
+ *
+ * @return bool
+ */
+function murtadd_breadcrumbs_enabled() {
+	return (bool) murtadd_option( 'murtadd_content_display', 'show_breadcrumbs', 1 );
+}
+
+/**
+ * The trail for the current view, Home first and the current item last, as
+ * label and address pairs. The current item has no address. Empty on the
+ * front page and on views with nothing above them.
+ *
+ * Doubt: Doubts, its category. Rebuttal: Rebuttals, its topic. Fatwa entry:
+ * the index, its school. Letter: Letters. Page: its parent pages. Post: the
+ * posts page. Archives: the archive above them.
+ *
+ * @return array<int,array{0:string,1:string}>
+ */
+function murtadd_breadcrumb_trail() {
+	if ( is_front_page() ) {
+		return array();
+	}
+
+	$trail = array( array( __( 'Home', 'murtadd' ), home_url( '/' ) ) );
+	$type  = function ( $post_type ) use ( &$trail ) {
+		$object = get_post_type_object( $post_type );
+		$link   = get_post_type_archive_link( $post_type );
+		// While the fatwa index is empty the navigation leaves it out, so the trail does too.
+		if ( 'murtadd_fatwa' === $post_type && ! murtadd_fatwa_index_has_entries() ) {
+			return;
+		}
+		if ( $object && $link ) {
+			$trail[] = array( $object->labels->name, $link );
+		}
+	};
+	$term  = function ( $post_id, $taxonomy ) use ( &$trail ) {
+		$terms = get_the_terms( $post_id, $taxonomy );
+		if ( $terms && ! is_wp_error( $terms ) ) {
+			$first = reset( $terms );
+			$link  = get_term_link( $first );
+			if ( ! is_wp_error( $link ) ) {
+				$trail[] = array( $first->name, $link );
+			}
+		}
+	};
+
+	if ( is_singular() ) {
+		$post    = get_queried_object();
+		$post_id = (int) $post->ID;
+		switch ( $post->post_type ) {
+			case 'murtadd_doubt':
+				$type( 'murtadd_doubt' );
+				$term( $post_id, 'murtadd_doubt_category' );
+				break;
+			case 'murtadd_rebuttal':
+				$type( 'murtadd_rebuttal' );
+				$term( $post_id, 'murtadd_topic' );
+				break;
+			case 'murtadd_fatwa':
+				$type( 'murtadd_fatwa' );
+				$term( $post_id, 'murtadd_school' );
+				break;
+			case 'murtadd_letter':
+				$type( 'murtadd_letter' );
+				break;
+			case 'page':
+				foreach ( array_reverse( get_post_ancestors( $post ) ) as $ancestor ) {
+					$trail[] = array( get_the_title( $ancestor ), get_permalink( $ancestor ) );
+				}
+				break;
+			case 'post':
+				$posts_page = (int) get_option( 'page_for_posts' );
+				if ( $posts_page ) {
+					$trail[] = array( get_the_title( $posts_page ), get_permalink( $posts_page ) );
+				}
+				break;
+		}
+		$trail[] = array( get_the_title( $post ), '' );
+		return $trail;
+	}
+
+	if ( is_tax( array( 'murtadd_doubt_category', 'murtadd_topic', 'murtadd_school' ) ) ) {
+		$current = get_queried_object();
+		if ( is_tax( 'murtadd_doubt_category' ) ) {
+			$type( 'murtadd_doubt' );
+		} elseif ( is_tax( 'murtadd_school' ) ) {
+			$type( 'murtadd_fatwa' );
+		}
+		$trail[] = array( $current->name, '' );
+		return $trail;
+	}
+
+	if ( is_post_type_archive() ) {
+		$object  = get_queried_object();
+		$trail[] = array( $object && isset( $object->labels ) ? $object->labels->name : post_type_archive_title( '', false ), '' );
+		return $trail;
+	}
+
+	return array();
+}
+
+/**
+ * The visible breadcrumb row. With Rank Math's breadcrumbs switched on, Rank
+ * Math's trail is shown in its place, so the row and the BreadcrumbList in
+ * Rank Math's graph never disagree.
+ */
+function murtadd_breadcrumbs() {
+	if ( ! murtadd_breadcrumbs_enabled() ) {
+		return;
+	}
+	if ( function_exists( 'murtadd_rank_math_breadcrumbs_active' ) && murtadd_rank_math_breadcrumbs_active() && function_exists( 'rank_math_get_breadcrumbs' ) ) {
+		echo '<nav class="murtadd-breadcrumbs murtadd-breadcrumbs--rank-math" aria-label="' . esc_attr__( 'Breadcrumb', 'murtadd' ) . '">' . wp_kses_post( rank_math_get_breadcrumbs() ) . '</nav>';
+		return;
+	}
+	$trail = murtadd_breadcrumb_trail();
+	if ( count( $trail ) < 2 ) {
+		return;
+	}
+	$last = count( $trail ) - 1;
+	echo '<nav class="murtadd-breadcrumbs" aria-label="' . esc_attr__( 'Breadcrumb', 'murtadd' ) . '"><ol>';
+	foreach ( $trail as $i => $crumb ) {
+		if ( $i === $last || '' === $crumb[1] ) {
+			echo '<li><span aria-current="page">' . esc_html( $crumb[0] ) . '</span></li>';
+		} else {
+			echo '<li><a href="' . esc_url( $crumb[1] ) . '">' . esc_html( $crumb[0] ) . '</a></li>';
+		}
+	}
+	echo '</ol></nav>';
+}

@@ -28,6 +28,7 @@ while ( have_posts() ) :
 	<div class="murtadd-single-layout">
 	<div class="murtadd-single-main">>
 		<header class="murtadd-entry-header">
+			<?php murtadd_breadcrumbs(); ?>
 			<div class="murtadd-chips">
 				<?php murtadd_term_chip( 'murtadd_topic' ); ?>
 				<?php if ( $murtadd_type && isset( $murtadd_types[ $murtadd_type ] ) ) : ?>
