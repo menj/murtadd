@@ -1,7 +1,7 @@
 <?php
 // Murtadd error page drop-in {{VERSION}}. Written by the Murtadd theme; safe to delete.
 // WordPress shows this page while it updates itself, a plugin or a theme, and
-// the theme's maintenance mode (Appearance > Murtadd > Upkeep) shows the same.
+// the theme's maintenance mode (Appearance > Theme Options > Upkeep) shows the same.
 if ( ! headers_sent() ) {
 	header( 'HTTP/1.1 503 Service Unavailable', true, 503 );
 	header( 'Content-Type: text/html; charset=utf-8' );

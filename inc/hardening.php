@@ -1,6 +1,6 @@
 <?php
 /**
- * Security hardening: Appearance → Murtadd → Security.
+ * Security hardening: Appearance → Theme Options → Security.
  *
  * The site that stood at this domain until August 2024 was lost when its
  * database was replaced during a compromise. This module closes the doors

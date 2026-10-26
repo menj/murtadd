@@ -1,7 +1,7 @@
 <?php
 /**
  * The login screen, in the site's own colours and type
- * (Appearance → Murtadd → Security → Login page).
+ * (Appearance → Theme Options → Security → Login page).
  *
  * Covers every screen wp-login.php serves: log in, lost password, reset
  * password, registration and the interim (session expired) login. It styles

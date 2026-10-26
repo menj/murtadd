@@ -1,6 +1,6 @@
 <?php
 /**
- * Maintenance mode and the branded error pages (Appearance → Murtadd → Upkeep).
+ * Maintenance mode and the branded error pages (Appearance → Theme Options → Upkeep).
  *
  * After a compromise, a bare "There has been a critical error" screen reads
  * as the site being hacked again. Every situation in which the site cannot

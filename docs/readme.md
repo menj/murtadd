@@ -57,13 +57,13 @@ Only files WordPress requires at the theme root stay there: `style.css`, `theme.
 
 **JavaScript is an enhancement.** Every front-end behaviour works with JS disabled. The fatwa filters are a plain GET form; the script only auto-submits on change.
 
-**Settings use the Settings API.** One option array per tab, in a tabbed screen at Appearance → Murtadd: Colours (with a live WCAG contrast check), Cross-links, Content display, Taxonomies, Setup.
+**Settings use the Settings API.** One option array per tab, in a tabbed screen at Appearance → Theme Options: Colours (with a live WCAG contrast check), Cross-links, Content display, Taxonomies, Setup.
 
 ## Setup
 
 Activate the theme. It scaffolds itself: pages, footer menu, Reading options, rewrite rules, and the starter content. Nothing is ever overwritten and nothing is deleted, so re-activation is safe.
 
-Upgrading in place does **not** fire the activation hook. On a site already running the theme, use **Appearance → Murtadd → Setup → Create anything missing**, which reports what is present and creates only what is absent.
+Upgrading in place does **not** fire the activation hook. On a site already running the theme, use **Appearance → Theme Options → Setup → Create anything missing**, which reports what is present and creates only what is absent.
 
 Full detail in [setup.md](setup.md).
 
@@ -79,7 +79,7 @@ Full detail in [setup.md](setup.md).
 | [changelog.md](changelog.md) | Every release. |
 | [upgrading.md](upgrading.md) | Migration steps, version to version. |
 | [setup.md](setup.md) | Installation and what activation does. |
-| [settings.md](settings.md) | Appearance → Murtadd, tab by tab. |
+| [settings.md](settings.md) | Appearance → Theme Options, tab by tab. |
 | [content-model.md](content-model.md) | The three post types and their fields. |
 
 `readme.txt` at the theme root is the WordPress-format readme and stays there by convention.

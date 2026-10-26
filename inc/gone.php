@@ -8,7 +8,7 @@
  * Each rendered the full 404, which tells a crawler to come back. A 410 tells
  * it to drop the URL.
  *
- * Patterns are set on Appearance → Murtadd → Upkeep, one per line: an exact
+ * Patterns are set on Appearance → Theme Options → Upkeep, one per line: an exact
  * path ("/cheap-pills/") or a prefix ending in * ("/shop/*"). The list ships
  * empty, because no spam path from the compromise survives in the record.
  *

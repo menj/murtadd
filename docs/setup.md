@@ -30,4 +30,4 @@ Re-activating is therefore safe, and running on a site that is already configure
 * **The fatwa index starts empty.** Until the first Fatwa entry is published, `/fatwa/` says the index is in preparation and is `noindex`, and the sidebar, front-page footer, search page and 404 page leave its link out. Nothing is invented to fill it.
 * **Letters are not seeded.** Add them under Letters as they are written.
 * **Favicon**: Settings → General → Site Icon, uploading `icons/site-icon-512.png`. See docs/settings.md.
-* **Colours and cross-link URLs**: Appearance → Murtadd.
+* **Colours and cross-link URLs**: Appearance → Theme Options.

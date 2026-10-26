@@ -1,6 +1,6 @@
 <?php
 /**
- * Settings page — Appearance → Murtadd. Settings API, tabbed.
+ * Settings page — Appearance → Theme Options. Settings API, tabbed.
  * One option array per tab: murtadd_colours, murtadd_cross_links, murtadd_contextual_links, murtadd_content_display, murtadd_security, murtadd_upkeep.
  * Taxonomies tab deep-links to native term screens (no duplicate CRUD).
  *
@@ -10,7 +10,7 @@
 defined( 'ABSPATH' ) || exit;
 
 function murtadd_add_settings_page() {
-	add_theme_page( __( 'Murtadd', 'murtadd' ), __( 'Murtadd', 'murtadd' ), 'manage_options', 'murtadd', 'murtadd_render_settings_page' );
+	add_theme_page( __( 'Theme Options', 'murtadd' ), __( 'Theme Options', 'murtadd' ), 'manage_options', 'murtadd', 'murtadd_render_settings_page' );
 }
 add_action( 'admin_menu', 'murtadd_add_settings_page' );
 

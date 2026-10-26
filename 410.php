@@ -1,7 +1,7 @@
 <?php
 /**
  * 410 — gone for good. Not part of the template hierarchy: inc/gone.php loads
- * it for a path listed on Appearance → Murtadd → Upkeep. It reuses the 404's
+ * it for a path listed on Appearance → Theme Options → Upkeep. It reuses the 404's
  * classes, so it needs no stylesheet of its own.
  *
  * @package murtadd

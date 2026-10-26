@@ -1,5 +1,34 @@
 # Changelog — Murtadd
 
+## 1.42.0 — 2026-10-26
+Breadcrumbs, FAQ structured data, a glossary of terms, and the tooling to test the theme in CI. The settings screen takes the name the other themes of the network use: Theme Options.
+
+### Added (search engines)
+- **Breadcrumbs:** a visible trail above entries, pages and archives (doubt through its category, rebuttal through its topic, fatwa through its school, letter, page parents) and the BreadcrumbList that mirrors it. Switch on Theme Options → Content display (on by default). With Rank Math's breadcrumbs switched on, Rank Math's trail and BreadcrumbList are used instead. Styles in `assets/css/breadcrumbs.css` with its `.min` twin.
+- **FAQPage structured data** on /faq/ (from its question headings and the answers beneath them) and on doubt-category archives (each doubt's statement and short response). The Emotional and Identity categories get none: they are written care-first, not as a question set. `tests/FaqSchemaTest.php`.
+
+### Added (Glossary of terms)
+- **Glossary of terms.** The first mention of an Arabic or Malay term on an entry (irtidad, riddah, nafaqah, mahr, 'ayb, tudung, hudud, nushuz, i'jaz, dhimma, jizya and some thirty more) carries a short definition and its source, shown on hover, keyboard focus or tap. Each definition says what the word means in the sense the entries use it, never what a ruling is, and cites a work the seed already cites or the entry that explains it. Data in `inc/data/glossary.json`; engine in `inc/glossary.php`.
+- **Where it applies:** the_content (21, after the contextual links), the doubt short response and the fatwa summary, once per term per page across all three. Never inside a link, heading, quotation, verse, the sources panel, the disclaimer or a button; a mention the text already glosses in parentheses is left as written. Emotional and Identity doubts get none.
+- **Accessible and still:** a `<button>` with `aria-describedby` and a `role="tooltip"` definition laid over the text, so opening it never moves a line. Hover and focus need no script; `assets/js/glossary.js` adds tap to open and close, Escape to dismiss, and keeps the box inside the viewport. `assets/css/glossary.css` and the script, with their `.min` twins, load only on entries that mention a term.
+- **Switch:** Appearance → Theme Options → Content display, "Glossary of terms" (on by default).
+
+### Tests
+- `tests/GlossaryTest.php` (17 tests): data complete and in house style; every term used in the seed; every "(this site)" source names a real entry; first mention only; accessible markup with unique ids; skip regions; self-glossed mentions; apostrophe forms and capitals; whole words; one definition per entry across render paths; queried entry, feeds, the switch and the care-first doubts; assets only where a term appears; the setting's sanitiser; the `.min` twins. Mutation-checked: removing the care-first guard, the once-per-page record, the gloss skip, the skip regions, the queried-entry check or the malformed-UTF-8 fallback each fails the suite.
+
+### Changed (admin and tooling)
+- **No inline styles in the admin.** The ten `style` attributes in `inc/settings-page.php` and the gaps widget in `inc/dashboard.php` are classes in `assets/css/admin.css` (`murtadd-gaps-none`, `murtadd-gaps-label`, `murtadd-gaps-list`, `murtadd-admin-note`, `murtadd-admin-spaced`, with the existing `murtadd-admin-table` and `murtadd-status-missing`), scoped so they still win over core admin CSS. The dashboard loads `admin.css` for the widget. Rendered against WordPress 6.6.2's admin CSS, every element computes as before.
+- **The long-form script's words are translatable.** "Reading progress", "On this page" and "Back to top" in `assets/js/longform.js` come from `wp_localize_script()` (`murtaddLongform`), with the English kept as a fallback, and are in `languages/murtadd.pot`.
+- **The block editor shows the front end's type.** `add_editor_style()` loads `tokens.css` and a new `assets/css/editor.css` into the editor canvas: ivory ground, Source Serif body at 17px/1.75, the green link, the serif and sans headings, the tinted quotation and the Arabic stack with right-to-left verse layout. The Qur'an face stays front-end only, because the editor shows verse text before `inc/quran-text.php` fits it.
+- **`.gitignore`.** Test caches, `node_modules/`, `composer.lock` and Composer's `vendor/` are ignored; the vendored `vendor/parsedown/` still ships. The committed `.phpunit.result.cache` is removed from the repository.
+- **Composer and CI.** `composer.json` (development only: PHPUnit) with `composer lint` and `composer test`, and `.github/workflows/checks.yml`, which runs the PHP syntax check and the PHPUnit suite on PHP 8.1 and 8.3 for every pull request and every push to main.
+
+### Changed
+- **The settings screen is called Theme Options** (Appearance → Theme Options), as in the other themes of the network. Its address (`themes.php?page=murtadd`) and its tabs are unchanged, so saved links keep working; the docs, notices and comments name it accordingly.
+
+### Not in this release
+- Speakable markup (the third search-engine item in the gap list) was not started; it remains on the list.
+
 ## 1.41.0 — 2026-10-26
 Hardening, Rank Math, upkeep pages, written pages, and the Qur'an face. The placeholders are retired. Activation published five pages reading "Placeholder. Replace this text." and two lorem-ipsum letters, all public the moment the theme was switched on, and /irtidad/ is both the second route from Start Here and the target of the legacy redirects. Every page now ships with its copy written, and nothing the theme seeds says it is a placeholder.
 

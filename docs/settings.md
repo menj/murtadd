@@ -1,4 +1,4 @@
-# Settings — Appearance → Murtadd
+# Settings — Appearance → Theme Options
 
 Settings API throughout, one option array per tab.
 

@@ -1,5 +1,13 @@
 # Upgrading — Murtadd
 
+## 1.41.0 → 1.42.0
+
+Additive. Upload the whole theme folder: new files are `inc/glossary.php`, `inc/data/glossary.json`, `assets/css/glossary.css`, `assets/js/glossary.js`, `assets/css/breadcrumbs.css`, `assets/css/editor.css` and their `.min` twins. No database step.
+
+1. **The settings screen is now Appearance → Theme Options.** Same page, same tabs, same address.
+2. **Breadcrumbs and the glossary are on by default** (Theme Options → Content display). Turn either off there.
+3. **With Rank Math's breadcrumbs on**, Rank Math's trail replaces the theme's.
+
 ## 1.40.0 → 1.41.0
 
 Additive, with one narrow content step. Upload the whole theme folder: new files are `inc/hardening.php`, `inc/hide-login.php`, `inc/login.php`, `inc/rank-math.php`, `inc/gone.php`, `inc/maintenance.php`, `inc/quran-text.php`, `410.php`, `dropins/`, `assets/css/login.css`, `assets/css/error-page.css`, `assets/fonts/kfgqpc-hafs-uthmanic-script.woff2` and its licence.
@@ -107,7 +115,7 @@ Additive. No content, setting, or template changes.
 Additive. No content, setting, or template changes.
 
 1. Replace the theme directory with the 1.28.0 build. Make sure `vendor/` and `docs/` are both uploaded: the Docs tab reads the markdown at runtime, and a build stripped of either shows an error notice explaining what is missing.
-2. Open **Appearance → Murtadd → Docs**. No setup step, no option to enable.
+2. Open **Appearance → Theme Options → Docs**. No setup step, no option to enable.
 
 ## 1.26.x → 1.27.0
 
@@ -148,7 +156,7 @@ Bookmarks to `?page=murtadd&tab=…` still work; only the labels and the order c
 
 ## 1.23.0 → 1.24.0
 
-Admin styling only. No front-end, database, option, or URL changes. Replace the theme directory and open **Appearance → Murtadd**.
+Admin styling only. No front-end, database, option, or URL changes. Replace the theme directory and open **Appearance → Theme Options**.
 
 ## 1.22.0 → 1.23.0
 
@@ -160,13 +168,13 @@ Admin styling only. No front-end, database, option, or URL changes. Replace the 
 ## 1.21.1 → 1.22.0
 
 1. Replace the theme directory with the 1.22.0 build.
-2. Doubt and rebuttal singles now carry a rail. Set the verse and reference under **Appearance → Murtadd → Content display → Scripture box**, or clear the checkbox to hide it.
+2. Doubt and rebuttal singles now carry a rail. Set the verse and reference under **Appearance → Theme Options → Content display → Scripture box**, or clear the checkbox to hide it.
 3. The rendering of the verse is yours to choose. The theme ships a short default and does not impose a translation.
 
 ## 1.21.0 → 1.21.1
 
 1. Replace the theme directory with the 1.21.1 build.
-2. **Appearance → Murtadd → Setup → Create anything missing** publishes the two placeholder letters.
+2. **Appearance → Theme Options → Setup → Create anything missing** publishes the two placeholder letters.
 3. They are lorem ipsum and are titled as placeholders. Replace or delete them before the site is announced.
 
 ## 1.20.0 → 1.21.0
@@ -179,7 +187,7 @@ Adds the Letters post type. No existing content, option, or URL is touched.
 
 ## 1.19.1 → 1.20.0
 
-Content only. Replace the theme directory, then **Appearance → Murtadd → Setup → Create anything missing** to publish the five new entries. Everything already present is skipped, and nothing you have edited is touched.
+Content only. Replace the theme directory, then **Appearance → Theme Options → Setup → Create anything missing** to publish the five new entries. Everything already present is skipped, and nothing you have edited is touched.
 
 ## 1.19.0 → 1.19.1
 
@@ -188,7 +196,7 @@ Content only. Replace the theme directory, then **Appearance → Murtadd → Set
 ## 1.18.0 → 1.19.0
 
 1. Replace the theme directory with the 1.19.0 build.
-2. Appearance → Murtadd → Setup → **Create anything missing** publishes the three new entries ("The fear itself", "The broken ummah", "The state of the Muslims"). Everything already present is skipped.
+2. Appearance → Theme Options → Setup → **Create anything missing** publishes the three new entries ("The fear itself", "The broken ummah", "The state of the Muslims"). Everything already present is skipped.
 3. Search behaviour changes: site search now matches doubt statements, responses, claims, and fatwa summaries. Expect more results, correctly.
 4. The main RSS feed now carries doubts, rebuttals, and fatwa entries alongside posts. Subscribers will see the starter content appear as new items once.
 5. If any SEO plugin is later installed that emits its own description/OG tags, disable `inc/meta-tags.php`'s output first — two sets of tags is worse than either alone.
@@ -234,7 +242,7 @@ Documentation only. No code, template, database, or option changes.
 Adds content seeding. No importer plugin is needed any more.
 
 1. Replace the theme directory with the 1.15.0 build.
-2. Go to **Appearance → Murtadd → Setup** and press **Create anything missing**. This publishes the 8 doubts and 13 rebuttals along with anything else absent. (Upgrading in place does not fire the activation hook, so the button is the route on an existing site.)
+2. Go to **Appearance → Theme Options → Setup** and press **Create anything missing**. This publishes the 8 doubts and 13 rebuttals along with anything else absent. (Upgrading in place does not fire the activation hook, so the button is the route on an existing site.)
 3. If you already imported `murtadd-content.xml`, the seeder skips every post it finds and adds only the one rebuttal that was missing from that file.
 4. Nothing you have edited is overwritten. A post at a given slug is skipped whatever state it is in.
 
@@ -287,7 +295,7 @@ Templates and CSS only. No database, option, or URL changes.
 ## 1.9.0 → 1.9.1
 
 1. Replace the theme directory with the 1.9.1 build.
-2. Go to **Appearance → Murtadd → Setup** and press **Create anything missing**. This creates the pages, the footer menu, and the Reading settings that the templates depend on — including `start-here`, without which the sidebar's "Start here" button cannot render.
+2. Go to **Appearance → Theme Options → Setup** and press **Create anything missing**. This creates the pages, the footer menu, and the Reading settings that the templates depend on — including `start-here`, without which the sidebar's "Start here" button cannot render.
 3. The button never overwrites: existing pages, an assigned menu, and Reading options you have already chosen are left untouched.
 4. Replace the placeholder copy on the new pages.
 

@@ -1,5 +1,5 @@
 /* Murtadd — main stylesheet.
-   Tokens in :root; accent + tint overridable from Appearance → Murtadd → Colours
+   Tokens in :root; accent + tint overridable from Appearance → Theme Options → Colours
    (injected via wp_add_inline_style — never inline <style> in templates). */
 
 

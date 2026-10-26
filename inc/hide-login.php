@@ -1,6 +1,6 @@
 <?php
 /**
- * A private login address (Appearance → Murtadd → Security).
+ * A private login address (Appearance → Theme Options → Security).
  *
  * The login screen moves from wp-login.php to an address of the owner's
  * choosing; wp-login.php, wp-register.php and wp-admin then answer visitors
