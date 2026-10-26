@@ -577,6 +577,16 @@ function murtadd_render_security_tab() {
 				<?php endif; ?>
 			</td>
 		</tr>
+		<tr>
+			<th scope="row"><?php esc_html_e( 'Login page', 'murtadd' ); ?></th>
+			<td>
+				<label><input type="checkbox" name="murtadd_security[login_design]" value="1" <?php checked( (bool) murtadd_security( 'login_design' ) ); ?>> <?php esc_html_e( 'Dress the login screen in the site\'s colours and type', 'murtadd' ); ?></label>
+				<p class="description"><?php esc_html_e( 'The mark is the custom logo, then the Site Icon, then the theme\'s own mark, and links to the site. The accents follow the Colours tab. Works at the private login address too.', 'murtadd' ); ?></p>
+				<p><label for="murtadd_login_message"><?php esc_html_e( 'Note above the form', 'murtadd' ); ?></label></p>
+				<textarea id="murtadd_login_message" name="murtadd_security[login_message]" rows="3" class="large-text"><?php echo esc_textarea( (string) murtadd_security( 'login_message' ) ); ?></textarea>
+				<p class="description"><?php esc_html_e( 'Plain text, up to 500 characters, shown on the log-in screen only. Leave empty for none.', 'murtadd' ); ?></p>
+			</td>
+		</tr>
 	</table>
 	<?php
 }

@@ -197,7 +197,7 @@ require_once __DIR__ . '/../inc/gone.php';
 
 require_once __DIR__ . '/../inc/social.php';
 function get_bloginfo( $k = '' ) { return 'Murtadd'; }
-function get_site_icon_url( $s = 512 ) { return ''; }
+function get_site_icon_url( $s = 512 ) { return $GLOBALS['murtadd_test_site_icon'] ?? ''; }
 
 require_once __DIR__ . '/../inc/schema.php';
 require_once __DIR__ . '/../inc/rank-math.php';
@@ -286,3 +286,24 @@ function delete_option( $name ) {
 }
 
 require_once __DIR__ . '/../inc/maintenance.php';
+
+
+// ---- The login screen. ----
+$GLOBALS['murtadd_test_theme_mods'] = array();
+function get_theme_mod( $name, $default = false ) {
+	return $GLOBALS['murtadd_test_theme_mods'][ $name ] ?? $default;
+}
+function wp_get_attachment_image_url( $id, $size = 'thumbnail' ) {
+	return $id ? 'https://murtadd.org/wp-content/uploads/logo-' . (int) $id . '.png' : false;
+}
+function sanitize_hex_color( $color ) {
+	return preg_match( '/^#([A-Fa-f0-9]{3}){1,2}$/', (string) $color ) ? $color : null;
+}
+function sanitize_key( $key ) {
+	return preg_replace( '/[^a-z0-9_\-]/', '', strtolower( (string) $key ) );
+}
+function wp_unslash( $value ) {
+	return is_string( $value ) ? stripslashes( $value ) : $value;
+}
+
+require_once __DIR__ . '/../inc/login.php';
