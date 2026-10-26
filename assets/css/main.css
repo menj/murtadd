@@ -526,3 +526,10 @@ h1, h2, h3 { font-family: var(--murtadd-font-serif); line-height: 1.25; }
 	}
 	.murtadd-doubt-arrow { display: none; }
 }
+
+/* Contextual links (inc/contextual-links.php): the body-link colour, with an
+   underline set clear of descenders. A sister-site link looks the same as one
+   to this site: the front end states no relationship. */
+.murtadd-ctx-link,
+.murtadd-ctx-link--sister { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.18em; }
+.murtadd-ctx-link:hover { text-decoration-thickness: 2px; }

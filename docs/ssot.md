@@ -1,6 +1,6 @@
 # Murtadd — Single Source of Truth
 
-Version 1.39.0 · Child theme of Twenty Twenty-Five · murtadd.org
+Version 1.40.0 · Child theme of Twenty Twenty-Five · murtadd.org
 
 ## What this theme is
 
@@ -20,10 +20,10 @@ Six files state the version: `style.css`, `functions.php`, `readme.txt`, `docs/r
 2. **Conditional loading.** Per-template CSS (`doubt-template.css`, `rebuttal-template.css`, `fatwa-index.css`, `comments.css`) enqueues only on its views. Admin JS enqueues only on `appearance_page_murtadd` and `murtadd_*` edit screens.
 3. **Progressive enhancement.** Every front-end behaviour works with JavaScript disabled. The fatwa filters are a plain GET form; JS only auto-submits on change and hides the button.
 4. **Escaped output.** All front-end output flows through the helpers in `inc/template-tags.php` or direct `esc_*` calls.
-5. **Settings.** Settings API only. One option array per tab: `murtadd_colours`, `murtadd_cross_links`, `murtadd_content_display`. Tabbed screen at Appearance → Murtadd; the Taxonomies tab links to native term screens and duplicates no CRUD.
+5. **Settings.** Settings API only. One option array per tab: `murtadd_colours`, `murtadd_cross_links`, `murtadd_contextual_links`, `murtadd_content_display`. Tabbed screen at Appearance → Murtadd; the Taxonomies tab links to native term screens and duplicates no CRUD.
 6. **Doubt Categories are locked.** Exactly four terms (intellectual, scriptural, emotional, identity), capabilities set to `do_not_allow`, seeded once. They power the homepage grid and the support-notice logic.
 7. **Word caps are soft.** The short-response cap warns in the editor and never blocks saving.
-8. **Cross-links state no relationship.** Outbound cards and deep links open in a new tab with `rel="noopener"`; the front end never declares an affiliation.
+8. **Cross-links state no relationship.** Outbound cards and deep links open in a new tab with `rel="noopener"`; the front end never declares an affiliation. Contextual links inside the text are the one exception to the new tab: they open in the same tab, like any link in running prose, carry `rel="noopener"` when they leave the site, and look the same whichever site they lead to.
 
 ## File structure
 
@@ -77,6 +77,7 @@ Taxonomies: `murtadd_topic` (shared, flat, seeded 6 terms, `/topic/`), `murtadd_
 |---|---|---|
 | murtadd_colours | accent, accent_tint | #0f6e56, #eefaf7 |
 | murtadd_cross_links | ce_base_url, bismika_base_url | empty (links hidden) |
+| murtadd_contextual_links | own_enabled, sister_enabled, own_max, sister_max, extra, excluded | 1, 1, 4, 3, empty, empty |
 | murtadd_content_display | short_response_word_cap, show_struggling_notice, fatwa_index_default_sort, footer_heritage_note | 400, 1, scholar_az, "online since 2004" |
 | murtadd_topics_seeded / murtadd_schools_seeded / murtadd_doubt_categories_seeded | flag | 1 after first init |
 
@@ -161,6 +162,16 @@ The operative test before publishing a paired entry: **if the companion article 
 
 **Counterpart links.** `_murtadd_ce_slug` on rebuttals and doubts stores a bare article slug on the companion site; `template-parts/counterpart.php` renders it as `{ce_base_url}/articles/{slug}/`. Both the slug and the base URL must be present or nothing renders. The two sites overlap on roughly two thirds of this site's entries by design: this one answers charges in a forensic register, the other works the same questions through pastorally.
 
+**Contextual links** (`inc/contextual-links.php`). In the running text of a single entry, the first mention of a known phrase links to the page that treats it, on this site or on one of the six sister sites. The phrases are in `inc/data/network-links.json`, **a shared file kept byte-for-byte identical across all seven themes** (abrahamic, bestofislam, injil.help, paulus, compelling-evidence, murtadd, lailatulqadar). Never edit it here alone: change it in all seven or in none. Its `sites` table names each site's address; entries for `murtadd` resolve through `home_url()`, so staging links stay on staging, and every other entry resolves against its site's address. Each phrase belongs to exactly one page across the network.
+
+Rules, all enforced in code and pinned in `tests/ContextualLinksTest.php`: a phrase is matched whole, capitals and apostrophe form aside; each address is linked once a page, at its first mention; never the page itself; at most one added link a paragraph or list item; at most four links to this site and three to sister sites a page, set separately on the tab. Nothing is linked inside a link, heading, quotation, figure, caption, citation, code, table, a `lang="ar"` (or Hebrew, Greek, Syriac) element, a verse or ayah box, the sources panel, or the fatwa disclaimer.
+
+Three render paths: `the_content` at priority 20 (after `wpautop` and shortcodes, so paragraphs exist to count; the theme runs no other `the_content` filter), the doubt short response in `murtadd_the_short_response()`, and the fatwa position summary in `single-murtadd_fatwa.php`. The last two never pass through `the_content`, which is why they call `murtadd_ctx_render()` themselves. Only the queried entry is linked: never a feed, an excerpt, an archive, the front page, or another post rendered on the same request.
+
+**Emotional and Identity doubts get no contextual links,** and no doubt in either category may be a target in the shared map (the test fails if one is). They are written care-first and left deliberately unlinked, the precedent set by the fear and grief doubts: a grief is not a claim awaiting refutation. The counterpart box and the homepage cross-link cards are separate and unchanged.
+
+Extra phrases from the tab ("phrase | /path/" for this site, "phrase | https://…" for a sister site) are tried before the shared map, so they win; a full address on any host outside the `sites` table is dropped on save. Filters: `murtadd_contextual_links_map` (the entries), `murtadd_contextual_links_enabled` (per post).
+
 **Legacy redirects** (`inc/legacy-redirects.php`) map the pre-2024 murtadd.org paths, recovered from sitemap caches in an old backup, onto current pages and topic archives. Descriptors resolve at request time; a missing target is skipped, never chained. Depends on the `irtidad` page and the `apostasy-law` topic term both existing. Filter: `murtadd_legacy_redirect_map`.
 
 The **Docs tab** is the exception to the Settings API pattern: it registers no setting group and renders `/docs/*.md` through `inc/docs.php` (Parsedown 1.8.0, vendored at `vendor/parsedown/`, safe mode + `wp_kses()`). Adding or renaming a document means editing `murtadd_docs_manifest()`; nothing else knows the filenames. The docs directory and `vendor/` must both ship in the build, or the tab renders an explanatory notice instead of the manual.
@@ -171,7 +182,7 @@ The gradient appears in exactly three places: the hero, the active tab, and the 
 
 The version badge reads `MURTADD_VERSION` directly. It cannot drift, unlike the six files that state a version in text.
 
-Tabs run in the order the work is done: Setup, Content, Topics & schools, Linked sites, Colours. **The tab keys are load-bearing**: `settings_fields( 'murtadd_' . $active )` maps each key to its registered settings group, so relabel and reorder freely, but never rename a key — a renamed key silently detaches the tab from its settings and the fields will appear to save while going nowhere. Labels must name what a person has, not what WordPress calls it internally.
+Tabs run in the order the work is done: Setup, Content, Topics & schools, Linked sites, Contextual links, Colours. **The tab keys are load-bearing**: `settings_fields( 'murtadd_' . $active )` maps each key to its registered settings group, so relabel and reorder freely, but never rename a key — a renamed key silently detaches the tab from its settings and the fields will appear to save while going nowhere. Labels must name what a person has, not what WordPress calls it internally.
 
 ## Exclusions (binding)
 

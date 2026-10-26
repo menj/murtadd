@@ -1,5 +1,13 @@
 # Upgrading — Murtadd
 
+## 1.39.0 → 1.40.0
+
+Additive. No content, template-structure or existing-option changes.
+
+1. Replace the theme directory with the 1.40.0 build. Include `inc/contextual-links.php` and `inc/data/network-links.json`.
+2. Contextual links are on by default: up to four links to this site and three to sister sites in the text of each entry. To change that, go to **Theme Options → Contextual links**.
+3. `inc/data/network-links.json` is shared with the six sister themes and must stay identical in all seven. Update it everywhere or nowhere.
+
 ## 1.38.0 → 1.39.0
 
 Content edits to existing bodies, so the seeder will not apply them to a live site. Either paste each revised entry from `inc/seed-data.php`, or, if the site is not yet public, clear the seeded posts and re-seed. Revised: `religion-by-registration`, `apostasy-and-the-classical-law`, `is-islam-a-cult`, `the-head-cover-and-modesty`, `what-leaving-actually-costs`, `the-age-of-aisha`, `marital-consent-and-the-rape-charge`, `where-was-god-when-i-was-hurt`, `i-was-hurt-and-nobody-helped`, `are-all-non-muslims-damned`, `polygamy-and-the-condition`, `afraid-of-what-happens-if-i-leave`, plus the style sweep, which touches most entries lightly.

@@ -193,3 +193,30 @@ require_once __DIR__ . '/../inc/schema.php';
 
 require_once __DIR__ . '/../inc/seed-data.php';
 require_once __DIR__ . '/../inc/analytics.php';
+
+
+// ---- Contextual links. The engine is pure; these stubs serve its guards. ----
+$GLOBALS['murtadd_test_terms'] = array(); // post ID => doubt category slugs.
+$GLOBALS['murtadd_test_types'] = array(); // post ID => post type.
+$GLOBALS['murtadd_test_slugs'] = array(); // post ID => post_name.
+function wp_parse_url( $url, $component = -1 ) {
+	return parse_url( $url, $component );
+}
+function absint( $n ) {
+	return abs( (int) $n );
+}
+function has_term( $terms, $taxonomy = '', $post_id = 0 ) {
+	return (bool) array_intersect( (array) $terms, $GLOBALS['murtadd_test_terms'][ $post_id ] ?? array() );
+}
+function get_post_type( $post_id = 0 ) {
+	return $GLOBALS['murtadd_test_types'][ $post_id ] ?? 'post';
+}
+function get_post_field( $field, $post_id = 0 ) {
+	return 'post_name' === $field ? ( $GLOBALS['murtadd_test_slugs'][ $post_id ] ?? '' ) : '';
+}
+function get_post( $post_id = 0 ) {
+	return (object) array( 'ID' => $post_id );
+}
+
+require_once __DIR__ . '/../inc/template-tags.php';
+require_once __DIR__ . '/../inc/contextual-links.php';

@@ -10,6 +10,13 @@ Four tabs, Settings API throughout, one option array per tab.
 - **Evidential case base URL** — homepage "full argument" card and doubt-page deep links. Cleared = hidden.
 - **Polemics base URL** — second homepage card. All outbound links open in a new tab with `rel="noopener"`; no relationship is stated on the front end.
 
+## Contextual links (`murtadd_contextual_links`)
+In the running text of a single entry, the first mention of a known phrase links to the page that treats it, here or on a sister site. The phrase list is the shared `inc/data/network-links.json`, identical in all seven themes. Stored text is never changed. Emotional and Identity doubts get no links.
+- **Links to this site** — on/off, and at most how many a page (default 4, 0 to 15).
+- **Links to sister sites** — on/off, and at most how many a page (default 3, 0 to 10). Same tab, `rel="noopener"`, styled like any other link.
+- **Extra phrases** — one per line, `phrase | /path/` for this site or `phrase | https://…` for a sister site. Tried before the shared list, so they win. Any other host, or a line in another shape, is dropped on save.
+- **Never link on** — slugs of entries or pages that get no contextual links.
+
 ## Content display (`murtadd_content_display`)
 - **Short response word cap** — soft cap for the doubt editor's live word count (default 400; warns, never blocks).
 - **"If you are struggling" notice** — toggle for the crisis-support block on Emotional and Identity doubt pages.

@@ -1,7 +1,7 @@
 <?php
 /**
  * Settings page — Appearance → Murtadd. Settings API, tabbed.
- * One option array per tab: murtadd_colours, murtadd_cross_links, murtadd_content_display.
+ * One option array per tab: murtadd_colours, murtadd_cross_links, murtadd_contextual_links, murtadd_content_display.
  * Taxonomies tab deep-links to native term screens (no duplicate CRUD).
  *
  * @package murtadd
@@ -17,6 +17,7 @@ add_action( 'admin_menu', 'murtadd_add_settings_page' );
 function murtadd_register_settings() {
 	register_setting( 'murtadd_colours', 'murtadd_colours', array( 'sanitize_callback' => 'murtadd_sanitize_colours' ) );
 	register_setting( 'murtadd_cross_links', 'murtadd_cross_links', array( 'sanitize_callback' => 'murtadd_sanitize_cross_links' ) );
+	register_setting( 'murtadd_contextual_links', 'murtadd_contextual_links', array( 'sanitize_callback' => 'murtadd_sanitize_contextual_links' ) );
 	register_setting( 'murtadd_content_display', 'murtadd_content_display', array( 'sanitize_callback' => 'murtadd_sanitize_content_display' ) );
 	register_setting( 'murtadd_profiles', 'murtadd_profiles', array( 'sanitize_callback' => 'murtadd_sanitize_profiles' ) );
 	register_setting( 'murtadd_profiles', 'murtadd_author_name', array( 'sanitize_callback' => 'sanitize_text_field' ) );
@@ -34,6 +35,26 @@ function murtadd_sanitize_cross_links( $input ) {
 	return array(
 		'ce_base_url'      => esc_url_raw( $input['ce_base_url'] ?? '' ),
 		'bismika_base_url' => esc_url_raw( $input['bismika_base_url'] ?? '' ),
+	);
+}
+
+function murtadd_sanitize_contextual_links( $input ) {
+	$input = is_array( $input ) ? $input : array();
+	$extra = array();
+	foreach ( preg_split( '/\R/u', (string) ( $input['extra'] ?? '' ) ) as $line ) {
+		$line = sanitize_text_field( $line );
+		if ( '' !== $line && murtadd_ctx_parse_line( $line ) ) {
+			$extra[] = $line;
+		}
+	}
+	$excluded = array_filter( array_map( 'sanitize_title', preg_split( '/\R/u', (string) ( $input['excluded'] ?? '' ) ) ) );
+	return array(
+		'own_enabled'    => empty( $input['own_enabled'] ) ? 0 : 1,
+		'sister_enabled' => empty( $input['sister_enabled'] ) ? 0 : 1,
+		'own_max'        => max( 0, min( 15, absint( $input['own_max'] ?? 4 ) ) ),
+		'sister_max'     => max( 0, min( 10, absint( $input['sister_max'] ?? 3 ) ) ),
+		'extra'          => implode( "\n", $extra ),
+		'excluded'       => implode( "\n", array_unique( $excluded ) ),
 	);
 }
 
@@ -85,6 +106,7 @@ function murtadd_render_settings_page() {
 		'content_display' => __( 'Content', 'murtadd' ),         // Decide what it shows.
 		'taxonomies'      => __( 'Topics & schools', 'murtadd' ), // File the content.
 		'cross_links'     => __( 'Linked sites', 'murtadd' ),    // Point outward.
+		'contextual_links' => __( 'Contextual links', 'murtadd' ), // Link inside the text.
 		'colours'         => __( 'Colours', 'murtadd' ),         // Make it yours.
 		'profiles'        => __( 'Profiles', 'murtadd' ),        // The author's links, shown and structured.
 		'docs'            => __( 'Docs', 'murtadd' ),            // Look something up.
@@ -347,6 +369,41 @@ function murtadd_render_settings_page() {
 							<td>
 								<input type="url" id="murtadd_bismika" name="murtadd_cross_links[bismika_base_url]" value="<?php echo esc_url( $o['bismika_base_url'] ?? 'https://bismikaallahuma.org' ); ?>" class="regular-text">
 								<p class="description"><?php esc_html_e( 'All outbound links open in a new tab with rel="noopener". No relationship is stated on the frontend.', 'murtadd' ); ?></p>
+							</td>
+						</tr>
+					</table>
+					<?php
+				} elseif ( 'contextual_links' === $active ) {
+					$o = murtadd_ctx_settings();
+					?>
+					<p class="description"><?php esc_html_e( 'In the running text of a single entry, the first mention of a known phrase links to the page that treats it, on this site or on one of the six sister sites. Links are added as the page renders; stored text is never changed. Headings, quotations, Qur’anic text, Arabic, sources and existing links are never touched, and Emotional and Identity doubts get no links at all.', 'murtadd' ); ?></p>
+					<table class="form-table" role="presentation">
+						<tr>
+							<th scope="row"><?php esc_html_e( 'Links to this site', 'murtadd' ); ?></th>
+							<td>
+								<label><input type="checkbox" name="murtadd_contextual_links[own_enabled]" value="1" <?php checked( ! empty( $o['own_enabled'] ) ); ?>> <?php esc_html_e( 'Link phrases to other doubts and rebuttals here', 'murtadd' ); ?></label>
+								<p><label for="murtadd_ctx_own_max"><?php esc_html_e( 'At most', 'murtadd' ); ?></label> <input type="number" id="murtadd_ctx_own_max" name="murtadd_contextual_links[own_max]" value="<?php echo esc_attr( $o['own_max'] ); ?>" min="0" max="15" step="1" class="small-text"> <?php esc_html_e( 'a page (0 to 15)', 'murtadd' ); ?></p>
+							</td>
+						</tr>
+						<tr>
+							<th scope="row"><?php esc_html_e( 'Links to sister sites', 'murtadd' ); ?></th>
+							<td>
+								<label><input type="checkbox" name="murtadd_contextual_links[sister_enabled]" value="1" <?php checked( ! empty( $o['sister_enabled'] ) ); ?>> <?php esc_html_e( 'Link phrases to the page on a sister site that treats them', 'murtadd' ); ?></label>
+								<p><label for="murtadd_ctx_sister_max"><?php esc_html_e( 'At most', 'murtadd' ); ?></label> <input type="number" id="murtadd_ctx_sister_max" name="murtadd_contextual_links[sister_max]" value="<?php echo esc_attr( $o['sister_max'] ); ?>" min="0" max="10" step="1" class="small-text"> <?php esc_html_e( 'a page (0 to 10)', 'murtadd' ); ?></p>
+							</td>
+						</tr>
+						<tr>
+							<th scope="row"><label for="murtadd_ctx_extra"><?php esc_html_e( 'Extra phrases', 'murtadd' ); ?></label></th>
+							<td>
+								<textarea id="murtadd_ctx_extra" name="murtadd_contextual_links[extra]" rows="8" class="large-text code" placeholder="<?php esc_attr_e( 'tudung | /rebuttals/the-head-cover-and-modesty/', 'murtadd' ); ?>"><?php echo esc_textarea( $o['extra'] ); ?></textarea>
+								<p class="description"><?php esc_html_e( 'One per line: phrase | address. A path such as /rebuttals/slug/ is this site; a full address must be on one of the sister sites. These are tried before the shared list, so they win. Lines in any other shape are dropped on save.', 'murtadd' ); ?></p>
+							</td>
+						</tr>
+						<tr>
+							<th scope="row"><label for="murtadd_ctx_excluded"><?php esc_html_e( 'Never link on', 'murtadd' ); ?></label></th>
+							<td>
+								<textarea id="murtadd_ctx_excluded" name="murtadd_contextual_links[excluded]" rows="4" class="large-text code"><?php echo esc_textarea( $o['excluded'] ); ?></textarea>
+								<p class="description"><?php esc_html_e( 'Slugs of entries or pages that get no contextual links, one per line.', 'murtadd' ); ?></p>
 							</td>
 						</tr>
 					</table>

@@ -1,5 +1,21 @@
 # Changelog — Murtadd
 
+## 1.40.0 — 2026-10-26
+Contextual links. In the running text of a single entry, the first mention of a known phrase now links to the page that treats it: another rebuttal or doubt here, or the inner page on one of the six sister sites. No section, widget or list is added; the links sit in the prose.
+
+### Added
+- **`inc/contextual-links.php`** — the link pass. Whole-phrase, case-insensitive matching that survives texturised apostrophes and diacritics; each address once a page at its first mention; never the page itself; one added link a paragraph or list item; separate caps for this site (4) and sister sites (3). Never inside links, headings, quotations, figures, captions, citations, code, tables, Arabic, Hebrew, Greek or Syriac text, the verse and ayah boxes, the sources panel or the fatwa disclaimer. Runs on `the_content` (priority 20) and on the two meta-field render paths that bypass it: the doubt short response and the fatwa position summary.
+- **`inc/data/network-links.json`** — the phrase map shared byte-for-byte by all seven themes, 404 inner pages and 913 phrases, each phrase owned by exactly one page. Entries for this site resolve through `home_url()`.
+- **Theme Options → Contextual links** — switches and caps for each kind, extra phrases that override the map, and slugs that never get links.
+- **`.murtadd-ctx-link`** in `main.css` and its `.min` twin: body-link colour, underline set clear of descenders. Sister links look the same; the front end states no relationship.
+
+### Unchanged by design
+- **Emotional and Identity doubts get no contextual links,** and none may be a target in the map, following the fear and grief precedent. The counterpart box and the homepage cross-link cards are untouched.
+
+### Tests
+- `ContextualLinksTest`: 15 tests (markup, headings, skipped regions including a nested element inside one, first mention, self page, paragraph cap, both caps, diacritics and apostrophes, whole-phrase match, admin override and host refusal, care-first and excluded entries, every own-site map path seeded here, one owner per phrase, seed rebuttals within the caps with text unchanged). Mutation-checked.
+- Suite green: 61 tests.
+
 ## 1.39.0 — 2026-07-18
 Wider frame. The content leaned too heavily on Malaysia, partly because the overlap doctrine made "Malaysian ground" this site's differentiator from the companion site. That rule is replaced: the differentiator is now comparative and forensic, the specific charge answered from its primary evidence and from the law as it stands across Muslim-majority states. Malaysia stays as one example among several and is no longer the frame.
 
