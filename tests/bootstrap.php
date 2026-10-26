@@ -24,10 +24,19 @@ $GLOBALS['murtadd_hooks']   = array();
 $GLOBALS['murtadd_options'] = array();
 
 function add_action( $hook, $cb, $priority = 10, $args = 1 ) {
-	$GLOBALS['murtadd_hooks'][] = array( $hook, $cb );
+	$GLOBALS['murtadd_hooks'][] = array( $hook, $cb, $priority );
 }
 function add_filter( $hook, $cb, $priority = 10, $args = 1 ) {
-	$GLOBALS['murtadd_hooks'][] = array( $hook, $cb );
+	$GLOBALS['murtadd_hooks'][] = array( $hook, $cb, $priority );
+}
+/** The priority a named callback was hooked at, or null. */
+function murtadd_test_hook_priority( $hook, $cb ) {
+	foreach ( $GLOBALS['murtadd_hooks'] as $h ) {
+		if ( $h[0] === $hook && $h[1] === $cb ) {
+			return $h[2];
+		}
+	}
+	return null;
 }
 function apply_filters( $hook, $value ) {
 	return $value;
@@ -184,6 +193,7 @@ require_once __DIR__ . '/../inc/docs.php';
 
 // ---- Legacy redirect map (data-level tests only; stubs above suffice). ----
 require_once __DIR__ . '/../inc/legacy-redirects.php';
+require_once __DIR__ . '/../inc/gone.php';
 
 require_once __DIR__ . '/../inc/social.php';
 function get_bloginfo( $k = '' ) { return 'Murtadd'; }

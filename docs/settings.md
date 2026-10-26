@@ -30,6 +30,9 @@ Each switch is independent.
 - **Security headers** (on) — `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, `X-Frame-Options: SAMEORIGIN`, `Permissions-Policy` (camera, microphone, geolocation, payment, USB off). A header the server already sends is not sent again. Filter: `murtadd_security_headers`.
 - **Private login address** (empty, so off) — once saved, the login screen moves there and `wp-login.php`, `wp-register.php` and wp-admin show a page not found to anyone not logged in. A reserved, malformed or page-colliding address is refused on save and the previous one kept. **Locked out:** add `define( 'MURTADD_HIDE_LOGIN', false );` to `wp-config.php`, log in at `wp-login.php`, clear the field, remove the line. Stands down while the WPS Hide Login plugin is active.
 
+## Upkeep (`murtadd_upkeep`)
+- **Removed for good (410)** (empty) — addresses that never belonged to the site, such as spam pages from the 2024 compromise, answered `410 Gone` with `noindex` so search engines drop them. One per line: an exact path (`/cheap-pills/`, trailing slash and capitals ignored) or a prefix ending in `*` (`/shop/*` covers `/shop` and everything under it, not `/shopping`). Applies only where the site has nothing to serve, and after the legacy redirects, so a live page or a recovered pre-2024 address is never answered 410. `/` and `/*` alone are refused; at most 200 lines. The page is `410.php`, built from the 404's classes.
+
 ## Taxonomies
 Read-only tab: deep links to the native term screens for Topics and Schools. Doubt Categories are locked — four fixed terms power the homepage grid.
 

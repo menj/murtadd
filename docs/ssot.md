@@ -20,7 +20,7 @@ Six files state the version: `style.css`, `functions.php`, `readme.txt`, `docs/r
 2. **Conditional loading.** Per-template CSS (`doubt-template.css`, `rebuttal-template.css`, `fatwa-index.css`, `comments.css`) enqueues only on its views. Admin JS enqueues only on `appearance_page_murtadd` and `murtadd_*` edit screens.
 3. **Progressive enhancement.** Every front-end behaviour works with JavaScript disabled. The fatwa filters are a plain GET form; JS only auto-submits on change and hides the button.
 4. **Escaped output.** All front-end output flows through the helpers in `inc/template-tags.php` or direct `esc_*` calls.
-5. **Settings.** Settings API only. One option array per tab: `murtadd_colours`, `murtadd_cross_links`, `murtadd_contextual_links`, `murtadd_content_display`, `murtadd_security`. Tabbed screen at Appearance → Murtadd; the Taxonomies tab links to native term screens and duplicates no CRUD.
+5. **Settings.** Settings API only. One option array per tab: `murtadd_colours`, `murtadd_cross_links`, `murtadd_contextual_links`, `murtadd_content_display`, `murtadd_security`, `murtadd_upkeep`. Tabbed screen at Appearance → Murtadd; the Taxonomies tab links to native term screens and duplicates no CRUD.
 6. **Doubt Categories are locked.** Exactly four terms (intellectual, scriptural, emotional, identity), capabilities set to `do_not_allow`, seeded once. They power the homepage grid and the support-notice logic.
 7. **Word caps are soft.** The short-response cap warns in the editor and never blocks saving.
 8. **Cross-links state no relationship.** Outbound cards and deep links open in a new tab with `rel="noopener"`; the front end never declares an affiliation. Contextual links inside the text are the one exception to the new tab: they open in the same tab, like any link in running prose, carry `rel="noopener"` when they leave the site, and look the same whichever site they lead to.
@@ -81,6 +81,7 @@ Taxonomies: `murtadd_topic` (shared, flat, seeded 6 terms, `/topic/`), `murtadd_
 | murtadd_cross_links | ce_base_url, bismika_base_url | empty (links hidden) |
 | murtadd_contextual_links | own_enabled, sister_enabled, own_max, sister_max, extra, excluded | 1, 1, 4, 3, empty, empty |
 | murtadd_security | hide_authors, xmlrpc_off, headers, login_slug, login_design, login_message | 1, 1, 1, empty (private login off), 1, empty |
+| murtadd_upkeep | gone_paths, maintenance, error_pages | empty, 0, 1 |
 | murtadd_content_display | short_response_word_cap, show_struggling_notice, fatwa_index_default_sort, footer_heritage_note | 400, 1, scholar_az, "online since 2004" |
 | murtadd_topics_seeded / murtadd_schools_seeded / murtadd_doubt_categories_seeded | flag | 1 after first init |
 
@@ -179,6 +180,8 @@ Extra phrases from the tab ("phrase | /path/" for this site, "phrase | https://�
 
 **Legacy redirects** (`inc/legacy-redirects.php`) map the pre-2024 murtadd.org paths, recovered from sitemap caches in an old backup, onto current pages and topic archives. Descriptors resolve at request time; a missing target is skipped, never chained. Depends on the `irtidad` page and the `apostasy-law` topic term both existing. Filter: `murtadd_legacy_redirect_map`.
 
+**410 Gone** (`inc/gone.php`, `410.php`) answers the paths on the Upkeep tab with `410 Gone`. Two rules keep it from ever retiring a real page, and both are pinned in `tests/GoneTest.php`: it runs only on a 404, and at `template_redirect` priority 20, after the legacy redirects at 10, which exit when they redirect. The list ships empty: no spam path from the compromise survives in the record.
+
 The **Docs tab** is the exception to the Settings API pattern: it registers no setting group and renders `/docs/*.md` through `inc/docs.php` (Parsedown 1.8.0, vendored at `vendor/parsedown/`, safe mode + `wp_kses()`). Adding or renaming a document means editing `murtadd_docs_manifest()`; nothing else knows the filenames. The docs directory and `vendor/` must both ship in the build, or the tab renders an explanatory notice instead of the manual.
 
 Appearance → Murtadd is the Settings API with a skin (`assets/css/admin.css`), not a custom framework. The markup stays `form-table`, so fields, nonces, sanitisers, and capability checks keep working; only the surface is restyled, and everything is scoped under `.murtadd-admin` so nothing leaks into the rest of wp-admin.
@@ -187,7 +190,7 @@ The gradient appears in exactly three places: the hero, the active tab, and the 
 
 The version badge reads `MURTADD_VERSION` directly. It cannot drift, unlike the six files that state a version in text.
 
-Tabs run in the order the work is done: Setup, Content, Topics & schools, Linked sites, Contextual links, Colours, Profiles, Security, Docs. **The tab keys are load-bearing**: `settings_fields( 'murtadd_' . $active )` maps each key to its registered settings group, so relabel and reorder freely, but never rename a key — a renamed key silently detaches the tab from its settings and the fields will appear to save while going nowhere. Labels must name what a person has, not what WordPress calls it internally.
+Tabs run in the order the work is done: Setup, Content, Topics & schools, Linked sites, Contextual links, Colours, Profiles, Security, Upkeep, Docs. **The tab keys are load-bearing**: `settings_fields( 'murtadd_' . $active )` maps each key to its registered settings group, so relabel and reorder freely, but never rename a key — a renamed key silently detaches the tab from its settings and the fields will appear to save while going nowhere. Labels must name what a person has, not what WordPress calls it internally.
 
 ## Exclusions (binding)
 

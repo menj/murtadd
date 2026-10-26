@@ -1,7 +1,7 @@
 <?php
 /**
  * Settings page — Appearance → Murtadd. Settings API, tabbed.
- * One option array per tab: murtadd_colours, murtadd_cross_links, murtadd_contextual_links, murtadd_content_display, murtadd_security.
+ * One option array per tab: murtadd_colours, murtadd_cross_links, murtadd_contextual_links, murtadd_content_display, murtadd_security, murtadd_upkeep.
  * Taxonomies tab deep-links to native term screens (no duplicate CRUD).
  *
  * @package murtadd
@@ -22,6 +22,7 @@ function murtadd_register_settings() {
 	register_setting( 'murtadd_profiles', 'murtadd_profiles', array( 'sanitize_callback' => 'murtadd_sanitize_profiles' ) );
 	register_setting( 'murtadd_profiles', 'murtadd_author_name', array( 'sanitize_callback' => 'sanitize_text_field' ) );
 	register_setting( 'murtadd_security', 'murtadd_security', array( 'sanitize_callback' => 'murtadd_sanitize_security' ) );
+	register_setting( 'murtadd_upkeep', 'murtadd_upkeep', array( 'sanitize_callback' => 'murtadd_sanitize_upkeep' ) );
 }
 add_action( 'admin_init', 'murtadd_register_settings' );
 
@@ -88,6 +89,21 @@ function murtadd_sanitize_security( $input ) {
 	);
 }
 
+/**
+ * Upkeep tab.
+ *
+ * @param mixed $input Submitted values.
+ * @return array
+ */
+function murtadd_sanitize_upkeep( $input ) {
+	$input = is_array( $input ) ? $input : array();
+	return array(
+		'gone_paths'  => murtadd_gone_clean( (string) ( $input['gone_paths'] ?? '' ) ),
+		'maintenance' => empty( $input['maintenance'] ) ? 0 : 1,
+		'error_pages' => empty( $input['error_pages'] ) ? 0 : 1,
+	);
+}
+
 function murtadd_sanitize_profiles( $input ) {
 	$out = array();
 	if ( ! is_array( $input ) ) {
@@ -140,6 +156,7 @@ function murtadd_render_settings_page() {
 		'colours'         => __( 'Colours', 'murtadd' ),         // Make it yours.
 		'profiles'        => __( 'Profiles', 'murtadd' ),        // The author's links, shown and structured.
 		'security'        => __( 'Security', 'murtadd' ),        // Close what WordPress leaves open.
+		'upkeep'          => __( 'Upkeep', 'murtadd' ),          // Removed pages, outages, maintenance.
 		'docs'            => __( 'Docs', 'murtadd' ),            // Look something up.
 	);
 	$requested = isset( $_GET['tab'] ) ? sanitize_key( wp_unslash( $_GET['tab'] ) ) : '';
@@ -441,6 +458,8 @@ function murtadd_render_settings_page() {
 					<?php
 				} elseif ( 'security' === $active ) {
 					murtadd_render_security_tab();
+				} elseif ( 'upkeep' === $active ) {
+					murtadd_render_upkeep_tab();
 				} else {
 					$o = get_option( 'murtadd_content_display', array() );
 					?>
@@ -551,6 +570,23 @@ function murtadd_render_security_tab() {
 						?>
 					</p>
 				<?php endif; ?>
+			</td>
+		</tr>
+	</table>
+	<?php
+}
+
+/**
+ * The Upkeep tab's fields (inside the tab's settings form).
+ */
+function murtadd_render_upkeep_tab() {
+	?>
+	<table class="form-table" role="presentation">
+		<tr>
+			<th scope="row"><label for="murtadd_gone_paths"><?php esc_html_e( 'Removed for good (410)', 'murtadd' ); ?></label></th>
+			<td>
+				<textarea id="murtadd_gone_paths" name="murtadd_upkeep[gone_paths]" rows="8" class="large-text code" placeholder="<?php echo esc_attr( "/cheap-pills/\n/shop/*" ); ?>"><?php echo esc_textarea( (string) murtadd_upkeep( 'gone_paths' ) ); ?></textarea>
+				<p class="description"><?php esc_html_e( 'Addresses that never belonged to this site, such as spam pages left by the 2024 compromise, answered 410 Gone so search engines drop them. One per line: an exact path (/cheap-pills/), or a prefix ending in * (/shop/* covers /shop/ and everything under it). Applies only where the site has no page: a live page, and any old address the legacy redirects recover, are never touched. "/" and "/*" alone are refused.', 'murtadd' ); ?></p>
 			</td>
 		</tr>
 	</table>

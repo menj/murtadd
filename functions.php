@@ -28,6 +28,7 @@ require_once get_stylesheet_directory() . '/inc/hardening.php';
 require_once get_stylesheet_directory() . '/inc/hide-login.php';
 require_once get_stylesheet_directory() . '/inc/docs.php';
 require_once get_stylesheet_directory() . '/inc/legacy-redirects.php';
+require_once get_stylesheet_directory() . '/inc/gone.php';
 require_once get_stylesheet_directory() . '/inc/social.php';
 require_once get_stylesheet_directory() . '/inc/site-icon.php';
 require_once get_stylesheet_directory() . '/inc/activation.php';
