@@ -124,6 +124,15 @@ function murtadd_enqueue_assets() {
 	if ( is_singular( 'murtadd_rebuttal' ) ) {
 		wp_enqueue_style( 'murtadd-longform', get_stylesheet_directory_uri() . '/assets/css/longform' . MURTADD_ASSET_SUFFIX . '.css', array( 'murtadd-main' ), MURTADD_VERSION );
 		wp_enqueue_script( 'murtadd-longform', get_stylesheet_directory_uri() . '/assets/js/longform' . MURTADD_ASSET_SUFFIX . '.js', array(), MURTADD_VERSION, true );
+		wp_localize_script(
+			'murtadd-longform',
+			'murtaddLongform',
+			array(
+				'progress' => __( 'Reading progress', 'murtadd' ),
+				'toc'      => __( 'On this page', 'murtadd' ),
+				'top'      => __( 'Back to top', 'murtadd' ),
+			)
+		);
 	}
 
 	if ( is_singular( array( 'murtadd_doubt', 'murtadd_rebuttal' ) ) ) {

@@ -32,4 +32,22 @@ final class AssetsTest extends TestCase {
 			$this->assertStringContainsString( '.' . $class, $min, $class . ' missing from admin.min.css.' );
 		}
 	}
+
+	/** The long-form script's visible words come from PHP, so they are translatable, minified twin included. */
+	public function test_longform_strings_are_localised() {
+		$php = (string) file_get_contents( dirname( __DIR__ ) . '/functions.php' );
+		$this->assertMatchesRegularExpression( "/wp_localize_script\\(\\s*'murtadd-longform',\\s*'murtaddLongform'/", $php );
+		foreach ( array( 'progress', 'toc', 'top' ) as $key ) {
+			$this->assertStringContainsString( "'" . $key . "'", $php );
+		}
+		foreach ( array( 'longform.js', 'longform.min.js' ) as $file ) {
+			$js = (string) file_get_contents( dirname( __DIR__ ) . '/assets/js/' . $file );
+			$this->assertStringContainsString( 'window.murtaddLongform', $js, $file );
+			$this->assertDoesNotMatchRegularExpression( "/(setAttribute\\(\\s*'aria-label',\\s*'|textContent\\s*=\\s*')/", $js, $file . ' sets a hard-coded label.' );
+		}
+		$pot = (string) file_get_contents( dirname( __DIR__ ) . '/languages/murtadd.pot' );
+		foreach ( array( 'Reading progress', 'On this page', 'Back to top' ) as $msg ) {
+			$this->assertStringContainsString( 'msgid "' . $msg . '"', $pot );
+		}
+	}
 }
