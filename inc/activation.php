@@ -371,14 +371,6 @@ function murtadd_activation_notice() {
 		);
 	}
 
-	if ( ! empty( $report['content']['letters'] ) ) {
-		$lines[] = sprintf(
-			/* translators: %d: number of open letters */
-			_n( '%d open letter from the site added.', '%d open letters from the site added.', (int) $report['content']['letters'], 'murtadd' ),
-			(int) $report['content']['letters']
-		);
-	}
-
 	if ( ! $lines ) {
 		$lines[] = __( 'Everything the theme needs was already in place. Nothing was changed.', 'murtadd' );
 	} else {
@@ -656,3 +648,83 @@ function murtadd_retire_placeholder_copy() {
 	return $done;
 }
 add_action( 'admin_init', 'murtadd_retire_placeholder_copy' );
+
+/**
+ * md5 of each open letter 1.43.0 seeded, as stored.
+ *
+ * Taken after murtadd_open_letter_fingerprint(), so the host in a link does
+ * not matter and any other change to the text or markup does. Nothing here is
+ * ever written to the database.
+ *
+ * @return array<string,string> Slug => md5.
+ */
+function murtadd_seeded_open_letter_hashes() {
+	return array(
+		'to-a-parent-whose-child-has-stopped-believing' => '2d7b30566779061790e6d6b689924718',
+		'to-someone-who-has-just-left'                  => '0a6973907b12e63220ddebfbcd2e1396',
+		'to-a-convert-who-feels-let-down'               => 'e0e589ef846abe9bd92149182261ccc3',
+		'to-someone-afraid-to-say-it-out-loud'          => 'b5a9db8cb58f08c6667730a659d80470',
+	);
+}
+
+/**
+ * Stored letter copy reduced for comparison with what 1.43.0 seeded.
+ *
+ * The markup is kept, as murtadd_normalise_markup() keeps it, and the scheme
+ * and host of each link go, since the seeder wrote them from home_url().
+ *
+ * @param string $html Stored content.
+ * @return string
+ */
+function murtadd_open_letter_fingerprint( $html ) {
+	$html = (string) preg_replace( '#href="https?://[^/"]*#i', 'href="', (string) $html );
+	return murtadd_normalise_markup( $html );
+}
+
+/**
+ * Move the open letters 1.43.0 seeded back to draft.
+ *
+ * Only a letter the seeder recorded in murtadd_seeded_slugs, still published,
+ * and still holding the seeded body exactly. A letter an editor changed in any
+ * way is left alone. Nothing is deleted. Runs until every write has landed,
+ * then sets murtadd_open_letters_retired and does nothing again.
+ *
+ * @return string[] Slugs moved to draft on this run.
+ */
+function murtadd_retire_open_letters() {
+	$done = array();
+	if ( get_option( 'murtadd_open_letters_retired' ) ) {
+		return $done;
+	}
+	$failed = false;
+
+	foreach ( murtadd_seeded_open_letter_hashes() as $slug => $hash ) {
+		if ( ! murtadd_slug_was_seeded( 'murtadd_letter', $slug ) ) {
+			continue; // Not created by the seeder.
+		}
+		$letter = get_page_by_path( $slug, OBJECT, 'murtadd_letter' );
+		if ( ! $letter || 'publish' !== $letter->post_status ) {
+			continue;
+		}
+		if ( md5( murtadd_open_letter_fingerprint( $letter->post_content ) ) !== $hash ) {
+			continue; // Edited. Leave it alone.
+		}
+		$written = wp_update_post(
+			array(
+				'ID'          => $letter->ID,
+				'post_status' => 'draft',
+			)
+		);
+		if ( ! $written || is_wp_error( $written ) ) {
+			$failed = true;
+			continue;
+		}
+		$done[] = $slug;
+	}
+
+	if ( ! $failed ) {
+		update_option( 'murtadd_open_letters_retired', 1 );
+	}
+	return $done;
+}
+add_action( 'admin_init', 'murtadd_retire_open_letters' );

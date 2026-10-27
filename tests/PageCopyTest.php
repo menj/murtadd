@@ -367,4 +367,75 @@ final class PageCopyTest extends TestCase {
 		$second = murtadd_retire_placeholder_copy();
 		$this->assertSame( array(), $second['pages'], 'Written copy was rewritten on a second pass.' );
 	}
+
+	/** Seed one 1.43.0 open letter as the seeder stored it, at a given host. */
+	private function seeded_open_letter( $index, $host = 'https://murtadd.org' ) {
+		$letters = json_decode( (string) file_get_contents( __DIR__ . '/fixtures/open-letters-1.43.json' ), true );
+		$l       = $letters[ $index ];
+		$body    = (string) preg_replace( '/\{\{url:([^{}"\s]*)\}\}/', $host . '$1', $l['body'] );
+		murtadd_mark_slug_seeded( 'murtadd_letter', $l['slug'] );
+		return $this->legacy_post( 'murtadd_letter', $l['slug'], $body );
+	}
+
+	/** Every seeded open letter has a hash, and the hashes match the 1.43.0 bodies. */
+	public function test_open_letter_hashes_match_the_seeded_bodies() {
+		$letters = json_decode( (string) file_get_contents( __DIR__ . '/fixtures/open-letters-1.43.json' ), true );
+		$hashes  = murtadd_seeded_open_letter_hashes();
+		$this->assertSame( array_column( $letters, 'slug' ), array_keys( $hashes ) );
+		foreach ( array_keys( $letters ) as $i ) {
+			$post = $this->seeded_open_letter( $i, 'https://staging.example.com' );
+			$this->assertSame( $hashes[ $post->post_name ], md5( murtadd_open_letter_fingerprint( $post->post_content ) ), $post->post_name );
+		}
+	}
+
+	/** Unedited open letters go to draft; an edited one stays published; nothing is deleted. */
+	public function test_open_letters_retire_only_when_unedited() {
+		$this->seeded_open_letter( 0 );
+		$this->seeded_open_letter( 1 );
+		$edited = $this->seeded_open_letter( 2 );
+		$edited->post_content = str_replace( 'Dear friend,', 'Dear reader,', $edited->post_content );
+		$linked = $this->seeded_open_letter( 3 );
+		$linked->post_content = str_replace( '/start-here/', '/doubts/', $linked->post_content );
+
+		$done = murtadd_retire_open_letters();
+
+		$this->assertSame( array( 'to-a-parent-whose-child-has-stopped-believing', 'to-someone-who-has-just-left' ), $done );
+		$this->assertSame( 'draft', get_page_by_path( 'to-a-parent-whose-child-has-stopped-believing', OBJECT, 'murtadd_letter' )->post_status );
+		$this->assertSame( 'draft', get_page_by_path( 'to-someone-who-has-just-left', OBJECT, 'murtadd_letter' )->post_status );
+		$this->assertSame( 'publish', get_page_by_path( 'to-a-convert-who-feels-let-down', OBJECT, 'murtadd_letter' )->post_status, 'An edited letter was unpublished.' );
+		$this->assertSame( 'publish', get_page_by_path( 'to-someone-afraid-to-say-it-out-loud', OBJECT, 'murtadd_letter' )->post_status, 'A letter with an edited link was unpublished.' );
+		$this->assertCount( 4, $GLOBALS['murtadd_posts']['murtadd_letter'], 'A letter was deleted.' );
+	}
+
+	/** A letter at the same slug that the seeder did not record is the editor's. */
+	public function test_open_letter_retirement_skips_unrecorded_slugs() {
+		$post = $this->seeded_open_letter( 0 );
+		update_option( 'murtadd_seeded_slugs', array() );
+		$this->assertSame( array(), murtadd_retire_open_letters() );
+		$this->assertSame( 'publish', $post->post_status );
+	}
+
+	/** It runs once; with the flag cleared, a drafted letter is not touched again. */
+	public function test_open_letter_retirement_is_idempotent() {
+		$this->seeded_open_letter( 0 );
+		$this->assertCount( 1, murtadd_retire_open_letters() );
+		$this->assertSame( 1, get_option( 'murtadd_open_letters_retired' ) );
+		$this->assertSame( array(), murtadd_retire_open_letters() );
+		update_option( 'murtadd_open_letters_retired', 0 );
+		$this->assertSame( array(), murtadd_retire_open_letters(), 'A drafted letter was touched again.' );
+	}
+
+	/** A failed write leaves the flag unset, so the next admin request retries. */
+	public function test_open_letter_retirement_retries_a_failed_write() {
+		$this->seeded_open_letter( 1 );
+		$GLOBALS['murtadd_fail_update'] = true;
+		$this->assertSame( array(), murtadd_retire_open_letters() );
+		$this->assertEmpty( get_option( 'murtadd_open_letters_retired' ) );
+		$GLOBALS['murtadd_fail_update'] = false;
+		$this->assertSame( array( 'to-someone-who-has-just-left' ), murtadd_retire_open_letters() );
+	}
+
+	public function test_open_letter_retirement_is_hooked() {
+		$this->assertNotNull( murtadd_test_hook_priority( 'admin_init', 'murtadd_retire_open_letters' ) );
+	}
 }
