@@ -38,7 +38,11 @@ while ( have_posts() ) :
 
 		<div class="murtadd-letter-frame">
 			<p>
-				<?php esc_html_e( 'This is an archived letter, reproduced as it was published. It records a position taken at the date above and is not a page written to answer a reader’s doubt.', 'murtadd' ); ?>
+				<?php if ( 'open' === murtadd_letter_kind() ) : ?>
+					<?php esc_html_e( 'This is an open letter from this site, written in its own voice to anyone in the situation it names. It is not a letter from a reader, and it is not a page written to answer a particular doubt.', 'murtadd' ); ?>
+				<?php else : ?>
+					<?php esc_html_e( 'This is an archived letter, reproduced as it was published. It records a position taken at the date above and is not a page written to answer a reader’s doubt.', 'murtadd' ); ?>
+				<?php endif; ?>
 				<a href="<?php echo esc_url( get_post_type_archive_link( 'murtadd_doubt' ) ); ?>"><?php esc_html_e( 'Start with the doubts instead →', 'murtadd' ); ?></a>
 			</p>
 		</div>

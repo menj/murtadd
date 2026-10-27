@@ -185,23 +185,74 @@ function murtadd_seed_doubt_posts() {
 }
 
 /**
+ * Insert the site's open letters.
+ *
+ * Only letters the site writes in its own voice (murtadd_seed_letters()) are
+ * seeded, never correspondence presented as from a reader. Each is marked
+ * with the open-letter kind, so the single view frames it as such. The same
+ * record as every other seeded type: a slug seeded once is never seeded again.
+ *
+ * @return int Number created on this run.
+ */
+function murtadd_seed_letter_posts() {
+	$created = 0;
+
+	foreach ( murtadd_seed_letters() as $l ) {
+		if ( murtadd_slug_was_seeded( 'murtadd_letter', $l['slug'] ) ) {
+			continue; // Seeded once already. If it is gone, an editor removed it.
+		}
+		if ( get_page_by_path( $l['slug'], OBJECT, 'murtadd_letter' ) ) {
+			murtadd_mark_slug_seeded( 'murtadd_letter', $l['slug'] ); // A letter already at that slug is the editor's: adopt the slug, touch nothing.
+			continue;
+		}
+
+		$post_id = wp_insert_post(
+			array(
+				'post_type'    => 'murtadd_letter',
+				'post_name'    => $l['slug'],
+				'post_title'   => $l['title'],
+				'post_content' => $l['body'],
+				'post_status'  => 'publish',
+			)
+		);
+
+		if ( is_wp_error( $post_id ) || ! $post_id ) {
+			continue;
+		}
+
+		murtadd_mark_slug_seeded( 'murtadd_letter', $l['slug'] );
+		update_post_meta( $post_id, '_murtadd_letter_kind', 'open' );
+		update_post_meta( $post_id, '_murtadd_letter_date', $l['date'] );
+		if ( ! empty( $l['note'] ) ) {
+			update_post_meta( $post_id, '_murtadd_letter_note', $l['note'] );
+		}
+
+		++$created;
+	}
+
+	return $created;
+}
+
+/**
  * Seed the starter content. Idempotent.
  *
- * Letters are not seeded: the archive holds real correspondence or nothing.
+ * Letters: only the site's own open letters, never reader correspondence.
  *
- * @return array{doubts:int,rebuttals:int}
+ * @return array{doubts:int,rebuttals:int,letters:int}
  */
 function murtadd_seed_content() {
 	murtadd_seed_terms();
 
 	$rebuttals = murtadd_seed_rebuttal_posts();
 	$doubts    = murtadd_seed_doubt_posts();
+	$letters   = murtadd_seed_letter_posts();
 
 	update_option( 'murtadd_content_seeded', 1 );
 
 	return array(
 		'doubts'    => $doubts,
 		'rebuttals' => $rebuttals,
+		'letters'   => $letters,
 	);
 }
 
@@ -223,6 +274,56 @@ function murtadd_seed_missing_count() {
 			++$missing;
 		}
 	}
+	foreach ( murtadd_seed_letters() as $l ) {
+		if ( ! murtadd_slug_was_seeded( 'murtadd_letter', $l['slug'] ) && ! get_page_by_path( $l['slug'], OBJECT, 'murtadd_letter' ) ) {
+			++$missing;
+		}
+	}
 
 	return $missing;
 }
+
+/**
+ * Backfill the counterpart slug on posts the seeder created.
+ *
+ * The seeder never touches a post it has already created, so a ce_slug added
+ * to the seed data after a site was set up would never reach it. This fills
+ * `_murtadd_ce_slug` only where it is EMPTY, only on slugs recorded in
+ * murtadd_seeded_slugs, and only from the seed data. A value an editor typed,
+ * or cleared and then retyped, is never replaced; a post the editor deleted is
+ * simply not found. Re-running changes nothing, and the run is skipped
+ * entirely once the current mapping has been applied.
+ *
+ * @return int Number of posts that gained a ce_slug on this run.
+ */
+function murtadd_backfill_ce_slugs() {
+	$map = array(
+		'murtadd_rebuttal' => array_column( murtadd_seed_rebuttals(), 'ce_slug', 'slug' ),
+		'murtadd_doubt'    => array_column( murtadd_seed_doubts(), 'ce_slug', 'slug' ),
+	);
+	$hash = md5( (string) wp_json_encode( $map ) );
+	if ( get_option( 'murtadd_ce_slug_backfill' ) === $hash ) {
+		return 0;
+	}
+
+	$seeded = murtadd_seeded_slugs();
+	$filled = 0;
+
+	foreach ( $map as $type => $pairs ) {
+		foreach ( $pairs as $slug => $ce_slug ) {
+			if ( '' === (string) $ce_slug || ! in_array( $slug, isset( $seeded[ $type ] ) ? $seeded[ $type ] : array(), true ) ) {
+				continue;
+			}
+			$post = get_page_by_path( $slug, OBJECT, $type );
+			if ( ! $post || '' !== (string) get_post_meta( $post->ID, '_murtadd_ce_slug', true ) ) {
+				continue;
+			}
+			update_post_meta( $post->ID, '_murtadd_ce_slug', sanitize_title( $ce_slug ) );
+			++$filled;
+		}
+	}
+
+	update_option( 'murtadd_ce_slug_backfill', $hash );
+	return $filled;
+}
+add_action( 'admin_init', 'murtadd_backfill_ce_slugs' );

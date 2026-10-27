@@ -2,59 +2,133 @@
  * The login screen (inc/login.php). Scoped to body.murtadd-login, so nothing
  * applies when the Login page switch is off. Colours and fonts come from
  * tokens.css, loaded first; the accents follow the Colours tab, and the mark
- * arrives as --murtadd-login-logo. Light only (docs/ssot.md, Exclusions).
+ * arrives as --murtadd-login-logo. Light only (docs/ssot.md, Exclusions):
+ * the screen declares color-scheme: light, so a dark device changes nothing.
+ *
+ * Layout: a green brand panel fixed to the left on wide screens, the form
+ * column beside it; on phones and tablets the panel is a rounded band above
+ * the card. Every screen wp-login.php serves shares it.
  */
 
 body.murtadd-login {
+	--murtadd-login-radius: 24px;
+	--murtadd-login-field-radius: 14px;
+	--murtadd-login-panel-w: clamp(320px, 40vw, 560px);
+	--murtadd-login-ring: 0 0 0 3px color-mix(in srgb, var(--murtadd-accent) 28%, transparent);
+	color-scheme: light;
 	min-height: 100vh;
+	margin: 0;
 	background: var(--murtadd-bg);
 	color: var(--murtadd-text);
 	font-family: var(--murtadd-font-sans);
 	font-size: 15px;
+	overflow-x: hidden;
 }
+
+body.murtadd-login *,
+body.murtadd-login *::before,
+body.murtadd-login *::after { box-sizing: border-box; }
+
+/* ---------- Brand panel ---------- */
+
+body.murtadd-login .murtadd-login-panel {
+	--murtadd-logo-ink: var(--murtadd-surface);
+	--murtadd-logo-size: 40px;
+	position: relative;
+	margin: 16px 16px 0;
+	padding: 28px 24px;
+	border-radius: var(--murtadd-login-radius);
+	background:
+		radial-gradient(120% 90% at 100% 0%, color-mix(in srgb, var(--murtadd-accent-secondary) 38%, transparent), transparent 60%),
+		radial-gradient(90% 70% at 0% 100%, color-mix(in srgb, var(--murtadd-text) 30%, transparent), transparent 70%),
+		var(--murtadd-accent);
+	color: var(--murtadd-surface);
+	overflow: hidden;
+	text-align: center;
+}
+
+body.murtadd-login .murtadd-login-panel::after {
+	content: "";
+	position: absolute;
+	right: -60px;
+	bottom: -60px;
+	width: 200px;
+	height: 200px;
+	border-radius: 50%;
+	border: 2px solid color-mix(in srgb, var(--murtadd-surface) 18%, transparent);
+	pointer-events: none;
+}
+
+body.murtadd-login .murtadd-login-panel__inner {
+	position: relative;
+	z-index: 1;
+	max-width: 420px;
+	margin: 0 auto;
+}
+
+body.murtadd-login .murtadd-login-panel__line {
+	margin: 10px 0 0;
+	font-family: var(--murtadd-font-serif);
+	font-size: 16px;
+	line-height: 1.5;
+	color: color-mix(in srgb, var(--murtadd-surface) 88%, transparent);
+	overflow-wrap: anywhere;
+}
+
+/* ---------- Form column ---------- */
 
 body.murtadd-login #login {
-	width: min(380px, calc(100% - 32px));
-	padding: 7vh 0 32px;
+	width: min(400px, calc(100% - 32px));
+	margin: 0 auto;
+	padding: 28px 0 32px;
 }
 
-/* The mark, with the site name set beneath it. */
+/* The mark, with the site name set beneath it; links home. */
 body.murtadd-login h1 a {
 	width: auto;
 	height: auto;
-	margin: 0 auto 26px;
-	padding-top: 76px;
+	margin: 0 auto 22px;
+	padding-top: 72px;
 	background-image: var(--murtadd-login-logo);
 	background-position: top center;
-	background-size: 64px 64px;
+	background-size: 60px 60px;
 	background-repeat: no-repeat;
 	text-indent: 0;
 	overflow: visible;
 	font-family: var(--murtadd-font-sans);
-	font-size: 22px;
+	font-size: 21px;
 	font-weight: 700;
 	line-height: 1.2;
 	letter-spacing: -0.01em;
-	color: var(--murtadd-accent);
+	color: var(--murtadd-text);
 	text-decoration: none;
+	border-radius: 16px;
+	overflow-wrap: anywhere;
 }
 
+body.murtadd-login h1 a:hover { color: var(--murtadd-accent); }
+
 body.murtadd-login h1 a:focus-visible {
-	outline: 2px solid var(--murtadd-accent);
+	outline: 3px solid var(--murtadd-accent);
 	outline-offset: 6px;
 	box-shadow: none;
 }
 
-/* The form card: white on ivory, the accent on its upper edge. */
+/* The form card. Flex so the privacy note always ends the card. */
 body.murtadd-login form {
+	display: flex;
+	flex-direction: column;
 	margin-top: 0;
-	padding: 28px 28px 24px;
+	padding: 28px 26px 24px;
 	background: var(--murtadd-surface);
 	border: 1px solid var(--murtadd-border);
-	border-top: 3px solid var(--murtadd-accent);
-	border-radius: 12px;
-	box-shadow: none;
+	border-radius: var(--murtadd-login-radius);
+	box-shadow: 0 1px 2px color-mix(in srgb, var(--murtadd-text) 6%, transparent), 0 24px 48px -28px color-mix(in srgb, var(--murtadd-accent) 45%, transparent);
+	overflow: visible;
 }
+
+body.murtadd-login form > * { order: 0; }
+body.murtadd-login form .murtadd-login-privacy { order: 99; }
 
 body.murtadd-login label {
 	font-size: 14px;
@@ -65,83 +139,280 @@ body.murtadd-login label {
 body.murtadd-login input[type="text"],
 body.murtadd-login input[type="password"],
 body.murtadd-login input[type="email"] {
-	padding: 8px 12px;
+	min-height: 48px;
+	margin: 6px 0 16px;
+	padding: 10px 16px;
 	font-family: var(--murtadd-font-sans);
 	font-size: 16px;
+	color: var(--murtadd-text);
 	background: var(--murtadd-bg);
 	border: 1px solid var(--murtadd-border);
-	border-radius: 8px;
+	border-radius: var(--murtadd-login-field-radius);
 	box-shadow: none;
+	transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
 }
 
 body.murtadd-login input[type="text"]:focus,
 body.murtadd-login input[type="password"]:focus,
-body.murtadd-login input[type="email"]:focus,
-body.murtadd-login input[type="checkbox"]:focus {
+body.murtadd-login input[type="email"]:focus {
+	background: var(--murtadd-surface);
 	border-color: var(--murtadd-accent);
-	box-shadow: 0 0 0 1px var(--murtadd-accent);
-	outline: 0;
+	box-shadow: var(--murtadd-login-ring);
+	outline: 2px solid transparent;
 }
 
-body.murtadd-login .button.wp-hide-pw .dashicons { color: var(--murtadd-text-muted); }
-body.murtadd-login .button.wp-hide-pw:focus { border-color: var(--murtadd-accent); box-shadow: 0 0 0 1px var(--murtadd-accent); }
+/* The password field and its show/hide pill. */
+body.murtadd-login .wp-pwd { position: relative; }
+body.murtadd-login .wp-pwd input[type="password"],
+body.murtadd-login .wp-pwd input[type="text"] { padding-right: 52px; }
 
-body.murtadd-login .button-primary {
+body.murtadd-login .button.wp-hide-pw {
+	top: 10px;
+	right: 6px;
+	width: 40px;
+	height: 40px;
 	min-height: 40px;
-	padding: 0 20px;
-	background: var(--murtadd-accent);
-	border: 1px solid var(--murtadd-accent);
-	border-radius: 8px;
+	border-radius: 999px;
+	background: transparent;
+	border: 1px solid transparent;
+	color: var(--murtadd-text-muted);
+}
+
+body.murtadd-login .button.wp-hide-pw .dashicons { top: 0; color: var(--murtadd-text-muted); }
+body.murtadd-login .button.wp-hide-pw:hover { background: var(--murtadd-accent-tint); }
+body.murtadd-login .button.wp-hide-pw:focus {
+	border-color: var(--murtadd-accent);
+	box-shadow: var(--murtadd-login-ring);
+	outline: 2px solid transparent;
+}
+
+body.murtadd-login input[type="checkbox"] {
+	width: 18px;
+	height: 18px;
+	border: 1px solid var(--murtadd-border);
+	border-radius: 6px;
+	box-shadow: none;
+	accent-color: var(--murtadd-accent);
+}
+
+body.murtadd-login input[type="checkbox"]:focus {
+	border-color: var(--murtadd-accent);
+	box-shadow: var(--murtadd-login-ring);
+	outline: 2px solid transparent;
+}
+
+body.murtadd-login .forgetmenot {
+	display: flex;
+	align-items: center;
+	float: none;
+	margin: 0 0 18px;
+}
+
+body.murtadd-login .forgetmenot label { font-weight: 500; }
+
+body.murtadd-login p.submit,
+body.murtadd-login .reset-pass-submit {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	margin: 0;
+	padding: 0;
+}
+
+/* Pill buttons. */
+body.murtadd-login .button-primary,
+body.murtadd-login .button-secondary,
+body.murtadd-login .reset-pass-submit .button {
+	float: none;
+	flex: 1 1 auto;
+	min-height: 48px;
+	padding: 0 24px;
+	border-radius: 999px;
+	font-size: 15px;
 	font-weight: 600;
+	line-height: 46px;
 	text-shadow: none;
 	box-shadow: none;
+	transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+
+body.murtadd-login .button-primary {
+	width: 100%;
+	color: var(--murtadd-surface);
+	background: var(--murtadd-accent);
+	border: 1px solid var(--murtadd-accent);
 }
 
 body.murtadd-login .button-primary:hover,
 body.murtadd-login .button-primary:focus {
+	color: var(--murtadd-surface);
 	background: var(--murtadd-text);
 	border-color: var(--murtadd-text);
 }
 
-body.murtadd-login .button-primary:focus-visible {
-	outline: 2px solid var(--murtadd-accent);
-	outline-offset: 2px;
+body.murtadd-login .button-primary:active { transform: translateY(1px); }
+
+body.murtadd-login .button-secondary,
+body.murtadd-login .reset-pass-submit .button:not(.button-primary) {
+	color: var(--murtadd-accent);
+	background: var(--murtadd-accent-tint);
+	border: 1px solid transparent;
+}
+
+body.murtadd-login .button-primary:focus-visible,
+body.murtadd-login .button-secondary:focus-visible,
+body.murtadd-login .reset-pass-submit .button:focus-visible {
+	outline: 3px solid var(--murtadd-accent);
+	outline-offset: 3px;
 	box-shadow: none;
 }
 
-/* Notices: the owner's note, core's messages and errors, in one quiet form. */
+/* Password strength, on the reset screen. */
+body.murtadd-login #pass-strength-result {
+	margin: 0 0 16px;
+	padding: 8px 14px;
+	border-radius: 999px;
+	font-weight: 600;
+	text-align: center;
+}
+
+body.murtadd-login .indicator-hint,
+body.murtadd-login .description,
+body.murtadd-login #reg_passmail {
+	color: var(--murtadd-text-muted);
+	font-size: 13.5px;
+	line-height: 1.5;
+}
+
+/* ---------- Notices: note, info, success, error ---------- */
+
 body.murtadd-login .message,
 body.murtadd-login .notice,
+body.murtadd-login .success,
 body.murtadd-login #login_error {
+	position: relative;
 	margin: 0 0 16px;
-	padding: 12px 16px;
+	padding: 14px 18px 14px 36px;
 	background: var(--murtadd-surface);
 	border: 1px solid var(--murtadd-border);
-	border-left: 4px solid var(--murtadd-accent);
-	border-radius: 10px;
+	border-left: 1px solid var(--murtadd-border);
+	border-radius: 18px;
 	box-shadow: none;
 	font-size: 14px;
 	line-height: 1.55;
+	overflow-wrap: anywhere;
+}
+
+body.murtadd-login .message::before,
+body.murtadd-login .notice::before,
+body.murtadd-login .success::before,
+body.murtadd-login #login_error::before {
+	content: "";
+	position: absolute;
+	top: 21px;
+	left: 18px;
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: var(--murtadd-accent);
+}
+
+body.murtadd-login .notice-success,
+body.murtadd-login .success {
+	background: var(--murtadd-accent-tint);
+	border-color: color-mix(in srgb, var(--murtadd-accent) 30%, transparent);
 }
 
 body.murtadd-login #login_error,
-body.murtadd-login .notice-error { border-left-color: var(--murtadd-accent-strike); }
+body.murtadd-login .notice-error {
+	background: color-mix(in srgb, var(--murtadd-accent-strike) 7%, var(--murtadd-surface));
+	border-color: color-mix(in srgb, var(--murtadd-accent-strike) 40%, transparent);
+	color: var(--murtadd-text);
+}
+
+body.murtadd-login #login_error::before,
+body.murtadd-login .notice-error::before { background: var(--murtadd-accent-strike); }
+
+body.murtadd-login #login_error a,
+body.murtadd-login .message a,
+body.murtadd-login .notice a { color: var(--murtadd-accent); }
 
 body.murtadd-login .murtadd-login-message {
 	font-family: var(--murtadd-font-serif);
 	font-size: 15px;
+	padding-left: 18px;
 	background: var(--murtadd-accent-tint);
+	border-color: transparent;
 }
 
-/* The links under the form. */
+body.murtadd-login .murtadd-login-message::before { display: none; }
+
+/* A field core flags as wrong. */
+body.murtadd-login form.shake input[type="text"],
+body.murtadd-login form.shake input[type="password"],
+body.murtadd-login form.shake input[type="email"],
+body.murtadd-login input[aria-invalid="true"] {
+	border-color: var(--murtadd-accent-strike);
+}
+
+/* The privacy note, last thing in each card. */
+body.murtadd-login .murtadd-login-privacy {
+	margin: 18px 0 0;
+	padding: 12px 16px;
+	border-radius: 14px;
+	background: var(--murtadd-well);
+	color: var(--murtadd-text-muted);
+	font-size: 12.5px;
+	line-height: 1.5;
+	text-align: center;
+}
+
+/* ---------- Links under the card ---------- */
+
 body.murtadd-login #nav,
 body.murtadd-login #backtoblog {
-	padding: 0 4px;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: center;
+	gap: 8px;
+	margin: 18px 0 0;
+	padding: 0;
 	font-size: 13.5px;
+	text-align: center;
+	color: var(--murtadd-border);
 }
 
 body.murtadd-login #nav a,
-body.murtadd-login #backtoblog a,
+body.murtadd-login #backtoblog a {
+	display: inline-block;
+	padding: 7px 14px;
+	border-radius: 999px;
+	color: var(--murtadd-text-muted);
+	text-decoration: none;
+	transition: background 0.15s ease, color 0.15s ease;
+}
+
+body.murtadd-login #nav a:hover,
+body.murtadd-login #backtoblog a:hover {
+	color: var(--murtadd-accent);
+	background: var(--murtadd-accent-tint);
+}
+
+body.murtadd-login #nav a:focus-visible,
+body.murtadd-login #backtoblog a:focus-visible,
+body.murtadd-login .privacy-policy-page-link a:focus-visible {
+	outline: 3px solid var(--murtadd-accent);
+	outline-offset: 2px;
+	box-shadow: none;
+}
+
+body.murtadd-login .privacy-policy-page-link {
+	margin: 16px 0 0;
+	text-align: center;
+	font-size: 13px;
+}
+
 body.murtadd-login .privacy-policy-page-link a {
 	color: var(--murtadd-text-muted);
 	text-decoration: underline;
@@ -149,14 +420,107 @@ body.murtadd-login .privacy-policy-page-link a {
 	text-underline-offset: 0.18em;
 }
 
-body.murtadd-login #nav a:hover,
-body.murtadd-login #backtoblog a:hover,
-body.murtadd-login .privacy-policy-page-link a:hover { color: var(--murtadd-accent); }
-
 body.murtadd-login .language-switcher {
-	padding-bottom: 24px;
+	padding: 0 16px 24px;
+}
+
+body.murtadd-login .language-switcher form {
+	width: auto;
+	margin: 0 auto;
+	flex-direction: row;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	padding: 10px 14px;
+	border-radius: 999px;
+}
+
+body.murtadd-login .language-switcher select {
+	min-height: 36px;
+	border-radius: 999px;
+	border-color: var(--murtadd-border);
+}
+
+body.murtadd-login .language-switcher .button {
+	min-height: 36px;
+	padding: 0 16px;
+	line-height: 34px;
+	border-radius: 999px;
+	flex: 0 0 auto;
+	width: auto;
+	color: var(--murtadd-accent);
+	border-color: var(--murtadd-accent);
+	background: var(--murtadd-surface);
+}
+
+body.murtadd-login .language-switcher .button:focus {
+	box-shadow: var(--murtadd-login-ring);
+	outline: 2px solid transparent;
+}
+
+/* ---------- Wide screens: the panel beside the form ---------- */
+
+@media (min-width: 960px) {
+	body.murtadd-login .murtadd-login-panel {
+		--murtadd-logo-size: 64px;
+		position: fixed;
+		top: 16px;
+		bottom: 16px;
+		left: 16px;
+		width: calc(var(--murtadd-login-panel-w) - 16px);
+		margin: 0;
+		padding: 48px;
+		display: flex;
+		align-items: flex-end;
+		text-align: left;
+		border-radius: 32px;
+	}
+
+	body.murtadd-login .murtadd-login-panel::after {
+		right: -120px;
+		bottom: auto;
+		top: -120px;
+		width: 420px;
+		height: 420px;
+		border-width: 3px;
+	}
+
+	body.murtadd-login .murtadd-login-panel__inner { margin: 0; }
+
+	body.murtadd-login .murtadd-login-panel__line { font-size: 20px; }
+
+	body.murtadd-login #login,
+	body.murtadd-login .language-switcher {
+		margin-left: calc(var(--murtadd-login-panel-w) + max(0px, (100vw - var(--murtadd-login-panel-w) - 400px) / 2));
+		margin-right: 0;
+	}
+
+	body.murtadd-login #login { padding-top: 10vh; }
+
+	body.murtadd-login .language-switcher {
+		width: 400px;
+	}
+}
+
+/* ---------- Small phones ---------- */
+
+@media (max-width: 380px) {
+	body.murtadd-login form { padding: 22px 18px 18px; }
+	body.murtadd-login .murtadd-login-panel { padding: 22px 18px; }
+}
+
+/* The interim (session expired) login in its modal: no panel, compact. */
+body.murtadd-login.interim-login .murtadd-login-panel { display: none; }
+body.murtadd-login.interim-login #login { margin: 0 auto; padding-top: 20px; }
+
+@media (forced-colors: active) {
+	body.murtadd-login .button-primary,
+	body.murtadd-login .button-secondary { border: 2px solid ButtonText; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-	body.murtadd-login * { transition: none !important; }
+	body.murtadd-login *,
+	body.murtadd-login *::before,
+	body.murtadd-login *::after { transition: none !important; animation: none !important; }
 }

@@ -37,6 +37,8 @@ function murtadd_security_defaults() {
 		'login_slug'    => '',
 		'login_design'  => 1,
 		'login_message' => '',
+		'login_tagline' => '',
+		'login_privacy' => 1,
 	);
 }
 

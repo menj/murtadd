@@ -8,9 +8,10 @@
  * finishing the first should not have to go looking, and a reader who arrives
  * here from a search should be told the other treatment exists.
  *
- * Renders only when the entry names a counterpart AND the base URL is set in
- * Theme Options → Linked sites. Either missing means nothing renders, which is
- * the correct behaviour for a site whose owner has cleared the link.
+ * Renders only when the entry names a counterpart, the base URL is set in
+ * Theme Options → Cross-links, and "Show the counterpart link" is ticked there
+ * (on by default). Any of those missing means nothing renders, which is the
+ * correct behaviour for a site whose owner has cleared or switched off the link.
  *
  * @package Murtadd
  */
@@ -20,7 +21,9 @@ defined( 'ABSPATH' ) || exit;
 $murtadd_ce_slug = get_post_meta( get_the_ID(), '_murtadd_ce_slug', true );
 $murtadd_ce_base = murtadd_option( 'murtadd_cross_links', 'ce_base_url', '' );
 
-if ( ! $murtadd_ce_slug || ! $murtadd_ce_base ) {
+$murtadd_ce_on   = '0' !== (string) murtadd_option( 'murtadd_cross_links', 'show_counterpart', '1' );
+
+if ( ! $murtadd_ce_on || ! $murtadd_ce_slug || ! $murtadd_ce_base ) {
 	return;
 }
 

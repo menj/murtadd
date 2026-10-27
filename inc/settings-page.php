@@ -37,6 +37,7 @@ function murtadd_sanitize_cross_links( $input ) {
 	return array(
 		'ce_base_url'      => esc_url_raw( $input['ce_base_url'] ?? '' ),
 		'bismika_base_url' => esc_url_raw( $input['bismika_base_url'] ?? '' ),
+		'show_counterpart' => empty( $input['show_counterpart'] ) ? '0' : '1',
 	);
 }
 
@@ -83,6 +84,10 @@ function murtadd_sanitize_security( $input ) {
 	if ( preg_match( '/^.{0,500}/su', $message, $murtadd_cut ) ) {
 		$message = $murtadd_cut[0];
 	}
+	$tagline = sanitize_text_field( (string) ( $input['login_tagline'] ?? '' ) );
+	if ( preg_match( '/^.{0,160}/su', $tagline, $murtadd_cut ) ) {
+		$tagline = $murtadd_cut[0];
+	}
 	return array(
 		'hide_authors'  => empty( $input['hide_authors'] ) ? 0 : 1,
 		'xmlrpc_off'    => empty( $input['xmlrpc_off'] ) ? 0 : 1,
@@ -90,6 +95,8 @@ function murtadd_sanitize_security( $input ) {
 		'login_slug'    => $slug,
 		'login_design'  => empty( $input['login_design'] ) ? 0 : 1,
 		'login_message' => $message,
+		'login_tagline' => $tagline,
+		'login_privacy' => empty( $input['login_privacy'] ) ? 0 : 1,
 	);
 }
 
@@ -135,6 +142,7 @@ function murtadd_sanitize_content_display( $input ) {
 		'show_scripture'           => empty( $input['show_scripture'] ) ? 0 : 1,
 		'scripture_text'           => sanitize_text_field( $input['scripture_text'] ?? '' ),
 		'scripture_ref'            => sanitize_text_field( $input['scripture_ref'] ?? '' ),
+		'contact_recipient'        => murtadd_contact_clean_recipient( $input['contact_recipient'] ?? '' ),
 	);
 }
 
@@ -323,7 +331,7 @@ function murtadd_render_settings_page() {
 			</form>
 
 			<p class="description murtadd-admin-note">
-				<?php esc_html_e( 'New pages are published immediately with their copy written. Before announcing the site, add a contact method to the Contact page and your host and plugin details to the Privacy page; each carries a note in the editor saying what is needed. Starter content is published as written and can be edited freely: nothing here ever overwrites a post that already exists, so editing a doubt and running this again will not undo the edit.', 'murtadd' ); ?>
+				<?php esc_html_e( 'New pages are published immediately with their copy written. Before announcing the site, send a test message through the form on the Contact page (it goes to the address on the Content tab, or the administration email), and check that the Privacy page still describes the site if you add plugins that collect data. Starter content is published as written and can be edited freely: nothing here ever overwrites a post that already exists, so editing a doubt and running this again will not undo the edit.', 'murtadd' ); ?>
 			</p>
 
 		<?php elseif ( 'taxonomies' === $active ) : ?>
@@ -418,6 +426,13 @@ function murtadd_render_settings_page() {
 							</td>
 						</tr>
 						<tr>
+							<th scope="row"><?php esc_html_e( 'Counterpart link', 'murtadd' ); ?></th>
+							<td>
+								<label><input type="checkbox" name="murtadd_cross_links[show_counterpart]" value="1" <?php checked( '0' !== (string) ( $o['show_counterpart'] ?? '1' ) ); ?>> <?php esc_html_e( 'Show the counterpart link', 'murtadd' ); ?></label>
+								<p class="description"><?php esc_html_e( 'On doubts and rebuttals that name a Compelling Evidence article, an aside links to it at the evidential case base URL above (/articles/slug/). On by default.', 'murtadd' ); ?></p>
+							</td>
+						</tr>
+						<tr>
 							<th scope="row"><label for="murtadd_bismika"><?php esc_html_e( 'Polemics base URL', 'murtadd' ); ?></label></th>
 							<td>
 								<input type="url" id="murtadd_bismika" name="murtadd_cross_links[bismika_base_url]" value="<?php echo esc_url( $o['bismika_base_url'] ?? 'https://bismikaallahuma.org' ); ?>" class="regular-text">
@@ -495,6 +510,13 @@ function murtadd_render_settings_page() {
 							<td>
 								<label><input type="checkbox" name="murtadd_content_display[glossary_terms]" value="1" <?php checked( ! isset( $o['glossary_terms'] ) || $o['glossary_terms'] ); ?>> <?php esc_html_e( 'Define Arabic and Malay terms where they first appear', 'murtadd' ); ?></label>
 								<p class="description"><?php esc_html_e( 'The first mention of a term on a page gets a short definition and its source, shown on hover, focus or tap. Never on Emotional or Identity doubts.', 'murtadd' ); ?></p>
+							</td>
+						</tr>
+						<tr>
+							<th scope="row"><label for="murtadd_contact_recipient"><?php esc_html_e( 'Contact form recipient', 'murtadd' ); ?></label></th>
+							<td>
+								<input type="email" id="murtadd_contact_recipient" name="murtadd_content_display[contact_recipient]" value="<?php echo esc_attr( $o['contact_recipient'] ?? '' ); ?>" class="regular-text" placeholder="<?php echo esc_attr( get_option( 'admin_email' ) ); ?>">
+								<p class="description"><?php esc_html_e( 'Where messages from the contact form ([murtadd_contact]) are sent. Leave empty to use the administration email address under Settings, General. The address is never shown on the site.', 'murtadd' ); ?></p>
 							</td>
 						</tr>
 						<tr>
@@ -600,10 +622,14 @@ function murtadd_render_security_tab() {
 			<th scope="row"><?php esc_html_e( 'Login page', 'murtadd' ); ?></th>
 			<td>
 				<label><input type="checkbox" name="murtadd_security[login_design]" value="1" <?php checked( (bool) murtadd_security( 'login_design' ) ); ?>> <?php esc_html_e( 'Dress the login screen in the site\'s colours and type', 'murtadd' ); ?></label>
-				<p class="description"><?php esc_html_e( 'The mark is the custom logo, then the Site Icon, then the theme\'s own mark, and links to the site. The accents follow the Colours tab. Works at the private login address too.', 'murtadd' ); ?></p>
+				<p class="description"><?php esc_html_e( 'A green brand panel beside a rounded form card, on every login screen (log in, lost password, reset, register). The mark is the custom logo, then the Site Icon, then the theme\'s own mark, and links to the site. The accents follow the Colours tab. Works at the private login address too.', 'murtadd' ); ?></p>
 				<p><label for="murtadd_login_message"><?php esc_html_e( 'Note above the form', 'murtadd' ); ?></label></p>
 				<textarea id="murtadd_login_message" name="murtadd_security[login_message]" rows="3" class="large-text"><?php echo esc_textarea( (string) murtadd_security( 'login_message' ) ); ?></textarea>
 				<p class="description"><?php esc_html_e( 'Plain text, up to 500 characters, shown on the log-in screen only. Leave empty for none.', 'murtadd' ); ?></p>
+				<p><label for="murtadd_login_tagline"><?php esc_html_e( 'Line on the brand panel', 'murtadd' ); ?></label></p>
+				<input type="text" id="murtadd_login_tagline" name="murtadd_security[login_tagline]" value="<?php echo esc_attr( (string) murtadd_security( 'login_tagline' ) ); ?>" class="large-text" maxlength="160" placeholder="<?php echo esc_attr( (string) get_bloginfo( 'description' ) ); ?>">
+				<p class="description"><?php esc_html_e( 'Plain text, up to 160 characters, beside the form on wide screens and above it on phones. Leave empty to use the site tagline.', 'murtadd' ); ?></p>
+				<p><label><input type="checkbox" name="murtadd_security[login_privacy]" value="1" <?php checked( (bool) murtadd_security( 'login_privacy' ) ); ?>> <?php esc_html_e( 'Show a privacy note under the log-in, lost-password and registration forms', 'murtadd' ); ?></label></p>
 			</td>
 		</tr>
 	</table>

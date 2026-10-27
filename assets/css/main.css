@@ -550,3 +550,18 @@ h1, h2, h3 { font-family: var(--murtadd-font-serif); line-height: 1.25; }
 .murtadd-ctx-link,
 .murtadd-ctx-link--sister { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.18em; }
 .murtadd-ctx-link:hover { text-decoration-thickness: 2px; }
+
+/* laʿnat Allāh after the name of Paul of Tarsus ([murtadd_lanah]):
+ * calligraphy drawn as a mask in the strike red, the words kept inside for
+ * screen readers and copying. Where the mask cannot draw, the words show.
+ * Light only, like the rest of the site. */
+.murtadd-lanah__text { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0; }
+@supports ((mask-image: url("x.svg")) or (-webkit-mask-image: url("x.svg"))) {
+	.murtadd-lanah { display: inline-block; position: relative; height: 1.05em; aspect-ratio: 3672 / 1075; margin-inline: 0.1em 0.05em; vertical-align: -0.16em; background-color: var(--murtadd-accent-strike); -webkit-mask: url("../images/lanat-allah.svg") center / contain no-repeat; mask: url("../images/lanat-allah.svg") center / contain no-repeat; }
+}
+@supports not ((mask-image: url("x.svg")) or (-webkit-mask-image: url("x.svg"))) {
+	.murtadd-lanah { color: var(--murtadd-accent-strike); }
+	.murtadd-lanah__text { position: static; width: auto; height: auto; margin: 0; overflow: visible; clip: auto; clip-path: none; white-space: normal; }
+}
+@media (forced-colors: active) { .murtadd-lanah { forced-color-adjust: none; background-color: CanvasText; } }
+@media print { .murtadd-lanah { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }

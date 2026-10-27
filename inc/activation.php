@@ -18,8 +18,9 @@
  * an editor has touched fails the comparison and is left exactly as it is.
  *
  * Pages are created with their copy written and are immediately public. The
- * Contact and Privacy pages carry notes for the owner, in HTML comments that
- * do not render, naming the facts only the owner can supply.
+ * Contact page carries the theme's contact form (inc/contact.php), and the
+ * Privacy page describes what the theme does, so neither needs an operator's
+ * name or address to be published.
  *
  * @package murtadd
  */
@@ -370,10 +371,18 @@ function murtadd_activation_notice() {
 		);
 	}
 
+	if ( ! empty( $report['content']['letters'] ) ) {
+		$lines[] = sprintf(
+			/* translators: %d: number of open letters */
+			_n( '%d open letter from the site added.', '%d open letters from the site added.', (int) $report['content']['letters'], 'murtadd' ),
+			(int) $report['content']['letters']
+		);
+	}
+
 	if ( ! $lines ) {
 		$lines[] = __( 'Everything the theme needs was already in place. Nothing was changed.', 'murtadd' );
 	} else {
-		$lines[] = __( 'Before announcing the site, add a contact method to the Contact page and your host and plugin details to the Privacy page.', 'murtadd' );
+		$lines[] = __( 'Before announcing the site, send a test message through the form on the Contact page, and check the Privacy page still describes the site if you add plugins that collect data.', 'murtadd' );
 	}
 
 	printf(
@@ -437,7 +446,7 @@ function murtadd_legacy_placeholder_strings() {
  * placeholder can match, so no page an editor wrote is ever mistaken for it.
  * Nothing here is ever written to the database.
  *
- * @return array{pages:array<string,string[]>,letters:array<string,string>}
+ * @return array{pages:array<string,string[]>,written:array<string,string[]>,letters:array<string,string>}
  */
 function murtadd_legacy_placeholder_copy() {
 	$sets = array(
@@ -466,6 +475,15 @@ function murtadd_legacy_placeholder_copy() {
 			'contact' => $page,
 			'privacy' => $page,
 		),
+		// md5 of the copy 1.41.0 to 1.43.0 seeded on Contact and Privacy, after
+		// murtadd_normalise_markup(). That copy asked the owner, in an HTML
+		// comment, for a contact method and a host; 1.43.0 supplies the form
+		// and writes the Privacy page from what the theme does, so a page still
+		// holding it word for word, markup and note included, is replaced.
+		'written' => array(
+			'contact' => array( '66b07c5e86f69bc62ed0348001741604' ),
+			'privacy' => array( '0790da763dbfce14c053fd50c92f9a2b' ),
+		),
 		// md5 of each lorem-ipsum letter body after murtadd_normalise_copy().
 		'letters' => array(
 			'placeholder-letter-one' => '94db0922d2af59c87c5db80c48682f13',
@@ -490,6 +508,35 @@ function murtadd_normalise_copy( $html ) {
 }
 
 /**
+ * Stored copy reduced for an exact comparison that keeps the markup.
+ *
+ * Block-editor comments go and whitespace between and inside tags is
+ * collapsed, so a page converted to blocks or re-saved unchanged still
+ * matches; every element, attribute, link and HTML comment stays, so any
+ * edit at all, the removal of the owner's note included, breaks the match.
+ *
+ * @param string $html Stored content.
+ * @return string
+ */
+function murtadd_normalise_markup( $html ) {
+	$html = (string) preg_replace( '#<!--\s*/?wp:[^>]*?-->#s', '', (string) $html );
+	$html = (string) preg_replace( '/>\s+</u', '><', $html );
+	return trim( (string) preg_replace( '/\s+/u', ' ', $html ) );
+}
+
+/**
+ * Which version of the retirement has run. 1: the 1.41.0 placeholders.
+ * 2: the 1.43.0 pass that also replaces the earlier written Contact and
+ * Privacy copy. A site at 1 runs the whole pass again, which changes nothing
+ * it already changed.
+ *
+ * @return int
+ */
+function murtadd_placeholder_retire_version() {
+	return 2;
+}
+
+/**
  * Whether stored copy carries markup the theme never seeded.
  *
  * The seeded copy is plain paragraphs. A link, an image or any other element
@@ -505,7 +552,8 @@ function murtadd_copy_has_added_markup( $html ) {
 }
 
 /**
- * Retire the placeholder copy on sites set up before 1.41.0.
+ * Retire the placeholder copy on sites set up before 1.41.0, and the
+ * owner-note copy of Contact and Privacy on sites set up before 1.43.0.
  *
  * Pages still holding the exact placeholder text get their written copy, and
  * the two lorem-ipsum letters go back to draft. A page or letter that differs
@@ -520,7 +568,7 @@ function murtadd_retire_placeholder_copy() {
 		'pages'   => array(),
 		'letters' => array(),
 	);
-	if ( get_option( 'murtadd_placeholder_copy_retired' ) ) {
+	if ( (int) get_option( 'murtadd_placeholder_copy_retired' ) >= murtadd_placeholder_retire_version() ) {
 		return $done;
 	}
 	$failed = false;
@@ -540,6 +588,30 @@ function murtadd_retire_placeholder_copy() {
 		}
 		$known = ! murtadd_copy_has_added_markup( $page->post_content ) && in_array( $current, array_map( 'murtadd_normalise_copy', $old ), true );
 		if ( ! $known ) {
+			continue; // Edited. Leave it alone.
+		}
+		$written = wp_update_post(
+			array(
+				'ID'           => $page->ID,
+				'post_content' => $bodies[ $slug ],
+			)
+		);
+		if ( ! $written || is_wp_error( $written ) ) {
+			$failed = true;
+			continue;
+		}
+		$done['pages'][] = $slug;
+	}
+
+	foreach ( $legacy['written'] as $slug => $hashes ) {
+		$page = get_page_by_path( $slug );
+		if ( ! $page || ! isset( $bodies[ $slug ] ) || '' === trim( $bodies[ $slug ] ) ) {
+			continue;
+		}
+		if ( in_array( $slug, $done['pages'], true ) || murtadd_normalise_markup( $bodies[ $slug ] ) === murtadd_normalise_markup( $page->post_content ) ) {
+			continue; // Replaced above, or already the current copy.
+		}
+		if ( ! in_array( md5( murtadd_normalise_markup( $page->post_content ) ), $hashes, true ) ) {
 			continue; // Edited. Leave it alone.
 		}
 		$written = wp_update_post(
@@ -579,7 +651,7 @@ function murtadd_retire_placeholder_copy() {
 	// Marked done only when every write landed; a failed one is retried on
 	// the next admin request, and the comparison keeps the retry harmless.
 	if ( ! $failed ) {
-		update_option( 'murtadd_placeholder_copy_retired', 1 );
+		update_option( 'murtadd_placeholder_copy_retired', murtadd_placeholder_retire_version() );
 	}
 	return $done;
 }

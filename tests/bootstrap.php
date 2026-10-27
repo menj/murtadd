@@ -152,6 +152,7 @@ function murtadd_test_reset_posts() {
 	$GLOBALS['murtadd_posts']   = array();
 	$GLOBALS['murtadd_options'] = array();
 	$GLOBALS['murtadd_next_id'] = 1;
+	$GLOBALS['murtadd_written_meta'] = array();
 }
 function get_page_by_path( $slug, $output = OBJECT, $type = 'page' ) {
 	return $GLOBALS['murtadd_posts'][ $type ][ $slug ] ?? null;
@@ -169,6 +170,7 @@ function is_wp_error( $x ) {
 	return false;
 }
 function update_post_meta( $id, $k, $v ) {
+	$GLOBALS['murtadd_written_meta'][ $id ][ $k ] = $v;
 	return true;
 }
 function wp_set_object_terms( $id, $terms, $tax ) {
@@ -376,7 +378,7 @@ function post_type_archive_title( $prefix = '', $display = true ) {
 	return $o ? $o->labels->name : '';
 }
 function get_post_meta( $post_id, $key = '', $single = false ) {
-	return $GLOBALS['murtadd_view']['meta'][ $post_id ][ $key ] ?? $GLOBALS['murtadd_test_meta'][ $post_id ][ $key ] ?? '';
+	return $GLOBALS['murtadd_view']['meta'][ $post_id ][ $key ] ?? $GLOBALS['murtadd_test_meta'][ $post_id ][ $key ] ?? $GLOBALS['murtadd_written_meta'][ $post_id ][ $key ] ?? '';
 }
 function get_the_date( $format = '' ) {
 	return '2026-01-01T00:00:00+00:00';
@@ -499,3 +501,41 @@ function wp_unslash( $value ) {
 }
 
 require_once __DIR__ . '/../inc/login.php';
+
+
+// ---- The contact form. ----
+if ( ! defined( 'HOUR_IN_SECONDS' ) ) {
+	define( 'HOUR_IN_SECONDS', 3600 );
+}
+$GLOBALS['murtadd_transients'] = array(); // name => value.
+$GLOBALS['murtadd_mail']       = array(); // Each wp_mail() call.
+$GLOBALS['murtadd_mail_fails'] = false;
+function get_transient( $name ) {
+	return $GLOBALS['murtadd_transients'][ $name ] ?? false;
+}
+function set_transient( $name, $value, $expiry = 0 ) {
+	$GLOBALS['murtadd_transients'][ $name ] = $value;
+	return true;
+}
+function wp_mail( $to, $subject, $message, $headers = '' ) {
+	$GLOBALS['murtadd_mail'][] = compact( 'to', 'subject', 'message', 'headers' );
+	return ! $GLOBALS['murtadd_mail_fails'];
+}
+function is_email( $email ) {
+	return false !== filter_var( (string) $email, FILTER_VALIDATE_EMAIL ) ? $email : false;
+}
+function sanitize_email( $email ) {
+	// As core: characters outside the allowed set go, so no line break survives.
+	return (string) preg_replace( '/[^a-z0-9+_.@-]/i', '', (string) $email );
+}
+function wp_verify_nonce( $nonce, $action = -1 ) {
+	return 'nonce-' . $action === $nonce ? 1 : false;
+}
+function wp_salt( $scheme = 'auth' ) {
+	return 'test-salt-' . $scheme;
+}
+function add_shortcode( $tag, $cb ) {
+	$GLOBALS['murtadd_hooks'][] = array( 'shortcode:' . $tag, $cb, 10 );
+}
+
+require_once __DIR__ . '/../inc/contact.php';

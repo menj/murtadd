@@ -381,6 +381,9 @@ function murtadd_letter_dateline() {
 	}
 
 	$parts = array();
+	if ( function_exists( 'murtadd_letter_kind' ) && 'open' === murtadd_letter_kind() ) {
+		$parts[] = esc_html__( 'Open letter', 'murtadd' );
+	}
 	if ( $outlet ) {
 		$parts[] = esc_html( $outlet );
 	}

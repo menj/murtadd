@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'MURTADD_VERSION', '1.42.1' );
+define( 'MURTADD_VERSION', '1.43.0' );
 
 /**
  * Asset suffix. Sources are served when SCRIPT_DEBUG is on, minified otherwise.
@@ -19,6 +19,7 @@ require_once get_stylesheet_directory() . '/inc/cpt-doubt.php';
 require_once get_stylesheet_directory() . '/inc/cpt-rebuttal.php';
 require_once get_stylesheet_directory() . '/inc/cpt-fatwa.php';
 require_once get_stylesheet_directory() . '/inc/cpt-letter.php';
+require_once get_stylesheet_directory() . '/inc/cpt-guide.php';
 require_once get_stylesheet_directory() . '/inc/taxonomy-topic.php';
 require_once get_stylesheet_directory() . '/inc/taxonomy-school.php';
 require_once get_stylesheet_directory() . '/inc/taxonomy-doubt-category.php';
@@ -37,6 +38,7 @@ require_once get_stylesheet_directory() . '/inc/activation.php';
 require_once get_stylesheet_directory() . '/inc/schema.php';
 require_once get_stylesheet_directory() . '/inc/rank-math.php';
 require_once get_stylesheet_directory() . '/inc/seed-content.php';
+require_once get_stylesheet_directory() . '/inc/seed-guides.php';
 require_once get_stylesheet_directory() . '/inc/search.php';
 require_once get_stylesheet_directory() . '/inc/meta-tags.php';
 require_once get_stylesheet_directory() . '/inc/feeds.php';
@@ -47,6 +49,8 @@ require_once get_stylesheet_directory() . '/inc/dashboard.php';
 require_once get_stylesheet_directory() . '/inc/relations.php';
 require_once get_stylesheet_directory() . '/inc/contextual-links.php';
 require_once get_stylesheet_directory() . '/inc/glossary.php';
+require_once get_stylesheet_directory() . '/inc/lanah.php';
+require_once get_stylesheet_directory() . '/inc/contact.php';
 require_once get_stylesheet_directory() . '/inc/quran-text.php';
 require_once get_stylesheet_directory() . '/inc/template-tags.php';
 
