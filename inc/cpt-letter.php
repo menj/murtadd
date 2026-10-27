@@ -3,9 +3,7 @@
  * CPT: Letter (murtadd_letter).
  *
  * Editorial correspondence — letters and opinion pieces published in outlets
- * elsewhere, archived here in their original form — and a few open letters
- * the site writes in its own voice (kind 'open'), each signed by the site and
- * addressed to a situation, never presented as from a reader.
+ * elsewhere, archived here in their original form.
  *
  * This is deliberately walled off from the triage architecture. Doubts,
  * Rebuttals, and Fatwa entries exist to meet a reader who arrived carrying a
@@ -77,16 +75,7 @@ function murtadd_letter_meta_box_render( $post ) {
 	$url      = get_post_meta( $post->ID, '_murtadd_letter_url', true );
 	$note     = get_post_meta( $post->ID, '_murtadd_letter_note', true );
 	$replying = get_post_meta( $post->ID, '_murtadd_letter_replying_to', true );
-	$kind     = murtadd_letter_kind( $post->ID );
 	?>
-	<p>
-		<label for="murtadd_letter_kind"><strong><?php esc_html_e( 'Kind', 'murtadd' ); ?></strong></label><br>
-		<select id="murtadd_letter_kind" name="murtadd_letter_kind">
-			<option value="" <?php selected( $kind, '' ); ?>><?php esc_html_e( 'Archived correspondence, published elsewhere', 'murtadd' ); ?></option>
-			<option value="open" <?php selected( $kind, 'open' ); ?>><?php esc_html_e( 'Open letter from this site, in its own voice', 'murtadd' ); ?></option>
-		</select>
-		<span class="description"><?php esc_html_e( 'Decides the frame printed above the letter. Never use either for a letter presented as from a reader.', 'murtadd' ); ?></span>
-	</p>
 	<p>
 		<label for="murtadd_letter_outlet"><strong><?php esc_html_e( 'Published in', 'murtadd' ); ?></strong></label><br>
 		<input type="text" class="widefat" id="murtadd_letter_outlet" name="murtadd_letter_outlet" value="<?php echo esc_attr( $outlet ); ?>" placeholder="<?php esc_attr_e( 'e.g. Malaysiakini', 'murtadd' ); ?>">
@@ -129,7 +118,6 @@ function murtadd_letter_save( $post_id ) {
 	}
 
 	$fields = array(
-		'_murtadd_letter_kind'        => 'murtadd_letter_clean_kind',
 		'_murtadd_letter_outlet'      => 'sanitize_text_field',
 		'_murtadd_letter_date'        => 'sanitize_text_field',
 		'_murtadd_letter_replying_to' => 'sanitize_text_field',
@@ -145,28 +133,6 @@ function murtadd_letter_save( $post_id ) {
 	}
 }
 add_action( 'save_post_murtadd_letter', 'murtadd_letter_save' );
-
-/**
- * A letter's kind: 'open' for an open letter the site wrote in its own voice,
- * '' for archived correspondence published elsewhere (the default).
- *
- * @param int $post_id Post ID.
- * @return string
- */
-function murtadd_letter_kind( $post_id = 0 ) {
-	$post_id = $post_id ? $post_id : get_the_ID();
-	return murtadd_letter_clean_kind( get_post_meta( $post_id, '_murtadd_letter_kind', true ) );
-}
-
-/**
- * Sanitise a letter kind.
- *
- * @param mixed $value Submitted or stored value.
- * @return string
- */
-function murtadd_letter_clean_kind( $value ) {
-	return 'open' === $value ? 'open' : '';
-}
 
 /**
  * Keep Letters out of the reader-in-distress path.

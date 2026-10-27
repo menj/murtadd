@@ -1,5 +1,18 @@
 # Changelog — Murtadd
 
+## 1.43.1 (2026-10-27)
+
+### Removed (open letters)
+- The open letters 1.43.0 added are gone. The owner did not ask for them. Removed: `inc/data/seed/letters.json`, `murtadd_seed_letters()`, `murtadd_seed_letter_posts()`, the `letters` count in the seeder's report and the activation notice, the letter kind (`_murtadd_letter_kind`, the Kind meta box, the open-letter frame on the single view, "Open letter" in the dateline), and the open-letter tests in `tests/SeedTest.php`. Letters are no longer seeded, as before 1.43.0. The Letters post type, its templates and `letter.css` are unchanged.
+- Copy: the About page and the Letters archive no longer mention open letters. The About paragraph on letters is back to its 1.42 wording. `docs/ssot.md` matches.
+
+### Existing sites
+- `murtadd_retire_open_letters()` (on `admin_init`) moves each of the four seeded open letters back to draft, only when the seeder recorded its slug in `murtadd_seeded_slugs`, it is still published, and its body still matches what 1.43.0 seeded (an md5 of the stored markup after `murtadd_normalise_markup()`, with each link's scheme and host dropped). A letter edited in any way stays as it is. Nothing is deleted. The flag `murtadd_open_letters_retired` is set once every write has landed; a failed write is retried on the next admin request.
+
+### Tests
+- `tests/PageCopyTest.php` (+6): the recorded hashes match the 1.43.0 bodies at any host (`tests/fixtures/open-letters-1.43.json`); only unedited letters are drafted, and an edited body or link is kept; a slug the seeder did not record is skipped; the pass is idempotent; a failed write is retried; the hook is registered.
+- `tests/SeedTest.php`: the seeder creates no letters again.
+
 ## 1.43.0 (2026-10-26)
 
 - Prose revised to the house style.

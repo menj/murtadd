@@ -51,7 +51,7 @@ Every `murtadd-` class a template emits must have a rule in a stylesheet that is
 
 ## Starter content
 
-The content is JSON in `inc/data/seed/` (`topics.json`, `rebuttals.json`, `doubts.json`, `pages.json`, `letters.json`, `guides.json`), read and decoded by the loaders in `inc/seed-data.php` and never executed as PHP. `inc/seed-content.php` inserts it, and both run from the same setup routine as the page scaffolding, under the same two invariants: never overwrite, never destroy. Rebuttals must be inserted before Doubts, since a Doubt stores its related Rebuttal by ID.
+The content is JSON in `inc/data/seed/` (`topics.json`, `rebuttals.json`, `doubts.json`, `pages.json`, `guides.json`), read and decoded by the loaders in `inc/seed-data.php` and never executed as PHP. `inc/seed-content.php` inserts it, and both run from the same setup routine as the page scaffolding, under the same two invariants: never overwrite, never destroy. Rebuttals must be inserted before Doubts, since a Doubt stores its related Rebuttal by ID.
 
 Links in `pages.json` are written as `{{url:/path/}}` tokens; `murtadd_seed_page_bodies()` resolves each with `esc_url( home_url() )` when the copy is loaded, so a site in a subdirectory links correctly. A seed file that is missing, not valid JSON or not the expected shape loads as an empty array, and the seeder then creates nothing from it.
 
@@ -63,7 +63,7 @@ Two constraints on the data. Every Doubt's `related` slug must name a Rebuttal t
 
 ## Letters, and why they are separate
 
-`murtadd_letter` (`/letters/`) archives correspondence published elsewhere, and holds a few open letters the site writes in its own voice (kind `open`, `_murtadd_letter_kind`). An open letter is signed by the site, addressed to a situation ("To a parent whose child has stopped believing"), and says in its editor's note that it is not from a reader; its frame and dateline say so too. **Never seed or publish a letter presented as from a reader**: that would be a testimonial by another name (see Exclusions). The seeded open letters are `inc/data/seed/letters.json`, loaded by `murtadd_seed_letters()` and inserted by `murtadd_seed_letter_posts()` under the seeder's invariants. It is deliberately outside the triage architecture: absent from the homepage grid, from site search, from the main feed, and from the four doors; below a divider in the sidebar; carrying a mandatory dateline and an archival frame on the single view.
+`murtadd_letter` (`/letters/`) archives correspondence published elsewhere. It is deliberately outside the triage architecture: absent from the homepage grid, from site search, from the main feed, and from the four doors; below a divider in the sidebar; carrying a mandatory dateline and an archival frame on the single view.
 
 The reasoning is binding and must not be quietly undone. The other three post types exist to meet a reader who arrived carrying a question, and the site's whole design assumes that reader is frightened and undecided. A letter is the author addressing an editor at a fixed past moment. Handing an archived letter to someone who searched their doubt would answer a question they did not ask, in a voice not written for them. Any change that surfaces Letters inside the triage path breaks that.
 
