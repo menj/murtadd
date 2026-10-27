@@ -2,6 +2,10 @@
 
 ## 1.43.0 — 2026-10-26
 
+### Added (guide: Is Islam false?)
+- **`/guides/is-islam-false/`**, "Is Islam False? A Fair Guide for Doubters" (`inc/data/seed/guides.json`, Rank Math focus keyword "is Islam false" and SEO title). A care-first frame for the question, with a short summary of each angle (born into it, the Islamic dilemma, scientific miracles, hadith, morals, suffering, disagreement, hurt, the echo chamber) that links out to the page owning it rather than repeating it, and to the evidence article at `https://compelling-evidence.com/articles/is-islam-false/`. Safety and helpline guidance up front and on leaving. Hadith checked on shamela.ws (Muslim 132, al-Bukhari 1385); Qur'an 2:111, 2:170, 2:256, 3:190, 4:82, 17:36, 39:53 checked against api.quran.com. No existing page owned the question, so nothing was retitled.
+- `tests/GuidesTest.php`: the guide count bound is now 9 to 12.
+
 ### Added (laʿnat Allāh mark)
 - **`[murtadd_lanah]`** (`inc/lanah.php`): لعنة الله, "the curse of God", set after the name of Paul of Tarsus as calligraphy. `.murtadd-lanah` (`assets/css/main.css` and `main.min.css`) draws `assets/images/lanat-allah.svg` (copied from injil.help) as a mask in `--murtadd-accent-strike`, the palette's red; light only, with no dark-mode rule, per the Exclusions; `CanvasText` in forced-colours mode. The words "laʿnat Allāh, the curse of God" stay inside, visually hidden, for screen readers, search and a copy and paste, and show as written where the browser cannot draw a mask. The contextual-link engine skips `.murtadd-lanah`.
 - **No placement.** The site is care-first and no seeded doubt, rebuttal, page or glossary entry discusses Paul, so nothing uses the shortcode. It is for the owner to place by hand, only where the text gives the site's own verdict on Paul, never in titles, headings, excerpts, descriptions, menus, alt text, structured data or quotations.

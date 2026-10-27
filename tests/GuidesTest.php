@@ -34,10 +34,10 @@ final class GuidesTest extends TestCase {
 		$this->fail( "Guide {$slug} missing." );
 	}
 
-	public function test_nine_to_eleven_guides_load() {
+	public function test_nine_to_twelve_guides_load() {
 		$n = count( murtadd_seed_guides() );
 		$this->assertGreaterThanOrEqual( 9, $n );
-		$this->assertLessThanOrEqual( 11, $n );
+		$this->assertLessThanOrEqual( 12, $n );
 		$slugs = array_column( murtadd_seed_guides(), 'slug' );
 		$this->assertSame( array_unique( $slugs ), $slugs, 'Duplicate guide slug.' );
 	}
