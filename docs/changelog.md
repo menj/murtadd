@@ -1,5 +1,14 @@
 # Changelog — Murtadd
 
+## 1.43.2 (2026-10-29)
+
+### Changed (wording)
+- The guide The Islamic Dilemma: A Fair Guide for Doubters (`islamic-dilemma`, `inc/data/seed/guides.json`) now reads "it is not caught by either claim of the Islamic dilemma", the term the sister sites use.
+- `FARUQI.md` sets out the Faruqian core, al-tawḥīd as al-Fārūqī set it out in *Al Tawhid: Its Implications for Thought and Life*, which every site in the network rests on. `CLAUDE.md` points contributors to it first.
+
+### Existing sites
+- The guide seeder never rewrites a guide that exists, so the new wording reaches new installs only. On murtadd.org, edit the guide by hand: in the paragraph that ends "it is not caught by either … of the Islamic dilemma", replace the word after "either" with "claim".
+
 ## 1.43.1 (2026-10-27)
 
 ### Removed (open letters)
