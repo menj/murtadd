@@ -30,13 +30,10 @@ function murtadd_seed_schools() {
 	if ( get_option( 'murtadd_schools_seeded' ) ) {
 		return;
 	}
-	$terms = array(
-		'hanafi'       => __( 'Hanafi', 'murtadd' ),
-		'maliki'       => __( 'Maliki', 'murtadd' ),
-		'shafii'       => __( 'Shafi’i', 'murtadd' ),
-		'hanbali'      => __( 'Hanbali', 'murtadd' ),
-		'contemporary' => __( 'Contemporary', 'murtadd' ),
-	);
+	$terms = murtadd_seed_load_map( 'schools' ); // inc/data/seed/schools.json: slug => name.
+	if ( ! $terms ) {
+		return; // Unreadable while an update unpacks: try again on the next load.
+	}
 	foreach ( $terms as $slug => $name ) {
 		if ( ! term_exists( $slug, 'murtadd_school' ) ) {
 			wp_insert_term( $name, 'murtadd_school', array( 'slug' => $slug ) );

@@ -1,5 +1,12 @@
 # Changelog — Murtadd
 
+## 1.43.3 (2026-10-29)
+
+### Changed (seed data)
+- The default terms are JSON in `inc/data/seed/`, like the rest of the seed data: the five schools (`schools.json`, was `murtadd_seed_schools()`), the four doubt categories with their descriptions (`doubt-categories.json`, was `murtadd_seed_doubt_categories()`) and the six default topics (`default-topics.json`, was `murtadd_seed_topics()`, whose names were built from the slugs with `ucwords()`; the file spells out the same names).
+- A file that cannot be read, or a malformed entry, now leaves the "seeded" flag unset, so the terms are made on a later load instead of never.
+- Checked against the old code with stubbed WordPress calls: the same terms, names, descriptions and options. `SeedDataTest` covers the three new files. The PHPUnit suite was not run here.
+
 ## 1.43.2 (2026-10-29)
 
 ### Changed (wording)

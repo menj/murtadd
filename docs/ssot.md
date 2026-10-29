@@ -1,6 +1,6 @@
 # Murtadd — Single Source of Truth
 
-Version 1.43.2 · Child theme of Twenty Twenty-Five · murtadd.org
+Version 1.43.3 · Child theme of Twenty Twenty-Five · murtadd.org
 
 ## What this theme is
 
@@ -51,7 +51,7 @@ Every `murtadd-` class a template emits must have a rule in a stylesheet that is
 
 ## Starter content
 
-The content is JSON in `inc/data/seed/` (`topics.json`, `rebuttals.json`, `doubts.json`, `pages.json`, `guides.json`), read and decoded by the loaders in `inc/seed-data.php` and never executed as PHP. `inc/seed-content.php` inserts it, and both run from the same setup routine as the page scaffolding, under the same two invariants: never overwrite, never destroy. Rebuttals must be inserted before Doubts, since a Doubt stores its related Rebuttal by ID.
+The content is JSON in `inc/data/seed/` (`topics.json`, `rebuttals.json`, `doubts.json`, `pages.json`, `guides.json`, and the default terms: `schools.json`, `doubt-categories.json`, `default-topics.json`), read and decoded by the loaders in `inc/seed-data.php` and never executed as PHP. `inc/seed-content.php` inserts it, and both run from the same setup routine as the page scaffolding, under the same two invariants: never overwrite, never destroy. Rebuttals must be inserted before Doubts, since a Doubt stores its related Rebuttal by ID.
 
 Links in `pages.json` are written as `{{url:/path/}}` tokens; `murtadd_seed_page_bodies()` resolves each with `esc_url( home_url() )` when the copy is loaded, so a site in a subdirectory links correctly. A seed file that is missing, not valid JSON or not the expected shape loads as an empty array, and the seeder then creates nothing from it.
 
