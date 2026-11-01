@@ -1,6 +1,6 @@
 # Murtadd — Single Source of Truth
 
-Version 1.43.0 · Child theme of Twenty Twenty-Five · murtadd.org
+Version 1.44.0 · Child theme of Twenty Twenty-Five · murtadd.org
 
 ## What this theme is
 
@@ -89,7 +89,7 @@ Taxonomies: `murtadd_topic` (shared, flat, seeded 6 terms, `/topic/`), `murtadd_
 | murtadd_colours | accent, accent_tint | #0f6e56, #eefaf7 |
 | murtadd_cross_links | ce_base_url, bismika_base_url | empty (links hidden) |
 | murtadd_contextual_links | own_enabled, sister_enabled, own_max, sister_max, extra, excluded | 1, 1, 4, 3, empty, empty |
-| murtadd_security | hide_authors, xmlrpc_off, headers, login_slug, login_design, login_message | 1, 1, 1, empty (private login off), 1, empty |
+| murtadd_security | hide_authors, xmlrpc_off, app_passwords_off, rest_lock, spam_gate, spam_gone, headers, login_slug, login_design, login_message | 1, 1, 1, 1, 1, 1, 1, empty (private login off), 1, empty |
 | murtadd_upkeep | gone_paths, maintenance, error_pages | empty, 0, 1 |
 | murtadd_content_display | short_response_word_cap, show_struggling_notice, fatwa_index_default_sort, footer_heritage_note, contact_recipient | 400, 1, scholar_az, "online since 2004", empty (administration email) |
 | murtadd_topics_seeded / murtadd_schools_seeded / murtadd_doubt_categories_seeded | flag | 1 after first init |

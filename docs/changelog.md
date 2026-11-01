@@ -1,5 +1,20 @@
 # Changelog — Murtadd
 
+## 1.44.0 (2026-11-01)
+
+### Added (Security: remote-publishing lockdown and spam clean-up)
+Ported from the sister theme Abrahamic, written after the October 2026 attack on a sister site: password guessing through xmlrpc.php under forged Jetpack user agents, then a casino post every 18 to 20 minutes through wp.newPost. `inc/security.php`, `inc/security-detector.php`, `assets/js/security.js`, `assets/css/security.css` and their `.min` twins. All settings sit on the existing Security tab (option `murtadd_security`), on by default.
+- XML-RPC off now answers 403 before WordPress parses the call, with daily counters (all requests, forged Jetpack agents). The one existing "Switch XML-RPC off" option also keeps a "Block xmlrpc.php" section in `.htaccess` on Apache (Apache 2.4 and 2.2 rules), checked at most hourly on `admin_init`, re-synced on save and on `after_switch_theme`, removed on `switch_theme` or when switched off. The tab says when the file cannot be written. The marker name is shared with the sister themes.
+- Application passwords off. REST writes while logged in only from a cookie session with a valid `wp_rest` nonce; reads, visitors and the contact form are unchanged.
+- Passwords sent through XML-RPC are refused, counted and logged, with an admin notice. Failed logins are counted by account name; ten in a day on a real account raise a notice.
+- Spam gate: a post, page, doubt, rebuttal, fatwa, letter or guide that reads as gambling spam, or is published from outside the editor, is saved as Pending and logged. Seeded content (`murtadd_seeded_slugs`, the activation pages and the seed files) is exempt.
+- Tools: batch scan and move to Trash, 410 Gone for trashed spam (through a new `murtadd_gone_match` filter in `inc/gone.php`), empty spam categories deleted on request only, revoke application passwords, log out everyone else, reports and a capped security log.
+- Emergency switch: `define( 'MURTADD_SECURITY_LOCK', false );` in `wp-config.php` turns the XML-RPC, application password and REST locks off.
+
+### Tests
+- `tests/SecurityTest.php`: the gate, the REST lock, the `.htaccess` sync and the 410 match.
+- `php tests/security-detector-test.php`: zero false positives over every seed doubt, rebuttal, guide, page, topic and glossary entry.
+
 ## 1.43.1 (2026-10-27)
 
 ### Removed (open letters)

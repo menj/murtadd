@@ -121,12 +121,20 @@ function murtadd_send_gone() {
 		return;
 	}
 	$patterns = murtadd_gone_patterns();
-	if ( ! $patterns ) {
+	$uri      = isset( $_SERVER['REQUEST_URI'] ) ? esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+	$path     = (string) wp_parse_url( $uri, PHP_URL_PATH );
+	if ( '' === $path ) {
 		return;
 	}
-	$uri  = isset( $_SERVER['REQUEST_URI'] ) ? esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
-	$path = (string) wp_parse_url( $uri, PHP_URL_PATH );
-	if ( '' === $path || ! murtadd_gone_matches( $path, $patterns ) ) {
+	$hit = $patterns && murtadd_gone_matches( $path, $patterns );
+	/**
+	 * Whether this 404 path should answer 410 Gone. inc/security.php adds the
+	 * addresses of spam moved to the trash from the Security tab.
+	 *
+	 * @param bool   $hit  Whether the Upkeep list matched.
+	 * @param string $path Request path.
+	 */
+	if ( ! apply_filters( 'murtadd_gone_match', $hit, $path ) ) {
 		return;
 	}
 	$GLOBALS['murtadd_gone'] = true;

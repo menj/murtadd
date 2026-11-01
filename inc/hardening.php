@@ -32,8 +32,12 @@ defined( 'ABSPATH' ) || exit;
 function murtadd_security_defaults() {
 	return array(
 		'hide_authors'  => 1,
-		'xmlrpc_off'    => 1,
-		'headers'       => 1,
+		'xmlrpc_off'        => 1,
+		'app_passwords_off' => 1,
+		'rest_lock'         => 1,
+		'spam_gate'         => 1,
+		'spam_gone'         => 1,
+		'headers'           => 1,
 		'login_slug'    => '',
 		'login_design'  => 1,
 		'login_message' => '',
