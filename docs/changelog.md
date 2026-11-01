@@ -1,5 +1,23 @@
 # Changelog — Murtadd
 
+## 1.45.1 (2026-11-01)
+
+### Fixed (Security)
+- The "Move selected to Trash" button stays off while a scan runs. Ticking boxes during the scan no longer turns it on; it comes on when the scan ends.
+- Every spam pattern carries the `i` and `u` flags, so capital Cyrillic ("КАЗИНО") is caught on a server without mbstring. `mb_strtolower()` is still used when it exists.
+- Folding a past day's tally row deletes it only if it still holds the value read. A hit that lands in between is kept and folded on a later call. The report shows 30 days including today, not 31.
+- Failed logins older than 24 hours are ignored in the admin notice and the report. A row whose first failure is more than a day old starts a new count.
+- The `.htaccess` state reads "written" only when `insert_with_markers()` returned true, and "unavailable" otherwise.
+- Starter content is exempt from the spam gate and the scan only when it carries the `_murtadd_seeded` meta, or during the theme's own seeding run (`$GLOBALS['murtadd_seeding']`) for a post that carries it. A matching title or slug no longer exempts anything, so a new post at the slug of a deleted seeded post is checked like any other. The seeders write the meta through `meta_input`. `murtadd_sec_backfill_seed_marker()` marks the starter content seeded before this release once, on `admin_init`.
+- Private posts are no longer moved to Pending. Only `publish` and `future` count as public; a private post that reads as spam is logged as `flagged-private`.
+- WP-CLI counts as publishing from outside the editor, as XML-RPC and header-login REST do. The theme's seeders stay exempt through the seed marker.
+- Spam moved to the Trash also answers 410 at its query permalink, `/?p=ID`.
+- `php tests/security-detector-test.php` fails with exit code 1 when a seed or content file it reads is missing or is not valid JSON.
+- `inc/hardening.php` reads the XML-RPC switch through `murtadd_sec_on()`, so `MURTADD_SECURITY_LOCK` set to false turns the RSD link, the pingback header and the method filters back on as well.
+
+### Docs
+- `docs/ssot.md` lists the `login_tagline` and `login_privacy` keys of `murtadd_security`.
+
 ## 1.45.0 (2026-11-01)
 
 ### Fixed (Security)

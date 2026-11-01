@@ -47,6 +47,23 @@ function murtadd_security_defaults() {
 }
 
 /**
+ * Whether XML-RPC is switched off. Read through murtadd_sec_on()
+ * (inc/security.php) so the MURTADD_SECURITY_LOCK emergency constant turns
+ * it back on here too.
+ *
+ * @return bool
+ */
+function murtadd_hardening_xmlrpc_off() {
+	if ( function_exists( 'murtadd_sec_on' ) ) {
+		return murtadd_sec_on( 'xmlrpc_off' );
+	}
+	if ( defined( 'MURTADD_SECURITY_LOCK' ) && ! MURTADD_SECURITY_LOCK ) {
+		return false;
+	}
+	return (bool) murtadd_security( 'xmlrpc_off' );
+}
+
+/**
  * One Security setting, its default when unsaved.
  *
  * @param string $key Setting key.
@@ -172,7 +189,7 @@ add_filter( 'wp_sitemaps_add_provider', 'murtadd_hardening_sitemap', 10, 2 );
  * @return bool
  */
 function murtadd_hardening_xmlrpc( $enabled ) {
-	return murtadd_security( 'xmlrpc_off' ) ? false : $enabled;
+	return murtadd_hardening_xmlrpc_off() ? false : $enabled;
 }
 add_filter( 'xmlrpc_enabled', 'murtadd_hardening_xmlrpc' );
 
@@ -184,7 +201,7 @@ add_filter( 'xmlrpc_enabled', 'murtadd_hardening_xmlrpc' );
  * @return array
  */
 function murtadd_hardening_xmlrpc_methods( $methods ) {
-	return murtadd_security( 'xmlrpc_off' ) ? array() : $methods;
+	return murtadd_hardening_xmlrpc_off() ? array() : $methods;
 }
 add_filter( 'xmlrpc_methods', 'murtadd_hardening_xmlrpc_methods' );
 
@@ -195,7 +212,7 @@ add_filter( 'xmlrpc_methods', 'murtadd_hardening_xmlrpc_methods' );
  * @return array
  */
 function murtadd_hardening_pingback_header( $headers ) {
-	if ( murtadd_security( 'xmlrpc_off' ) ) {
+	if ( murtadd_hardening_xmlrpc_off() ) {
 		unset( $headers['X-Pingback'] );
 	}
 	return $headers;
@@ -206,7 +223,7 @@ add_filter( 'wp_headers', 'murtadd_hardening_pingback_header' );
  * No RSD link in the head, which only points at xmlrpc.php.
  */
 function murtadd_hardening_rsd() {
-	if ( murtadd_security( 'xmlrpc_off' ) ) {
+	if ( murtadd_hardening_xmlrpc_off() ) {
 		remove_action( 'wp_head', 'rsd_link' );
 	}
 }

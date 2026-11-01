@@ -205,18 +205,62 @@ final class SecurityTest extends TestCase {
 		$this->assertNull( $GLOBALS['murtadd_sec_held'] );
 	}
 
-	public function test_seeded_content_is_exempt() {
+	public function test_seeded_slug_alone_is_not_exempt() {
+		// A seeded post that was deleted leaves its slug in the record. A new
+		// post at that slug is not starter content.
 		$GLOBALS['murtadd_options']['murtadd_seeded_slugs'] = array( 'post' => array( 'casino-night' ) );
 		$out = murtadd_sec_gate( $this->post( 'Casino night', 'casino-night', 'Online casino free spins.' ), array() );
-		$this->assertSame( 'publish', $out['post_status'] );
+		$this->assertSame( 'pending', $out['post_status'] );
 	}
 
-	public function test_seed_files_entry_is_exempt_by_title_and_slug() {
+	public function test_seed_title_and_slug_alone_are_not_exempt() {
 		$doubts = murtadd_seed_doubts();
 		$this->assertNotEmpty( $doubts );
 		$d   = $doubts[0];
 		$out = murtadd_sec_gate( $this->post( $d['title'], $d['slug'], 'free spins online casino', 'publish', 'murtadd_doubt' ), array() );
+		$this->assertSame( 'pending', $out['post_status'] );
+	}
+
+	public function test_post_with_seed_marker_is_exempt() {
+		$GLOBALS['murtadd_test_meta'][ 41 ][ MURTADD_SEED_META ] = 1;
+		$out = murtadd_sec_gate( $this->post( 'Casino night', 'casino-night', 'Online casino free spins.' ), array( 'ID' => 41 ) );
+		unset( $GLOBALS['murtadd_test_meta'][ 41 ] );
 		$this->assertSame( 'publish', $out['post_status'] );
+	}
+
+	public function test_seeding_run_with_marker_is_exempt() {
+		$GLOBALS['murtadd_seeding'] = true;
+		$data                       = $this->post( 'Casino night', 'casino-night', 'Online casino free spins.' );
+		$with                       = murtadd_sec_gate( $data, array( 'meta_input' => array( MURTADD_SEED_META => 1 ) ) );
+		$without                    = murtadd_sec_gate( $data, array() );
+		$GLOBALS['murtadd_seeding'] = false;
+		$this->assertSame( 'publish', $with['post_status'] );
+		$this->assertSame( 'pending', $without['post_status'], 'The seeding run exempts only what it marks.' );
+	}
+
+	public function test_submitted_marker_outside_the_seeding_run_is_not_exempt() {
+		$GLOBALS['murtadd_test_user'] = 1; // Header login over REST.
+		$out = murtadd_sec_gate( $this->post( 'A quiet note on patience', 'a-quiet-note', 'Plain text.' ), array( 'meta_input' => array( MURTADD_SEED_META => 1 ) ) );
+		$this->assertSame( 'pending', $out['post_status'] );
+	}
+
+	public function test_seeders_mark_what_they_insert() {
+		foreach ( array( 'seed-content.php', 'seed-guides.php', 'activation.php' ) as $file ) {
+			$php = (string) file_get_contents( dirname( __DIR__ ) . '/inc/' . $file );
+			$this->assertStringContainsString( "'meta_input'", $php, $file );
+			$this->assertStringContainsString( "\$GLOBALS['murtadd_seeding'] = true;", $php, $file );
+		}
+	}
+
+	public function test_private_post_is_flagged_not_held() {
+		$out = murtadd_sec_gate( $this->post( 'Coolbet bonus', 'coolbet', 'online casino', 'private' ), array() );
+		$this->assertSame( 'private', $out['post_status'] );
+		$this->assertSame( 'flagged-private', $GLOBALS['murtadd_sec_held']['event'] );
+	}
+
+	public function test_uppercase_cyrillic_matches_without_lower_casing() {
+		$this->assertSame( 1, preg_match( murtadd_spam_patterns()['casino'][0], 'КАЗИНО' ) );
+		$this->assertSame( 1, preg_match( murtadd_spam_patterns()['gambling brand'][0], 'ПИНАП' ) );
 	}
 
 	public function test_remote_publish_is_held_whatever_it_says() {
@@ -268,6 +312,12 @@ final class SecurityTest extends TestCase {
 		$this->assertStringContainsString( "defined( 'MURTADD_SECURITY_LOCK' ) && ! MURTADD_SECURITY_LOCK", $php );
 	}
 
+	public function test_hardening_reads_xmlrpc_through_the_emergency_helper() {
+		$php = (string) file_get_contents( dirname( __DIR__ ) . '/inc/hardening.php' );
+		$this->assertStringNotContainsString( "murtadd_security( 'xmlrpc_off' ) ?", $php );
+		$this->assertStringContainsString( "return murtadd_sec_on( 'xmlrpc_off' );", $php );
+	}
+
 	/* ---------- .htaccess ---------- */
 
 	public function test_htaccess_block_is_written_when_xmlrpc_is_off() {
@@ -275,6 +325,11 @@ final class SecurityTest extends TestCase {
 		$this->assertSame( murtadd_sec_htaccess_lines(), extract_from_markers( $this->home . '.htaccess', 'Block xmlrpc.php' ) );
 		$this->assertSame( 'written', get_option( 'murtadd_security_htaccess' ) );
 		$this->assertSame( array( 'Block xmlrpc.php' ), $GLOBALS['murtadd_test_marker_writes'] );
+	}
+
+	public function test_htaccess_state_follows_the_write_result() {
+		$php = (string) file_get_contents( dirname( __DIR__ ) . '/inc/security.php' );
+		$this->assertStringContainsString( "if ( true !== insert_with_markers( \$file, 'Block xmlrpc.php', murtadd_sec_htaccess_lines() ) ) {", $php );
 	}
 
 	public function test_htaccess_check_is_throttled_and_repairs() {
@@ -321,5 +376,28 @@ final class SecurityTest extends TestCase {
 		$GLOBALS['murtadd_options'][ MURTADD_SEC_GONE ] = array( 'coolbet-bonus' => 9 );
 		$this->assertTrue( murtadd_sec_gone_match( false, '/coolbet-bonus/' ) );
 		$this->assertFalse( murtadd_sec_gone_match( false, '/about/' ) );
+	}
+
+	public function test_trashed_spam_answers_gone_at_the_query_permalink() {
+		$GLOBALS['murtadd_options'][ MURTADD_SEC_GONE ] = array( '?p=9' => 9 );
+		$_GET['p'] = '9';
+		$hit       = murtadd_sec_gone_match( false, '/' );
+		$_GET['p'] = '10';
+		$miss      = murtadd_sec_gone_match( false, '/' );
+		unset( $_GET['p'] );
+		$this->assertTrue( $hit );
+		$this->assertFalse( $miss );
+	}
+
+	/* ---------- Failed logins ---------- */
+
+	public function test_failed_logins_older_than_a_day_are_ignored() {
+		$now = time();
+		$GLOBALS['murtadd_options'][ MURTADD_SEC_FAILED ] = array(
+			'old'   => array( 'n' => 40, 'first' => $now - 3 * DAY_IN_SECONDS, 'last' => $now - 2 * DAY_IN_SECONDS, 'ips' => array() ),
+			'mixed' => array( 'n' => 40, 'first' => $now - 3 * DAY_IN_SECONDS, 'last' => $now - 60, 'ips' => array() ),
+			'new'   => array( 'n' => 12, 'first' => $now - 3600, 'last' => $now - 60, 'ips' => array() ),
+		);
+		$this->assertSame( array( 'new' ), array_keys( murtadd_sec_failed_recent() ) );
 	}
 }

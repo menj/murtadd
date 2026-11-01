@@ -2,7 +2,8 @@
 /**
  * Self-test for inc/security-detector.php. Run: php tests/security-detector-test.php
  *
- * Exit code 0 when every starter item (doubts, rebuttals, guides, pages,
+ * Exit code 1 when a seed or content file it reads is missing or is not valid
+ * JSON. Exit code 0 when every starter item (doubts, rebuttals, guides, pages,
  * topics and glossary terms in inc/data) scores exactly 0, every clean sample
  * stays below the threshold, and every attack sample is flagged.
  *
@@ -24,8 +25,15 @@ require_once dirname( __DIR__ ) . '/inc/security-detector.php';
 function murtadd_sec_test_seed_rows() {
 	$dir  = dirname( __DIR__ ) . '/inc/data';
 	$read = static function ( $file ) use ( $dir ) {
-		$data = json_decode( (string) file_get_contents( $dir . '/' . $file ), true );
-		return is_array( $data ) ? $data : array();
+		$path = $dir . '/' . $file;
+		if ( ! is_readable( $path ) ) {
+			throw new RuntimeException( 'MISSING: inc/data/' . $file );
+		}
+		$data = json_decode( (string) file_get_contents( $path ), true );
+		if ( ! is_array( $data ) ) {
+			throw new RuntimeException( 'INVALID JSON: inc/data/' . $file . ' (' . json_last_error_msg() . ')' );
+		}
+		return $data;
 	};
 	$sources = static function ( $list ) {
 		$out = '';
@@ -107,7 +115,15 @@ function murtadd_sec_test_spam_samples() {
 function murtadd_sec_test_run() {
 	$fail  = 0;
 	$lines = array();
-	$rows  = murtadd_sec_test_seed_rows();
+	try {
+		$rows = murtadd_sec_test_seed_rows();
+	} catch ( RuntimeException $e ) {
+		// A seed or content file the test expects is missing or unreadable:
+		// fail, since nothing in it was checked.
+		$rows    = array();
+		$lines[] = $e->getMessage();
+		++$fail;
+	}
 	foreach ( $rows as $key => $row ) {
 		$r = murtadd_spam_score( $row[0], $row[1], $row[2] );
 		if ( $r['score'] > 0 ) {

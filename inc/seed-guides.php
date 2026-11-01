@@ -65,11 +65,27 @@ function murtadd_guide_content( $g ) {
 }
 
 /**
+ * Run murtadd_seed_guide_posts_run() inside the seeding flag, which lets the spam gate
+ * (inc/security.php) pass starter content that carries the seed marker.
+ *
+ * @return mixed What murtadd_seed_guide_posts_run() returns.
+ */
+function murtadd_seed_guide_posts() {
+	$was                        = ! empty( $GLOBALS['murtadd_seeding'] );
+	$GLOBALS['murtadd_seeding'] = true;
+	try {
+		return murtadd_seed_guide_posts_run();
+	} finally {
+		$GLOBALS['murtadd_seeding'] = $was;
+	}
+}
+
+/**
  * Insert the guides. Idempotent.
  *
  * @return int Number created on this run.
  */
-function murtadd_seed_guide_posts() {
+function murtadd_seed_guide_posts_run() {
 	$created = 0;
 
 	foreach ( murtadd_seed_guides() as $g ) {
@@ -89,6 +105,7 @@ function murtadd_seed_guide_posts() {
 				'post_excerpt' => $g['excerpt'],
 				'post_content' => murtadd_guide_content( $g ),
 				'post_status'  => 'publish',
+				'meta_input'   => array( '_murtadd_seeded' => 1 ),
 			)
 		);
 

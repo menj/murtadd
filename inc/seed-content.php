@@ -85,11 +85,27 @@ function murtadd_seed_terms() {
 }
 
 /**
+ * Run murtadd_seed_rebuttal_posts_run() inside the seeding flag, which lets the spam gate
+ * (inc/security.php) pass starter content that carries the seed marker.
+ *
+ * @return mixed What murtadd_seed_rebuttal_posts_run() returns.
+ */
+function murtadd_seed_rebuttal_posts() {
+	$was                        = ! empty( $GLOBALS['murtadd_seeding'] );
+	$GLOBALS['murtadd_seeding'] = true;
+	try {
+		return murtadd_seed_rebuttal_posts_run();
+	} finally {
+		$GLOBALS['murtadd_seeding'] = $was;
+	}
+}
+
+/**
  * Insert the rebuttals.
  *
  * @return int Number created on this run.
  */
-function murtadd_seed_rebuttal_posts() {
+function murtadd_seed_rebuttal_posts_run() {
 	$created = 0;
 
 	foreach ( murtadd_seed_rebuttals() as $r ) {
@@ -108,6 +124,7 @@ function murtadd_seed_rebuttal_posts() {
 				'post_title'   => $r['title'],
 				'post_content' => $r['body'],
 				'post_status'  => 'publish',
+				'meta_input'   => array( '_murtadd_seeded' => 1 ),
 			)
 		);
 
@@ -131,11 +148,27 @@ function murtadd_seed_rebuttal_posts() {
 }
 
 /**
+ * Run murtadd_seed_doubt_posts_run() inside the seeding flag, which lets the spam gate
+ * (inc/security.php) pass starter content that carries the seed marker.
+ *
+ * @return mixed What murtadd_seed_doubt_posts_run() returns.
+ */
+function murtadd_seed_doubt_posts() {
+	$was                        = ! empty( $GLOBALS['murtadd_seeding'] );
+	$GLOBALS['murtadd_seeding'] = true;
+	try {
+		return murtadd_seed_doubt_posts_run();
+	} finally {
+		$GLOBALS['murtadd_seeding'] = $was;
+	}
+}
+
+/**
  * Insert the doubts, wiring each one to its rebuttal.
  *
  * @return int Number created on this run.
  */
-function murtadd_seed_doubt_posts() {
+function murtadd_seed_doubt_posts_run() {
 	$created = 0;
 
 	foreach ( murtadd_seed_doubts() as $d ) {
@@ -153,6 +186,7 @@ function murtadd_seed_doubt_posts() {
 				'post_name'   => $d['slug'],
 				'post_title'  => $d['title'],
 				'post_status' => 'publish',
+				'meta_input'  => array( '_murtadd_seeded' => 1 ),
 			)
 		);
 

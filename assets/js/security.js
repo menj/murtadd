@@ -56,6 +56,10 @@
 	var all = document.getElementById( 'murtadd-sec-all' );
 	var tbody = table ? table.querySelector( 'tbody' ) : null;
 
+	// True while a scan or a trash run is going: the trash button stays off
+	// and ticking boxes cannot turn it back on until the run ends.
+	var busy = false;
+
 	function boxes() {
 		return tbody ? Array.prototype.slice.call( tbody.querySelectorAll( 'input[type="checkbox"]' ) ) : [];
 	}
@@ -64,7 +68,7 @@
 		var picked = boxes().filter( function ( b ) {
 			return b.checked;
 		} );
-		trashBtn.disabled = ! picked.length;
+		trashBtn.disabled = busy || ! picked.length;
 		if ( all ) {
 			all.checked = picked.length > 0 && picked.length === boxes().length;
 		}
@@ -126,6 +130,7 @@
 			var found = 0;
 			tbody.textContent = '';
 			wrap.hidden = true;
+			busy = true;
 			scanBtn.disabled = true;
 			trashBtn.disabled = true;
 
@@ -139,6 +144,7 @@
 						}
 						if ( data.done ) {
 							status.textContent = found ? format( i18n.done, data.next, found ) : i18n.none;
+							busy = false;
 							scanBtn.disabled = false;
 							refresh();
 							return;
@@ -148,7 +154,9 @@
 					} )
 					.catch( function ( err ) {
 						status.textContent = err.message;
+						busy = false;
 						scanBtn.disabled = false;
+						trashBtn.disabled = true;
 					} );
 			}
 			step( 0 );
@@ -182,6 +190,7 @@
 			var total = ids.length;
 			var moved = 0;
 			var skipped = 0;
+			busy = true;
 			trashBtn.disabled = true;
 			scanBtn.disabled = true;
 
@@ -189,6 +198,7 @@
 				var chunk = ids.splice( 0, 100 );
 				if ( ! chunk.length ) {
 					status.textContent = format( i18n.trashed, moved, skipped );
+					busy = false;
 					scanBtn.disabled = false;
 					refresh();
 					return;
@@ -208,6 +218,7 @@
 					} )
 					.catch( function ( err ) {
 						status.textContent = err.message;
+						busy = false;
 						scanBtn.disabled = false;
 						refresh();
 					} );

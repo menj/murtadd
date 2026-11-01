@@ -19,7 +19,8 @@
  * the options.
  *
  * Starter content (anything inc/seed-content.php, inc/seed-guides.php or
- * inc/activation.php creates) is never held, listed or trashed.
+ * inc/activation.php creates, marked with the _murtadd_seeded meta) is never
+ * held, listed or trashed. A title or slug alone never earns the exemption.
  *
  * @package murtadd
  */
@@ -34,6 +35,9 @@ define( 'MURTADD_SEC_COUNTS', 'murtadd_security_counts' );
 define( 'MURTADD_SEC_FAILED', 'murtadd_security_failed' );
 define( 'MURTADD_SEC_LOG_MAX', 200 );
 define( 'MURTADD_SEC_GONE_MAX', 5000 );
+if ( ! defined( 'MURTADD_SEED_META' ) ) {
+	define( 'MURTADD_SEED_META', '_murtadd_seeded' );
+}
 
 /**
  * Whether a Security switch is on. MURTADD_SECURITY_LOCK set to false in
@@ -151,12 +155,16 @@ function murtadd_sec_sync_htaccess( $force = false ) {
 	}
 	$want    = murtadd_sec_on( 'xmlrpc_off' );
 	$current = function_exists( 'extract_from_markers' ) ? extract_from_markers( $file, 'Block xmlrpc.php' ) : array();
+	$state   = $want ? 'written' : 'off';
 	if ( $want && $current !== murtadd_sec_htaccess_lines() ) {
-		insert_with_markers( $file, 'Block xmlrpc.php', murtadd_sec_htaccess_lines() );
+		// Record "written" only when the block really went in.
+		if ( true !== insert_with_markers( $file, 'Block xmlrpc.php', murtadd_sec_htaccess_lines() ) ) {
+			$state = 'unavailable';
+		}
 	} elseif ( ! $want && $current ) {
 		insert_with_markers( $file, 'Block xmlrpc.php', array() );
 	}
-	update_option( 'murtadd_security_htaccess', $want ? 'written' : 'off', false );
+	update_option( 'murtadd_security_htaccess', $state, false );
 }
 add_action( 'admin_init', 'murtadd_sec_sync_htaccess' );
 
@@ -308,24 +316,35 @@ function murtadd_sec_counts() {
 			$live[ $m[1] ] = (int) $row->option_value;
 			continue;
 		}
+		// Delete only the value just read. A hit that lands between the read
+		// and the delete changes the value, the delete then matches nothing,
+		// and the row is folded whole on a later call.
+		$deleted = $wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->options} WHERE option_name = %s AND option_value = %s", $row->option_name, $row->option_value ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		if ( 1 !== (int) $deleted ) {
+			continue;
+		}
 		$day                     = substr( $m[2], 0, 4 ) . '-' . substr( $m[2], 4, 2 ) . '-' . substr( $m[2], 6, 2 );
 		$counts[ $day ][ $m[1] ] = (int) ( $counts[ $day ][ $m[1] ] ?? 0 ) + (int) $row->option_value;
 		$done[]                  = $row->option_name;
 	}
-	krsort( $counts );
-	$counts = array_slice( $counts, 0, 30, true );
-	if ( $done ) {
-		update_option( MURTADD_SEC_COUNTS, $counts, false );
-		foreach ( $done as $name ) {
-			delete_option( $name );
+	// Thirty days including today: keep the 29 days before it.
+	$oldest = gmdate( 'Y-m-d', time() - 29 * DAY_IN_SECONDS );
+	$day    = gmdate( 'Y-m-d' );
+	foreach ( array_keys( $counts ) as $key ) {
+		if ( (string) $key < $oldest ) {
+			unset( $counts[ $key ] );
+			$done[] = true;
 		}
 	}
-	$day = gmdate( 'Y-m-d' );
+	krsort( $counts );
+	if ( $done ) {
+		update_option( MURTADD_SEC_COUNTS, $counts, false );
+	}
 	foreach ( $live as $key => $n ) {
 		$counts[ $day ][ $key ] = (int) ( $counts[ $day ][ $key ] ?? 0 ) + $n;
 	}
 	krsort( $counts );
-	return $counts;
+	return array_slice( $counts, 0, 30, true );
 }
 
 /**
@@ -343,13 +362,17 @@ function murtadd_sec_fake_jetpack() {
 }
 
 /**
- * Whether this request is a remote, non-browser call: XML-RPC, or REST with
- * an application password or other header login.
+ * Whether this request is a remote, non-browser call: XML-RPC, REST with an
+ * application password or other header login, or WP-CLI. All three publish
+ * from outside the editor.
  *
  * @return bool
  */
 function murtadd_sec_is_remote() {
 	if ( defined( 'XMLRPC_REQUEST' ) && XMLRPC_REQUEST ) {
+		return true;
+	}
+	if ( defined( 'WP_CLI' ) && WP_CLI ) {
 		return true;
 	}
 	if ( defined( 'REST_REQUEST' ) && REST_REQUEST && is_user_logged_in() ) {
@@ -408,7 +431,11 @@ function murtadd_sec_failed_login( $login ) {
 	if ( ! isset( $failed[ $login ] ) && count( $failed ) >= 50 ) {
 		return;
 	}
-	$row = $failed[ $login ] ?? array( 'n' => 0, 'first' => $now, 'last' => $now, 'ips' => array() );
+	$row = $failed[ $login ] ?? null;
+	if ( ! $row || $now - (int) ( $row['first'] ?? 0 ) > DAY_IN_SECONDS ) {
+		// A new window: failures from more than a day ago no longer count.
+		$row = array( 'n' => 0, 'first' => $now, 'last' => $now, 'ips' => array() );
+	}
 	++$row['n'];
 	$row['last'] = $now;
 	$ip          = murtadd_sec_ip();
@@ -421,6 +448,24 @@ function murtadd_sec_failed_login( $login ) {
 add_action( 'wp_login_failed', 'murtadd_sec_failed_login' );
 
 /**
+ * Failed-login rows from the last 24 hours only. Rows whose last failure is
+ * older are ignored on reading, whether or not a later failure has pruned them.
+ *
+ * @return array account name => row.
+ */
+function murtadd_sec_failed_recent() {
+	$failed = get_option( MURTADD_SEC_FAILED, array() );
+	$failed = is_array( $failed ) ? $failed : array();
+	$now    = time();
+	return array_filter(
+		$failed,
+		static function ( $row ) use ( $now ) {
+			return is_array( $row ) && $now - (int) ( $row['last'] ?? 0 ) <= DAY_IN_SECONDS && $now - (int) ( $row['first'] ?? 0 ) <= DAY_IN_SECONDS;
+		}
+	);
+}
+
+/**
  * Admin notice when an existing account is being guessed at (ten or more
  * failures in a day) or a correct password was refused on XML-RPC today.
  */
@@ -429,7 +474,7 @@ function murtadd_sec_attack_notice() {
 		return;
 	}
 	$hit = array();
-	foreach ( (array) get_option( MURTADD_SEC_FAILED, array() ) as $name => $row ) {
+	foreach ( murtadd_sec_failed_recent() as $name => $row ) {
 		if ( (int) ( $row['n'] ?? 0 ) >= 10 && ( username_exists( $name ) || email_exists( $name ) ) ) {
 			$hit[] = sprintf( '%s (%d, %d)', $name, (int) $row['n'], count( (array) $row['ips'] ) );
 		}
@@ -532,49 +577,79 @@ function murtadd_sec_types() {
 }
 
 /**
- * Starter content, keyed type|title|slug, from the seed files.
+ * Whether the theme's own seeder is running in this request. The seeders in
+ * inc/seed-content.php, inc/seed-guides.php and inc/activation.php set the
+ * flag around their inserts; nothing a remote request sends can set it.
  *
- * @return array<string,true>
+ * @return bool
  */
-function murtadd_sec_seed_index() {
-	static $index = null;
-	if ( null !== $index ) {
-		return $index;
-	}
-	$index = array();
-	$sets  = array(
-		'murtadd_doubt'    => function_exists( 'murtadd_seed_doubts' ) ? murtadd_seed_doubts() : array(),
-		'murtadd_rebuttal' => function_exists( 'murtadd_seed_rebuttals' ) ? murtadd_seed_rebuttals() : array(),
-		'murtadd_guide'    => function_exists( 'murtadd_seed_guides' ) ? murtadd_seed_guides() : array(),
-	);
-	foreach ( $sets as $type => $items ) {
-		foreach ( (array) $items as $item ) {
-			$index[ $type . '|' . $item['title'] . '|' . $item['slug'] ] = true;
-		}
-	}
-	return $index;
+function murtadd_sec_seeding_run() {
+	return ! empty( $GLOBALS['murtadd_seeding'] );
 }
 
 /**
- * Whether a post is starter content the theme seeded: its slug is in the
- * seeder's record (murtadd_seeded_slugs) for its type, it is one of the pages
- * activation creates, or its title and slug are those of a seed entry.
+ * Whether a stored post carries the seed marker meta (MURTADD_SEED_META),
+ * which only the seeder writes. A slug alone never counts: a seeded post
+ * that was deleted leaves its slug in the record, and a new post at that
+ * slug is not starter content.
  *
- * @param string $type  Post type.
- * @param string $title Title.
- * @param string $slug  Slug.
+ * @param int $post_id Post ID.
  * @return bool
  */
-function murtadd_sec_is_seeded( $type, $title, $slug ) {
-	$slug = (string) $slug;
-	if ( '' !== $slug && function_exists( 'murtadd_slug_was_seeded' ) && murtadd_slug_was_seeded( $type, $slug ) ) {
-		return true;
-	}
-	if ( 'page' === $type && '' !== $slug && function_exists( 'murtadd_required_pages' ) && array_key_exists( $slug, murtadd_required_pages() ) ) {
-		return true;
-	}
-	return isset( murtadd_sec_seed_index()[ $type . '|' . $title . '|' . $slug ] );
+function murtadd_sec_post_is_seeded( $post_id ) {
+	$post_id = (int) $post_id;
+	return $post_id > 0 && (bool) get_post_meta( $post_id, MURTADD_SEED_META, true );
 }
+
+/**
+ * Whether the gate lets an insert or update through as starter content: the
+ * theme's own seeding run inserting a post that carries the seed marker, or
+ * an existing post that already carries it. A submitted title or slug never
+ * exempts anything, from any request.
+ *
+ * @param array $postarr Raw post data.
+ * @return bool
+ */
+function murtadd_sec_gate_exempt( $postarr ) {
+	$postarr = (array) $postarr;
+	if ( murtadd_sec_post_is_seeded( $postarr['ID'] ?? 0 ) ) {
+		return true;
+	}
+	return murtadd_sec_seeding_run() && ! empty( $postarr['meta_input'][ MURTADD_SEED_META ] );
+}
+
+/**
+ * Mark the starter content seeded before 1.45.1 once, so it keeps its
+ * exemption from the scan: a post counts when its slug is in the seeder's
+ * record (or is an activation page) and its title is the seed entry's.
+ */
+function murtadd_sec_backfill_seed_marker() {
+	if ( get_option( 'murtadd_sec_seed_marked' ) ) {
+		return;
+	}
+	$sets = array(
+		'murtadd_doubt'    => function_exists( 'murtadd_seed_doubts' ) ? murtadd_seed_doubts() : array(),
+		'murtadd_rebuttal' => function_exists( 'murtadd_seed_rebuttals' ) ? murtadd_seed_rebuttals() : array(),
+		'murtadd_guide'    => function_exists( 'murtadd_seed_guides' ) ? murtadd_seed_guides() : array(),
+		'page'             => array(),
+	);
+	if ( function_exists( 'murtadd_required_pages' ) ) {
+		foreach ( murtadd_required_pages() as $slug => $page ) {
+			$sets['page'][] = array( 'slug' => $slug, 'title' => $page['title'] );
+		}
+	}
+	foreach ( $sets as $type => $items ) {
+		foreach ( (array) $items as $item ) {
+			$recorded = 'page' === $type || ( function_exists( 'murtadd_slug_was_seeded' ) && murtadd_slug_was_seeded( $type, $item['slug'] ) );
+			$post     = $recorded ? get_page_by_path( $item['slug'], OBJECT, $type ) : null;
+			if ( $post && $post->post_title === $item['title'] ) {
+				update_post_meta( $post->ID, MURTADD_SEED_META, 1 );
+			}
+		}
+	}
+	update_option( 'murtadd_sec_seed_marked', 1, false );
+}
+add_action( 'admin_init', 'murtadd_sec_backfill_seed_marker' );
 
 /**
  * Hold suspected spam: anything going public whose title, slug or content
@@ -589,10 +664,11 @@ function murtadd_sec_gate( $data, $postarr ) {
 	if ( ! murtadd_sec_on( 'spam_gate' ) || 'trash' === ( $data['post_status'] ?? '' ) || ! in_array( $data['post_type'] ?? '', murtadd_sec_types(), true ) ) {
 		return $data;
 	}
-	$public = in_array( $data['post_status'] ?? '', array( 'publish', 'future', 'private' ), true );
+	// Private posts are never public: they are logged when flagged, not held.
+	$public = in_array( $data['post_status'] ?? '', array( 'publish', 'future' ), true );
 	$title  = wp_unslash( (string) ( $data['post_title'] ?? '' ) );
 	$slug   = (string) ( $data['post_name'] ?? '' );
-	if ( murtadd_sec_is_seeded( $data['post_type'], $title, $slug ) ) {
+	if ( murtadd_sec_gate_exempt( $postarr ) ) {
 		return $data;
 	}
 	$verdict = murtadd_spam_score( $title, $slug, wp_unslash( (string) ( $data['post_content'] ?? '' ) ) );
@@ -608,7 +684,7 @@ function murtadd_sec_gate( $data, $postarr ) {
 		$data['post_status'] = 'pending';
 	}
 	$GLOBALS['murtadd_sec_held'] = array(
-		'event'   => $public ? 'held' : 'flagged-draft',
+		'event'   => $public ? 'held' : 'flagged-' . sanitize_key( (string) ( $data['post_status'] ?? 'draft' ) ),
 		'title'   => $title,
 		'reasons' => $verdict['reasons'],
 	);
@@ -663,6 +739,8 @@ function murtadd_sec_remember_gone( $post ) {
 	if ( $post->post_name ) {
 		$gone[ strtolower( rawurldecode( $post->post_name ) ) ] = (int) $post->ID;
 	}
+	// The query permalink, /?p=ID, reaches the same post under any structure.
+	$gone[ '?p=' . (int) $post->ID ] = (int) $post->ID;
 	update_option( MURTADD_SEC_GONE, array_slice( $gone, -MURTADD_SEC_GONE_MAX, null, true ), false );
 }
 
@@ -685,7 +763,11 @@ function murtadd_sec_gone_match( $hit, $path ) {
 		return false;
 	}
 	$path = murtadd_sec_path( $path );
-	return '' !== $path && isset( $gone[ $path ] );
+	if ( '' !== $path && isset( $gone[ $path ] ) ) {
+		return true;
+	}
+	$id = isset( $_GET['p'] ) ? absint( wp_unslash( $_GET['p'] ) ) : 0; // phpcs:ignore WordPress.Security.NonceVerification,WordPress.Security.ValidatedSanitizedInput
+	return $id > 0 && isset( $gone[ '?p=' . $id ] );
 }
 add_filter( 'murtadd_gone_match', 'murtadd_sec_gone_match', 10, 2 );
 
@@ -852,7 +934,7 @@ function murtadd_sec_ajax_scan() {
 	);
 	$rows = array();
 	foreach ( $query->posts as $post ) {
-		if ( murtadd_sec_is_seeded( $post->post_type, $post->post_title, $post->post_name ) ) {
+		if ( murtadd_sec_post_is_seeded( $post->ID ) ) {
 			continue;
 		}
 		$verdict = murtadd_spam_score( $post->post_title, $post->post_name, $post->post_content );
@@ -898,7 +980,7 @@ function murtadd_sec_ajax_trash() {
 	$skipped = array();
 	foreach ( array_filter( $ids ) as $id ) {
 		$post = get_post( $id );
-		if ( ! $post || ! in_array( $post->post_type, murtadd_sec_types(), true ) || 'trash' === $post->post_status || ! current_user_can( 'delete_post', $id ) || murtadd_sec_is_seeded( $post->post_type, $post->post_title, $post->post_name ) ) {
+		if ( ! $post || ! in_array( $post->post_type, murtadd_sec_types(), true ) || 'trash' === $post->post_status || ! current_user_can( 'delete_post', $id ) || murtadd_sec_post_is_seeded( $post->ID ) ) {
 			$skipped[] = $id;
 			continue;
 		}
@@ -1246,8 +1328,7 @@ function murtadd_sec_render_tools() {
 			<h3><?php esc_html_e( 'Accounts being guessed, last 24 hours', 'murtadd' ); ?></h3>
 			<p class="description"><?php esc_html_e( 'Attackers change address on every try, so failures are counted by account name. An account of yours in this list should get a new, long password, and ideally a new name that is not the site name.', 'murtadd' ); ?></p>
 			<?php
-			$failed = get_option( MURTADD_SEC_FAILED, array() );
-			$failed = is_array( $failed ) ? $failed : array();
+			$failed = murtadd_sec_failed_recent();
 			uasort(
 				$failed,
 				static function ( $x, $y ) {
