@@ -272,21 +272,60 @@ add_filter( 'rest_pre_dispatch', 'murtadd_sec_rest_guard', 5, 3 );
  * ---------------------------------------------------------------------- */
 
 /**
- * Add one to today's counter for an event. Thirty days are kept.
+ * Add one to today's counter for an event. Each hit is one atomic upsert on a
+ * small, non-autoloaded row for today (murtadd_security_tally_{key}_{Ymd}):
+ * no option is read, unserialised or rewritten, so a flood of refused
+ * XML-RPC requests costs one cheap write each. murtadd_sec_counts() folds
+ * past days into the thirty-day counts.
  *
  * @param string $key Event key.
  */
 function murtadd_sec_count( $key ) {
+	global $wpdb;
+	$name = 'murtadd_security_tally_' . sanitize_key( $key ) . '_' . gmdate( 'Ymd' );
+	$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->options} (option_name, option_value, autoload) VALUES (%s, '1', 'off') ON DUPLICATE KEY UPDATE option_value = option_value + 1", $name ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+}
+
+/**
+ * Counts for display: MURTADD_SEC_COUNTS plus the tally rows. Rows from past
+ * days are folded into MURTADD_SEC_COUNTS and deleted; today's stay in place.
+ *
+ * @return array date => array key => count, newest first.
+ */
+function murtadd_sec_counts() {
+	global $wpdb;
 	$counts = get_option( MURTADD_SEC_COUNTS, array() );
 	$counts = is_array( $counts ) ? $counts : array();
-	$day    = gmdate( 'Y-m-d' );
-	if ( ! isset( $counts[ $day ] ) ) {
-		$counts[ $day ] = array();
-		krsort( $counts );
-		$counts = array_slice( $counts, 0, 30, true );
+	$rows   = $wpdb->get_results( "SELECT option_name, option_value FROM {$wpdb->options} WHERE option_name LIKE 'murtadd\\_security\\_tally\\_%'" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+	$today  = gmdate( 'Ymd' );
+	$live   = array();
+	$done   = array();
+	foreach ( (array) $rows as $row ) {
+		if ( ! preg_match( '/^murtadd_security_tally_([a-z0-9_-]+)_(\d{8})$/', $row->option_name, $m ) ) {
+			continue;
+		}
+		if ( $m[2] === $today ) {
+			$live[ $m[1] ] = (int) $row->option_value;
+			continue;
+		}
+		$day                     = substr( $m[2], 0, 4 ) . '-' . substr( $m[2], 4, 2 ) . '-' . substr( $m[2], 6, 2 );
+		$counts[ $day ][ $m[1] ] = (int) ( $counts[ $day ][ $m[1] ] ?? 0 ) + (int) $row->option_value;
+		$done[]                  = $row->option_name;
 	}
-	$counts[ $day ][ $key ] = (int) ( $counts[ $day ][ $key ] ?? 0 ) + 1;
-	update_option( MURTADD_SEC_COUNTS, $counts, false );
+	krsort( $counts );
+	$counts = array_slice( $counts, 0, 30, true );
+	if ( $done ) {
+		update_option( MURTADD_SEC_COUNTS, $counts, false );
+		foreach ( $done as $name ) {
+			delete_option( $name );
+		}
+	}
+	$day = gmdate( 'Y-m-d' );
+	foreach ( $live as $key => $n ) {
+		$counts[ $day ][ $key ] = (int) ( $counts[ $day ][ $key ] ?? 0 ) + $n;
+	}
+	krsort( $counts );
+	return $counts;
 }
 
 /**
@@ -395,7 +434,7 @@ function murtadd_sec_attack_notice() {
 			$hit[] = sprintf( '%s (%d, %d)', $name, (int) $row['n'], count( (array) $row['ips'] ) );
 		}
 	}
-	$counts = get_option( MURTADD_SEC_COUNTS, array() );
+	$counts = murtadd_sec_counts();
 	$today  = (int) ( $counts[ gmdate( 'Y-m-d' ) ]['remote-password'] ?? 0 );
 	if ( ! $hit && ! $today ) {
 		return;
@@ -547,7 +586,7 @@ function murtadd_sec_is_seeded( $type, $title, $slug ) {
  * @return array
  */
 function murtadd_sec_gate( $data, $postarr ) {
-	if ( ! murtadd_sec_on( 'spam_gate' ) || ! in_array( $data['post_type'] ?? '', murtadd_sec_types(), true ) ) {
+	if ( ! murtadd_sec_on( 'spam_gate' ) || 'trash' === ( $data['post_status'] ?? '' ) || ! in_array( $data['post_type'] ?? '', murtadd_sec_types(), true ) ) {
 		return $data;
 	}
 	$public = in_array( $data['post_status'] ?? '', array( 'publish', 'future', 'private' ), true );
@@ -1181,9 +1220,7 @@ function murtadd_sec_render_tools() {
 		<section class="murtadd-sec-card">
 			<h2><?php esc_html_e( 'Attacks seen', 'murtadd' ); ?></h2>
 			<?php
-			$counts = get_option( MURTADD_SEC_COUNTS, array() );
-			$counts = is_array( $counts ) ? $counts : array();
-			krsort( $counts );
+			$counts = murtadd_sec_counts();
 			$labels = array(
 				'xmlrpc'          => __( 'XML-RPC requests refused', 'murtadd' ),
 				'fake-jetpack'    => __( 'of them posing as Jetpack', 'murtadd' ),

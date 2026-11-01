@@ -1,5 +1,10 @@
 # Changelog — Murtadd
 
+## 1.44.1 (2026-11-01)
+
+### Fixed (Security)
+- Security counters (refused XML-RPC, forged Jetpack, failed logins) now write one small upsert row per hit (`murtadd_security_tally_{key}_{Ymd}`), folded into `murtadd_security_counts` once a day, instead of rewriting the option on every blocked request. Moving spam to the Trash no longer runs the spam gate, which logged a "flagged-draft" line per trashed post and pushed real entries out of the capped log.
+
 ## 1.44.0 (2026-11-01)
 
 ### Added (Security: remote-publishing lockdown and spam clean-up)
