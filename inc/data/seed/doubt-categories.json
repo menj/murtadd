@@ -1,0 +1,18 @@
+{
+    "intellectual": {
+        "name": "Intellectual",
+        "description": "Reason, theodicy, philosophy."
+    },
+    "scriptural": {
+        "name": "Scriptural",
+        "description": "Hadith authenticity, textual variants, hard verses."
+    },
+    "emotional": {
+        "name": "Emotional",
+        "description": "Unanswered du‘a, burnout, grief."
+    },
+    "identity": {
+        "name": "Identity",
+        "description": "Belonging and community hurt."
+    }
+}

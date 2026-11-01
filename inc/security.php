@@ -694,7 +694,7 @@ add_filter( 'murtadd_gone_match', 'murtadd_sec_gone_match', 10, 2 );
  * ---------------------------------------------------------------------- */
 
 /**
- * Last login time and IP, kept from 1.44.0 on.
+ * Last login time and IP, kept from 1.45.0 on.
  *
  * @param string  $login Login name.
  * @param WP_User $user  User.

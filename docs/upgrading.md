@@ -1,6 +1,6 @@
 # Upgrading — Murtadd
 
-## 1.43.1 → 1.44.0
+## 1.43.3 → 1.45.0
 
 Additive. Upload the whole theme folder: new files are `inc/security.php`, `inc/security-detector.php`, `assets/js/security.js`, `assets/css/security.css` and their `.min` twins. No database step.
 

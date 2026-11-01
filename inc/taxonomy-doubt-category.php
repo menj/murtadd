@@ -47,15 +47,20 @@ function murtadd_seed_doubt_categories() {
 	if ( get_option( 'murtadd_doubt_categories_seeded' ) ) {
 		return;
 	}
-	$terms = array(
-		'intellectual' => array( __( 'Intellectual', 'murtadd' ), __( 'Reason, theodicy, philosophy.', 'murtadd' ) ),
-		'scriptural'   => array( __( 'Scriptural', 'murtadd' ), __( 'Hadith authenticity, textual variants, hard verses.', 'murtadd' ) ),
-		'emotional'    => array( __( 'Emotional', 'murtadd' ), __( 'Unanswered du‘a, burnout, grief.', 'murtadd' ) ),
-		'identity'     => array( __( 'Identity', 'murtadd' ), __( 'Belonging and community hurt.', 'murtadd' ) ),
-	);
+	// inc/data/seed/doubt-categories.json: slug => name and description.
+	$terms = murtadd_seed_read_json( 'doubt-categories' );
+	foreach ( $terms as $slug => $data ) {
+		if ( ! is_string( $slug ) || ! is_array( $data ) || ! is_string( $data['name'] ?? null ) || ! is_string( $data['description'] ?? null ) ) {
+			$terms = array();
+			break;
+		}
+	}
+	if ( ! $terms ) {
+		return; // Unreadable or malformed: try again on the next load.
+	}
 	foreach ( $terms as $slug => $data ) {
 		if ( ! term_exists( $slug, 'murtadd_doubt_category' ) ) {
-			wp_insert_term( $data[0], 'murtadd_doubt_category', array( 'slug' => $slug, 'description' => $data[1] ) );
+			wp_insert_term( $data['name'], 'murtadd_doubt_category', array( 'slug' => $slug, 'description' => $data['description'] ) );
 		}
 	}
 	update_option( 'murtadd_doubt_categories_seeded', 1 );

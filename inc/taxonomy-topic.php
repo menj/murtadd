@@ -34,10 +34,13 @@ function murtadd_seed_topics() {
 	if ( get_option( 'murtadd_topics_seeded' ) ) {
 		return;
 	}
-	$terms = array( 'theodicy', 'hadith-authenticity', 'apostasy-law', 'moral-scriptural', 'identity', 'testimony-patterns' );
-	foreach ( $terms as $slug ) {
+	$terms = murtadd_seed_load_map( 'default-topics' ); // inc/data/seed/default-topics.json: slug => name.
+	if ( ! $terms ) {
+		return; // Unreadable while an update unpacks: try again on the next load.
+	}
+	foreach ( $terms as $slug => $name ) {
 		if ( ! term_exists( $slug, 'murtadd_topic' ) ) {
-			wp_insert_term( ucwords( str_replace( '-', ' ', $slug ) ), 'murtadd_topic', array( 'slug' => $slug ) );
+			wp_insert_term( $name, 'murtadd_topic', array( 'slug' => $slug ) );
 		}
 	}
 	update_option( 'murtadd_topics_seeded', 1 );

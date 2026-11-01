@@ -1,11 +1,9 @@
 # Changelog — Murtadd
 
-## 1.44.1 (2026-11-01)
+## 1.45.0 (2026-11-01)
 
 ### Fixed (Security)
 - Security counters (refused XML-RPC, forged Jetpack, failed logins) now write one small upsert row per hit (`murtadd_security_tally_{key}_{Ymd}`), folded into `murtadd_security_counts` once a day, instead of rewriting the option on every blocked request. Moving spam to the Trash no longer runs the spam gate, which logged a "flagged-draft" line per trashed post and pushed real entries out of the capped log.
-
-## 1.44.0 (2026-11-01)
 
 ### Added (Security: remote-publishing lockdown and spam clean-up)
 Ported from the sister theme Abrahamic, written after the October 2026 attack on a sister site: password guessing through xmlrpc.php under forged Jetpack user agents, then a casino post every 18 to 20 minutes through wp.newPost. `inc/security.php`, `inc/security-detector.php`, `assets/js/security.js`, `assets/css/security.css` and their `.min` twins. All settings sit on the existing Security tab (option `murtadd_security`), on by default.
@@ -19,6 +17,22 @@ Ported from the sister theme Abrahamic, written after the October 2026 attack on
 ### Tests
 - `tests/SecurityTest.php`: the gate, the REST lock, the `.htaccess` sync and the 410 match.
 - `php tests/security-detector-test.php`: zero false positives over every seed doubt, rebuttal, guide, page, topic and glossary entry.
+
+## 1.43.3 (2026-10-29)
+
+### Changed (seed data)
+- The default terms are JSON in `inc/data/seed/`, like the rest of the seed data: the five schools (`schools.json`, was `murtadd_seed_schools()`), the four doubt categories with their descriptions (`doubt-categories.json`, was `murtadd_seed_doubt_categories()`) and the six default topics (`default-topics.json`, was `murtadd_seed_topics()`, whose names were built from the slugs with `ucwords()`; the file spells out the same names).
+- A file that cannot be read, or a malformed entry, now leaves the "seeded" flag unset, so the terms are made on a later load instead of never.
+- Checked against the old code with stubbed WordPress calls: the same terms, names, descriptions and options. `SeedDataTest` covers the three new files. The PHPUnit suite was not run here.
+
+## 1.43.2 (2026-10-29)
+
+### Changed (wording)
+- The guide The Islamic Dilemma: A Fair Guide for Doubters (`islamic-dilemma`, `inc/data/seed/guides.json`) now reads "it is not caught by either claim of the Islamic dilemma", the term the sister sites use.
+- `FARUQI.md` sets out the Faruqian core, al-tawḥīd as al-Fārūqī set it out in *Al Tawhid: Its Implications for Thought and Life*, which every site in the network rests on. `CLAUDE.md` points contributors to it first.
+
+### Existing sites
+- The guide seeder never rewrites a guide that exists, so the new wording reaches new installs only. On murtadd.org, edit the guide by hand: in the paragraph that ends "it is not caught by either … of the Islamic dilemma", replace the word after "either" with "claim".
 
 ## 1.43.1 (2026-10-27)
 

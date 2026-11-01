@@ -12,7 +12,7 @@ final class SeedDataTest extends TestCase {
 	/** Every seed file is valid JSON, and the data directory holds no PHP. */
 	public function test_seed_files_are_json_only() {
 		$dir = dirname( __DIR__ ) . '/inc/data/seed';
-		foreach ( array( 'topics', 'rebuttals', 'doubts', 'pages' ) as $name ) {
+		foreach ( array( 'topics', 'rebuttals', 'doubts', 'pages', 'schools', 'doubt-categories', 'default-topics' ) as $name ) {
 			$data = json_decode( (string) file_get_contents( "$dir/$name.json" ), true );
 			$this->assertIsArray( $data, "$name.json does not decode." );
 			$this->assertNotEmpty( $data, "$name.json is empty." );
