@@ -91,6 +91,10 @@ function murtadd_sanitize_security( $input ) {
 	return array(
 		'hide_authors'  => empty( $input['hide_authors'] ) ? 0 : 1,
 		'xmlrpc_off'    => empty( $input['xmlrpc_off'] ) ? 0 : 1,
+		'app_passwords_off' => empty( $input['app_passwords_off'] ) ? 0 : 1,
+		'rest_lock'     => empty( $input['rest_lock'] ) ? 0 : 1,
+		'spam_gate'     => empty( $input['spam_gate'] ) ? 0 : 1,
+		'spam_gone'     => empty( $input['spam_gone'] ) ? 0 : 1,
 		'headers'       => empty( $input['headers'] ) ? 0 : 1,
 		'login_slug'    => $slug,
 		'login_design'  => empty( $input['login_design'] ) ? 0 : 1,
@@ -558,6 +562,9 @@ function murtadd_render_settings_page() {
 				?>
 			</form>
 			<?php
+			if ( 'security' === $active && function_exists( 'murtadd_sec_render_tools' ) ) {
+				murtadd_sec_render_tools();
+			}
 			if ( 'upkeep' === $active ) {
 				murtadd_render_dropins_status();
 			}
@@ -588,7 +595,46 @@ function murtadd_render_security_tab() {
 			<th scope="row"><?php esc_html_e( 'XML-RPC', 'murtadd' ); ?></th>
 			<td>
 				<label><input type="checkbox" name="murtadd_security[xmlrpc_off]" value="1" <?php checked( (bool) murtadd_security( 'xmlrpc_off' ) ); ?>> <?php esc_html_e( 'Switch XML-RPC off', 'murtadd' ); ?></label>
-				<p class="description"><?php esc_html_e( 'The endpoint password-guessing scripts use. Leave it on only if you publish from the WordPress mobile app or Jetpack.', 'murtadd' ); ?></p>
+				<p class="description"><?php esc_html_e( 'The endpoint password-guessing scripts use: xmlrpc.php answers 403 and the pingback header goes. On Apache the theme also blocks xmlrpc.php in .htaccess, and removes that block when this is switched off. Leave XML-RPC on only if you publish from the WordPress mobile app or Jetpack.', 'murtadd' ); ?></p>
+				<?php
+				$murtadd_htaccess = (string) get_option( 'murtadd_security_htaccess', '' );
+				if ( 'written' === $murtadd_htaccess ) {
+					echo '<p class="murtadd-status-ok">' . esc_html__( 'The web server also refuses xmlrpc.php: the theme keeps a "Block xmlrpc.php" section in .htaccess and repairs it if it goes missing.', 'murtadd' ) . '</p>';
+				} elseif ( 'unavailable' === $murtadd_htaccess ) {
+					echo '<p class="murtadd-status-missing">' . esc_html__( 'The theme could not write .htaccess (the server is not Apache, or the file is read-only). WordPress still refuses xmlrpc.php; ask the host to deny it at the server as well.', 'murtadd' ) . '</p>';
+				}
+				?>
+			</td>
+		</tr>
+		<tr>
+			<th scope="row"><?php esc_html_e( 'Application passwords', 'murtadd' ); ?></th>
+			<td>
+				<label><input type="checkbox" name="murtadd_security[app_passwords_off]" value="1" <?php checked( (bool) murtadd_security( 'app_passwords_off' ) ); ?>> <?php esc_html_e( 'Turn off application passwords', 'murtadd' ); ?></label>
+				<p class="description"><?php esc_html_e( 'Stored application passwords stop working at once. Revoke them as well, below, so they cannot return if this is switched off.', 'murtadd' ); ?></p>
+			</td>
+		</tr>
+		<tr>
+			<th scope="row"><?php esc_html_e( 'REST API changes', 'murtadd' ); ?></th>
+			<td>
+				<label><input type="checkbox" name="murtadd_security[rest_lock]" value="1" <?php checked( (bool) murtadd_security( 'rest_lock' ) ); ?>> <?php esc_html_e( 'Allow REST API changes only from a logged-in browser', 'murtadd' ); ?></label>
+				<p class="description"><?php esc_html_e( 'Any logged-in request that creates, changes or deletes content must come from a browser session on this site with a valid nonce. Basic authentication and passwords sent in a header are refused. Reading through the API, the contact form and anything a visitor sends are unchanged.', 'murtadd' ); ?></p>
+			</td>
+		</tr>
+		<tr>
+			<th scope="row"><?php esc_html_e( 'Spam gate', 'murtadd' ); ?></th>
+			<td>
+				<label><input type="checkbox" name="murtadd_security[spam_gate]" value="1" <?php checked( (bool) murtadd_security( 'spam_gate' ) ); ?>> <?php esc_html_e( 'Hold suspected gambling spam as Pending', 'murtadd' ); ?></label>
+				<p class="description"><?php esc_html_e( 'A post, page, doubt, rebuttal, fatwa, letter or guide whose title, address or text reads as casino or betting spam is saved as Pending, never published, and logged below. So is anything published from outside the editor (XML-RPC, or REST without a browser session). Starter content is exempt.', 'murtadd' ); ?></p>
+			</td>
+		</tr>
+		<tr>
+			<th scope="row"><?php esc_html_e( 'Removed spam', 'murtadd' ); ?></th>
+			<td>
+				<label><input type="checkbox" name="murtadd_security[spam_gone]" value="1" <?php checked( (bool) murtadd_security( 'spam_gone' ) ); ?>> <?php esc_html_e( 'Answer 410 Gone on the address of removed spam', 'murtadd' ); ?></label>
+				<p class="description"><?php esc_html_e( 'Search engines drop a 410 address faster than a 404 one. Only addresses of spam moved to the trash from this tab are affected.', 'murtadd' ); ?></p>
+				<?php if ( defined( 'MURTADD_SECURITY_LOCK' ) && ! MURTADD_SECURITY_LOCK ) : ?>
+					<p class="murtadd-status-missing"><?php esc_html_e( 'MURTADD_SECURITY_LOCK is false in wp-config.php, so the XML-RPC, application password and REST switches are off whatever they show.', 'murtadd' ); ?></p>
+				<?php endif; ?>
 			</td>
 		</tr>
 		<tr>

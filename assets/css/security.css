@@ -1,0 +1,21 @@
+/* Murtadd: Security tab of Theme Options. Uses the tokens of admin.css. */
+.murtadd-sec { margin-top: 0; }
+.murtadd-sec h2 { font-size: 16px; margin: 28px 0 12px; color: var(--ma-accent, #0f6e56); }
+.murtadd-sec h3 { font-size: 13px; margin: 20px 0 8px; color: var(--ma-accent, #0f6e56); text-transform: uppercase; letter-spacing: .04em; }
+.murtadd-sec-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 12px 0; }
+.murtadd-sec-bar .murtadd-sec-form { margin: 0; }
+.murtadd-sec-status { color: #50575e; font-size: 13px; }
+.murtadd-sec-scroll { max-height: 420px; overflow: auto; border: 1px solid var(--ma-line, #e4e9e7); border-radius: 6px; }
+.murtadd-sec-scroll--tall { max-height: 560px; }
+.murtadd-sec-table { border: 0; }
+.murtadd-sec-table td, .murtadd-sec-table th { vertical-align: top; }
+.murtadd-sec-links { display: flex; gap: 10px; margin-top: 4px; font-size: 12px; }
+.murtadd-sec-reason { display: inline-block; margin: 0 4px 4px 0; padding: 1px 8px; border-radius: 999px; background: #f6efe2; color: #6b5328; font-size: 11px; line-height: 18px; }
+.murtadd-sec-list { margin: 8px 0 12px 18px; list-style: disc; }
+.murtadd-sec-list li { margin: 2px 0; }
+.murtadd-sec-card { margin: 24px 0; padding: 4px 20px 16px; background: var(--ma-surface, #fff); border: 1px solid var(--ma-line, #e4e9e7); border-radius: 8px; }
+.murtadd-sec-muted { color: var(--ma-muted, #5d6b66); font-size: 12px; }
+.murtadd-sec-form { display: inline-block; margin: 4px 8px 4px 0; }
+@media (max-width: 782px) {
+	.murtadd-sec-bar { flex-direction: column; align-items: stretch; }
+}

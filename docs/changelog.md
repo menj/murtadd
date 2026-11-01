@@ -1,5 +1,41 @@
 # Changelog — Murtadd
 
+## 1.45.1 (2026-11-01)
+
+### Fixed (Security)
+- The "Move selected to Trash" button stays off while a scan runs. Ticking boxes during the scan no longer turns it on; it comes on when the scan ends.
+- Every spam pattern carries the `i` and `u` flags, so capital Cyrillic ("КАЗИНО") is caught on a server without mbstring. `mb_strtolower()` is still used when it exists.
+- Folding a past day's tally row deletes it only if it still holds the value read. A hit that lands in between is kept and folded on a later call. The report shows 30 days including today, not 31.
+- Failed logins older than 24 hours are ignored in the admin notice and the report. A row whose first failure is more than a day old starts a new count.
+- The `.htaccess` state reads "written" only when `insert_with_markers()` returned true, and "unavailable" otherwise.
+- Starter content is exempt from the spam gate and the scan only when it carries the `_murtadd_seeded` meta, or during the theme's own seeding run (`$GLOBALS['murtadd_seeding']`) for a post that carries it. A matching title or slug no longer exempts anything, so a new post at the slug of a deleted seeded post is checked like any other. The seeders write the meta through `meta_input`. `murtadd_sec_backfill_seed_marker()` marks the starter content seeded before this release once, on `admin_init`.
+- Private posts are no longer moved to Pending. Only `publish` and `future` count as public; a private post that reads as spam is logged as `flagged-private`.
+- WP-CLI counts as publishing from outside the editor, as XML-RPC and header-login REST do. The theme's seeders stay exempt through the seed marker.
+- Spam moved to the Trash also answers 410 at its query permalink, `/?p=ID`.
+- `php tests/security-detector-test.php` fails with exit code 1 when a seed or content file it reads is missing or is not valid JSON.
+- `inc/hardening.php` reads the XML-RPC switch through `murtadd_sec_on()`, so `MURTADD_SECURITY_LOCK` set to false turns the RSD link, the pingback header and the method filters back on as well.
+
+### Docs
+- `docs/ssot.md` lists the `login_tagline` and `login_privacy` keys of `murtadd_security`.
+
+## 1.45.0 (2026-11-01)
+
+### Fixed (Security)
+- Security counters (refused XML-RPC, forged Jetpack, failed logins) now write one small upsert row per hit (`murtadd_security_tally_{key}_{Ymd}`), folded into `murtadd_security_counts` once a day, instead of rewriting the option on every blocked request. Moving spam to the Trash no longer runs the spam gate, which logged a "flagged-draft" line per trashed post and pushed real entries out of the capped log.
+
+### Added (Security: remote-publishing lockdown and spam clean-up)
+Ported from the sister theme Abrahamic, written after the October 2026 attack on a sister site: password guessing through xmlrpc.php under forged Jetpack user agents, then a casino post every 18 to 20 minutes through wp.newPost. `inc/security.php`, `inc/security-detector.php`, `assets/js/security.js`, `assets/css/security.css` and their `.min` twins. All settings sit on the existing Security tab (option `murtadd_security`), on by default.
+- XML-RPC off now answers 403 before WordPress parses the call, with daily counters (all requests, forged Jetpack agents). The one existing "Switch XML-RPC off" option also keeps a "Block xmlrpc.php" section in `.htaccess` on Apache (Apache 2.4 and 2.2 rules), checked at most hourly on `admin_init`, re-synced on save and on `after_switch_theme`, removed on `switch_theme` or when switched off. The tab says when the file cannot be written. The marker name is shared with the sister themes.
+- Application passwords off. REST writes while logged in only from a cookie session with a valid `wp_rest` nonce; reads, visitors and the contact form are unchanged.
+- Passwords sent through XML-RPC are refused, counted and logged, with an admin notice. Failed logins are counted by account name; ten in a day on a real account raise a notice.
+- Spam gate: a post, page, doubt, rebuttal, fatwa, letter or guide that reads as gambling spam, or is published from outside the editor, is saved as Pending and logged. Seeded content (`murtadd_seeded_slugs`, the activation pages and the seed files) is exempt.
+- Tools: batch scan and move to Trash, 410 Gone for trashed spam (through a new `murtadd_gone_match` filter in `inc/gone.php`), empty spam categories deleted on request only, revoke application passwords, log out everyone else, reports and a capped security log.
+- Emergency switch: `define( 'MURTADD_SECURITY_LOCK', false );` in `wp-config.php` turns the XML-RPC, application password and REST locks off.
+
+### Tests
+- `tests/SecurityTest.php`: the gate, the REST lock, the `.htaccess` sync and the 410 match.
+- `php tests/security-detector-test.php`: zero false positives over every seed doubt, rebuttal, guide, page, topic and glossary entry.
+
 ## 1.43.3 (2026-10-29)
 
 ### Changed (seed data)

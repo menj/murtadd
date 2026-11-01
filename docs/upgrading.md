@@ -1,5 +1,14 @@
 # Upgrading — Murtadd
 
+## 1.43.3 → 1.45.0
+
+Additive. Upload the whole theme folder: new files are `inc/security.php`, `inc/security-detector.php`, `assets/js/security.js`, `assets/css/security.css` and their `.min` twins. No database step.
+
+1. **New Security switches, on by default:** application passwords off, REST changes only from a logged-in browser, the spam gate and 410 Gone for removed spam. Anything that publishes with an application password or through XML-RPC stops working; posts it sends wait as Pending.
+2. **XML-RPC off now also writes `.htaccess` on Apache** (a "Block xmlrpc.php" section). Switching XML-RPC back on removes it.
+3. **Locked out of a remote tool?** Add `define( 'MURTADD_SECURITY_LOCK', false );` to `wp-config.php`.
+4. Clear any page cache.
+
 ## 1.42.0 → 1.42.1
 
 Drop-in. Upload the whole theme folder: new files are `inc/data/seed/topics.json`, `rebuttals.json`, `doubts.json` and `pages.json`, and `inc/seed-data.php` now holds only the code that reads them. Ship the four JSON files with it; without them the seeder creates no entries and activation leaves the five written pages uncreated until the files are back; nothing fails. No database step, and nothing already on the site changes.

@@ -86,11 +86,27 @@ function murtadd_required_pages() {
 }
 
 /**
+ * Run murtadd_create_missing_pages_run() inside the seeding flag, which lets the spam gate
+ * (inc/security.php) pass starter content that carries the seed marker.
+ *
+ * @return mixed What murtadd_create_missing_pages_run() returns.
+ */
+function murtadd_create_missing_pages() {
+	$was                        = ! empty( $GLOBALS['murtadd_seeding'] );
+	$GLOBALS['murtadd_seeding'] = true;
+	try {
+		return murtadd_create_missing_pages_run();
+	} finally {
+		$GLOBALS['murtadd_seeding'] = $was;
+	}
+}
+
+/**
  * Create any missing page. Existing pages are never touched.
  *
  * @return string[] Slugs created on this run.
  */
-function murtadd_create_missing_pages() {
+function murtadd_create_missing_pages_run() {
 	$created = array();
 	$order   = 0;
 
@@ -111,6 +127,7 @@ function murtadd_create_missing_pages() {
 				'post_title'   => $page['title'],
 				'post_content' => $page['body'],
 				'post_status'  => 'publish',
+				'meta_input'   => array( '_murtadd_seeded' => 1 ),
 				'menu_order'   => $order,
 			)
 		);
