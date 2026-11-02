@@ -1,5 +1,13 @@
 # Changelog — Murtadd
 
+## 1.45.2 (2026-11-02)
+
+### Changed (wording)
+- The seed copy in `inc/data/seed/` (doubts, rebuttals and guides) follows the owner's writing style. About 40 sentences that said what something is not before saying what it is now state the claim alone. Four rhetorical uses of "nobody" read "no one", "showcase" and "boast" give way to plain words, and two runs of sentences with the same opening are varied. Facts, figures, citations, links and quotations are unchanged.
+
+### Existing sites
+- The seeder never rewrites an entry that exists, so the new wording reaches new installs only. On a live site, paste a revised entry from the seed files by hand if you want it.
+
 ## 1.45.1 (2026-11-01)
 
 ### Fixed (Security)
