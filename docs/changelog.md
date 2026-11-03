@@ -1,5 +1,9 @@
 # Changelog — Murtadd
 
+## 1.50.0 (2026-11-03)
+
+- Pixel icons from the owner: an open book beside the Sources heading of a rebuttal and on the Read the primary source button of a fatwa, and an envelope at the head of the contact form (`assets/images/`; `rebuttal-template.css`, `fatwa-index.css` and `contact.css` with their `.min` pairs). Each is animated WebP drawn at its own pixel size, for decoration only; the link text is unchanged. Readers who ask for reduced motion see a still first frame.
+
 ## 1.49.0 (2026-11-03)
 
 The JSON-LD graph now describes the whole page, and every type it had before stays.

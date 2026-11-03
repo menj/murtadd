@@ -20,3 +20,7 @@
 .murtadd-source-link { font-weight: 600; margin-left: 6px; }
 .murtadd-crosslink-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding-bottom: 56px; }
 @media (max-width: 700px) { .murtadd-crosslink-row { grid-template-columns: 1fr; } }
+
+/* The owner's retro open book (assets/images/book-open.webp) beside the Sources heading. Decoration only; still under reduced motion. */
+.murtadd-sources-panel .murtadd-kicker::before { content: ""; display: inline-block; width: 37px; height: 30px; margin-inline-end: 10px; vertical-align: middle; background: url(../images/book-open.webp) center / contain no-repeat; image-rendering: pixelated; }
+@media (prefers-reduced-motion: reduce) { .murtadd-sources-panel .murtadd-kicker::before { background-image: url(../images/book-open-static.webp); } }
