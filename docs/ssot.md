@@ -1,6 +1,6 @@
 # Murtadd — Single Source of Truth
 
-Version 1.48.0 · Child theme of Twenty Twenty-Five · murtadd.org
+Version 1.49.0 · Child theme of Twenty Twenty-Five · murtadd.org
 
 ## What this theme is
 
@@ -43,7 +43,7 @@ Every `murtadd-` class a template emits must have a rule in a stylesheet that is
 
 ## Head output
 
-`inc/meta-tags.php` owns the description/OG/Twitter tags and the robots rules; `inc/schema.php` owns JSON-LD, built by `murtadd_structured_data_node()` and printed by `murtadd_structured_data()`. The graph is the view's main node (`murtadd_structured_data_primary_node()`) plus the BreadcrumbList (`murtadd_breadcrumb_node()`); a view with one node prints it alone, as before. The owner keeps all schema.org markup, Google-supported or not, for GEO, AEO and AIO (decided 2026-11-03): a doubt is a QAPage, the FAQ page and doubt category archives carry an FAQPage, and the WebSite carries a SearchAction. Pinned in `tests/StructuredDataTest.php` and `tests/FaqSchemaTest.php`.
+`inc/meta-tags.php` owns the description/OG/Twitter tags and the robots rules; `inc/schema.php` owns JSON-LD, built by `murtadd_structured_data_node()` and printed by `murtadd_structured_data()`. The graph is the view's main node (`murtadd_structured_data_primary_node()`) plus the BreadcrumbList (`murtadd_breadcrumb_node()`); a view with one node prints it alone, as before. The owner keeps all schema.org markup, Google-supported or not, for GEO, AEO and AIO (decided 2026-11-03): a doubt is a QAPage, the FAQ page and doubt category archives carry an FAQPage, and the WebSite carries a SearchAction. `inc/schema-graph.php` adds the page frame (a WebPage of the right subtype, the sidebar and rail as WPSideBar, the footer as WPFooter), verses as Quotations of the Qur'an, the glossary terms an entry defines as a DefinedTermSet, and the featured image as an ImageObject; it marks only what the page shows. Pinned in `tests/StructuredDataTest.php`, `tests/FaqSchemaTest.php` and `tests/SchemaGraphTest.php`.
 
 **Title tag.** `inc/seo-title.php` builds every title as `<page title> | <site name>`, under 60 characters (`MURTADD_TITLE_MAX`, 59), and runs the same builder on `rank_math/frontend/title`. Beside " | murtadd.org" a page part has 45 characters. A page whose title is longer, or shared with another page, gets a page part in `inc/data/seo-titles.json`, keyed `post_type/slug`; check a new or changed title against `tests/TitleTest.php` before it is committed. The same file prints the canonical link on archives and the image sitemap.
 

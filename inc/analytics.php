@@ -54,6 +54,18 @@ function murtadd_readable_text( $post_id = 0 ) {
 }
 
 /**
+ * Words in plain text, in any script. str_word_count() sees only ASCII
+ * letters, so Arabic counted as nothing.
+ *
+ * @param string $text Plain text.
+ * @return int
+ */
+function murtadd_count_words( $text ) {
+	$n = preg_match_all( "/[\\p{L}\\p{M}'\u{2019}]+/u", (string) $text );
+	return $n ? (int) $n : 0;
+}
+
+/**
  * Word count.
  *
  * @param int $post_id Post ID.
@@ -64,7 +76,7 @@ function murtadd_word_count( $post_id = 0 ) {
 	if ( '' === trim( $text ) ) {
 		return 0;
 	}
-	return str_word_count( $text );
+	return murtadd_count_words( $text );
 }
 
 /**
