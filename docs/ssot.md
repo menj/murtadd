@@ -87,7 +87,7 @@ Taxonomies: `murtadd_topic` (shared, flat, seeded 6 terms, `/topic/`), `murtadd_
 | Option | Keys | Defaults |
 |---|---|---|
 | murtadd_colours | accent, accent_tint | #0f6e56, #eefaf7 |
-| murtadd_cross_links | ce_base_url, bismika_base_url, show_counterpart, show_quiz_card | empty (links hidden), empty, 1, 1 |
+| murtadd_cross_links | ce_base_url, bismika_base_url, show_counterpart, show_quiz_card | empty (links hidden; the quiz card alone falls back to https://compelling-evidence.com until the option is saved), empty, 1, 1 |
 | murtadd_contextual_links | own_enabled, sister_enabled, own_max, sister_max, extra, excluded | 1, 1, 4, 3, empty, empty |
 | murtadd_security | hide_authors, xmlrpc_off, app_passwords_off, rest_lock, spam_gate, spam_gone, headers, login_slug, login_design, login_message, login_tagline, login_privacy | 1, 1, 1, 1, 1, 1, 1, empty (private login off), 1, empty, empty, 1 |
 | murtadd_upkeep | gone_paths, maintenance, error_pages | empty, 0, 1 |

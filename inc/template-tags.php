@@ -591,7 +591,8 @@ function murtadd_quiz_url() {
 	if ( '0' === (string) ( $o['show_quiz_card'] ?? '1' ) ) {
 		return '';
 	}
-	$base = trim( (string) ( $o['ce_base_url'] ?? '' ) );
+	// Never saved: use the default address the settings page shows. Saved empty: hide the card.
+	$base = trim( (string) ( array_key_exists( 'ce_base_url', $o ) ? $o['ce_base_url'] : 'https://compelling-evidence.com' ) );
 	if ( '' === $base ) {
 		return '';
 	}

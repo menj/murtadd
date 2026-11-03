@@ -2,6 +2,8 @@
 
 ## 1.46.0 (2026-11-03)
 
+- Until the Linked sites options are saved, the starting-point card links to https://compelling-evidence.com. An address saved as empty still hides it.
+
 ### Added
 - A "Not sure where to start?" card on the home page and the Start Here page. Its button, "Find your starting point", opens the Compelling Evidence persona quiz at `<ce_base_url>/quiz/?from=murtadd` in the same tab. The only query argument is `from=murtadd`.
 - A "Starting-point card" switch on the Linked sites tab (`murtadd_cross_links[show_quiz_card]`, on by default). The card reuses the evidential case base URL, so clearing that URL hides it too.
