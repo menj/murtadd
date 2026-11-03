@@ -15,7 +15,11 @@ The site has a Journal. The owner decided on 2026-11-03 to keep the guides as th
 - The calendar: 8 October, the hypocrites the Prophet spared; 17 October, the Hudaybiyyah clause; 27 October, who may call a Muslim kafir; 16 November, faith that rises and falls; 3 December, the questions the Qur'an answered; 10 December, 1 Rajab 1448 by the Umm al-Qura calendar and the sacred months; 17 December, when someone who left Islam dies; 28 December, taking stock at the year's end.
 
 ### Upgrading
-- Activation now creates a `journal` page where it used to create `blog`. On an existing site, `murtadd_journal_page_once()` renames the seeded Blog page in place (same ID) and points the posts page at it only when the posts page was unset or still that page. A Blog page an editor made is left alone. `/blog/` answers with a 301 to the Journal from the legacy map.
+- Activation now creates a `journal` page where it used to create `blog`. On an existing site, `murtadd_journal_page_once()` renames the seeded Blog page in place (same ID) and points the posts page at it only when the posts page was unset or still that page. A Blog page an editor made is left alone. If a Journal page already exists beside the seeded Blog page, the Blog page goes back to draft and the posts page moves to the Journal. `/blog/` answers with a 301 to the posts page, wherever it is set.
+- The seeder takes a lock so two admin requests cannot insert the same post, and records the list only once every post exists, so a failed insert is retried.
+- With Rank Math, its Article becomes a BlogPosting and gains the Journal in `isPartOf`.
+- Guide pages, which share `single.php`, link back to Guides; only posts link back to the Journal.
+- `docs/setup.md` no longer says the Contact page needs a form or an address. It ships with one.
 
 ### Tests
 - New `tests/JournalTest.php` checks the calendar, titles under 60 characters, 700 to 1,100 words a post, links that resolve, one sister link a post, the copy rules, statuses by date, a second run that changes nothing, the page move, the BlogPosting node, and the CSS with its `.min` twin. `TitleTest` now counts the Journal titles.

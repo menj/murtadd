@@ -170,6 +170,76 @@ final class JournalTest extends TestCase {
 		$this->assertSame( 10, murtadd_test_hook_priority( 'admin_init', 'murtadd_maybe_seed_journal' ) );
 	}
 
+	/** A failed insert leaves the list unrecorded, so the next run retries it. */
+	public function test_failed_insert_is_retried() {
+		$GLOBALS['murtadd_fail_insert'] = array( 'they-ask-you' );
+		murtadd_maybe_seed_journal();
+		unset( $GLOBALS['murtadd_fail_insert'] );
+		$this->assertNull( get_page_by_path( 'they-ask-you', OBJECT, 'post' ) );
+		$this->assertFalse( get_option( 'murtadd_journal_seeded' ) );
+		$this->assertSame( 1, murtadd_maybe_seed_journal() );
+		$this->assertNotNull( get_page_by_path( 'they-ask-you', OBJECT, 'post' ) );
+		$this->assertSame( 0, murtadd_maybe_seed_journal() );
+	}
+
+	/** A run in progress holds the lock; a stale lock is taken over; the lock is always released. */
+	public function test_seeding_lock() {
+		update_option( 'murtadd_journal_seeding', time() );
+		$this->assertSame( 0, murtadd_maybe_seed_journal() );
+		$this->assertNull( get_page_by_path( 'they-ask-you', OBJECT, 'post' ) );
+		update_option( 'murtadd_journal_seeding', time() - 3600 );
+		$this->assertSame( 8, murtadd_maybe_seed_journal() );
+		$this->assertFalse( get_option( 'murtadd_journal_seeding' ) );
+	}
+
+	/** Seeded Blog page beside an existing Journal page: Blog to draft, posts page to the Journal. */
+	public function test_seeded_blog_beside_journal_is_retired() {
+		$blog = wp_insert_post( array( 'post_type' => 'page', 'post_name' => 'blog', 'post_title' => 'Blog', 'post_status' => 'publish' ) );
+		$GLOBALS['murtadd_test_meta'][ $blog ]['_murtadd_seeded'] = 1;
+		$journal = wp_insert_post( array( 'post_type' => 'page', 'post_name' => 'journal', 'post_title' => 'Journal' ) );
+		update_option( 'page_for_posts', $blog );
+		$this->assertSame( 'retired', murtadd_journal_page_once() );
+		$this->assertSame( 'draft', get_page_by_path( 'blog' )->post_status );
+		$this->assertSame( $journal, (int) get_option( 'page_for_posts' ) );
+
+		// An editor's Blog page beside the Journal is left published.
+		murtadd_test_reset_posts();
+		$GLOBALS['murtadd_test_meta'] = array();
+		wp_insert_post( array( 'post_type' => 'page', 'post_name' => 'blog', 'post_title' => 'Mine', 'post_status' => 'publish' ) );
+		wp_insert_post( array( 'post_type' => 'page', 'post_name' => 'journal', 'post_title' => 'Journal' ) );
+		$this->assertSame( 'present', murtadd_journal_page_once() );
+		$this->assertSame( 'publish', get_page_by_path( 'blog' )->post_status );
+	}
+
+	/** /blog/ goes to the posts page wherever it is. */
+	public function test_blog_redirect_follows_the_posts_page() {
+		$target = murtadd_legacy_redirect_map()['blog'];
+		$this->assertSame( 'https://murtadd.org/journal/', murtadd_legacy_redirect_target( $target ) );
+		update_option( 'page_for_posts', 12 );
+		murtadd_test_view( array( 'links' => array( 12 => 'https://murtadd.org/notes/' ) ) );
+		$this->assertSame( 'https://murtadd.org/notes/', murtadd_legacy_redirect_target( $target ) );
+	}
+
+	/** Rank Math's Article becomes a BlogPosting and gains the Journal in isPartOf. */
+	public function test_rank_math_article_gains_the_journal() {
+		murtadd_test_view( array( 'post' => (object) array( 'ID' => 31, 'post_type' => 'post', 'post_name' => 'they-ask-you', 'post_title' => 'They ask you' ) ) );
+		$ours = murtadd_structured_data_primary_node();
+		$rm   = array( 'article' => array( '@type' => 'Article', '@id' => 'https://murtadd.org/they-ask-you/#richSnippet', 'isPartOf' => array( '@id' => 'https://murtadd.org/they-ask-you/#webpage' ) ) );
+		$out  = murtadd_rank_math_merge( $rm, $ours );
+		$this->assertArrayNotHasKey( 'murtadd_article', $out );
+		$this->assertSame( 'BlogPosting', $out['article']['@type'] );
+		$ids = array_column( $out['article']['isPartOf'], '@id' );
+		$this->assertContains( 'https://murtadd.org/they-ask-you/#webpage', $ids, 'Rank Math\'s own isPartOf is kept.' );
+		$this->assertContains( 'https://murtadd.org/journal/#blog', $ids );
+	}
+
+	/** Guides share single.php: only a post links back to the Journal. */
+	public function test_single_back_link_by_type() {
+		$php = file_get_contents( dirname( __DIR__ ) . '/single.php' );
+		$this->assertMatchesRegularExpression( "/if \( 'post' === get_post_type\(\) \) : \?>\s*<a class=\"murtadd-back\" href=\"<\?php echo esc_url\( murtadd_journal_url\(\) \)/", $php );
+		$this->assertStringContainsString( "'Back to Guides'", $php );
+	}
+
 	public function test_bad_date_loads_nothing() {
 		$this->assertFalse( murtadd_seed_entry_valid( array( 'slug' => 'x' ), array( 'date' => 'string' ) ) );
 		$this->assertMatchesRegularExpression( '/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', murtadd_seed_journal()[0]['date'] );
@@ -203,7 +273,7 @@ final class JournalTest extends TestCase {
 		$this->assertArrayNotHasKey( 'blog', murtadd_required_pages() );
 		$this->assertSame( 'created', murtadd_journal_page_once() );
 		$this->assertSame( get_page_by_path( 'journal' )->ID, (int) get_option( 'page_for_posts' ) );
-		$this->assertSame( 'journal', murtadd_legacy_redirect_map()['blog']['slug'] );
+		$this->assertSame( 'posts', murtadd_legacy_redirect_map()['blog']['kind'] );
 	}
 
 	public function test_journal_url() {

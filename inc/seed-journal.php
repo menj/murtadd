@@ -83,14 +83,15 @@ function murtadd_journal_date_gmt( $date ) {
  * Run murtadd_seed_journal_posts_run() inside the seeding flag, which lets the spam gate
  * (inc/security.php) pass starter content that carries the seed marker.
  *
- * @param int|null $now Unix time; the current time when null.
+ * @param int|null  $now      Unix time; the current time when null.
+ * @param bool|null $complete Set to true when every post was created or found.
  * @return mixed What murtadd_seed_journal_posts_run() returns.
  */
-function murtadd_seed_journal_posts( $now = null ) {
+function murtadd_seed_journal_posts( $now = null, &$complete = null ) {
 	$was                        = ! empty( $GLOBALS['murtadd_seeding'] );
 	$GLOBALS['murtadd_seeding'] = true;
 	try {
-		return murtadd_seed_journal_posts_run( $now );
+		return murtadd_seed_journal_posts_run( $now, $complete );
 	} finally {
 		$GLOBALS['murtadd_seeding'] = $was;
 	}
@@ -99,11 +100,13 @@ function murtadd_seed_journal_posts( $now = null ) {
 /**
  * Insert the Journal posts. Idempotent.
  *
- * @param int|null $now Unix time; the current time when null.
+ * @param int|null  $now      Unix time; the current time when null.
+ * @param bool|null $complete Set to true when every post was created or found.
  * @return int Number created on this run.
  */
-function murtadd_seed_journal_posts_run( $now = null ) {
-	$created = 0;
+function murtadd_seed_journal_posts_run( $now = null, &$complete = null ) {
+	$created  = 0;
+	$complete = true;
 
 	foreach ( murtadd_seed_journal() as $p ) {
 		if ( murtadd_slug_was_seeded( 'post', $p['slug'] ) ) {
@@ -131,6 +134,7 @@ function murtadd_seed_journal_posts_run( $now = null ) {
 		);
 
 		if ( is_wp_error( $post_id ) || ! $post_id ) {
+			$complete = false; // Not recorded: the next run tries it again.
 			continue;
 		}
 
@@ -155,9 +159,26 @@ function murtadd_maybe_seed_journal() {
 	if ( get_option( 'murtadd_journal_seeded' ) === $hash ) {
 		return 0;
 	}
-	murtadd_journal_page_once();
-	$created = murtadd_seed_journal_posts();
-	update_option( 'murtadd_journal_seeded', $hash );
+	// One run at a time: two admin requests must not both insert a post.
+	// add_option() fails when the lock exists; a lock older than ten
+	// minutes is from a request that died, and is taken over.
+	if ( ! add_option( 'murtadd_journal_seeding', time(), '', false ) ) {
+		if ( time() - (int) get_option( 'murtadd_journal_seeding' ) < 600 ) {
+			return 0;
+		}
+		update_option( 'murtadd_journal_seeding', time(), false );
+	}
+	try {
+		murtadd_journal_page_once();
+		$complete = false;
+		$created  = murtadd_seed_journal_posts( null, $complete );
+		// Stored only when every post exists, so a failed insert is retried.
+		if ( $complete ) {
+			update_option( 'murtadd_journal_seeded', $hash );
+		}
+	} finally {
+		delete_option( 'murtadd_journal_seeding' );
+	}
 	return $created;
 }
 add_action( 'admin_init', 'murtadd_maybe_seed_journal' );
@@ -184,7 +205,10 @@ function murtadd_journal_url() {
  * or still the seeded Blog page; a choice the owner made is kept. /blog/
  * answers with a 301 from the legacy map (inc/legacy-redirects.php).
  *
- * @return string What was done: "renamed", "created", "present" or "".
+ * When a Journal page already exists beside the seeded Blog page, the Blog
+ * page is taken back to draft and the posts page moves to the Journal.
+ *
+ * @return string What was done: "renamed", "retired", "created", "present" or "".
  */
 function murtadd_journal_page_once() {
 	$done = '';
@@ -192,7 +216,17 @@ function murtadd_journal_page_once() {
 	$old  = ( $blog && get_post_meta( $blog->ID, '_murtadd_seeded', true ) ) ? (int) $blog->ID : 0;
 
 	$journal = get_page_by_path( 'journal' );
-	if ( $journal ) {
+	if ( $journal && $old && (int) $journal->ID !== $old ) {
+		// Both exist. The seeded Blog page goes back to draft, so /blog/
+		// falls to the legacy redirect. An editor's Blog page is never touched.
+		wp_update_post(
+			array(
+				'ID'          => $old,
+				'post_status' => 'draft',
+			)
+		);
+		$done = 'retired';
+	} elseif ( $journal ) {
 		$done = 'present';
 	} elseif ( $old ) {
 		$id = wp_update_post(

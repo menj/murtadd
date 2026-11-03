@@ -46,7 +46,7 @@ final class RedirectTest extends TestCase {
 			$this->assertArrayHasKey( 'kind', $target );
 			$this->assertArrayHasKey( 'slug', $target );
 			$this->assertArrayHasKey( 'note', $target, 'Each entry records why it maps where it does.' );
-			$this->assertContains( $target['kind'], array( 'page', 'topic', 'home' ) );
+			$this->assertContains( $target['kind'], array( 'page', 'topic', 'home', 'posts' ) );
 			$this->assertNotSame( '', trim( $target['note'] ) );
 		}
 	}

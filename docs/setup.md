@@ -26,7 +26,7 @@ Re-activating is therefore safe, and running on a site that is already configure
 
 ## What is still yours
 
-* **Contact and Privacy.** Every page ships written, but two need facts only the owner has. **Contact** needs a contact method (a form or an address); **Privacy** needs the host and its server logs, any plugins that store data, the legal basis, retention, and a contact route. Each page carries an HTML comment, visible only in the editor, listing what to add. The `home`, `journal`, and `start-here` templates do not render page content at all; `irtidad`, `about`, `faq`, `contact`, and `privacy` do.
+* **Contact and Privacy.** Every page ships written, and Privacy needs facts only the owner has. **Contact** already carries the theme's form (`[murtadd_contact]`) and needs nothing more; **Privacy** needs the host and its server logs, any plugins that store data, the legal basis, retention, and a contact route. Each page carries an HTML comment, visible only in the editor, listing what to add. The `home`, `journal`, and `start-here` templates do not render page content at all; `irtidad`, `about`, `faq`, `contact`, and `privacy` do.
 * **The fatwa index starts empty.** Until the first Fatwa entry is published, `/fatwa/` says the index is in preparation and is `noindex`, and the sidebar, front-page footer, search page and 404 page leave its link out. Nothing is invented to fill it.
 * **Letters are not seeded.** Add them under Letters as they are written.
 * **Favicon**: Settings → General → Site Icon, uploading `icons/site-icon-512.png`. See docs/settings.md.

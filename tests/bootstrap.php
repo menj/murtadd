@@ -158,6 +158,9 @@ function get_page_by_path( $slug, $output = OBJECT, $type = 'page' ) {
 	return $GLOBALS['murtadd_posts'][ $type ][ $slug ] ?? null;
 }
 function wp_insert_post( $args ) {
+	if ( ! empty( $GLOBALS['murtadd_fail_insert'] ) && in_array( $args['post_name'], (array) $GLOBALS['murtadd_fail_insert'], true ) ) {
+		return 0;
+	}
 	$id = $GLOBALS['murtadd_next_id']++;
 	$post = (object) array_merge( array( 'ID' => $id ), $args );
 	$GLOBALS['murtadd_posts'][ $args['post_type'] ][ $args['post_name'] ] = $post;
@@ -584,5 +587,16 @@ foreach ( array(
 	if ( ! function_exists( $murtadd_stub ) ) {
 		$GLOBALS['murtadd_stub_impl'][ $murtadd_stub ] = $murtadd_impl;
 		eval( 'function ' . $murtadd_stub . '( ...$a ) { return $GLOBALS["murtadd_stub_impl"]["' . $murtadd_stub . '"]( ...$a ); }' ); // phpcs:ignore Squiz.PHP.Eval.Discouraged -- test stubs.
+	}
+}
+
+if ( ! function_exists( 'add_option' ) ) {
+	/** Adds only when the option is absent, as WordPress does. */
+	function add_option( $name, $value = '', $deprecated = '', $autoload = null ) {
+		if ( array_key_exists( $name, $GLOBALS['murtadd_options'] ?? array() ) ) {
+			return false;
+		}
+		$GLOBALS['murtadd_options'][ $name ] = $value;
+		return true;
 	}
 }

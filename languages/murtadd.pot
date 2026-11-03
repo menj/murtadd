@@ -1600,3 +1600,7 @@ msgstr ""
 #: inc/activation.php:216
 msgid "posts page set to “Journal”"
 msgstr ""
+
+#: single.php:21
+msgid "Back to Guides"
+msgstr ""

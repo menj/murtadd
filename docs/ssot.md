@@ -71,7 +71,9 @@ A post is a BlogPosting in the one graph (`inc/schema.php`), `isPartOf` the WebS
 
 The copy is `inc/data/seed/journal.json`, inserted by `murtadd_seed_journal_posts()` (`inc/seed-journal.php`) under the starter-content invariants, with slugs recorded under `post` in `murtadd_seeded_slugs`. Every post carries a fixed `post_date` in site time: a past date is published, and a future one is stored as `future` and published by WordPress on its day. Never give a relative date, which drifts with the day the seeder runs. A second run changes nothing. Posts run 700 to 1,100 words, cite the Qur'an by surah and verse and hadith by collection and number, link to this site's pages and to one sister page, and have slugs without digits. Pinned in `tests/JournalTest.php`.
 
-Before 1.51.0 the posts page was a seeded `blog` page. `murtadd_journal_page_once()` renames that page to `journal` in place and moves the posts page with it only when the posts page was unset or still that page; an editor's own Blog page is kept. `/blog/` 301s to the Journal from the legacy map.
+Before 1.51.0 the posts page was a seeded `blog` page. `murtadd_journal_page_once()` renames that page to `journal` in place and moves the posts page with it only when the posts page was unset or still that page; an editor's own Blog page is kept. Where a Journal page already exists beside the seeded Blog page, the Blog page goes back to draft and the posts page moves to the Journal. `/blog/` 301s to the posts page wherever it is set (legacy map kind `posts`).
+
+The seeder runs under a lock (`murtadd_journal_seeding`, taken with `add_option()`, released in a `finally`, taken over after ten minutes), and stores the list hash only when every post was created or found, so a failed insert is tried again. With Rank Math, its Article becomes a BlogPosting and gains the Journal in `isPartOf`; nothing else is overwritten. `single.php` links a post back to the Journal and a guide back to Guides.
 
 ## Letters, and why they are separate
 

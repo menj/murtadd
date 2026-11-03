@@ -35,6 +35,7 @@ defined( 'ABSPATH' ) || exit;
  *   page  — a page by slug.
  *   topic — a murtadd_topic term archive.
  *   home  — the front page.
+ *   posts — the posts page (the Journal), wherever it is set.
  *
  * @return array<string,array{kind:string,slug:string,note:string}>
  */
@@ -101,8 +102,8 @@ function murtadd_legacy_redirect_map() {
 			'note' => 'Retired HTML sitemap.',
 		),
 		'blog'                           => array(
-			'kind' => 'page',
-			'slug' => 'journal',
+			'kind' => 'posts',
+			'slug' => '',
 			'note' => 'The posts page before 1.51.0; the Journal since.',
 		),
 		'privacy-policy'                 => array(
@@ -133,6 +134,11 @@ function murtadd_legacy_redirect_target( $target ) {
 
 	if ( 'home' === $target['kind'] ) {
 		return home_url( '/' );
+	}
+
+	// The posts page wherever it is, /journal/ until one is set.
+	if ( 'posts' === $target['kind'] ) {
+		return function_exists( 'murtadd_journal_url' ) ? murtadd_journal_url() : home_url( '/journal/' );
 	}
 
 	if ( 'page' === $target['kind'] ) {
