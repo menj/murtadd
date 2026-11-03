@@ -100,6 +100,7 @@ function murtadd_rename_seeded_slugs() {
 	}
 
 	$renamed = 0;
+	$pending = false;
 
 	foreach ( $map as $type => $pairs ) {
 		if ( function_exists( 'post_type_exists' ) && ! post_type_exists( $type ) ) {
@@ -112,17 +113,25 @@ function murtadd_rename_seeded_slugs() {
 			$post       = $current ? null : get_page_by_path( $old, OBJECT, $type );
 
 			if ( $post ) {
-				$result = wp_update_post(
+				wp_update_post(
 					array(
 						'ID'        => $post->ID,
 						'post_name' => $new,
 					),
 					true
 				);
-				if ( ! is_wp_error( $result ) && $result ) {
-					++$renamed;
-					$was_seeded = true;
+				// Success means the post now sits at exactly the new slug.
+				// WordPress may have failed, or given it a -2 suffix.
+				$moved = get_page_by_path( $new, OBJECT, $type );
+				if ( ! $moved || (int) $moved->ID !== (int) $post->ID ) {
+					// The post keeps its old address, which still serves it, and
+					// the new one sends a 302 there (see the redirect below). The
+					// new slug is left unrecorded and the run is retried.
+					$pending = true;
+					continue;
 				}
+				++$renamed;
+				$was_seeded = true;
 			}
 
 			// The new slug inherits the old one's record, so the seeder adopts
@@ -133,8 +142,54 @@ function murtadd_rename_seeded_slugs() {
 		}
 	}
 
-	update_option( 'murtadd_slug_renames_done', $hash );
+	if ( ! $pending ) {
+		update_option( 'murtadd_slug_renames_done', $hash );
+	}
 	return $renamed;
+}
+
+/**
+ * Whether a slug is the target of a rename that has not happened yet: a post
+ * still sits at one of its old slugs. The seeder skips such a slug, so it
+ * never installs a second copy beside the post waiting to be renamed.
+ *
+ * @param string $type Post type.
+ * @param string $slug New slug.
+ * @return bool
+ */
+function murtadd_slug_rename_pending( $type, $slug ) {
+	$map = murtadd_slug_renames();
+	foreach ( array_keys( isset( $map[ $type ] ) ? $map[ $type ] : array(), $slug, true ) as $old ) {
+		if ( get_page_by_path( $old, OBJECT, $type ) && ! get_page_by_path( $slug, OBJECT, $type ) ) {
+			return true;
+		}
+	}
+	return false;
+}
+
+/**
+ * The post still waiting at an old slug for a request to a new address.
+ *
+ * @param string $path Request path, with or without slashes.
+ * @return array{type:string,old:string}|null
+ */
+function murtadd_pending_rename_for_path( $path ) {
+	$parts = explode( '/', strtolower( trim( (string) $path, '/' ) ) );
+	if ( 2 !== count( $parts ) ) {
+		return null;
+	}
+	$type = array_search( $parts[0], murtadd_slug_rename_bases(), true );
+	if ( false === $type ) {
+		return null;
+	}
+	$map = murtadd_slug_renames();
+	foreach ( array_keys( isset( $map[ $type ] ) ? $map[ $type ] : array(), $parts[1], true ) as $old ) {
+		return array(
+			'type' => $type,
+			'old'  => (string) $old,
+		);
+	}
+	return null;
 }
 add_action( 'init', 'murtadd_rename_seeded_slugs', 80 );
 
@@ -159,13 +214,22 @@ function murtadd_redirect_renamed_slugs() {
 		$path = substr( $path, strlen( $home ) );
 	}
 
-	$hit = murtadd_renamed_slug_for_path( $path );
-	if ( ! $hit ) {
-		return;
+	$status = 301;
+	$hit    = murtadd_renamed_slug_for_path( $path );
+	if ( $hit ) {
+		$post = get_page_by_path( $hit['new'], OBJECT, $hit['type'] );
+	} else {
+		// A new address whose post is still at its old slug, because the
+		// rename failed: send a temporary redirect, since the rename is retried.
+		$hit = murtadd_pending_rename_for_path( $path );
+		if ( ! $hit ) {
+			return;
+		}
+		$post   = get_page_by_path( $hit['old'], OBJECT, $hit['type'] );
+		$status = 302;
 	}
 
-	$post = get_page_by_path( $hit['new'], OBJECT, $hit['type'] );
-	$url  = ( $post && 'publish' === $post->post_status ) ? (string) get_permalink( $post ) : '';
+	$url = ( $post && 'publish' === $post->post_status ) ? (string) get_permalink( $post ) : '';
 	if ( ! $url ) {
 		return; // Target missing: let the 404 stand rather than chain to another.
 	}
@@ -175,7 +239,7 @@ function murtadd_redirect_renamed_slugs() {
 		$url .= ( false === strpos( $url, '?' ) ? '?' : '&' ) . $query;
 	}
 
-	wp_safe_redirect( $url, 301 );
+	wp_safe_redirect( $url, $status );
 	exit;
 }
 add_action( 'template_redirect', 'murtadd_redirect_renamed_slugs' );

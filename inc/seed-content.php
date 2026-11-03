@@ -109,6 +109,9 @@ function murtadd_seed_rebuttal_posts_run() {
 	$created = 0;
 
 	foreach ( murtadd_seed_rebuttals() as $r ) {
+		if ( function_exists( 'murtadd_slug_rename_pending' ) && murtadd_slug_rename_pending( 'murtadd_rebuttal', $r['slug'] ) ) {
+			continue; // Its post still waits at the old slug; the rename adopts it.
+		}
 		if ( murtadd_slug_was_seeded( 'murtadd_rebuttal', $r['slug'] ) ) {
 			continue; // Seeded once already. If it is gone, an editor removed it.
 		}
@@ -172,6 +175,9 @@ function murtadd_seed_doubt_posts_run() {
 	$created = 0;
 
 	foreach ( murtadd_seed_doubts() as $d ) {
+		if ( function_exists( 'murtadd_slug_rename_pending' ) && murtadd_slug_rename_pending( 'murtadd_doubt', $d['slug'] ) ) {
+			continue; // Its post still waits at the old slug; the rename adopts it.
+		}
 		if ( murtadd_slug_was_seeded( 'murtadd_doubt', $d['slug'] ) ) {
 			continue; // Seeded once already. If it is gone, an editor removed it.
 		}

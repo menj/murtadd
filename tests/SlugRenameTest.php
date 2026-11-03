@@ -75,4 +75,24 @@ final class SlugRenameTest extends TestCase {
 		$this->assertSame( 0, murtadd_rename_seeded_slugs() );
 		$this->assertFalse( murtadd_slug_was_seeded( 'murtadd_doubt', 'quran-wife-beating-verse' ) );
 	}
+
+	/** A failed rename records nothing, is retried, and blocks a second copy. */
+	public function test_failed_rename_is_not_recorded_and_retried() {
+		$id = wp_insert_post( array( 'post_type' => 'murtadd_rebuttal', 'post_name' => 'quran-4-34-in-context', 'post_title' => 'x' ) );
+		murtadd_mark_slug_seeded( 'murtadd_rebuttal', 'quran-4-34-in-context' );
+
+		$GLOBALS['murtadd_fail_update'] = true;
+		$this->assertSame( 0, murtadd_rename_seeded_slugs() );
+		unset( $GLOBALS['murtadd_fail_update'] );
+
+		$this->assertFalse( murtadd_slug_was_seeded( 'murtadd_rebuttal', 'quran-wife-beating-verse-in-context' ) );
+		$this->assertTrue( murtadd_slug_rename_pending( 'murtadd_rebuttal', 'quran-wife-beating-verse-in-context' ) );
+		$this->assertSame( array( 'type' => 'murtadd_rebuttal', 'old' => 'quran-4-34-in-context' ), murtadd_pending_rename_for_path( '/rebuttals/quran-wife-beating-verse-in-context/' ) );
+
+		// The next request retries and succeeds.
+		$this->assertSame( 1, murtadd_rename_seeded_slugs() );
+		$this->assertSame( $id, get_page_by_path( 'quran-wife-beating-verse-in-context', OBJECT, 'murtadd_rebuttal' )->ID );
+		$this->assertTrue( murtadd_slug_was_seeded( 'murtadd_rebuttal', 'quran-wife-beating-verse-in-context' ) );
+		$this->assertFalse( murtadd_slug_rename_pending( 'murtadd_rebuttal', 'quran-wife-beating-verse-in-context' ) );
+	}
 }
