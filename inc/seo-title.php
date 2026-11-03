@@ -107,7 +107,7 @@ function murtadd_title_view_part() {
 	}
 	if ( is_home() ) {
 		$page = (int) get_option( 'page_for_posts' );
-		return array( $page ? get_the_title( $page ) : __( 'Blog', 'murtadd' ), '' );
+		return array( $page ? get_the_title( $page ) : __( 'Journal', 'murtadd' ), '' );
 	}
 	if ( is_singular() ) {
 		$post  = get_queried_object();

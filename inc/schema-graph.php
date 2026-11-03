@@ -455,7 +455,7 @@ function murtadd_webpage_node( $has_breadcrumb, $has_image ) {
 			$node['about'] = $about;
 		}
 	}
-	if ( is_singular( array( 'murtadd_rebuttal', 'murtadd_fatwa', 'murtadd_letter' ) ) ) {
+	if ( is_singular( array( 'murtadd_rebuttal', 'murtadd_fatwa', 'murtadd_letter', 'post' ) ) ) {
 		$node['mainEntity'] = array( '@id' => murtadd_current_url() . '#article' );
 	}
 	return $node;
@@ -472,7 +472,7 @@ function murtadd_sidebar_node() {
 	// Each item: name, url and, for the dropdowns, the taxonomy listed under it.
 	$items = array(
 		array( __( 'Home', 'murtadd' ), home_url( '/' ), '' ),
-		array( __( 'Blog', 'murtadd' ), home_url( '/blog/' ), '' ),
+		array( __( 'Journal', 'murtadd' ), function_exists( 'murtadd_journal_url' ) ? murtadd_journal_url() : home_url( '/journal/' ), '' ),
 		array( __( 'Topics', 'murtadd' ), get_post_type_archive_link( 'murtadd_doubt' ), 'murtadd_topic' ),
 	);
 	if ( function_exists( 'murtadd_fatwa_index_has_entries' ) && murtadd_fatwa_index_has_entries() ) {
@@ -571,16 +571,24 @@ function murtadd_footer_node() {
 	if ( '' !== $host ) {
 		$node['copyrightNotice'] = '© ' . $host;
 	}
-	if ( ! is_front_page() && function_exists( 'murtadd_has_secondary_links' ) && murtadd_has_secondary_links() ) {
+	if ( ! is_front_page() ) {
 		$nav = array(
 			'@type'       => 'SiteNavigationElement',
 			'@id'         => home_url( '/#secondary-nav' ),
 			'name'        => __( 'Secondary', 'murtadd' ),
 			'cssSelector' => '.murtadd-footer-links',
 		);
+		// The Journal link is always shown first (footer.php).
+		$parts = array(
+			array(
+				'@type' => 'SiteNavigationElement',
+				'name'  => __( 'Journal', 'murtadd' ),
+				'url'   => function_exists( 'murtadd_journal_url' ) ? murtadd_journal_url() : home_url( '/journal/' ),
+			),
+		);
+		$nav['hasPart'] = $parts;
 		// A menu, when assigned, is the editor's; the fallback links are known.
-		if ( ! ( function_exists( 'has_nav_menu' ) && has_nav_menu( 'footer_site' ) ) ) {
-			$parts = array();
+		if ( function_exists( 'murtadd_has_secondary_links' ) && murtadd_has_secondary_links() && ! ( function_exists( 'has_nav_menu' ) && has_nav_menu( 'footer_site' ) ) ) {
 			foreach ( murtadd_secondary_links() as $url => $label ) {
 				$parts[] = array(
 					'@type' => 'SiteNavigationElement',
@@ -757,7 +765,7 @@ function murtadd_schema_complete_graph( $nodes ) {
 			}
 		} elseif ( 'FAQPage' === $type && is_page( 'faq' ) ) {
 			$node = murtadd_schema_fill( $node, murtadd_webpage_frame( $has_breadcrumb, false ) );
-		} elseif ( 'Article' === $type && $post_id ) {
+		} elseif ( in_array( $type, array( 'Article', 'BlogPosting' ), true ) && $post_id ) {
 			$node = murtadd_schema_fill( $node, murtadd_article_details( $post_id ) );
 			$node = murtadd_schema_add_mentions( $node, array_merge( $glossary_refs, $verse_refs ) );
 			$topic = murtadd_schema_term_things( 'murtadd_topic' );

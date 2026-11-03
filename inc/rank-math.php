@@ -191,6 +191,14 @@ function murtadd_rank_math_merge( $data, $ours ) {
 					$data[ $key ][ $field ] = $node[ $field ];
 				}
 			}
+			// A Journal post: Rank Math's plain Article becomes a BlogPosting and
+			// gains the Journal (a Blog) in isPartOf, keeping what it lists.
+			if ( 'BlogPosting' === $node['@type'] ) {
+				if ( 'Article' === ( $data[ $key ]['@type'] ?? '' ) ) {
+					$data[ $key ]['@type'] = 'BlogPosting';
+				}
+				$data = murtadd_rank_math_merge_part_of( $data, $key, $node['isPartOf'] ?? array() );
+			}
 			// The author's About address, where Rank Math's author has none.
 			if ( ! empty( $node['author']['url'] ) && isset( $data[ $key ]['author'] ) && is_array( $data[ $key ]['author'] ) ) {
 				$data = murtadd_rank_math_author_url( $data, $key, (string) $node['author']['url'] );
@@ -198,6 +206,35 @@ function murtadd_rank_math_merge( $data, $ours ) {
 		}
 	}
 
+	return $data;
+}
+
+/**
+ * Add our isPartOf entries to a Rank Math node, skipping any @id it has.
+ *
+ * @param array $data  Rank Math's graph.
+ * @param mixed $key   Node key.
+ * @param array $parts Our isPartOf (one reference or a list).
+ * @return array
+ */
+function murtadd_rank_math_merge_part_of( $data, $key, $parts ) {
+	$parts = isset( $parts['@id'] ) ? array( $parts ) : (array) $parts;
+	$have  = $data[ $key ]['isPartOf'] ?? array();
+	$have  = isset( $have['@id'] ) ? array( $have ) : (array) $have;
+	$ids   = array();
+	foreach ( $have as $h ) {
+		if ( isset( $h['@id'] ) ) {
+			$ids[ (string) $h['@id'] ] = true;
+		}
+	}
+	foreach ( $parts as $p ) {
+		if ( is_array( $p ) && isset( $p['@id'] ) && ! isset( $ids[ (string) $p['@id'] ] ) ) {
+			$have[] = $p;
+		}
+	}
+	if ( $have ) {
+		$data[ $key ]['isPartOf'] = 1 === count( $have ) ? $have[0] : $have;
+	}
 	return $data;
 }
 

@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'MURTADD_VERSION', '1.50.0' );
+define( 'MURTADD_VERSION', '1.51.0' );
 
 /**
  * Asset suffix. Sources are served when SCRIPT_DEBUG is on, minified otherwise.
@@ -43,6 +43,7 @@ require_once get_stylesheet_directory() . '/inc/rank-math.php';
 require_once get_stylesheet_directory() . '/inc/seo-title.php';
 require_once get_stylesheet_directory() . '/inc/seed-content.php';
 require_once get_stylesheet_directory() . '/inc/seed-guides.php';
+require_once get_stylesheet_directory() . '/inc/seed-journal.php';
 require_once get_stylesheet_directory() . '/inc/slug-renames.php';
 require_once get_stylesheet_directory() . '/inc/search.php';
 require_once get_stylesheet_directory() . '/inc/meta-tags.php';
@@ -160,6 +161,10 @@ function murtadd_enqueue_assets() {
 
 	if ( is_singular( array( 'murtadd_doubt', 'murtadd_rebuttal' ) ) ) {
 		wp_enqueue_style( 'murtadd-rail', get_stylesheet_directory_uri() . '/assets/css/rail' . MURTADD_ASSET_SUFFIX . '.css', array( 'murtadd-main' ), MURTADD_VERSION );
+	}
+
+	if ( ( is_home() && ! is_front_page() ) || is_singular( 'post' ) ) {
+		wp_enqueue_style( 'murtadd-journal', get_stylesheet_directory_uri() . '/assets/css/journal' . MURTADD_ASSET_SUFFIX . '.css', array( 'murtadd-main' ), MURTADD_VERSION );
 	}
 
 	if ( is_singular( 'murtadd_letter' ) || is_post_type_archive( 'murtadd_letter' ) ) {

@@ -1,6 +1,6 @@
 <?php
 /**
- * Single blog post.
+ * Single Journal post (a standard post; inc/seed-journal.php).
  *
  * @package murtadd
  */
@@ -15,8 +15,12 @@ while ( have_posts() ) :
 	<article <?php post_class( 'murtadd-blog-post' ); ?>>
 		<header class="murtadd-entry-header">
 			<?php murtadd_breadcrumbs(); ?>
-			<a class="murtadd-back" href="<?php echo esc_url( home_url( '/blog/' ) ); ?>">← <?php esc_html_e( 'Back to blog', 'murtadd' ); ?></a>
-			<div class="murtadd-meta-row">
+			<?php if ( 'post' === get_post_type() ) : ?>
+				<a class="murtadd-back" href="<?php echo esc_url( murtadd_journal_url() ); ?>">← <?php esc_html_e( 'Back to the Journal', 'murtadd' ); ?></a>
+			<?php elseif ( get_post_type_archive_link( get_post_type() ) ) : ?>
+				<a class="murtadd-back" href="<?php echo esc_url( get_post_type_archive_link( get_post_type() ) ); ?>">← <?php esc_html_e( 'Back to Guides', 'murtadd' ); ?></a>
+			<?php endif; ?>
+			<div class="murtadd-meta-row murtadd-journal-dateline">
 				<span><?php echo esc_html( get_the_date() ); ?></span>
 				<span>·</span>
 				<span><?php echo esc_html( murtadd_read_time( get_the_content() ) ); ?></span>

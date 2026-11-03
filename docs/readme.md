@@ -7,7 +7,7 @@ A classic-template child theme of Twenty Twenty-Five for **murtadd.org**.
 | Theme slug | `murtadd` |
 | Text domain | `murtadd` |
 | Parent | `twentytwentyfive` |
-| Version | 1.50.0 |
+| Version | 1.51.0 |
 | Author | Langgam Fikir Enterprise |
 | Licence | GPLv2 or later |
 | Requires WP | 6.4+ |
@@ -20,6 +20,8 @@ Three custom post types answer three different needs. **Doubts** give a short, s
 A shared **Topic** taxonomy spans all three. A locked four-term **Doubt Category** taxonomy (intellectual, scriptural, emotional, identity) drives the homepage triage grid. A **School** taxonomy filters the fatwa index.
 
 The theme ships its own content: 12 Doubts and 17 Rebuttals, published on activation with their claims, sources, topics, categories, and cross-links already wired.
+
+Long-form **Guides** (`/guides/`) are a post type of their own. The **Journal** (`/journal/`) holds dated standard posts, seeded from `inc/data/seed/journal.json` by `inc/seed-journal.php` with fixed dates: a past date is published and a future one is scheduled.
 
 ## Directory structure
 

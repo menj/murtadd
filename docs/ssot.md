@@ -1,6 +1,6 @@
 # Murtadd — Single Source of Truth
 
-Version 1.50.0 · Child theme of Twenty Twenty-Five · murtadd.org
+Version 1.51.0 · Child theme of Twenty Twenty-Five · murtadd.org
 
 ## What this theme is
 
@@ -53,7 +53,7 @@ Every `murtadd-` class a template emits must have a rule in a stylesheet that is
 
 ## Starter content
 
-The content is JSON in `inc/data/seed/` (`topics.json`, `rebuttals.json`, `doubts.json`, `pages.json`, `guides.json`, and the default terms: `schools.json`, `doubt-categories.json`, `default-topics.json`), read and decoded by the loaders in `inc/seed-data.php` and never executed as PHP. `inc/seed-content.php` inserts it, and both run from the same setup routine as the page scaffolding, under the same two invariants: never overwrite, never destroy. Rebuttals must be inserted before Doubts, since a Doubt stores its related Rebuttal by ID.
+The content is JSON in `inc/data/seed/` (`topics.json`, `rebuttals.json`, `doubts.json`, `pages.json`, `guides.json`, `journal.json`, and the default terms: `schools.json`, `doubt-categories.json`, `default-topics.json`), read and decoded by the loaders in `inc/seed-data.php` and never executed as PHP. `inc/seed-content.php` inserts it, and both run from the same setup routine as the page scaffolding, under the same two invariants: never overwrite, never destroy. Rebuttals must be inserted before Doubts, since a Doubt stores its related Rebuttal by ID.
 
 Links in `pages.json` are written as `{{url:/path/}}` tokens; `murtadd_seed_page_bodies()` resolves each with `esc_url( home_url() )` when the copy is loaded, so a site in a subdirectory links correctly. A seed file that is missing, not valid JSON or not the expected shape loads as an empty array, and the seeder then creates nothing from it.
 
@@ -61,7 +61,19 @@ Two constraints on the data. Every Doubt's `related` slug must name a Rebuttal t
 
 ## Guides
 
-`murtadd_guide` (`/guides/{slug}/`, `inc/cpt-guide.php`) holds long-form guides (1,500 words and more) for a reader working through a question at length. They are a post type, not blog posts, because they are evergreen and the sister sites link to fixed addresses: `/guides/islamic-dilemma/` is linked from all six. Never change a guide's slug. Guides render through `single.php` and `archive.php` and share the `murtadd_topic` terms. Their copy is `inc/data/seed/guides.json`, loaded by `murtadd_seed_guides()` and inserted by `murtadd_seed_guide_posts()` (`inc/seed-guides.php`) under the same invariants as the rest of the starter content: never overwrite, never destroy, never resurrect (slugs recorded under `murtadd_guide` in `murtadd_seeded_slugs`). Links are `{{url:/path/}}` tokens, resolved when a guide is inserted, and the sources list is appended to the stored content. The guide rules arrived inside 1.43.0, so `murtadd_guide_rewrite_once()` clears the rewrite stamp once and the existing flusher does the flush. Guides are written care-first and carry safety guidance wherever they touch risk; every hadith carries a shamela.ws link, with al-Albani's grading where scholars differ. Pinned in `tests/GuidesTest.php`.
+`murtadd_guide` (`/guides/{slug}/`, `inc/cpt-guide.php`) holds long-form guides (1,500 words and more) for a reader working through a question at length. Guides stay a post type of their own, separate from the Journal, because they are evergreen and the sister sites link to fixed addresses: `/guides/islamic-dilemma/` is linked from all six. Never change a guide's slug. Guides render through `single.php` and `archive.php` and share the `murtadd_topic` terms. Their copy is `inc/data/seed/guides.json`, loaded by `murtadd_seed_guides()` and inserted by `murtadd_seed_guide_posts()` (`inc/seed-guides.php`) under the same invariants as the rest of the starter content: never overwrite, never destroy, never resurrect (slugs recorded under `murtadd_guide` in `murtadd_seeded_slugs`). Links are `{{url:/path/}}` tokens, resolved when a guide is inserted, and the sources list is appended to the stored content. The guide rules arrived inside 1.43.0, so `murtadd_guide_rewrite_once()` clears the rewrite stamp once and the existing flusher does the flush. Guides are written care-first and carry safety guidance wherever they touch risk; every hadith carries a shamela.ws link, with al-Albani's grading where scholars differ. Pinned in `tests/GuidesTest.php`.
+
+## Journal
+
+The Journal (`/journal/`) holds dated posts: standard `post` entries on doubt, leaving and the rulings on apostasy. Guides stay separate and keep their addresses; nothing moves between the two. The posts page is the `journal` page, rendered by `home.php`; a post renders through `single.php`. Styles are in `assets/css/journal.css` (with `.min`), loaded only on those two views, light only. The sidebar and the footer bar link to the Journal through `murtadd_journal_url()`, which reads the posts page and falls back to `/journal/`.
+
+A post is a BlogPosting in the one graph (`inc/schema.php`), `isPartOf` the WebSite and the Journal as a Blog, and the WebPage's `mainEntity`.
+
+The copy is `inc/data/seed/journal.json`, inserted by `murtadd_seed_journal_posts()` (`inc/seed-journal.php`) under the starter-content invariants, with slugs recorded under `post` in `murtadd_seeded_slugs`. Every post carries a fixed `post_date` in site time: a past date is published, and a future one is stored as `future` and published by WordPress on its day. Never give a relative date, which drifts with the day the seeder runs. A second run changes nothing. Posts run 700 to 1,100 words, cite the Qur'an by surah and verse and hadith by collection and number, link to this site's pages and to one sister page, and have slugs without digits. Pinned in `tests/JournalTest.php`.
+
+Before 1.51.0 the posts page was a seeded `blog` page. `murtadd_journal_page_once()` renames that page to `journal` in place and moves the posts page with it only when the posts page was unset or still that page; an editor's own Blog page is kept. Where a Journal page already exists beside the seeded Blog page, the Blog page goes back to draft and the posts page moves to the Journal. `/blog/` 301s to the posts page wherever it is set (legacy map kind `posts`).
+
+The seeder runs under a lock (`murtadd_journal_seeding`, taken with `add_option()`, released in a `finally`, taken over after ten minutes), and stores the list hash only when every post was created or found, so a failed insert is tried again. With Rank Math, its Article becomes a BlogPosting and gains the Journal in `isPartOf`; nothing else is overwritten. `single.php` links a post back to the Journal and a guide back to Guides.
 
 ## Letters, and why they are separate
 
@@ -99,8 +111,8 @@ Taxonomies: `murtadd_topic` (shared, flat, seeded 6 terms, `/topic/`), `murtadd_
 ## Template map
 
 - `front-page.php` — hero, four-category grid, cross-link block, four-column footer (renders whenever a static front page is set).
-- `home.php` — blog index with right rail (ayah box + recently added).
-- `single.php` / `page.php` / `index.php` — blog post, generic page, fallback.
+- `home.php` — the Journal index at `/journal/`, with right rail (ayah box + recently added).
+- `single.php` / `page.php` / `index.php` — Journal post, generic page, fallback.
 - `page-start-here.php` — "Start Here" template (assign to slug `start-here`).
 - `archive-murtadd_doubt.php`, `archive-murtadd_rebuttal.php`, `archive-murtadd_fatwa.php` — CPT archives; the fatwa archive carries the GET filter form and table layout.
 - `single-murtadd_doubt.php`, `single-murtadd_rebuttal.php`, `single-murtadd_fatwa.php` — CPT singles.
@@ -212,6 +224,13 @@ The gradient appears in exactly three places: the hero, the active tab, and the 
 The version badge reads `MURTADD_VERSION` directly. It cannot drift, unlike the six files that state a version in text.
 
 Tabs run in the order the work is done: Setup, Content, Topics & schools, Linked sites, Contextual links, Colours, Profiles, Security, Upkeep, Docs. **The tab keys are load-bearing**: `settings_fields( 'murtadd_' . $active )` maps each key to its registered settings group, so relabel and reorder freely, but never rename a key — a renamed key silently detaches the tab from its settings and the fields will appear to save while going nowhere. Labels must name what a person has, not what WordPress calls it internally.
+
+## Owner decisions (record)
+
+- 2026-07-13: no dark mode and no testimonials (see Exclusions).
+- 2026-10-26: serve the Qur'an face as WOFF2 (see Arabic and the Qur'an face).
+- 2026-11-03: keep every schema.org type, and give addresses no verse number, count or year.
+- 2026-11-03: the site has a Journal. Guides stay as they are, a post type of their own at fixed addresses, and the Journal at `/journal/` holds dated standard posts beside them (see Journal).
 
 ## Exclusions (binding)
 

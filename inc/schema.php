@@ -11,6 +11,7 @@
  * Rebuttals  -> Article about a Claim, with the sources cited
  * Fatwa      -> Article
  * Letters    -> Article, genre "open letter"
+ * Journal    -> BlogPosting, part of the Journal (a Blog)
  * The page frame, scripture, glossary and images: inc/schema-graph.php
  * Front page -> WebSite + Organization
  *
@@ -154,12 +155,45 @@ function murtadd_structured_data_primary_node() {
 		);
 	}
 
-	if ( ! is_singular( array( 'murtadd_doubt', 'murtadd_rebuttal', 'murtadd_fatwa', 'murtadd_letter' ) ) ) {
+	if ( ! is_singular( array( 'murtadd_doubt', 'murtadd_rebuttal', 'murtadd_fatwa', 'murtadd_letter', 'post' ) ) ) {
 		return null;
 	}
 
 	$post_id = get_the_ID();
 	$type    = get_post_type();
+
+	// A Journal post is a dated entry in the Journal (inc/seed-journal.php).
+	if ( 'post' === $type ) {
+		$journal = function_exists( 'murtadd_journal_url' ) ? murtadd_journal_url() : home_url( '/journal/' );
+		$node    = array(
+			'@context'         => 'https://schema.org',
+			'@type'            => 'BlogPosting',
+			'@id'              => get_permalink() . '#article',
+			'headline'         => murtadd_schema_text( get_the_title() ),
+			'image'            => murtadd_schema_image(),
+			'datePublished'    => get_the_date( 'c' ),
+			'dateModified'     => get_the_modified_date( 'c' ),
+			'url'              => get_permalink(),
+			'mainEntityOfPage' => get_permalink(),
+			'articleSection'   => __( 'Journal', 'murtadd' ),
+			'publisher'        => murtadd_organization_node(),
+			'author'           => murtadd_author_node() ?: murtadd_organization_node(),
+			'isPartOf'         => array(
+				array( '@id' => home_url( '/#website' ) ),
+				array(
+					'@type' => 'Blog',
+					'@id'   => $journal . '#blog',
+					'name'  => __( 'Journal', 'murtadd' ),
+					'url'   => $journal,
+				),
+			),
+		);
+		$excerpt = (string) get_post_field( 'post_excerpt', $post_id );
+		if ( '' !== trim( $excerpt ) ) {
+			$node['description'] = murtadd_schema_text( $excerpt );
+		}
+		return $node;
+	}
 
 	// A Doubt is a question with an answer. Mark it up as one.
 	if ( 'murtadd_doubt' === $type ) {
@@ -473,7 +507,7 @@ function murtadd_current_url() {
 	if ( function_exists( 'is_home' ) && is_home() && ! is_front_page() ) {
 		$page = (int) get_option( 'page_for_posts' );
 		$link = $page ? get_permalink( $page ) : '';
-		return $link ? (string) $link : home_url( '/blog/' );
+		return $link ? (string) $link : home_url( '/journal/' );
 	}
 	return home_url( '/' );
 }

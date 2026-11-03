@@ -9,6 +9,8 @@ Fields: the claim (stated fairly, as circulated, no named individuals), claim so
 ## Fatwa entry (`murtadd_fatwa`, /fatwa/)
 Fields: scholar or body, era (classical/modern), position summary (own words, never verbatim, ~80-word soft cap), citation link to the primary source (required; renders as an outbound button). The archive is the filterable, sortable index; single pages carry the standing disclaimer that positions are summarized, not issued.
 
+## Journal post (`post`, /journal/)
+A standard post, dated. The posts page is the `journal` page; `home.php` lists the posts and `single.php` shows one. Seeded posts come from `inc/data/seed/journal.json` with `slug`, `title`, `date` (site time, `Y-m-d H:i:s`), `excerpt`, `body` and an optional `focus_keyword`. Guides stay separate: see `docs/ssot.md`.
 
 ## Letter (`murtadd_letter`, /letters/)
 

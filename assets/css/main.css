@@ -327,6 +327,9 @@ h1, h2, h3 { font-family: var(--murtadd-font-serif); line-height: 1.25; }
 	max-width: none; width: auto; /* Overrides --murtadd-measure: this bar bleeds. */
 }
 .murtadd-footer-copy { font: 500 10.5px var(--murtadd-font-sans); letter-spacing: 0.08em; text-transform: uppercase; color: var(--murtadd-text-muted); }
+/* The Journal link, then the secondary menu, on one line (footer.php). */
+.murtadd-footer-links { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; align-items: center; }
+.murtadd-footer-journal { flex: none; }
 .murtadd-footer-links .murtadd-secondary-list {
 	display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;
 }
