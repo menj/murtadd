@@ -210,17 +210,23 @@ function murtadd_glossary_term_nodes() {
 	if ( ! $matcher ) {
 		return array();
 	}
-	$text = (string) get_post_field( 'post_content', $post_id )
-		. ' ' . (string) get_post_meta( $post_id, '_murtadd_short_response', true )
-		. ' ' . (string) get_post_meta( $post_id, '_murtadd_position_summary', true );
-	if ( ! preg_match_all( $matcher['pattern'], wp_strip_all_tags( $text ), $m ) ) {
-		return array();
+	// The same scope as the tooltips: murtadd_glossary_apply() skips headings,
+	// quotations, Arabic and the like, so a term found only there is not
+	// defined on the page and gets no node.
+	$seen = array();
+	foreach ( array(
+		(string) get_post_meta( $post_id, '_murtadd_short_response', true ),
+		(string) get_post_meta( $post_id, '_murtadd_position_summary', true ),
+		(string) get_post_field( 'post_content', $post_id ),
+	) as $html ) {
+		if ( '' !== trim( $html ) ) {
+			murtadd_glossary_apply( '<div>' . $html . '</div>', $seen, 'murtadd-schema-term' );
+		}
 	}
 	$terms = murtadd_glossary_terms();
 	$nodes = array();
-	foreach ( $m[0] as $found ) {
-		$slug = $matcher['index'][ murtadd_glossary_key( $found ) ] ?? '';
-		if ( '' === $slug || isset( $nodes[ $slug ] ) || ! isset( $terms[ $slug ] ) ) {
+	foreach ( array_keys( $seen ) as $slug ) {
+		if ( ! isset( $terms[ $slug ] ) ) {
 			continue;
 		}
 		$t    = $terms[ $slug ];
@@ -463,27 +469,50 @@ function murtadd_webpage_node( $has_breadcrumb, $has_image ) {
  * @return array
  */
 function murtadd_sidebar_node() {
+	// Each item: name, url and, for the dropdowns, the taxonomy listed under it.
 	$items = array(
-		array( __( 'Home', 'murtadd' ), home_url( '/' ) ),
-		array( __( 'Blog', 'murtadd' ), home_url( '/blog/' ) ),
-		array( __( 'Topics', 'murtadd' ), get_post_type_archive_link( 'murtadd_doubt' ) ),
+		array( __( 'Home', 'murtadd' ), home_url( '/' ), '' ),
+		array( __( 'Blog', 'murtadd' ), home_url( '/blog/' ), '' ),
+		array( __( 'Topics', 'murtadd' ), get_post_type_archive_link( 'murtadd_doubt' ), 'murtadd_topic' ),
 	);
 	if ( function_exists( 'murtadd_fatwa_index_has_entries' ) && murtadd_fatwa_index_has_entries() ) {
-		$items[] = array( __( 'Fatwa', 'murtadd' ), get_post_type_archive_link( 'murtadd_fatwa' ) );
+		$items[] = array( __( 'Fatwa', 'murtadd' ), get_post_type_archive_link( 'murtadd_fatwa' ), 'murtadd_school' );
 	}
-	$items[] = array( __( 'Doubts', 'murtadd' ), get_post_type_archive_link( 'murtadd_doubt' ) );
-	$items[] = array( __( 'Rebuttals', 'murtadd' ), get_post_type_archive_link( 'murtadd_rebuttal' ) );
-	$items[] = array( __( 'Letters', 'murtadd' ), get_post_type_archive_link( 'murtadd_letter' ) );
+	$items[] = array( __( 'Doubts', 'murtadd' ), get_post_type_archive_link( 'murtadd_doubt' ), 'murtadd_doubt_category' );
+	$items[] = array( __( 'Rebuttals', 'murtadd' ), get_post_type_archive_link( 'murtadd_rebuttal' ), '' );
+	$items[] = array( __( 'Letters', 'murtadd' ), get_post_type_archive_link( 'murtadd_letter' ), '' );
 
 	$parts = array();
 	foreach ( $items as $item ) {
-		if ( $item[1] ) {
-			$parts[] = array(
-				'@type' => 'SiteNavigationElement',
-				'name'  => $item[0],
-				'url'   => (string) $item[1],
-			);
+		if ( ! $item[1] ) {
+			continue;
 		}
+		$part = array(
+			'@type' => 'SiteNavigationElement',
+			'name'  => $item[0],
+			'url'   => (string) $item[1],
+		);
+		if ( '' !== $item[2] ) {
+			// The dropdown sidebar.php prints: every term, empty ones included.
+			$sub   = array();
+			$found = get_terms( array( 'taxonomy' => $item[2], 'hide_empty' => false ) );
+			if ( is_array( $found ) ) {
+				foreach ( $found as $term ) {
+					$link = get_term_link( $term );
+					if ( is_string( $link ) && '' !== $link ) {
+						$sub[] = array(
+							'@type' => 'SiteNavigationElement',
+							'name'  => murtadd_schema_text( $term->name ),
+							'url'   => $link,
+						);
+					}
+				}
+			}
+			if ( $sub ) {
+				$part['hasPart'] = $sub;
+			}
+		}
+		$parts[] = $part;
 	}
 	return array(
 		'@type'       => 'WPSideBar',
@@ -721,7 +750,8 @@ function murtadd_schema_complete_graph( $nodes ) {
 					),
 				);
 			}
-			$rebuttal = $post_id ? (int) get_post_meta( $post_id, '_murtadd_related_rebuttal', true ) : 0;
+			// Only a published rebuttal, as the visible link (murtadd_related_link()).
+			$rebuttal = $post_id ? murtadd_related_link( '_murtadd_related_rebuttal', $post_id ) : 0;
 			if ( $rebuttal && get_permalink( $rebuttal ) ) {
 				$node['significantLink'] = array( (string) get_permalink( $rebuttal ) );
 			}

@@ -467,6 +467,14 @@ function murtadd_current_url() {
 		$link = get_post_type_archive_link( (string) get_query_var( 'post_type' ) );
 		return $link ? $link : home_url( '/' );
 	}
+	if ( function_exists( 'is_search' ) && is_search() ) {
+		return (string) get_search_link();
+	}
+	if ( function_exists( 'is_home' ) && is_home() && ! is_front_page() ) {
+		$page = (int) get_option( 'page_for_posts' );
+		$link = $page ? get_permalink( $page ) : '';
+		return $link ? (string) $link : home_url( '/blog/' );
+	}
 	return home_url( '/' );
 }
 

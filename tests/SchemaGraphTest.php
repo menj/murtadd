@@ -304,4 +304,67 @@ final class SchemaGraphTest extends TestCase {
 		$this->assertCount( 5, $out, 'Both verses and the rail are added, the sidebar is filled.' );
 		$this->assertSame( '.murtadd-sidebar', $out['side']['cssSelector'] );
 	}
+
+	public function test_glossary_nodes_follow_the_tooltip_scope() {
+		$GLOBALS['murtadd_test_fields'][5]['post_content'] = '<h2>Irtidad</h2><blockquote>Riddah</blockquote><p lang="ar">nafaqah</p><p>Imhal is respite.</p>';
+		murtadd_test_view( array( 'post' => $this->post( 'murtadd_doubt', 5, 'd', 'D' ) ) );
+		$names = array();
+		foreach ( $this->by_type( $this->graph(), 'DefinedTermSet' )[0]['hasDefinedTerm'] as $term ) {
+			$names[] = $term['name'];
+		}
+		$this->assertSame( array( 'imhal' ), $names, 'A term only in a heading, quotation or Arabic gets no tooltip and no node.' );
+	}
+
+	public function test_search_and_posts_page_have_their_own_url() {
+		murtadd_test_view( array( 'search' => 'riddah' ) );
+		$page = $this->by_type( $this->graph(), 'SearchResultsPage' )[0];
+		$this->assertSame( 'https://murtadd.org/search/riddah/', $page['url'] );
+		$this->assertSame( 'https://murtadd.org/search/riddah/#webpage', $page['@id'] );
+
+		murtadd_test_view( array( 'home' => true ) );
+		$page = $this->by_type( $this->graph(), 'CollectionPage' )[0];
+		$this->assertSame( 'https://murtadd.org/blog/', $page['url'] );
+
+		$GLOBALS['murtadd_options']['page_for_posts'] = 12;
+		murtadd_test_view( array( 'home' => true, 'links' => array( 12 => 'https://murtadd.org/articles/' ) ) );
+		$page = $this->by_type( $this->graph(), 'CollectionPage' )[0];
+		$this->assertSame( 'https://murtadd.org/articles/#webpage', $page['@id'] );
+	}
+
+	public function test_sidebar_lists_the_dropdown_links() {
+		murtadd_test_view(
+			array(
+				'archive'   => 'murtadd_doubt',
+				'all_terms' => array(
+					'murtadd_topic'          => array( $this->term( 'murtadd_topic', 'apostasy', 'Apostasy' ) ),
+					'murtadd_doubt_category' => array( $this->term( 'murtadd_doubt_category', 'emotional', 'Emotional' ) ),
+				),
+			)
+		);
+		$side  = $this->by_type( $this->graph(), 'WPSideBar' )[0];
+		$items = array_column( $side['hasPart'][0]['hasPart'], null, 'name' );
+		$this->assertSame( 'https://murtadd.org/topic/apostasy/', $items['Topics']['hasPart'][0]['url'] );
+		$this->assertSame( 'Emotional', $items['Doubts']['hasPart'][0]['name'] );
+		$this->assertArrayNotHasKey( 'hasPart', $items['Home'] );
+	}
+
+	public function test_word_count_counts_arabic() {
+		$this->assertSame( 5, murtadd_count_words( 'لا إكراه في الدين apostasy' ) );
+		$this->assertSame( 3, murtadd_count_words( "the jurists' word" ) );
+	}
+
+	public function test_significant_link_needs_a_published_rebuttal() {
+		$view = array(
+			'post'  => $this->post( 'murtadd_doubt', 5, 'd', 'D' ),
+			'meta'  => array( 5 => array( '_murtadd_doubt_statement' => 'Q?', '_murtadd_short_response' => 'A.', '_murtadd_related_rebuttal' => 8 ) ),
+			'links' => array( 8 => 'https://murtadd.org/rebuttals/r/' ),
+		);
+		murtadd_test_view( $view );
+		$qa = $this->by_type( $this->graph(), 'QAPage' )[0];
+		$this->assertSame( array( 'https://murtadd.org/rebuttals/r/' ), $qa['significantLink'] );
+
+		murtadd_test_view( $view + array( 'status' => array( 8 => 'draft' ) ) );
+		$qa = $this->by_type( $this->graph(), 'QAPage' )[0];
+		$this->assertArrayNotHasKey( 'significantLink', $qa );
+	}
 }

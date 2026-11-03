@@ -36,6 +36,11 @@ Two things remain yours:
 == Changelog ==
 = 1.49.0 =
 * The JSON-LD graph describes the whole page: the page type, the sidebar, rail and footer, the verses shown, the glossary terms defined and the featured image. Every type printed before stays, doubts stay QAPages and rebuttals keep their Claim. Letters become open-letter Articles.
+* A glossary term gets a DefinedTerm only where the page shows its tooltip. A term found only in a heading, a quotation or Arabic text gets none.
+* Search results and the blog page carry their own address as url and @id. Before, both took the home page's.
+* The sidebar node lists the Topics, Fatwa and Doubts dropdown links that sidebar.php prints.
+* Word counts and reading times count Arabic words. str_word_count() saw only Latin letters.
+* A doubt links its rebuttal as significantLink only once the rebuttal is published, as the page does.
 
 = 1.48.0 =
 * The doubt and the rebuttal on Qur'an 4:34 move to /doubts/quran-wife-beating-verse/ and /rebuttals/quran-wife-beating-verse-in-context/. A live site renames them in place once, and the old addresses answer with a 301.

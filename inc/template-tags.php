@@ -51,7 +51,7 @@ function murtadd_related_link( $meta_key, $post_id = 0 ) {
 
 /** Estimated read time from a string. */
 function murtadd_read_time( $text ) {
-	$words = str_word_count( wp_strip_all_tags( $text ) );
+	$words = murtadd_count_words( wp_strip_all_tags( $text ) );
 	$mins  = max( 1, (int) round( $words / 220 ) );
 	/* translators: %d: minutes */
 	return sprintf( _n( '%d min read', '%d min read', $mins, 'murtadd' ), $mins );
