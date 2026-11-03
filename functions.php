@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'MURTADD_VERSION', '1.46.0' );
+define( 'MURTADD_VERSION', '1.47.0' );
 
 /**
  * Asset suffix. Sources are served when SCRIPT_DEBUG is on, minified otherwise.
@@ -39,6 +39,7 @@ require_once get_stylesheet_directory() . '/inc/site-icon.php';
 require_once get_stylesheet_directory() . '/inc/activation.php';
 require_once get_stylesheet_directory() . '/inc/schema.php';
 require_once get_stylesheet_directory() . '/inc/rank-math.php';
+require_once get_stylesheet_directory() . '/inc/seo-title.php';
 require_once get_stylesheet_directory() . '/inc/seed-content.php';
 require_once get_stylesheet_directory() . '/inc/seed-guides.php';
 require_once get_stylesheet_directory() . '/inc/search.php';

@@ -12,13 +12,19 @@
  * when the graph has no node of its family; where it has one, the theme
  * fills fields that node leaves empty and never overwrites one.
  *
- *  - Doubts:    the QAPage (question and accepted answer) is added. No SEO
- *               plugin builds one from a doubt's statement and short response.
+ *  - Doubts:    Rank Math's Article gains the image where it has none; with
+ *               no Article in its graph, the theme's (the statement as
+ *               headline) is added.
  *  - Rebuttals: Rank Math's Article gains `about` (the Claim under review)
  *               and `citation` (the sources panel).
  *  - Fatwa:     Rank Math's Article gains `about` (the scholar or body) and
  *               `citation` (the primary source).
- *  - Front page: Rank Math's WebSite and Organization stand.
+ *  - Front page: Rank Math's WebSite and Organization stand, less the
+ *               sitelinks SearchAction, which Google no longer supports.
+ *  - Types Google does not support (FAQPage, QAPage, HowTo) are taken out
+ *               of the graph, whoever added them.
+ *  - Title:     the tag reads "<page> | <site name>" under 60 characters,
+ *               built by murtadd_document_title() (inc/seo-title.php).
  *  - Breadcrumbs: the theme's BreadcrumbList is added only when Rank Math's
  *               graph has none; with Rank Math's breadcrumbs on, its trail
  *               is also the one shown (murtadd_breadcrumbs()).
@@ -93,6 +99,44 @@ function murtadd_schema_family( $type ) {
 }
 
 /**
+ * Take out of Rank Math's graph what Google Search does not support: FAQPage,
+ * QAPage and HowTo nodes, and the SearchAction on WebSite (the sitelinks
+ * search box was retired in November 2024).
+ *
+ * @param array $data Rank Math's entities, keyed by name.
+ * @return array
+ */
+function murtadd_rank_math_prune( $data ) {
+	foreach ( $data as $key => $node ) {
+		if ( ! is_array( $node ) || ! isset( $node['@type'] ) ) {
+			continue;
+		}
+		$types = (array) $node['@type'];
+		if ( array_intersect( $types, array( 'FAQPage', 'QAPage', 'HowTo' ) ) ) {
+			unset( $data[ $key ] );
+			continue;
+		}
+		if ( isset( $node['potentialAction'] ) ) {
+			$actions = isset( $node['potentialAction']['@type'] ) ? array( $node['potentialAction'] ) : (array) $node['potentialAction'];
+			$actions = array_values(
+				array_filter(
+					$actions,
+					static function ( $a ) {
+						return ! ( is_array( $a ) && isset( $a['@type'] ) && 'SearchAction' === $a['@type'] );
+					}
+				)
+			);
+			if ( $actions ) {
+				$data[ $key ]['potentialAction'] = 1 === count( $actions ) ? $actions[0] : $actions;
+			} else {
+				unset( $data[ $key ]['potentialAction'] );
+			}
+		}
+	}
+	return $data;
+}
+
+/**
  * Merge the theme's nodes into Rank Math's graph by family.
  *
  * Kept free of WordPress calls so it can be tested on plain arrays.
@@ -102,9 +146,14 @@ function murtadd_schema_family( $type ) {
  * @return array
  */
 function murtadd_rank_math_merge( $data, $ours ) {
-	if ( ! is_array( $data ) || ! is_array( $ours ) ) {
+	if ( ! is_array( $data ) ) {
 		return $data;
 	}
+	if ( ! is_array( $ours ) ) {
+		return murtadd_rank_math_prune( $data );
+	}
+
+	$data = murtadd_rank_math_prune( $data );
 
 	$nodes = isset( $ours['@graph'] ) && is_array( $ours['@graph'] ) ? $ours['@graph'] : array( $ours );
 
@@ -140,7 +189,7 @@ function murtadd_rank_math_merge( $data, $ours ) {
 
 		// The family is there: fill what it leaves empty, overwrite nothing.
 		foreach ( $present[ $family ] as $key ) {
-			foreach ( array( 'about', 'citation' ) as $field ) {
+			foreach ( array( 'about', 'citation', 'image' ) as $field ) {
 				if ( isset( $node[ $field ] ) && empty( $data[ $key ][ $field ] ) ) {
 					$data[ $key ][ $field ] = $node[ $field ];
 				}
@@ -172,8 +221,24 @@ function murtadd_rank_math_description( $description ) {
 	if ( '' !== trim( (string) $description ) ) {
 		return $description;
 	}
-	$ours = wp_strip_all_tags( (string) murtadd_meta_description() );
+	$ours = murtadd_meta_description_text();
 	return '' !== $ours ? $ours : $description;
+}
+
+/**
+ * The title tag, by the theme's rule, whatever Rank Math built.
+ *
+ * Rank Math stores a title per post (the guides were seeded with a bare
+ * one) and prints it without the site name or any length check. The rule
+ * is "<page> | <site name>" under 60 characters, so the theme's builder
+ * decides.
+ *
+ * @param string $title Rank Math's title.
+ * @return string
+ */
+function murtadd_rank_math_title( $title ) {
+	$ours = murtadd_document_title();
+	return '' !== $ours ? $ours : $title;
 }
 
 /**
@@ -194,4 +259,5 @@ if ( murtadd_rank_math_active() ) {
 	add_filter( 'rank_math/json_ld', 'murtadd_rank_math_json_ld', 99, 2 );
 	add_filter( 'rank_math/frontend/description', 'murtadd_rank_math_description' );
 	add_filter( 'rank_math/frontend/robots', 'murtadd_rank_math_robots' );
+	add_filter( 'rank_math/frontend/title', 'murtadd_rank_math_title', 99 );
 }

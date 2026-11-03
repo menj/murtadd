@@ -36,7 +36,6 @@ function murtadd_seed_guides() {
 			),
 			array(
 				'focus_keyword' => 'string',
-				'seo_title'     => 'string',
 			)
 		);
 	}
@@ -117,9 +116,6 @@ function murtadd_seed_guide_posts_run() {
 		update_post_meta( $post_id, '_murtadd_sources', $g['sources'] );
 		if ( ! empty( $g['focus_keyword'] ) ) {
 			update_post_meta( $post_id, 'rank_math_focus_keyword', $g['focus_keyword'] );
-		}
-		if ( ! empty( $g['seo_title'] ) ) {
-			update_post_meta( $post_id, 'rank_math_title', $g['seo_title'] );
 		}
 		wp_set_object_terms( $post_id, $g['topics'], 'murtadd_topic' );
 

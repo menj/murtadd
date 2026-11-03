@@ -7,7 +7,7 @@ A classic-template child theme of Twenty Twenty-Five for **murtadd.org**.
 | Theme slug | `murtadd` |
 | Text domain | `murtadd` |
 | Parent | `twentytwentyfive` |
-| Version | 1.46.0 |
+| Version | 1.47.0 |
 | Author | Langgam Fikir Enterprise |
 | Licence | GPLv2 or later |
 | Requires WP | 6.4+ |
@@ -69,7 +69,7 @@ Full detail in [setup.md](setup.md).
 
 ## Structured data
 
-`inc/schema.php` emits JSON-LD: Doubts as `QAPage` with an `acceptedAnswer`, Rebuttals as `Article` with the claim under `about` and their sources under `citation`, Fatwa entries as `Article`, and `WebSite` plus `Organization` on the front page. Readers arrive at this site by typing a question into a search box, so the markup is load-bearing rather than decorative.
+`inc/schema.php` emits JSON-LD of the types on Google's list of supported structured data only: Doubts as `Article` with the statement as headline, Rebuttals as `Article` with the claim under `about` and their sources under `citation`, Fatwa entries as `Article`, `WebSite` plus `Organization` on the front page, and a `BreadcrumbList` on inner views. Every Article carries headline, image, both dates and an author with a url. No FAQPage, QAPage or SearchAction. `inc/seo-title.php` builds the title tag (`<page title> | <site name>`, under 60 characters, page parts for long or shared titles in `inc/data/seo-titles.json`), prints the canonical link on archives and serves the image sitemap at `/murtadd-image-sitemap.xml`.
 
 ## Documentation
 

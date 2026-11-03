@@ -1,0 +1,6 @@
+{
+    "_comment": "Title-tag page parts, keyed post_type/slug, for pages whose own title is too long for the 59-character tag or is shared with another page. Read at render time, so a site seeded earlier gets them too.",
+    "murtadd_guide/islamic-dilemma": "The Islamic Dilemma: A Fair Guide",
+    "murtadd_guide/doubt-and-the-inner-life": "Doubt and the Inner Life: al-Ghazali",
+    "murtadd_doubt/womens-testimony-half": "Is a woman's testimony worth half?"
+}
