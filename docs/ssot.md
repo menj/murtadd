@@ -1,6 +1,6 @@
 # Murtadd — Single Source of Truth
 
-Version 1.47.0 · Child theme of Twenty Twenty-Five · murtadd.org
+Version 1.48.0 · Child theme of Twenty Twenty-Five · murtadd.org
 
 ## What this theme is
 
@@ -196,6 +196,8 @@ Extra phrases from the tab ("phrase | /path/" for this site, "phrase | https://�
 **Security** (`inc/hardening.php`, `inc/hide-login.php`). The site at this domain was compromised in August 2024, so the defaults close what WordPress leaves open: author enumeration (REST users for visitors; logged-in users keep them for the block editor, `?author=`, author archives, the users sitemap, account names in feeds and oEmbed), XML-RPC, and four response headers. Every switch reads through `murtadd_security( $key )`, whose defaults live in `murtadd_security_defaults()`. The private login address is a port of the WPS Hide Login request handling and is **off until an address is saved**; `define( 'MURTADD_HIDE_LOGIN', false );` in `wp-config.php` turns the module off whatever is saved, which is the documented way back in. It stands down while the WPS Hide Login plugin is active. Pinned in `tests/HardeningTest.php`. The login screen (`inc/login.php`, `assets/css/login.css`) is styled through WordPress's own login hooks and builds no login address, so it works at the private address; it loads `tokens → login` on `login_enqueue_scripts` only, every rule is scoped under `body.murtadd-login`, and the Colours tab's accents and the mark (custom logo, Site Icon, theme mark) arrive as custom properties through `wp_add_inline_style`. Pinned in `tests/LoginTest.php`.
 
 **Legacy redirects** (`inc/legacy-redirects.php`) map the pre-2024 murtadd.org paths, recovered from sitemap caches in an old backup, onto current pages and topic archives. Descriptors resolve at request time; a missing target is skipped, never chained. Depends on the `irtidad` page and the `apostasy-law` topic term both existing. Filter: `murtadd_legacy_redirect_map`.
+
+**Renamed slugs** (`inc/slug-renames.php`). Addresses carry no verse number, count or year (owner's rule, 2026-11-03); the number stays in the title. A renamed doubt or rebuttal is renamed in place on live sites, once per change to the map, and its new slug inherits the old one's seeded record. The old address answers with a 301 from the map, which never relies on `_wp_old_slug`. Entries stay in the map for good. Filter: `murtadd_slug_renames`.
 
 **410 Gone** (`inc/gone.php`, `410.php`) answers the paths on the Upkeep tab with `410 Gone`. Two rules keep it from ever retiring a real page, and both are pinned in `tests/GoneTest.php`: it runs only on a 404, and at `template_redirect` priority 20, after the legacy redirects at 10, which exit when they redirect. The list ships empty: no spam path from the compromise survives in the record.
 

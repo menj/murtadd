@@ -221,6 +221,27 @@ require_once __DIR__ . '/../inc/docs.php';
 require_once __DIR__ . '/../inc/legacy-redirects.php';
 require_once __DIR__ . '/../inc/gone.php';
 
+// ---- Renamed slugs. wp_update_post() moves a stub post to its new slug. ----
+function wp_update_post( $args, $wp_error = false ) {
+	if ( ! empty( $GLOBALS['murtadd_fail_update'] ) ) {
+		return 0;
+	}
+	foreach ( $GLOBALS['murtadd_posts'] as $type => $posts ) {
+		foreach ( $posts as $slug => $post ) {
+			if ( (int) $post->ID === (int) $args['ID'] ) {
+				unset( $GLOBALS['murtadd_posts'][ $type ][ $slug ] );
+				foreach ( $args as $k => $v ) {
+					$post->$k = $v;
+				}
+				$GLOBALS['murtadd_posts'][ $type ][ $post->post_name ] = $post;
+				return (int) $post->ID;
+			}
+		}
+	}
+	return 0;
+}
+require_once __DIR__ . '/../inc/slug-renames.php';
+
 require_once __DIR__ . '/../inc/social.php';
 function get_bloginfo( $k = '' ) { return 'Murtadd'; }
 function get_site_icon_url( $s = 512 ) { return $GLOBALS['murtadd_test_site_icon'] ?? ''; }
