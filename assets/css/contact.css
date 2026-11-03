@@ -126,3 +126,7 @@
 	.murtadd-contact { padding: 18px; }
 	.murtadd-contact__submit { width: 100%; justify-content: center; }
 }
+
+/* The owner's retro envelope (assets/images/envelope.webp) at the head of the form. Decoration only; still under reduced motion. */
+.murtadd-contact::before { content: ""; display: block; width: 45px; height: 52px; margin: 0 0 12px; background: url(../images/envelope.webp) center / contain no-repeat; image-rendering: pixelated; }
+@media (prefers-reduced-motion: reduce) { .murtadd-contact::before { background-image: url(../images/envelope-static.webp); } }

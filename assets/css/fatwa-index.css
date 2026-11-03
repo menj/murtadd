@@ -30,3 +30,7 @@
 	.murtadd-fatwa-head { display: none; }
 	.murtadd-fatwa-row { grid-template-columns: 1fr; }
 }
+
+/* The owner's retro open book (assets/images/book-open.webp) before "Read the primary source". Decoration only; still under reduced motion. */
+.murtadd-primary-source .murtadd-btn::before { content: ""; display: inline-block; width: 37px; height: 30px; background: url(../images/book-open.webp) center / contain no-repeat; image-rendering: pixelated; }
+@media (prefers-reduced-motion: reduce) { .murtadd-primary-source .murtadd-btn::before { background-image: url(../images/book-open-static.webp); } }

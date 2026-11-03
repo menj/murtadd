@@ -3,7 +3,7 @@ Contributors: murtadd.org
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.1
-Stable tag: 1.49.0
+Stable tag: 1.50.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -34,6 +34,8 @@ Two things remain yours:
 * Set the favicon at Settings → General → Site Icon (upload icons/site-icon-512.png), and set colours and cross-link URLs at Appearance → Theme Options.
 
 == Changelog ==
+= 1.50.0 =
+* A small pixel book beside a rebuttal's sources and a fatwa's primary source, and an envelope on the contact form. Still for readers who ask for reduced motion.
 = 1.49.0 =
 * The JSON-LD graph describes the whole page: the page type, the sidebar, rail and footer, the verses shown, the glossary terms defined and the featured image. Every type printed before stays, doubts stay QAPages and rebuttals keep their Claim. Letters become open-letter Articles.
 * A glossary term gets a DefinedTerm only where the page shows its tooltip. A term found only in a heading, a quotation or Arabic text gets none.

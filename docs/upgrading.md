@@ -1,5 +1,9 @@
 # Upgrading — Murtadd
 
+## 1.49.0 → 1.50.0
+
+Drop-in. Upload the whole theme folder: the new files are four images in `assets/images/`.
+
 ## 1.48.0 → 1.49.0
 
 Drop-in. Upload the whole theme folder: the new file is `inc/schema-graph.php`. Nothing to run; the graph is built on each request. Check a doubt, a rebuttal and a school page in the Schema Markup Validator once, with Rank Math on and off.

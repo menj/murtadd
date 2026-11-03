@@ -1,6 +1,6 @@
 # Murtadd — Single Source of Truth
 
-Version 1.49.0 · Child theme of Twenty Twenty-Five · murtadd.org
+Version 1.50.0 · Child theme of Twenty Twenty-Five · murtadd.org
 
 ## What this theme is
 
