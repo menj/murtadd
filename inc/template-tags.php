@@ -133,7 +133,7 @@ function murtadd_type_label( $post_type ) {
 		'murtadd_doubt'    => __( 'Doubt', 'murtadd' ),
 		'murtadd_rebuttal' => __( 'Rebuttal', 'murtadd' ),
 		'murtadd_fatwa'    => __( 'Fatwa', 'murtadd' ),
-		'post'             => __( 'Blog', 'murtadd' ),
+		'post'             => __( 'Journal', 'murtadd' ),
 		'page'             => __( 'Page', 'murtadd' ),
 	);
 	return $labels[ $post_type ] ?? '';
@@ -253,7 +253,7 @@ function murtadd_has_secondary_links() {
  * The sidebar previously rendered identically on every page: no wayfinding
  * for sighted users, nothing announced to screen readers.
  *
- * @param string $section One of home|blog|topics|fatwa|doubts|rebuttals.
+ * @param string $section One of home|journal|topics|fatwa|doubts|rebuttals|letters.
  */
 function murtadd_nav_state( $section ) {
 	$current = false;
@@ -262,6 +262,7 @@ function murtadd_nav_state( $section ) {
 		case 'home':
 			$current = is_front_page();
 			break;
+		case 'journal':
 		case 'blog':
 			$current = is_home() || ( is_singular( 'post' ) );
 			break;

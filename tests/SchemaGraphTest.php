@@ -323,7 +323,7 @@ final class SchemaGraphTest extends TestCase {
 
 		murtadd_test_view( array( 'home' => true ) );
 		$page = $this->by_type( $this->graph(), 'CollectionPage' )[0];
-		$this->assertSame( 'https://murtadd.org/blog/', $page['url'] );
+		$this->assertSame( 'https://murtadd.org/journal/', $page['url'] );
 
 		$GLOBALS['murtadd_options']['page_for_posts'] = 12;
 		murtadd_test_view( array( 'home' => true, 'links' => array( 12 => 'https://murtadd.org/articles/' ) ) );

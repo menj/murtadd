@@ -3,7 +3,7 @@ Contributors: murtadd.org
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.1
-Stable tag: 1.50.0
+Stable tag: 1.51.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -21,9 +21,9 @@ All CSS lives in /css/, all JavaScript in /js/. Colour overrides are injected th
 
 That is the whole required step. On activation the theme scaffolds itself:
 
-* Creates the pages it needs (home, blog, start-here, irtidad, about, faq, contact, privacy), assigns the "Start Here" template, and gives each one its written copy. Contact and Privacy carry notes, visible only in the editor, listing what the owner must add.
+* Creates the pages it needs (home, journal, start-here, irtidad, about, faq, contact, privacy), assigns the "Start Here" template, and gives each one its written copy. Contact and Privacy carry notes, visible only in the editor, listing what the owner must add.
 * Creates a "Site" menu from About / FAQ / Contact / Privacy and assigns it to the "Footer — Site column" location.
-* Points Reading at the new pages: static front page = Home, posts page = Blog.
+* Points Reading at the new pages: static front page = Home, posts page = Journal.
 * Registers the CPTs, taxonomies, and seed terms, then flushes rewrite rules.
 * Publishes the starter content: 19 doubts and 37 rebuttals, with their sources, topics, categories, and cross-links already wired.
 
@@ -34,6 +34,11 @@ Two things remain yours:
 * Set the favicon at Settings → General → Site Icon (upload icons/site-icon-512.png), and set colours and cross-link URLs at Appearance → Theme Options.
 
 == Changelog ==
+= 1.51.0 =
+* A Journal at /journal/: dated posts on doubt, leaving and the rulings on apostasy, beside the guides, which stay as they are. The menu and the footer link to it.
+* 8 posts ship with fixed dates: 3 from October, 1 on 16 November and 4 in December, one of them for 1 Rajab. A past date is published, a future date is scheduled, and a second run of the seeder changes nothing.
+* Each post is a BlogPosting in the page's one graph, part of the Journal as a Blog.
+* A site set up before this release keeps its posts page: the seeded Blog page becomes the Journal page, and /blog/ redirects to /journal/.
 = 1.50.0 =
 * A small pixel book beside a rebuttal's sources and a fatwa's primary source, and an envelope on the contact form. Still for readers who ask for reduced motion.
 = 1.49.0 =

@@ -31,7 +31,7 @@ defined( 'ABSPATH' ) || exit;
  * The pages the theme expects, in menu order.
  *
  * 'template' assigns a page template. 'body' is shown only on pages whose
- * template renders the_content(); the home, blog and start-here templates do
+ * template renders the_content(); the home, Journal and start-here templates do
  * not, so their copy is a note to whoever opens them in the editor. The copy
  * of the rest lives in inc/data/seed/pages.json, loaded by
  * murtadd_seed_page_bodies() (inc/seed-data.php).
@@ -47,9 +47,9 @@ function murtadd_required_pages() {
 			'body'     => __( 'This page exists so WordPress has a static front page to point at. The homepage is rendered by the theme (front-page.php); nothing written here is displayed.', 'murtadd' ),
 			'template' => '',
 		),
-		'blog'       => array(
-			'title'    => __( 'Blog', 'murtadd' ),
-			'body'     => __( 'This page exists so WordPress has a posts page to point at. The blog index is rendered by the theme (home.php); nothing written here is displayed.', 'murtadd' ),
+		'journal'    => array(
+			'title'    => __( 'Journal', 'murtadd' ),
+			'body'     => __( 'This page exists so WordPress has a posts page to point at. The Journal index is rendered by the theme (home.php); nothing written here is displayed.', 'murtadd' ),
 			'template' => '',
 		),
 		'start-here' => array(
@@ -201,7 +201,7 @@ function murtadd_create_footer_menu() {
 function murtadd_set_reading_options() {
 	$notes = array();
 	$home  = get_page_by_path( 'home' );
-	$blog  = get_page_by_path( 'blog' );
+	$blog  = get_page_by_path( 'journal' );
 
 	// Only claim the front page if the site is still on the default (latest posts).
 	if ( 'page' !== get_option( 'show_on_front' ) && $home ) {
@@ -212,7 +212,7 @@ function murtadd_set_reading_options() {
 
 	if ( ! (int) get_option( 'page_for_posts' ) && $blog ) {
 		update_option( 'page_for_posts', $blog->ID );
-		$notes[] = __( 'posts page set to “Blog”', 'murtadd' );
+		$notes[] = __( 'posts page set to “Journal”', 'murtadd' );
 	}
 
 	return $notes;

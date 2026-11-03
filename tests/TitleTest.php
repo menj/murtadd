@@ -36,6 +36,9 @@ final class TitleTest extends TestCase {
 				$titles[ "$file {$e['slug']}" ] = $short[ "$type/{$e['slug']}" ] ?? $e['title'];
 			}
 		}
+		foreach ( json_decode( file_get_contents( dirname( __DIR__ ) . '/inc/data/seed/journal.json' ), true ) as $e ) {
+			$titles[ "journal {$e['slug']}" ] = $short[ "post/{$e['slug']}" ] ?? $e['title'];
+		}
 		foreach ( murtadd_seed_page_bodies() as $slug => $body ) {
 			$titles[ "page $slug" ] = $short[ "page/$slug" ] ?? ucfirst( $slug );
 		}

@@ -1,6 +1,6 @@
 <?php
 /**
- * Blog index (posts page) — rows with right rail.
+ * Journal index (the posts page, /journal/): rows with right rail.
  *
  * @package murtadd
  */
@@ -12,7 +12,8 @@ get_header();
 <div class="murtadd-blog-layout">
 	<div class="murtadd-blog-main">
 		<header class="murtadd-archive-header">
-			<h1><?php esc_html_e( 'Blog', 'murtadd' ); ?></h1>
+			<h1><?php esc_html_e( 'Journal', 'murtadd' ); ?></h1>
+			<p class="murtadd-journal-intro"><?php esc_html_e( 'Dated notes on doubt, leaving and the rulings on apostasy. The long guides stay under Guides; this is where the dated writing goes.', 'murtadd' ); ?></p>
 		</header>
 		<div class="murtadd-article-list">
 			<?php if ( have_posts() ) : ?>
@@ -24,13 +25,13 @@ get_header();
 						<div>
 							<h2 class="murtadd-list-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h2>
 							<div class="murtadd-list-excerpt"><?php the_excerpt(); ?></div>
-							<div class="murtadd-list-meta"><span><?php echo esc_html( get_the_date() ); ?></span></div>
+							<div class="murtadd-list-meta murtadd-journal-dateline"><time datetime="<?php echo esc_attr( get_the_date( 'c' ) ); ?>"><?php echo esc_html( get_the_date() ); ?></time></div>
 						</div>
 					</article>
 				<?php endwhile; ?>
 				<?php the_posts_pagination(); ?>
 			<?php else : ?>
-				<p class="murtadd-empty"><?php esc_html_e( 'No posts yet.', 'murtadd' ); ?></p>
+				<p class="murtadd-empty"><?php esc_html_e( 'Nothing in the Journal yet.', 'murtadd' ); ?></p>
 			<?php endif; ?>
 		</div>
 	</div>

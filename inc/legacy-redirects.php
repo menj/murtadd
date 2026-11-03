@@ -100,6 +100,11 @@ function murtadd_legacy_redirect_map() {
 			'slug' => '',
 			'note' => 'Retired HTML sitemap.',
 		),
+		'blog'                           => array(
+			'kind' => 'page',
+			'slug' => 'journal',
+			'note' => 'The posts page before 1.51.0; the Journal since.',
+		),
 		'privacy-policy'                 => array(
 			'kind' => 'page',
 			'slug' => 'privacy',

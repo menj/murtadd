@@ -62,7 +62,7 @@ if ( $murtadd_ce || $murtadd_bismika ) :
 	<div class="murtadd-footer-col">
 		<h3><?php esc_html_e( 'Browse', 'murtadd' ); ?></h3>
 		<ul>
-			<li><a href="<?php echo esc_url( home_url( '/blog/' ) ); ?>"><?php esc_html_e( 'Blog', 'murtadd' ); ?></a></li>
+			<li><a href="<?php echo esc_url( murtadd_journal_url() ); ?>"><?php esc_html_e( 'Journal', 'murtadd' ); ?></a></li>
 			<li><a href="<?php echo esc_url( get_post_type_archive_link( 'murtadd_doubt' ) ); ?>"><?php esc_html_e( 'Doubts', 'murtadd' ); ?></a></li>
 			<li><a href="<?php echo esc_url( get_post_type_archive_link( 'murtadd_rebuttal' ) ); ?>"><?php esc_html_e( 'Rebuttals', 'murtadd' ); ?></a></li>
 			<?php if ( murtadd_fatwa_index_has_entries() ) : ?>

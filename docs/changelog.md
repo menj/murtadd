@@ -1,5 +1,25 @@
 # Changelog — Murtadd
 
+## 1.51.0 (2026-11-03)
+
+The site has a Journal. The owner decided on 2026-11-03 to keep the guides as they are and add dated posts beside them.
+
+### The Journal
+- Standard posts, listed at `/journal/` by the existing blog template (`home.php`) and shown by `single.php`. The heading reads Journal, a line under it says what the Journal is for, and each post leads with its date.
+- New stylesheet `assets/css/journal.css`, with `journal.min.css`, loaded only on the Journal and its posts. Light only, like the rest of the site.
+- The sidebar link reads Journal and goes to the posts page. The footer bar on every inner page starts with a Journal link, and the front page's Browse column has one too.
+- A post is a BlogPosting in the one graph: headline, dates, image, author, `description` from the excerpt, and `isPartOf` the WebSite and the Journal as a Blog. The WebPage names it as its `mainEntity`, and the footer node lists the Journal link.
+
+### The posts
+- 8 posts in `inc/data/seed/journal.json`, inserted by `inc/seed-journal.php` with a fixed `post_date`. A date already past is published. A date still ahead is stored as `future`, and WordPress publishes it on the day. Slugs are recorded under `post` in `murtadd_seeded_slugs`, so a second run creates nothing and a deleted post stays deleted.
+- The calendar: 8 October, the hypocrites the Prophet spared; 17 October, the Hudaybiyyah clause; 27 October, who may call a Muslim kafir; 16 November, faith that rises and falls; 3 December, the questions the Qur'an answered; 10 December, 1 Rajab 1448 by the Umm al-Qura calendar and the sacred months; 17 December, when someone who left Islam dies; 28 December, taking stock at the year's end.
+
+### Upgrading
+- Activation now creates a `journal` page where it used to create `blog`. On an existing site, `murtadd_journal_page_once()` renames the seeded Blog page in place (same ID) and points the posts page at it only when the posts page was unset or still that page. A Blog page an editor made is left alone. `/blog/` answers with a 301 to the Journal from the legacy map.
+
+### Tests
+- New `tests/JournalTest.php` checks the calendar, titles under 60 characters, 700 to 1,100 words a post, links that resolve, one sister link a post, the copy rules, statuses by date, a second run that changes nothing, the page move, the BlogPosting node, and the CSS with its `.min` twin. `TitleTest` now counts the Journal titles.
+
 ## 1.50.0 (2026-11-03)
 
 - Pixel icons from the owner: an open book beside the Sources heading of a rebuttal and on the Read the primary source button of a fatwa, and an envelope at the head of the contact form (`assets/images/`; `rebuttal-template.css`, `fatwa-index.css` and `contact.css` with their `.min` pairs). Each is animated WebP drawn at its own pixel size, for decoration only; the link text is unchanged. Readers who ask for reduced motion see a still first frame.

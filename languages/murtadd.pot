@@ -281,8 +281,8 @@ msgstr ""
 msgid "Browse"
 msgstr ""
 
-#: front-page.php:63 home.php:15 inc/activation.php:49 inc/template-tags.php:136 sidebar.php:28
-msgid "Blog"
+#: front-page.php:65 home.php:15 inc/activation.php:51 inc/template-tags.php:136 sidebar.php:28 footer.php:22 inc/schema.php inc/schema-graph.php inc/seed-journal.php
+msgid "Journal"
 msgstr ""
 
 #: front-page.php:64 inc/cpt-doubt.php:15 inc/settings-page.php:202 sidebar.php:59
@@ -333,8 +333,8 @@ msgstr ""
 msgid "Skip to content"
 msgstr ""
 
-#: home.php:33
-msgid "No posts yet."
+#: home.php:34
+msgid "Nothing in the Journal yet."
 msgstr ""
 
 #: home.php:40
@@ -1494,7 +1494,7 @@ msgid "The short answer"
 msgstr ""
 
 #: single.php:17
-msgid "Back to blog"
+msgid "Back to the Journal"
 msgstr ""
 
 #: taxonomy-murtadd_doubt_category.php:36
@@ -1587,4 +1587,16 @@ msgstr ""
 
 #: templates/page-start-here.php:49
 msgid "The claims, stated as fairly as they circulate — then answered with sources you can check yourself."
+msgstr ""
+
+#: home.php:16
+msgid "Dated notes on doubt, leaving and the rulings on apostasy. The long guides stay under Guides; this is where the dated writing goes."
+msgstr ""
+
+#: inc/activation.php:52
+msgid "This page exists so WordPress has a posts page to point at. The Journal index is rendered by the theme (home.php); nothing written here is displayed."
+msgstr ""
+
+#: inc/activation.php:216
+msgid "posts page set to “Journal”"
 msgstr ""

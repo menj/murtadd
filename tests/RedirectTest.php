@@ -58,7 +58,7 @@ final class RedirectTest extends TestCase {
 	 * an empty URL at runtime and the reader keeps their 404.
 	 */
 	public function test_page_targets_are_scaffolded_by_setup() {
-		$scaffolded = array( 'home', 'blog', 'start-here', 'irtidad', 'about', 'faq', 'contact', 'privacy' );
+		$scaffolded = array( 'home', 'journal', 'start-here', 'irtidad', 'about', 'faq', 'contact', 'privacy' );
 
 		foreach ( murtadd_legacy_redirect_map() as $from => $target ) {
 			if ( 'page' === $target['kind'] ) {

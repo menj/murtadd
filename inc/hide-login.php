@@ -36,7 +36,7 @@ defined( 'ABSPATH' ) || exit;
 function murtadd_login_reserved() {
 	// The pages murtadd_required_pages() creates are reserved too: setup can
 	// create one after a slug is saved, and the login screen would shadow it.
-	return array( 'wp-login', 'wp-login-php', 'wp-admin', 'admin', 'login', 'dashboard', 'wp-content', 'wp-includes', 'wp-json', 'feed', 'doubts', 'rebuttals', 'fatwa', 'letters', 'blog', '404', 'home', 'start-here', 'irtidad', 'about', 'faq', 'contact', 'privacy' );
+	return array( 'wp-login', 'wp-login-php', 'wp-admin', 'admin', 'login', 'dashboard', 'wp-content', 'wp-includes', 'wp-json', 'feed', 'doubts', 'rebuttals', 'fatwa', 'letters', 'blog', 'journal', '404', 'home', 'start-here', 'irtidad', 'about', 'faq', 'contact', 'privacy' );
 }
 
 /**

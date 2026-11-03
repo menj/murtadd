@@ -3,9 +3,10 @@
  * Footer — slim bar on inner pages. front-page.php prints its own
  * four-column footer section before including this.
  *
- * The secondary links (About / FAQ / Contact / Privacy) live here rather than
- * in the sidebar. The sidebar is the triage navigation; utility links in it
- * both competed with that and duplicated the front page's footer column.
+ * The Journal link and the secondary links (About / FAQ / Contact / Privacy)
+ * live here. The secondary links stay out of the sidebar, which is the triage
+ * navigation: utility links there competed with it and duplicated the front
+ * page's footer column. The Journal is in both places.
  *
  * @package murtadd
  */
@@ -15,8 +16,12 @@ defined( 'ABSPATH' ) || exit;
 	<footer class="murtadd-footer-bar">
 		<span class="murtadd-footer-copy"><?php echo esc_html( '© ' . wp_parse_url( home_url(), PHP_URL_HOST ) ); ?> · <?php esc_html_e( 'share with attribution', 'murtadd' ); ?></span>
 
-		<?php if ( ! is_front_page() && murtadd_has_secondary_links() ) : ?>
+		<?php if ( ! is_front_page() ) : ?>
 			<nav class="murtadd-footer-links" aria-label="<?php esc_attr_e( 'Secondary', 'murtadd' ); ?>">
+				<ul class="murtadd-secondary-list murtadd-footer-journal">
+					<li><a href="<?php echo esc_url( murtadd_journal_url() ); ?>"><?php esc_html_e( 'Journal', 'murtadd' ); ?></a></li>
+				</ul>
+				<?php if ( murtadd_has_secondary_links() ) : ?>
 				<?php
 				wp_nav_menu(
 					array(
@@ -28,6 +33,7 @@ defined( 'ABSPATH' ) || exit;
 					)
 				);
 				?>
+				<?php endif; ?>
 			</nav>
 		<?php endif; ?>
 

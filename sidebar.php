@@ -25,7 +25,7 @@ $murtadd_start = get_page_by_path( 'start-here' );
 	<nav id="murtadd-nav" class="murtadd-nav" aria-label="<?php esc_attr_e( 'Primary', 'murtadd' ); ?>">
 		<ul class="murtadd-nav-list">
 			<li><a<?php murtadd_nav_state( 'home' ); ?> href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Home', 'murtadd' ); ?></a></li>
-			<li><a<?php murtadd_nav_state( 'blog' ); ?> href="<?php echo esc_url( home_url( '/blog/' ) ); ?>"><?php esc_html_e( 'Blog', 'murtadd' ); ?></a></li>
+			<li><a<?php murtadd_nav_state( 'journal' ); ?> href="<?php echo esc_url( murtadd_journal_url() ); ?>"><?php esc_html_e( 'Journal', 'murtadd' ); ?></a></li>
 
 			<li class="has-sub">
 				<a<?php murtadd_nav_state( 'topics' ); ?> href="<?php echo esc_url( get_post_type_archive_link( 'murtadd_doubt' ) ); ?>"><?php esc_html_e( 'Topics', 'murtadd' ); ?> <span class="murtadd-caret" aria-hidden="true">▾</span></a>
