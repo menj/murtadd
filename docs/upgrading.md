@@ -1,5 +1,12 @@
 # Upgrading — Murtadd
 
+## 1.47.0 → 1.48.0
+
+Drop-in. Upload the whole theme folder: the new file is `inc/slug-renames.php`. On the first request after the upload, the doubt and the rebuttal on Qur'an 4:34 take their new addresses, and the old ones answer with a 301. Nothing to run.
+
+1. Clear any page cache.
+2. In Google Search Console, the old addresses will report as redirects. That is expected.
+
 ## 1.46.0 → 1.47.0
 
 Drop-in. Upload the whole theme folder: the new file is `inc/seo-title.php`. Nothing to run; titles, structured data, canonicals and the image sitemap are built on each request.

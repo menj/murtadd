@@ -3,7 +3,7 @@ Contributors: murtadd.org
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.1
-Stable tag: 1.47.0
+Stable tag: 1.48.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -34,6 +34,9 @@ Two things remain yours:
 * Set the favicon at Settings → General → Site Icon (upload icons/site-icon-512.png), and set colours and cross-link URLs at Appearance → Theme Options.
 
 == Changelog ==
+= 1.48.0 =
+* The doubt and the rebuttal on Qur'an 4:34 move to /doubts/quran-wife-beating-verse/ and /rebuttals/quran-wife-beating-verse-in-context/. A live site renames them in place once, and the old addresses answer with a 301.
+
 = 1.47.0 =
 * Every title tag reads "page title | site name" and stays under 60 characters, with or without Rank Math.
 * All schema.org markup stays, as the owner decided on 2026-11-03 for GEO, AEO and AIO. Rebuttal and fatwa Articles gain an image, and the author a url.

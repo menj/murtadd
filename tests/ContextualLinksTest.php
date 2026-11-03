@@ -16,7 +16,7 @@ use PHPUnit\Framework\TestCase;
 
 final class ContextualLinksTest extends TestCase {
 
-	private const REBUTTAL = 'https://murtadd.org/rebuttals/quran-4-34-in-context/';
+	private const REBUTTAL = 'https://murtadd.org/rebuttals/quran-wife-beating-verse-in-context/';
 	private const JIZYA    = 'https://murtadd.org/rebuttals/dhimmi-status-and-jizya/';
 	private const THOMAS   = 'https://injil.help/gospels/thomas/';
 	private const KAABA    = 'https://abrahamic-religions.com/journal/the-kaaba/';

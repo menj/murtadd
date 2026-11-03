@@ -1,5 +1,24 @@
 # Changelog — Murtadd
 
+## 1.48.0 (2026-11-03)
+
+Addresses without verse numbers, with 301s from the old ones.
+
+### Renamed
+- `/doubts/quran-4-34-wife-beating/` is now `/doubts/quran-wife-beating-verse/`.
+- `/rebuttals/quran-4-34-in-context/` is now `/rebuttals/quran-wife-beating-verse-in-context/`.
+- The titles keep "Qur'an 4:34". The owner's rule of 2026-11-03: an address names its subject, and the verse number stays in the title, the heading and the description.
+
+### How a live site moves
+- The seeder never touches a post it has made, so a slug changed in the seed data would never reach a live site, and the seeder would then add a second post at the new slug. The new `inc/slug-renames.php` closes that gap. `murtadd_rename_seeded_slugs()` runs once per change to its map (on `init`, before setup) and renames the existing post in place: ID, content, edits, comments and the doubt-rebuttal pointers carry over. The new slug inherits the old one's record in `murtadd_seeded_slugs`, so the seeder adopts the renamed post, and a post an editor deleted stays deleted.
+- `murtadd_redirect_renamed_slugs()` answers each old address with a 301 to the post's permalink. It reads the map in the same file, never WordPress's `_wp_old_slug`, so it holds through later updates. It runs only on a 404. Filter: `murtadd_slug_renames`.
+- A rename counts only when the post ends up at exactly the new slug. If `wp_update_post()` fails, or WordPress hands out a `-2` suffix, the new slug is left out of `murtadd_seeded_slugs` and the run is retried on the next request. Until then the old address still serves the post, the new one sends a 302 to it, and the seeder skips the new slug (`murtadd_slug_rename_pending()`), so it never adds a second copy.
+
+### Links
+- The seed data (`doubts.json`, `rebuttals.json`, the three guides that link the pair) uses the new slugs. A guide already on a site keeps its old links, and they redirect.
+- `inc/data/network-links.json` takes the current addresses on every sister site, and is the same file in all seven themes.
+- Tests: `tests/SlugRenameTest.php` checks that the old paths resolve, that a live post is renamed once and adopted, that a deleted post is not brought back, and that a failed rename records nothing and succeeds on the retry.
+
 ## 1.47.0 (2026-11-03)
 
 Google's SEO Starter Guide, applied to the whole theme.
