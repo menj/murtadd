@@ -7,7 +7,7 @@ A classic-template child theme of Twenty Twenty-Five for **murtadd.org**.
 | Theme slug | `murtadd` |
 | Text domain | `murtadd` |
 | Parent | `twentytwentyfive` |
-| Version | 1.46.0 |
+| Version | 1.47.0 |
 | Author | Langgam Fikir Enterprise |
 | Licence | GPLv2 or later |
 | Requires WP | 6.4+ |
@@ -69,7 +69,7 @@ Full detail in [setup.md](setup.md).
 
 ## Structured data
 
-`inc/schema.php` emits JSON-LD: Doubts as `QAPage` with an `acceptedAnswer`, Rebuttals as `Article` with the claim under `about` and their sources under `citation`, Fatwa entries as `Article`, and `WebSite` plus `Organization` on the front page. Readers arrive at this site by typing a question into a search box, so the markup is load-bearing rather than decorative.
+`inc/schema.php` emits JSON-LD: Doubts as `QAPage`, Rebuttals as `Article` with the claim under `about` and their sources under `citation`, Fatwa entries as `Article`, `WebSite` with a `SearchAction` plus `Organization` on the front page, an `FAQPage` on the FAQ page and the doubt category archives (Emotional and Identity excepted), and a `BreadcrumbList` on inner views. Rebuttal and fatwa Articles carry an image, and the author a url. The owner keeps all schema.org markup, Google-supported or not, for GEO, AEO and AIO (decided 2026-11-03). `inc/seo-title.php` builds the title tag (`<page title> | <site name>`, under 60 characters, page parts for long or shared titles in `inc/data/seo-titles.json`), prints the canonical link on archives and serves the image sitemap at `/murtadd-image-sitemap.xml`.
 
 ## Documentation
 

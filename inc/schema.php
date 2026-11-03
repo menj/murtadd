@@ -77,6 +77,7 @@ function murtadd_author_node() {
 		'@type' => 'Person',
 		'@id'   => home_url( '/#author' ),
 		'name'  => $name,
+		'url'   => murtadd_author_url(),
 	);
 
 	$same_as = array_values( murtadd_social_profiles() );
@@ -85,6 +86,38 @@ function murtadd_author_node() {
 	}
 
 	return $node;
+}
+
+/**
+ * The author's address: the About page where it is published, else home.
+ *
+ * Google's Article guidance asks for an author url; the account archive is
+ * closed (inc/hardening.php), so the page that says who writes is the one.
+ *
+ * @return string
+ */
+function murtadd_author_url() {
+	$about = function_exists( 'get_page_by_path' ) ? get_page_by_path( 'about' ) : null;
+	if ( $about && isset( $about->post_status ) && 'publish' === $about->post_status ) {
+		return (string) get_permalink( $about );
+	}
+	return home_url( '/' );
+}
+
+/**
+ * The image for an Article: the share image (the featured image where one is
+ * set, else the generated card), the same one the social tags carry.
+ *
+ * @return string[]
+ */
+function murtadd_schema_image() {
+	$image = get_site_icon_url( 512 );
+	if ( ! $image ) {
+		$image = get_stylesheet_directory_uri() . '/assets/icons/site-icon-512.png';
+	}
+	/** This filter is documented in inc/meta-tags.php */
+	$image = (string) apply_filters( 'murtadd_share_image', $image );
+	return '' !== $image ? array( $image ) : array();
 }
 
 /**
@@ -164,12 +197,14 @@ function murtadd_structured_data_primary_node() {
 			'@context'      => 'https://schema.org',
 			'@type'         => 'Article',
 			'@id'           => get_permalink() . '#article',
-			'headline'      => get_the_title(),
+			'headline'      => murtadd_schema_text( get_the_title() ),
+			'image'         => murtadd_schema_image(),
 			'datePublished' => get_the_date( 'c' ),
 			'dateModified'  => get_the_modified_date( 'c' ),
 			'url'           => get_permalink(),
+			'mainEntityOfPage' => get_permalink(),
 			'publisher'     => murtadd_organization_node(),
-		'author'        => murtadd_author_node() ?: murtadd_organization_node(),
+			'author'        => murtadd_author_node() ?: murtadd_organization_node(),
 			'isPartOf'      => array( '@id' => home_url( '/#website' ) ),
 		);
 
@@ -199,10 +234,12 @@ function murtadd_structured_data_primary_node() {
 		'@context'      => 'https://schema.org',
 		'@type'         => 'Article',
 		'@id'           => get_permalink() . '#article',
-		'headline'      => get_the_title(),
+		'headline'      => murtadd_schema_text( get_the_title() ),
+		'image'         => murtadd_schema_image(),
 		'datePublished' => get_the_date( 'c' ),
 		'dateModified'  => get_the_modified_date( 'c' ),
 		'url'           => get_permalink(),
+		'mainEntityOfPage' => get_permalink(),
 		'publisher'     => murtadd_organization_node(),
 		'author'        => murtadd_author_node() ?: murtadd_organization_node(),
 	);

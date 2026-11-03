@@ -3,7 +3,7 @@ Contributors: murtadd.org
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.1
-Stable tag: 1.46.0
+Stable tag: 1.47.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -34,6 +34,11 @@ Two things remain yours:
 * Set the favicon at Settings → General → Site Icon (upload icons/site-icon-512.png), and set colours and cross-link URLs at Appearance → Theme Options.
 
 == Changelog ==
+= 1.47.0 =
+* Every title tag reads "page title | site name" and stays under 60 characters, with or without Rank Math.
+* All schema.org markup stays, as the owner decided on 2026-11-03 for GEO, AEO and AIO. Rebuttal and fatwa Articles gain an image, and the author a url.
+* Archives print a canonical link, descriptions stop at 160 characters, and an image sitemap lists featured and attached images.
+
 = 1.46.0 =
 * The home page and the Start Here page carry a "Not sure where to start?" card. Its button opens the Compelling Evidence quiz in the same tab, at the evidential case base URL plus /quiz/?from=murtadd.
 * A switch on the Linked sites tab turns the card off. It is on by default.

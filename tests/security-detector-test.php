@@ -50,7 +50,7 @@ function murtadd_sec_test_seed_rows() {
 		$rows[ 'rebuttal ' . $r['slug'] ] = array( $r['title'], $r['slug'], $r['claim'] . ' ' . $r['body'] . $sources( $r['sources'] ) );
 	}
 	foreach ( $read( 'seed/guides.json' ) as $g ) {
-		$rows[ 'guide ' . $g['slug'] ] = array( $g['title'], $g['slug'], $g['excerpt'] . ' ' . $g['body'] . $sources( $g['sources'] ) . ' ' . ( $g['seo_title'] ?? '' ) . ' ' . ( $g['focus_keyword'] ?? '' ) );
+		$rows[ 'guide ' . $g['slug'] ] = array( $g['title'], $g['slug'], $g['excerpt'] . ' ' . $g['body'] . $sources( $g['sources'] ) . ' ' . ( $g['focus_keyword'] ?? '' ) );
 	}
 	foreach ( $read( 'seed/pages.json' ) as $slug => $body ) {
 		$rows[ 'page ' . $slug ] = array( ucfirst( str_replace( '-', ' ', $slug ) ), $slug, (string) $body );

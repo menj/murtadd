@@ -19,6 +19,11 @@
  *  - Fatwa:     Rank Math's Article gains `about` (the scholar or body) and
  *               `citation` (the primary source).
  *  - Front page: Rank Math's WebSite and Organization stand.
+ *  - Articles:  Rank Math's Article gains the theme's image and the
+ *               author's url where it has none.
+ *  - All schema.org types stay, Google-supported or not (owner, 2026-11-03).
+ *  - Title:     the tag reads "<page> | <site name>" under 60 characters,
+ *               built by murtadd_document_title() (inc/seo-title.php).
  *  - Breadcrumbs: the theme's BreadcrumbList is added only when Rank Math's
  *               graph has none; with Rank Math's breadcrumbs on, its trail
  *               is also the one shown (murtadd_breadcrumbs()).
@@ -140,14 +145,43 @@ function murtadd_rank_math_merge( $data, $ours ) {
 
 		// The family is there: fill what it leaves empty, overwrite nothing.
 		foreach ( $present[ $family ] as $key ) {
-			foreach ( array( 'about', 'citation' ) as $field ) {
+			foreach ( array( 'about', 'citation', 'image' ) as $field ) {
 				if ( isset( $node[ $field ] ) && empty( $data[ $key ][ $field ] ) ) {
 					$data[ $key ][ $field ] = $node[ $field ];
 				}
 			}
+			// The author's About address, where Rank Math's author has none.
+			if ( ! empty( $node['author']['url'] ) && isset( $data[ $key ]['author'] ) && is_array( $data[ $key ]['author'] ) ) {
+				$data = murtadd_rank_math_author_url( $data, $key, (string) $node['author']['url'] );
+			}
 		}
 	}
 
+	return $data;
+}
+
+/**
+ * Give the author of one of Rank Math's nodes a url where it has none: on
+ * the author itself when embedded, else on the Person node it points to.
+ *
+ * @param array  $data Rank Math's entities.
+ * @param string $key  The node whose author is filled.
+ * @param string $url  The theme's author url.
+ * @return array
+ */
+function murtadd_rank_math_author_url( $data, $key, $url ) {
+	$author = $data[ $key ]['author'];
+	if ( isset( $author['@type'] ) || ! isset( $author['@id'] ) ) {
+		if ( empty( $author['url'] ) ) {
+			$data[ $key ]['author']['url'] = $url;
+		}
+		return $data;
+	}
+	foreach ( $data as $k => $n ) {
+		if ( is_array( $n ) && isset( $n['@id'] ) && (string) $n['@id'] === (string) $author['@id'] && empty( $n['url'] ) ) {
+			$data[ $k ]['url'] = $url;
+		}
+	}
 	return $data;
 }
 
@@ -172,8 +206,24 @@ function murtadd_rank_math_description( $description ) {
 	if ( '' !== trim( (string) $description ) ) {
 		return $description;
 	}
-	$ours = wp_strip_all_tags( (string) murtadd_meta_description() );
+	$ours = murtadd_meta_description_text();
 	return '' !== $ours ? $ours : $description;
+}
+
+/**
+ * The title tag, by the theme's rule, whatever Rank Math built.
+ *
+ * Rank Math stores a title per post (the guides were seeded with a bare
+ * one) and prints it without the site name or any length check. The rule
+ * is "<page> | <site name>" under 60 characters, so the theme's builder
+ * decides.
+ *
+ * @param string $title Rank Math's title.
+ * @return string
+ */
+function murtadd_rank_math_title( $title ) {
+	$ours = murtadd_document_title();
+	return '' !== $ours ? $ours : $title;
 }
 
 /**
@@ -194,4 +244,5 @@ if ( murtadd_rank_math_active() ) {
 	add_filter( 'rank_math/json_ld', 'murtadd_rank_math_json_ld', 99, 2 );
 	add_filter( 'rank_math/frontend/description', 'murtadd_rank_math_description' );
 	add_filter( 'rank_math/frontend/robots', 'murtadd_rank_math_robots' );
+	add_filter( 'rank_math/frontend/title', 'murtadd_rank_math_title', 99 );
 }

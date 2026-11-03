@@ -1,5 +1,31 @@
 # Changelog — Murtadd
 
+## 1.47.0 (2026-11-03)
+
+Google's SEO Starter Guide, applied to the whole theme.
+
+### Titles
+- Every title tag reads `<page title> | <site name>` and stays under 60 characters. Before this release the theme set no title rule, and WordPress printed "Title – Site name" at any length. The builder is `murtadd_document_title()` in the new `inc/seo-title.php`.
+- With Rank Math active, `rank_math/frontend/title` runs the same builder. The two guides seeded with a bare `rank_math_title` no longer print without the site name.
+- `inc/data/seo-titles.json` holds a page part for 3 pages: the two guides whose titles run past the 45 characters left beside " | murtadd.org", and the doubt "Women as witnesses", which shared its title with a rebuttal. The file is read at render time, so existing sites get it with no migration. A long title not in the file is cut at a word.
+- The seeder no longer writes `rank_math_title`, and `seo_title` is gone from `guides.json`.
+
+### Structured data
+- The owner keeps all schema.org markup, whether Google lists a rich result for it or not, because it serves generative, answer and AI search (GEO, AEO, AIO). Decided on 2026-11-03. A doubt stays a `QAPage`, the FAQ page and the doubt category archives keep their `FAQPage`, and the front page `WebSite` keeps its `SearchAction`. With Rank Math the theme removes nothing from its graph, and adds a node only where the graph has none of its family, so no graph prints twice.
+- Every rebuttal and fatwa entry Article carries `image` (the featured image, else the generated card) and `mainEntityOfPage`. The author Person carries a `url`: the About page, else the home page.
+- With Rank Math, its Article gains the theme's image when it has none, and its author gains the theme's author url when it has none, on the embedded author or on the Person node it points to.
+
+### Other
+- Archives (taxonomy, post type, posts page, and their paged views) print `<link rel="canonical">` when Rank Math is off. Core prints one only on single views.
+- Descriptions stop at 160 characters, cut at a word. Each doubt category archive has its own description, built from the term's description; the four used to share the doubt archive's.
+- An image sitemap at `/murtadd-image-sitemap.xml` lists every published entry with its featured and attached images, read in batches of 200 with the batch's meta and featured images loaded in one query each. robots.txt names it. Rank Math's sitemap lists images itself, so with its sitemap module on the theme's stands down.
+- Two description strings lost their em dashes.
+- Title and description cuts count characters with a `/u` pattern, so they never split a UTF-8 character and work without mbstring.
+- Tests: `tests/StructuredDataTest.php` and `tests/TitleTest.php` are new; `tests/FaqSchemaTest.php` stays. `TitleTest` checks every seeded title against the budget and for duplicates.
+
+### Existing sites
+- Nothing to run. Titles, schema, canonicals and the sitemap are computed on each request. The stored `rank_math_title` on the two guides stays in the database and is overridden.
+
 ## 1.46.0 (2026-11-03)
 
 - Until the Linked sites options are saved, the starting-point card links to https://compelling-evidence.com. An address saved as empty still hides it.

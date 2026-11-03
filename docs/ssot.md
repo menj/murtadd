@@ -1,6 +1,6 @@
 # Murtadd — Single Source of Truth
 
-Version 1.46.0 · Child theme of Twenty Twenty-Five · murtadd.org
+Version 1.47.0 · Child theme of Twenty Twenty-Five · murtadd.org
 
 ## What this theme is
 
@@ -43,11 +43,13 @@ Every `murtadd-` class a template emits must have a rule in a stylesheet that is
 
 ## Head output
 
-`inc/meta-tags.php` owns the description/OG/Twitter tags and the robots rules; `inc/schema.php` owns JSON-LD, built by `murtadd_structured_data_node()` and printed by `murtadd_structured_data()`. The graph is the view's main node (`murtadd_structured_data_primary_node()`) plus the BreadcrumbList (`murtadd_breadcrumb_node()`); a view with one node prints it alone, as before.
+`inc/meta-tags.php` owns the description/OG/Twitter tags and the robots rules; `inc/schema.php` owns JSON-LD, built by `murtadd_structured_data_node()` and printed by `murtadd_structured_data()`. The graph is the view's main node (`murtadd_structured_data_primary_node()`) plus the BreadcrumbList (`murtadd_breadcrumb_node()`); a view with one node prints it alone, as before. The owner keeps all schema.org markup, Google-supported or not, for GEO, AEO and AIO (decided 2026-11-03): a doubt is a QAPage, the FAQ page and doubt category archives carry an FAQPage, and the WebSite carries a SearchAction. Pinned in `tests/StructuredDataTest.php` and `tests/FaqSchemaTest.php`.
+
+**Title tag.** `inc/seo-title.php` builds every title as `<page title> | <site name>`, under 60 characters (`MURTADD_TITLE_MAX`, 59), and runs the same builder on `rank_math/frontend/title`. Beside " | murtadd.org" a page part has 45 characters. A page whose title is longer, or shared with another page, gets a page part in `inc/data/seo-titles.json`, keyed `post_type/slug`; check a new or changed title against `tests/TitleTest.php` before it is committed. The same file prints the canonical link on archives and the image sitemap.
 
 **Breadcrumbs.** `murtadd_breadcrumb_trail()` (`inc/template-tags.php`) builds the trail and `murtadd_breadcrumbs()` prints it at the top of the entry or archive header, styled by `assets/css/breadcrumbs.css`. Doubt: Doubts, its doubt category. Rebuttal: Rebuttals, its topic. Fatwa entry: the fatwa index, its school; the index is left out while it has no published entry, as the navigation leaves it out. Letter: Letters. Page: its parent pages. Post: the posts page. Taxonomy and post-type archives: the archive above them. The BreadcrumbList is built from the same trail, so the two cannot disagree; switching breadcrumbs off on the Content tab removes both. With Rank Math's breadcrumbs on (`murtadd_rank_math_breadcrumbs_active()`), Rank Math's trail is shown and its BreadcrumbList stands. Pinned in `tests/BreadcrumbsTest.php`.
 
-**With Rank Math active** (`inc/rank-math.php`, detected by `RANK_MATH_VERSION`) nothing needs switching off by hand. The meta tags stand down, and the page carries one graph, Rank Math's. The theme's nodes go into it through `rank_math/json_ld` by one rule: a node is added only when the graph has no node of its family, and where it has one the theme fills empty fields (`about`, `citation`) and overwrites nothing. In practice a doubt adds its QAPage, a rebuttal's Article gains its Claim and sources, a fatwa entry's Article gains its subject and primary source, the front page adds nothing, and a BreadcrumbList is added only when Rank Math's graph has none. An empty Rank Math description is filled from the content model; search results and 404s stay noindex. With Rank Math's Schema module off, the theme prints its own graph as before. Pinned in `tests/RankMathTest.php`.
+**With Rank Math active** (`inc/rank-math.php`, detected by `RANK_MATH_VERSION`) nothing needs switching off by hand. The meta tags stand down, and the page carries one graph, Rank Math's. The theme's nodes go into it through `rank_math/json_ld` by one rule: a node is added only when the graph has no node of its family, and where it has one the theme fills empty fields (`about`, `citation`, `image`, and the author's `url`) and overwrites nothing. It removes nothing from Rank Math's graph. In practice a doubt adds its QAPage, a rebuttal's Article gains its Claim and sources, a fatwa entry's Article gains its subject and primary source, the front page adds nothing, and a BreadcrumbList is added only when Rank Math's graph has none. An empty Rank Math description is filled from the content model; search results and 404s stay noindex. With Rank Math's Schema module off, the theme prints its own graph as before. Pinned in `tests/RankMathTest.php`.
 
 ## Starter content
 

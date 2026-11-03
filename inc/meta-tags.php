@@ -22,7 +22,7 @@ defined( 'ABSPATH' ) || exit;
 function murtadd_meta_description() {
 	if ( is_front_page() ) {
 		$desc = get_bloginfo( 'description' );
-		return $desc ? $desc : __( 'Honest, sourced answers to the questions that shake faith — stated fairly, answered without dismissal.', 'murtadd' );
+		return $desc ? $desc : __( 'Honest, sourced answers to the questions that shake faith, stated fairly and answered without dismissal.', 'murtadd' );
 	}
 
 	if ( is_singular( 'murtadd_doubt' ) ) {
@@ -33,7 +33,7 @@ function murtadd_meta_description() {
 		$claim = (string) get_post_meta( get_the_ID(), '_murtadd_claim', true );
 		if ( $claim ) {
 			/* translators: %s: the claim under review */
-			return sprintf( __( 'The claim: "%s" — stated fairly, answered with sources.', 'murtadd' ), $claim );
+			return sprintf( __( 'The claim: "%s". Stated fairly, answered with sources.', 'murtadd' ), $claim );
 		}
 		return '';
 	}
@@ -53,7 +53,18 @@ function murtadd_meta_description() {
 		return '';
 	}
 
-	if ( is_post_type_archive( 'murtadd_doubt' ) || is_tax( 'murtadd_doubt_category' ) ) {
+	if ( is_tax( 'murtadd_doubt_category' ) ) {
+		$term = get_queried_object();
+		if ( $term && ! is_wp_error( $term ) ) {
+			$about = trim( wp_strip_all_tags( (string) $term->description ) );
+			/* translators: 1: doubt category name, 2: its description */
+			return '' !== $about
+				? sprintf( __( '%1$s doubts (%2$s), each stated fairly and answered briefly with sources.', 'murtadd' ), $term->name, rtrim( $about, '.' ) )
+				/* translators: %s: doubt category name */
+				: sprintf( __( '%s doubts, each stated fairly and answered briefly with sources.', 'murtadd' ), $term->name );
+		}
+	}
+	if ( is_post_type_archive( 'murtadd_doubt' ) ) {
 		return __( 'Doubts, taken seriously: short, sourced answers to the questions that shake faith.', 'murtadd' );
 	}
 	if ( is_post_type_archive( 'murtadd_rebuttal' ) ) {
@@ -77,6 +88,26 @@ function murtadd_meta_description() {
 }
 
 /**
+ * The description as plain text, at most 160 characters, cut at a word.
+ *
+ * Google shows about that much of a snippet; a longer one is cut by the
+ * search page mid-word.
+ *
+ * @return string
+ */
+function murtadd_meta_description_text() {
+	$desc = trim( preg_replace( '/\s+/u', ' ', wp_strip_all_tags( (string) murtadd_meta_description() ) ) ?? '' );
+	// Counted in characters; preg with /u works where mbstring is missing.
+	if ( preg_match_all( '/./us', $desc ) > 160 && preg_match( '/^.{0,159}/us', $desc, $m ) ) {
+		$cut  = $m[0];
+		$sp   = strrpos( $cut, ' ' );
+		$cut  = false !== $sp ? substr( $cut, 0, $sp ) : $cut;
+		$desc = rtrim( $cut, ' ,;:.' ) . '…';
+	}
+	return $desc;
+}
+
+/**
  * Print description, Open Graph, and Twitter tags.
  *
  * Skipped on search results and 404s, which are noindexed below and have
@@ -88,11 +119,7 @@ function murtadd_meta_tags() {
 		return;
 	}
 
-	$desc = murtadd_meta_description();
-	$desc = $desc ? wp_strip_all_tags( $desc ) : '';
-	if ( function_exists( 'mb_substr' ) && mb_strlen( $desc ) > 300 ) {
-		$desc = mb_substr( $desc, 0, 297 ) . '…';
-	}
+	$desc = murtadd_meta_description_text();
 
 	$title = is_singular() ? get_the_title() : wp_get_document_title();
 	$url   = is_singular() ? get_permalink() : home_url( add_query_arg( array(), $GLOBALS['wp']->request ? '/' . $GLOBALS['wp']->request . '/' : '/' ) );

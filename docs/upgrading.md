@@ -1,5 +1,12 @@
 # Upgrading — Murtadd
 
+## 1.46.0 → 1.47.0
+
+Drop-in. Upload the whole theme folder: the new file is `inc/seo-title.php`. Nothing to run; titles, structured data, canonicals and the image sitemap are built on each request.
+
+1. **Rank Math.** With Rank Math active, the theme now builds the title tag itself (`<page title> | <site name>`, under 60 characters), and its Article gains the theme's image and the author's url where it has none. The theme removes nothing from Rank Math's graph. Check one doubt and one rebuttal in a structured-data validator.
+2. Clear any page cache.
+
 ## 1.43.3 → 1.45.0
 
 Additive. Upload the whole theme folder: new files are `inc/security.php`, `inc/security-detector.php`, `assets/js/security.js`, `assets/css/security.css` and their `.min` twins. No database step.

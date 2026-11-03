@@ -227,6 +227,7 @@ function get_site_icon_url( $s = 512 ) { return $GLOBALS['murtadd_test_site_icon
 
 require_once __DIR__ . '/../inc/schema.php';
 require_once __DIR__ . '/../inc/rank-math.php';
+require_once __DIR__ . '/../inc/seo-title.php';
 
 require_once __DIR__ . '/../inc/seed-data.php';
 require_once __DIR__ . '/../inc/analytics.php';
