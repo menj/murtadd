@@ -596,5 +596,7 @@ function murtadd_quiz_url() {
 	if ( '' === $base ) {
 		return '';
 	}
+	// Keep scheme, host and path only, so a saved query or fragment cannot swallow /quiz/.
+	$base = (string) preg_replace( '/[?#].*$/', '', $base );
 	return untrailingslashit( $base ) . '/quiz/?from=murtadd';
 }

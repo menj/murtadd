@@ -28,6 +28,8 @@ final class QuizCardTest extends TestCase {
 		$this->assertSame( 'https://compelling-evidence.com/quiz/?from=murtadd', murtadd_quiz_url() );
 		$this->set( array( 'ce_base_url' => 'https://ce.test/' ) );
 		$this->assertSame( 'https://ce.test/quiz/?from=murtadd', murtadd_quiz_url() );
+		$this->set( array( 'ce_base_url' => 'https://ce.test/?utm=x#top' ) );
+		$this->assertSame( 'https://ce.test/quiz/?from=murtadd', murtadd_quiz_url() );
 	}
 
 	public function test_never_saved_option_uses_the_default_address() {
