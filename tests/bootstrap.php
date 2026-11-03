@@ -247,6 +247,7 @@ function get_bloginfo( $k = '' ) { return 'Murtadd'; }
 function get_site_icon_url( $s = 512 ) { return $GLOBALS['murtadd_test_site_icon'] ?? ''; }
 
 require_once __DIR__ . '/../inc/schema.php';
+require_once __DIR__ . '/../inc/schema-graph.php';
 require_once __DIR__ . '/../inc/rank-math.php';
 require_once __DIR__ . '/../inc/seo-title.php';
 
@@ -561,3 +562,24 @@ function add_shortcode( $tag, $cb ) {
 }
 
 require_once __DIR__ . '/../inc/contact.php';
+
+/*
+ * Stubs for the page frame and image nodes (inc/schema-graph.php). Tests set
+ * $GLOBALS['murtadd_view']['search'|'home'|'404'|'thumbnail'] to drive them.
+ */
+foreach ( array(
+	'has_nav_menu'                => static function ( $location ) { return ! empty( $GLOBALS['murtadd_view']['menus'][ $location ] ); },
+	'get_locale'                  => static function () { return 'en_US'; },
+	'is_home'                     => static function () { return ! empty( $GLOBALS['murtadd_view']['home'] ); },
+	'is_search'                   => static function () { return ! empty( $GLOBALS['murtadd_view']['search'] ); },
+	'is_404'                      => static function () { return ! empty( $GLOBALS['murtadd_view']['404'] ); },
+	'has_post_thumbnail'          => static function () { return ! empty( $GLOBALS['murtadd_view']['thumbnail'] ); },
+	'get_post_thumbnail_id'       => static function () { return (int) ( $GLOBALS['murtadd_view']['thumbnail']['id'] ?? 0 ); },
+	'wp_get_attachment_image_src' => static function ( $id, $size = 'thumbnail' ) { return $GLOBALS['murtadd_view']['thumbnail']['src'] ?? false; },
+	'wp_get_attachment_caption'   => static function ( $id ) { return $GLOBALS['murtadd_view']['thumbnail']['caption'] ?? ''; },
+) as $murtadd_stub => $murtadd_impl ) {
+	if ( ! function_exists( $murtadd_stub ) ) {
+		$GLOBALS['murtadd_stub_impl'][ $murtadd_stub ] = $murtadd_impl;
+		eval( 'function ' . $murtadd_stub . '( ...$a ) { return $GLOBALS["murtadd_stub_impl"]["' . $murtadd_stub . '"]( ...$a ); }' ); // phpcs:ignore Squiz.PHP.Eval.Discouraged -- test stubs.
+	}
+}

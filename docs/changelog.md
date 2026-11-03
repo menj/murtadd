@@ -1,5 +1,34 @@
 # Changelog — Murtadd
 
+## 1.49.0 (2026-11-03)
+
+The JSON-LD graph now describes the whole page, and every type it had before stays.
+
+### Main nodes
+- A doubt is still one QAPage. It gains `about` (its topic), `mentions` (the glossary terms it defines and any verse marked in its text) and `citation` (the "Read the full case" link, where set).
+- A rebuttal keeps its Claim. The Claim gets an `@id` and `appearance`, pointing at the rebuttal itself, since the claim box shows it there. There is no `firstAppearance`: the editor records the kind of source a claim came from, never a link to it. The sources panel becomes `citation` entries, each a CreativeWork with its link where one is shown. No ClaimReview: the page shows no rating.
+- A fatwa entry keeps the scholar or body as `about` and adds its school. Its position summary is the `abstract`. The scholar is not shown on the entry page, so the author stays the site's.
+- A letter is now an Article with `genre` "open letter", `dateCreated` from its dateline and `isBasedOn` the original publication.
+- Rebuttals, fatwa entries and letters carry `inLanguage`, `isAccessibleForFree`, `wordCount`, `copyrightHolder`, `copyrightYear` and the access modes. A rebuttal gets `articleSection` from its topic.
+- No HowTo is printed by the theme. Rank Math's, where a guide has one, stays as it is.
+
+### Page frame
+- Every view gets a page node of the right type: CollectionPage for archives and taxonomy pages, SearchResultsPage, AboutPage, ContactPage, WebPage elsewhere. The doubt keeps its QAPage and the FAQ page its FAQPage, and those take the same frame properties: `inLanguage`, `isPartOf`, `breadcrumb`, `primaryImageOfPage`, `speakable` and `lastReviewed` where "Last reviewed" shows.
+- A school page is a CollectionPage `about` its school.
+- The sidebar is a WPSideBar holding the primary SiteNavigationElement and its links. The rail on doubt and rebuttal singles is a second WPSideBar. The footer bar is a WPFooter, with the secondary links where they show. The theme has no header element, so it prints no WPHeader.
+
+### Scripture, glossary, images
+- A verse shown on the page is a Quotation, `isPartOf` a Chapter (the surah, with its `position`) that is `isPartOf` the Book "The Qur'an". That covers the rail verse, the verse box on the blog page (with its translation as a second Quotation carrying `translationOfWork`) and any `murtadd-ayah` element in an entry. Free text is never parsed for verses.
+- The glossary terms an entry defines are DefinedTerms in one DefinedTermSet, and the entry `mentions` each by `@id`. Emotional and Identity doubts get none, as they get no definitions.
+- The featured image on a doubt or rebuttal is an ImageObject with its size, format and, where a caption shows, `caption` and `creditText`.
+
+### Rank Math
+- WebPage subtypes merge as one family, so Rank Math's WebPage stands and takes the frame properties it lacks. Sidebars, verses and images are added each under its own key. A node whose `@id` Rank Math already has is filled, never repeated.
+
+### Code and tests
+- New file `inc/schema-graph.php`. `inc/schema.php` calls `murtadd_schema_complete_graph()` from `murtadd_structured_data_node()`.
+- New `tests/SchemaGraphTest.php` renders sample views and checks that each graph parses, that every `@id` is unique and that each type has the properties it needs. Two older tests now check that the main node and the trail lead the graph, since the frame follows them.
+
 ## 1.48.0 (2026-11-03)
 
 Addresses without verse numbers, with 301s from the old ones.

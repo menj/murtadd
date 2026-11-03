@@ -148,7 +148,7 @@ final class BreadcrumbsTest extends TestCase {
 		);
 		$graph = murtadd_structured_data_node();
 		$types = array_column( $graph['@graph'], '@type' );
-		$this->assertSame( array( 'QAPage', 'BreadcrumbList' ), $types );
+		$this->assertSame( array( 'QAPage', 'BreadcrumbList' ), array_slice( $types, 0, 2 ), 'The main node and the trail lead; the page frame follows (inc/schema-graph.php).' );
 		foreach ( $graph['@graph'] as $node ) {
 			$this->assertArrayNotHasKey( '@context', $node );
 		}

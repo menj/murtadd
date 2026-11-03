@@ -93,7 +93,7 @@ final class FaqSchemaTest extends TestCase {
 
 		$this->category_view( 'scriptural', array( $this->doubt( 31 ) ), array( 31 => array( '_murtadd_doubt_statement' => 'Q', '_murtadd_short_response' => 'A' ) ) );
 		$graph = murtadd_structured_data_node();
-		$this->assertSame( array( 'BreadcrumbList', 'FAQPage' ), array_column( $graph['@graph'], '@type' ) );
+		$this->assertSame( array( 'BreadcrumbList', 'FAQPage' ), array_slice( array_column( $graph['@graph'], '@type' ), 0, 2 ) );
 		$this->assertNotFalse( json_decode( wp_json_encode( $graph ) ), 'The graph encodes as valid JSON.' );
 	}
 

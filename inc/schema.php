@@ -8,8 +8,10 @@
  * therefore not a search-ranking nicety here; it is the front door.
  *
  * Doubts     -> QAPage      (a question with an accepted answer)
- * Rebuttals  -> ClaimReview (a claim, assessed, with the sources cited)
+ * Rebuttals  -> Article about a Claim, with the sources cited
  * Fatwa      -> Article
+ * Letters    -> Article, genre "open letter"
+ * The page frame, scripture, glossary and images: inc/schema-graph.php
  * Front page -> WebSite + Organization
  *
  * @package murtadd
@@ -152,7 +154,7 @@ function murtadd_structured_data_primary_node() {
 		);
 	}
 
-	if ( ! is_singular( array( 'murtadd_doubt', 'murtadd_rebuttal', 'murtadd_fatwa' ) ) ) {
+	if ( ! is_singular( array( 'murtadd_doubt', 'murtadd_rebuttal', 'murtadd_fatwa', 'murtadd_letter' ) ) ) {
 		return null;
 	}
 
@@ -209,22 +211,66 @@ function murtadd_structured_data_primary_node() {
 		);
 
 		if ( $claim ) {
+			// The claim box shows the claim as circulated, on this page: the
+			// page is where it appears. No firstAppearance: the claim's own
+			// origin is described by type, never linked.
 			$node['about'] = array(
-				'@type' => 'Claim',
-				'text'  => wp_strip_all_tags( $claim ),
+				'@type'      => 'Claim',
+				'@id'        => get_permalink() . '#claim',
+				'text'       => wp_strip_all_tags( $claim ),
+				'appearance' => array( '@id' => get_permalink() . '#article' ),
 			);
 		}
 
+		// The sources panel: each entry as a work, with its link where shown.
 		$citations = array();
 		foreach ( (array) get_post_meta( $post_id, '_murtadd_sources', true ) as $source ) {
 			if ( ! empty( $source['citation_text'] ) ) {
-				$citations[] = wp_strip_all_tags( $source['citation_text'] );
+				$work = array(
+					'@type' => 'CreativeWork',
+					'name'  => murtadd_schema_text( $source['citation_text'] ),
+				);
+				if ( ! empty( $source['url'] ) ) {
+					$work['url'] = esc_url_raw( $source['url'] );
+				}
+				$citations[] = $work;
 			}
 		}
 		if ( $citations ) {
 			$node['citation'] = $citations;
 		}
 
+		return $node;
+	}
+
+	// A letter is an archived open letter, reproduced as it was published.
+	if ( 'murtadd_letter' === $type ) {
+		$node = array(
+			'@context'         => 'https://schema.org',
+			'@type'            => 'Article',
+			'@id'              => get_permalink() . '#article',
+			'genre'            => 'open letter',
+			'headline'         => murtadd_schema_text( get_the_title() ),
+			'image'            => murtadd_schema_image(),
+			'datePublished'    => get_the_date( 'c' ),
+			'dateModified'     => get_the_modified_date( 'c' ),
+			'url'              => get_permalink(),
+			'mainEntityOfPage' => get_permalink(),
+			'publisher'        => murtadd_organization_node(),
+			'author'           => murtadd_author_node() ?: murtadd_organization_node(),
+			'isPartOf'         => array( '@id' => home_url( '/#website' ) ),
+		);
+		// The dateline shows the date the letter first ran.
+		$date = (string) get_post_meta( $post_id, '_murtadd_letter_date', true );
+		$ts   = '' !== $date ? strtotime( $date ) : false;
+		if ( $ts ) {
+			$node['dateCreated'] = gmdate( 'Y-m-d', $ts );
+		}
+		// "Read at the original publication" links the letter as first run.
+		$original = (string) get_post_meta( $post_id, '_murtadd_letter_url', true );
+		if ( '' !== $original ) {
+			$node['isBasedOn'] = esc_url_raw( $original );
+		}
 		return $node;
 	}
 
@@ -243,8 +289,29 @@ function murtadd_structured_data_primary_node() {
 		'publisher'     => murtadd_organization_node(),
 		'author'        => murtadd_author_node() ?: murtadd_organization_node(),
 	);
+	$about = array();
 	if ( $scholar ) {
-		$node['about'] = wp_strip_all_tags( $scholar );
+		$about[] = wp_strip_all_tags( $scholar );
+	}
+	// The school chip the entry shows.
+	$schools = get_the_terms( $post_id, 'murtadd_school' );
+	if ( $schools && ! is_wp_error( $schools ) ) {
+		$school  = reset( $schools );
+		$link    = get_term_link( $school );
+		$about[] = array(
+			'@type' => 'Thing',
+			'@id'   => ( is_wp_error( $link ) ? home_url( '/' ) : $link ) . '#school',
+			'name'  => murtadd_schema_text( $school->name ),
+			'url'   => is_wp_error( $link ) ? '' : $link,
+		);
+	}
+	if ( $about ) {
+		$node['about'] = 1 === count( $about ) ? $about[0] : $about;
+	}
+	// The position summary, shown in the site's own words.
+	$summary = (string) get_post_meta( $post_id, '_murtadd_position_summary', true );
+	if ( '' !== trim( $summary ) ) {
+		$node['abstract'] = murtadd_schema_text( $summary );
 	}
 	$citation = get_post_meta( $post_id, '_murtadd_citation_link', true );
 	if ( $citation ) {
@@ -428,6 +495,9 @@ function murtadd_structured_data_node() {
 		if ( $extra ) {
 			$nodes[] = $extra;
 		}
+	}
+	if ( function_exists( 'murtadd_schema_complete_graph' ) ) {
+		$nodes = murtadd_schema_complete_graph( $nodes );
 	}
 	if ( ! $nodes ) {
 		return null;

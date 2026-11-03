@@ -21,6 +21,10 @@
  *  - Front page: Rank Math's WebSite and Organization stand.
  *  - Articles:  Rank Math's Article gains the theme's image and the
  *               author's url where it has none.
+ *  - Page frame: Rank Math's WebPage gains the theme's frame properties
+ *               (inc/schema-graph.php); the sidebars, footer, verses and
+ *               glossary are added, each under its own key, and a node
+ *               whose @id Rank Math already defines is filled, not repeated.
  *  - All schema.org types stay, Google-supported or not (owner, 2026-11-03).
  *  - Title:     the tag reads "<page> | <site name>" under 60 characters,
  *               built by murtadd_document_title() (inc/seo-title.php).
@@ -93,6 +97,16 @@ function murtadd_schema_family( $type ) {
 		'Organization'          => 'Organization',
 		'NewsMediaOrganization' => 'Organization',
 		'EducationalOrganization' => 'Organization',
+		// One page node per page: Rank Math's WebPage stands and the theme's
+		// subtype fills what it leaves empty. QAPage and FAQPage stay their
+		// own families, as before.
+		'WebPage'               => 'WebPage',
+		'CollectionPage'        => 'WebPage',
+		'SearchResultsPage'     => 'WebPage',
+		'AboutPage'             => 'WebPage',
+		'ContactPage'           => 'WebPage',
+		'ItemPage'              => 'WebPage',
+		'ProfilePage'           => 'WebPage',
 	);
 	return $families[ $type ] ?? $type;
 }
@@ -132,20 +146,47 @@ function murtadd_rank_math_merge( $data, $ours ) {
 		unset( $node['@context'] );
 		$family = murtadd_schema_family( $node['@type'] );
 
-		if ( empty( $present[ $family ] ) ) {
+		// A node Rank Math already defines under the same @id is filled, not
+		// added again, whatever its family.
+		if ( isset( $node['@id'] ) && isset( $ids[ (string) $node['@id'] ] ) && ( empty( $present[ $family ] ) || in_array( $family, murtadd_schema_many_families(), true ) ) ) {
+			foreach ( $data as $key => $existing ) {
+				if ( is_array( $existing ) && isset( $existing['@id'] ) && (string) $existing['@id'] === (string) $node['@id'] ) {
+					foreach ( $node as $field => $value ) {
+						if ( '@' !== $field[0] && empty( $data[ $key ][ $field ] ) ) {
+							$data[ $key ][ $field ] = $value;
+						}
+					}
+				}
+			}
+			continue;
+		}
+
+		// Frame parts, verses and images are many per page: one with a new
+		// @id is added beside Rank Math's, never folded into it.
+		$many = in_array( $family, murtadd_schema_many_families(), true );
+		if ( empty( $present[ $family ] ) || ( $many && isset( $node['@id'] ) && ! isset( $ids[ (string) $node['@id'] ] ) ) ) {
 			// Embedded nodes Rank Math already defines become references.
 			foreach ( array( 'publisher', 'author' ) as $ref ) {
 				if ( isset( $node[ $ref ]['@id'] ) && isset( $ids[ (string) $node[ $ref ]['@id'] ] ) ) {
 					$node[ $ref ] = array( '@id' => $node[ $ref ]['@id'] );
 				}
 			}
-			$data[ 'murtadd_' . strtolower( $family ) ] = $node;
+			// Several nodes of one family (two sidebars, many verses) each
+			// get their own key.
+			$key = 'murtadd_' . strtolower( $family );
+			for ( $n = 2; isset( $data[ $key ] ); $n++ ) {
+				$key = 'murtadd_' . strtolower( $family ) . '_' . $n;
+			}
+			$data[ $key ] = $node;
+			if ( isset( $node['@id'] ) ) {
+				$ids[ (string) $node['@id'] ] = true;
+			}
 			continue;
 		}
 
 		// The family is there: fill what it leaves empty, overwrite nothing.
 		foreach ( $present[ $family ] as $key ) {
-			foreach ( array( 'about', 'citation', 'image' ) as $field ) {
+			foreach ( murtadd_rank_math_fill_fields() as $field ) {
 				if ( isset( $node[ $field ] ) && empty( $data[ $key ][ $field ] ) ) {
 					$data[ $key ][ $field ] = $node[ $field ];
 				}
@@ -158,6 +199,32 @@ function murtadd_rank_math_merge( $data, $ours ) {
 	}
 
 	return $data;
+}
+
+/**
+ * Families a page holds several nodes of (frame parts, verses, images).
+ *
+ * @return string[]
+ */
+function murtadd_schema_many_families() {
+	return array( 'WPSideBar', 'WPFooter', 'WPHeader', 'SiteNavigationElement', 'Quotation', 'Book', 'Chapter', 'DefinedTermSet', 'ImageObject' );
+}
+
+/**
+ * The fields the theme fills on a node of a family Rank Math already has,
+ * where Rank Math leaves them empty.
+ *
+ * @return string[]
+ */
+function murtadd_rank_math_fill_fields() {
+	return array(
+		'about', 'citation', 'image',
+		// Article details and the page frame (inc/schema-graph.php).
+		'mentions', 'genre', 'abstract', 'articleSection', 'wordCount', 'inLanguage',
+		'isAccessibleForFree', 'copyrightHolder', 'copyrightYear', 'accessMode', 'accessModeSufficient',
+		'dateCreated', 'isBasedOn', 'speakable', 'breadcrumb', 'primaryImageOfPage', 'lastReviewed',
+		'significantLink',
+	);
 }
 
 /**

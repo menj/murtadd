@@ -1,5 +1,9 @@
 # Upgrading — Murtadd
 
+## 1.48.0 → 1.49.0
+
+Drop-in. Upload the whole theme folder: the new file is `inc/schema-graph.php`. Nothing to run; the graph is built on each request. Check a doubt, a rebuttal and a school page in the Schema Markup Validator once, with Rank Math on and off.
+
 ## 1.47.0 → 1.48.0
 
 Drop-in. Upload the whole theme folder: the new file is `inc/slug-renames.php`. On the first request after the upload, the doubt and the rebuttal on Qur'an 4:34 take their new addresses, and the old ones answer with a 301. Nothing to run.
