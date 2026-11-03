@@ -580,3 +580,20 @@ function murtadd_breadcrumbs() {
 	}
 	echo '</ol></nav>';
 }
+
+/**
+ * Address of the Compelling Evidence persona quiz, or '' when the card is off.
+ * Built from the cross-link base URL; the only query argument is from=murtadd.
+ */
+function murtadd_quiz_url() {
+	$o = get_option( 'murtadd_cross_links', array() );
+	$o = is_array( $o ) ? $o : array();
+	if ( '0' === (string) ( $o['show_quiz_card'] ?? '1' ) ) {
+		return '';
+	}
+	$base = trim( (string) ( $o['ce_base_url'] ?? '' ) );
+	if ( '' === $base ) {
+		return '';
+	}
+	return untrailingslashit( $base ) . '/quiz/?from=murtadd';
+}

@@ -32,6 +32,8 @@ get_header();
 	</div>
 </section>
 
+<?php get_template_part( 'template-parts/cards/card', 'quiz' ); ?>
+
 <?php
 $murtadd_ce      = murtadd_option( 'murtadd_cross_links', 'ce_base_url', '' );
 $murtadd_bismika = murtadd_option( 'murtadd_cross_links', 'bismika_base_url', '' );

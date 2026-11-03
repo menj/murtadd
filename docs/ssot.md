@@ -1,6 +1,6 @@
 # Murtadd — Single Source of Truth
 
-Version 1.45.0 · Child theme of Twenty Twenty-Five · murtadd.org
+Version 1.46.0 · Child theme of Twenty Twenty-Five · murtadd.org
 
 ## What this theme is
 
@@ -23,7 +23,7 @@ Six files state the version: `style.css`, `functions.php`, `readme.txt`, `docs/r
 5. **Settings.** Settings API only. One option array per tab: `murtadd_colours`, `murtadd_cross_links`, `murtadd_contextual_links`, `murtadd_content_display`, `murtadd_security`, `murtadd_upkeep`. Tabbed screen at Appearance → Theme Options; the Taxonomies tab links to native term screens and duplicates no CRUD.
 6. **Doubt Categories are locked.** Exactly four terms (intellectual, scriptural, emotional, identity), capabilities set to `do_not_allow`, seeded once. They power the homepage grid and the support-notice logic.
 7. **Word caps are soft.** The short-response cap warns in the editor and never blocks saving.
-8. **Cross-links state no relationship.** Outbound cards and deep links open in a new tab with `rel="noopener"`; the front end never declares an affiliation. Contextual links inside the text are the one exception to the new tab: they open in the same tab, like any link in running prose, carry `rel="noopener"` when they leave the site, and look the same whichever site they lead to.
+8. **Cross-links state no relationship.** Outbound cards and deep links open in a new tab with `rel="noopener"`; the front end never declares an affiliation. Contextual links inside the text are the one exception to the new tab: they open in the same tab, like any link in running prose, carry `rel="noopener"` when they leave the site, and look the same whichever site they lead to. The "Not sure where to start?" quiz card is the second exception: it opens in the same tab and carries only `?from=murtadd`.
 
 ## File structure
 
@@ -87,7 +87,7 @@ Taxonomies: `murtadd_topic` (shared, flat, seeded 6 terms, `/topic/`), `murtadd_
 | Option | Keys | Defaults |
 |---|---|---|
 | murtadd_colours | accent, accent_tint | #0f6e56, #eefaf7 |
-| murtadd_cross_links | ce_base_url, bismika_base_url | empty (links hidden) |
+| murtadd_cross_links | ce_base_url, bismika_base_url, show_counterpart, show_quiz_card | empty (links hidden), empty, 1, 1 |
 | murtadd_contextual_links | own_enabled, sister_enabled, own_max, sister_max, extra, excluded | 1, 1, 4, 3, empty, empty |
 | murtadd_security | hide_authors, xmlrpc_off, app_passwords_off, rest_lock, spam_gate, spam_gone, headers, login_slug, login_design, login_message, login_tagline, login_privacy | 1, 1, 1, 1, 1, 1, 1, empty (private login off), 1, empty, empty, 1 |
 | murtadd_upkeep | gone_paths, maintenance, error_pages | empty, 0, 1 |

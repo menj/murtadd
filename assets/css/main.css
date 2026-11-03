@@ -288,6 +288,18 @@ h1, h2, h3 { font-family: var(--murtadd-font-serif); line-height: 1.25; }
 }
 .murtadd-crosslink-card:hover { border-color: var(--murtadd-accent); }
 
+/* "Not sure where to start?" card (home page, Start Here). */
+.murtadd-quiz-card {
+	border: 1px solid var(--murtadd-border); border-radius: 14px;
+	background: var(--murtadd-accent-tint);
+	padding: 18px 20px; margin: 24px 0;
+	display: flex; flex-direction: column; align-items: flex-start; gap: 8px;
+}
+.murtadd-quiz-card__title { margin: 0; font: 600 19px var(--murtadd-font-serif); color: var(--murtadd-accent); }
+.murtadd-quiz-card__body { margin: 0; font-size: 14.5px; color: var(--murtadd-text); max-width: 60ch; }
+.murtadd-quiz-card__btn { margin-top: 6px; }
+.murtadd-quiz-card__btn:hover { color: #fff; opacity: 0.88; }
+
 /* ---------- Footers ---------- */
 .murtadd-footer-columns {
 	display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 32px;

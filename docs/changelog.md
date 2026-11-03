@@ -1,5 +1,12 @@
 # Changelog — Murtadd
 
+## 1.46.0 (2026-11-03)
+
+### Added
+- A "Not sure where to start?" card on the home page and the Start Here page. Its button, "Find your starting point", opens the Compelling Evidence persona quiz at `<ce_base_url>/quiz/?from=murtadd` in the same tab. The only query argument is `from=murtadd`.
+- A "Starting-point card" switch on the Linked sites tab (`murtadd_cross_links[show_quiz_card]`, on by default). The card reuses the evidential case base URL, so clearing that URL hides it too.
+- The card is `template-parts/cards/card-quiz.php`, the address comes from `murtadd_quiz_url()` in `inc/template-tags.php`, and its styles sit in `assets/css/main.css` and `main.min.css`. `tests/QuizCardTest.php` covers the address, the switch and the markup.
+
 ## 1.45.2 (2026-11-02)
 
 ### Changed (wording)
