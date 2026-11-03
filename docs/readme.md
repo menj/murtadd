@@ -69,7 +69,7 @@ Full detail in [setup.md](setup.md).
 
 ## Structured data
 
-`inc/schema.php` emits JSON-LD of the types on Google's list of supported structured data only: Doubts as `Article` with the statement as headline, Rebuttals as `Article` with the claim under `about` and their sources under `citation`, Fatwa entries as `Article`, `WebSite` plus `Organization` on the front page, and a `BreadcrumbList` on inner views. Every Article carries headline, image, both dates and an author with a url. No FAQPage, QAPage or SearchAction. `inc/seo-title.php` builds the title tag (`<page title> | <site name>`, under 60 characters, page parts for long or shared titles in `inc/data/seo-titles.json`), prints the canonical link on archives and serves the image sitemap at `/murtadd-image-sitemap.xml`.
+`inc/schema.php` emits JSON-LD: Doubts as `QAPage`, Rebuttals as `Article` with the claim under `about` and their sources under `citation`, Fatwa entries as `Article`, `WebSite` with a `SearchAction` plus `Organization` on the front page, an `FAQPage` on the FAQ page and the doubt category archives (Emotional and Identity excepted), and a `BreadcrumbList` on inner views. Rebuttal and fatwa Articles carry an image, and the author a url. The owner keeps all schema.org markup, Google-supported or not, for GEO, AEO and AIO (decided 2026-11-03). `inc/seo-title.php` builds the title tag (`<page title> | <site name>`, under 60 characters, page parts for long or shared titles in `inc/data/seo-titles.json`), prints the canonical link on archives and serves the image sitemap at `/murtadd-image-sitemap.xml`.
 
 ## Documentation
 

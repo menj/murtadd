@@ -1,5 +1,12 @@
 # Upgrading — Murtadd
 
+## 1.46.0 → 1.47.0
+
+Drop-in. Upload the whole theme folder: the new file is `inc/seo-title.php`. Nothing to run; titles, structured data, canonicals and the image sitemap are built on each request.
+
+1. **Rank Math.** With Rank Math active, the theme now builds the title tag itself (`<page title> | <site name>`, under 60 characters), and its Article gains the theme's image and the author's url where it has none. The theme removes nothing from Rank Math's graph. Check one doubt and one rebuttal in a structured-data validator.
+2. Clear any page cache.
+
 ## 1.43.3 → 1.45.0
 
 Additive. Upload the whole theme folder: new files are `inc/security.php`, `inc/security-detector.php`, `assets/js/security.js`, `assets/css/security.css` and their `.min` twins. No database step.
@@ -29,7 +36,7 @@ Additive, with one narrow content step. Upload the whole theme folder: new files
 
 1. **Security tab (new).** On by default: author names kept private (`?author=` and author archives now 301 to the home page; the REST user list and users sitemap close), XML-RPC off, security headers. Check that nothing on the site relied on XML-RPC (the Jetpack app, old blog editors) before leaving it off.
 2. **Private login address (off).** If you set one, `wp-login.php` and `wp-admin` stop answering visitors. If the address is lost, add `define( 'MURTADD_HIDE_LOGIN', false );` to `wp-config.php` and log in at `wp-login.php`. It stands down while the WPS Hide Login plugin is active.
-3. **Rank Math.** With Rank Math active, the theme no longer prints its own description, Open Graph tags or JSON-LD graph; it adds its Claim, image and fatwa fields into Rank Math's graph, takes out FAQPage, QAPage and SearchAction, and builds the title tag itself. If you had switched the theme's tags off by hand as the old docs asked, nothing more is needed. Check one doubt and one rebuttal in a structured-data validator.
+3. **Rank Math.** With Rank Math active, the theme no longer prints its own description, Open Graph tags or JSON-LD graph; it adds its QAPage, Claim and fatwa fields into Rank Math's graph. If you had switched the theme's tags off by hand as the old docs asked, nothing more is needed. Check one doubt and one rebuttal in a structured-data validator.
 4. **Upkeep tab (new).** Maintenance mode is off. Branded error pages are on: on the first admin page after the update the theme writes `maintenance.php`, `php-error.php` and `db-error.php` (and their stylesheet) into `wp-content`. It never overwrites a file it did not write; if you already have one, the tab says so and leaves it. The tab has a button to write them now. The 410 list ships empty; add spam paths there as you find them.
 5. **Placeholder pages and letters.** On the first admin page after the update, each of `irtidad`, `about`, `faq`, `contact` and `privacy` that still reads exactly "Placeholder. Replace this text." gets its written copy, and each of the two lorem-ipsum letters still unedited goes to draft. Pages and letters you have edited are left alone. Then add a contact method to Contact and the host and plugin details to Privacy (see the comments in each, visible in the editor).
 6. **Fatwa index.** While no Fatwa entry is published, `/fatwa/` says it is in preparation and the Fatwa links leave the sidebar, front-page footer, search page and 404 page.

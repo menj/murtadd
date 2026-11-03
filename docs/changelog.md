@@ -2,7 +2,7 @@
 
 ## 1.47.0 (2026-11-03)
 
-Google's SEO Starter Guide and its list of supported structured data, applied to the whole theme.
+Google's SEO Starter Guide, applied to the whole theme.
 
 ### Titles
 - Every title tag reads `<page title> | <site name>` and stays under 60 characters. Before this release the theme set no title rule, and WordPress printed "Title – Site name" at any length. The builder is `murtadd_document_title()` in the new `inc/seo-title.php`.
@@ -11,18 +11,17 @@ Google's SEO Starter Guide and its list of supported structured data, applied to
 - The seeder no longer writes `rank_math_title`, and `seo_title` is gone from `guides.json`.
 
 ### Structured data
-- A doubt is an `Article` with its statement (the page's h1) as headline. It was a `QAPage`, which Google keeps for pages where readers post answers.
-- No `FAQPage` on the FAQ page or the doubt category archives. FAQ is not on Google's list. The questions on the page stay as they are.
-- No `SearchAction` on the front page `WebSite`. Google retired the sitelinks search box in November 2024.
-- Every Article (doubt, rebuttal, fatwa entry) carries `image` (the featured image, else the generated card) and `mainEntityOfPage`. The author Person carries a `url`: the About page, else the home page.
-- With Rank Math, its graph loses any `FAQPage`, `QAPage` or `HowTo` node and the `SearchAction` on its `WebSite`, and its Article gains the theme's image when it has none.
+- The owner keeps all schema.org markup, whether Google lists a rich result for it or not, because it serves generative, answer and AI search (GEO, AEO, AIO). Decided on 2026-11-03. A doubt stays a `QAPage`, the FAQ page and the doubt category archives keep their `FAQPage`, and the front page `WebSite` keeps its `SearchAction`. With Rank Math the theme removes nothing from its graph, and adds a node only where the graph has none of its family, so no graph prints twice.
+- Every rebuttal and fatwa entry Article carries `image` (the featured image, else the generated card) and `mainEntityOfPage`. The author Person carries a `url`: the About page, else the home page.
+- With Rank Math, its Article gains the theme's image when it has none, and its author gains the theme's author url when it has none, on the embedded author or on the Person node it points to.
 
 ### Other
 - Archives (taxonomy, post type, posts page, and their paged views) print `<link rel="canonical">` when Rank Math is off. Core prints one only on single views.
 - Descriptions stop at 160 characters, cut at a word. Each doubt category archive has its own description, built from the term's description; the four used to share the doubt archive's.
-- An image sitemap at `/murtadd-image-sitemap.xml` lists each published entry's featured and attached images, and robots.txt names it. Rank Math's sitemap lists images itself, so with its sitemap module on the theme's stands down.
+- An image sitemap at `/murtadd-image-sitemap.xml` lists every published entry with its featured and attached images, read in batches of 200 with the batch's meta and featured images loaded in one query each. robots.txt names it. Rank Math's sitemap lists images itself, so with its sitemap module on the theme's stands down.
 - Two description strings lost their em dashes.
-- Tests: `tests/StructuredDataTest.php` and `tests/TitleTest.php` replace `tests/FaqSchemaTest.php`. `TitleTest` checks every seeded title against the budget and for duplicates.
+- Title and description cuts count characters with a `/u` pattern, so they never split a UTF-8 character and work without mbstring.
+- Tests: `tests/StructuredDataTest.php` and `tests/TitleTest.php` are new; `tests/FaqSchemaTest.php` stays. `TitleTest` checks every seeded title against the budget and for duplicates.
 
 ### Existing sites
 - Nothing to run. Titles, schema, canonicals and the sitemap are computed on each request. The stored `rank_math_title` on the two guides stays in the database and is overridden.

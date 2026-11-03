@@ -77,7 +77,8 @@ function murtadd_title_fit( $part, $budget ) {
 	if ( $budget < 1 || murtadd_title_len( $part ) <= $budget ) {
 		return $part;
 	}
-	$cut = function_exists( 'mb_substr' ) ? mb_substr( $part, 0, $budget, 'UTF-8' ) : substr( $part, 0, $budget );
+	// The first $budget characters; /u never splits a UTF-8 sequence.
+	$cut = preg_match( '/^.{0,' . (int) $budget . '}/us', $part, $m ) ? $m[0] : '';
 	$sp  = strrpos( $cut, ' ' );
 	if ( false !== $sp && $sp > 0 ) {
 		$cut = substr( $cut, 0, $sp );
@@ -255,35 +256,58 @@ function murtadd_rank_math_sitemap_active() {
  */
 function murtadd_image_sitemap_entries() {
 	$types = array( 'murtadd_doubt', 'murtadd_rebuttal', 'murtadd_fatwa', 'murtadd_guide', 'murtadd_letter', 'post', 'page' );
-	$ids   = get_posts(
-		array(
-			'post_type'      => $types,
-			'post_status'    => 'publish',
-			'posts_per_page' => 1000,
-			'fields'         => 'ids',
-			'no_found_rows'  => true,
-			'has_password'   => false,
-		)
-	);
-	$out = array();
-	foreach ( (array) $ids as $id ) {
-		$images = array();
-		$thumb  = (int) get_post_thumbnail_id( $id );
-		if ( $thumb ) {
-			$images[] = (string) wp_get_attachment_url( $thumb );
+	$out   = array();
+	$paged = 1;
+	do {
+		// Batches of 200, so no published entry is left out.
+		$ids = (array) get_posts(
+			array(
+				'post_type'      => $types,
+				'post_status'    => 'publish',
+				'posts_per_page' => 200,
+				'paged'          => $paged,
+				'orderby'        => 'ID',
+				'order'          => 'ASC',
+				'fields'         => 'ids',
+				'no_found_rows'  => true,
+				'has_password'   => false,
+			)
+		);
+		if ( ! $ids ) {
+			break;
 		}
-		$attached = get_attached_media( 'image', $id );
-		foreach ( (array) $attached as $att ) {
-			$images[] = (string) wp_get_attachment_url( $att->ID );
+		// One query for the batch's post meta and featured images, not one per post.
+		if ( function_exists( 'update_meta_cache' ) ) {
+			update_meta_cache( 'post', $ids );
 		}
-		$images = array_values( array_unique( array_filter( $images ) ) );
-		if ( $images ) {
-			$out[] = array(
-				'loc'    => (string) get_permalink( $id ),
-				'images' => array_slice( $images, 0, 1000 ),
-			);
+		$thumbs = array();
+		foreach ( $ids as $id ) {
+			$t = (int) get_post_thumbnail_id( $id );
+			if ( $t ) {
+				$thumbs[ $id ] = $t;
+			}
 		}
-	}
+		if ( $thumbs && function_exists( '_prime_post_caches' ) ) {
+			_prime_post_caches( array_values( array_unique( $thumbs ) ), false, true );
+		}
+		foreach ( $ids as $id ) {
+			$images = array();
+			if ( isset( $thumbs[ $id ] ) ) {
+				$images[] = (string) wp_get_attachment_url( $thumbs[ $id ] );
+			}
+			foreach ( (array) get_attached_media( 'image', $id ) as $att ) {
+				$images[] = (string) wp_get_attachment_url( $att->ID );
+			}
+			$images = array_values( array_unique( array_filter( $images ) ) );
+			if ( $images ) {
+				$out[] = array(
+					'loc'    => (string) get_permalink( $id ),
+					'images' => array_slice( $images, 0, 1000 ),
+				);
+			}
+		}
+		++$paged;
+	} while ( 200 === count( $ids ) );
 	return $out;
 }
 

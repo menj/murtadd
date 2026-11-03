@@ -2,18 +2,15 @@
 /**
  * Structured data (JSON-LD).
  *
- * Only types on Google's list of supported structured data are emitted, each
- * for the feature it serves and matching what the page shows:
+ * A person in the middle of a doubt does not arrive here through the homepage.
+ * They arrive through a search engine, at two in the morning, having typed the
+ * question into a box. Marking the Doubts up as questions with answers is
+ * therefore not a search-ranking nicety here; it is the front door.
  *
- * Doubts     -> Article (the statement, which is the page's h1, as headline)
- * Rebuttals  -> Article, with the claim under review in `about`
+ * Doubts     -> QAPage      (a question with an accepted answer)
+ * Rebuttals  -> ClaimReview (a claim, assessed, with the sources cited)
  * Fatwa      -> Article
  * Front page -> WebSite + Organization
- * Inner views -> BreadcrumbList, built from the visible trail
- *
- * A doubt is not a QAPage: Google's Q&A feature is for pages where readers
- * submit answers, and every answer here is the site's own. FAQPage and the
- * sitelinks SearchAction are not on Google's list and are not emitted.
  *
  * @package murtadd
  */
@@ -124,8 +121,8 @@ function murtadd_schema_image() {
 }
 
 /**
- * The view's main node: WebSite and Organization on the front page, an
- * Article for a doubt, a rebuttal or a fatwa entry. Null elsewhere.
+ * The view's main node: WebSite and Organization on the front page, a QAPage
+ * for a doubt, an Article for a rebuttal or a fatwa entry. Null elsewhere.
  *
  * @return array|null A node or a graph, with its @context.
  */
@@ -141,6 +138,14 @@ function murtadd_structured_data_primary_node() {
 					'name'        => get_bloginfo( 'name' ),
 					'description' => get_bloginfo( 'description' ),
 					'publisher'   => array( '@id' => home_url( '/#organization' ) ),
+					'potentialAction' => array(
+						'@type'       => 'SearchAction',
+						'target'      => array(
+							'@type'       => 'EntryPoint',
+							'urlTemplate' => home_url( '/?s={search_term_string}' ),
+						),
+						'query-input' => 'required name=search_term_string',
+					),
 				),
 				murtadd_organization_node(),
 			),
@@ -154,7 +159,7 @@ function murtadd_structured_data_primary_node() {
 	$post_id = get_the_ID();
 	$type    = get_post_type();
 
-	// A Doubt: the statement is the page's h1, so it is the headline.
+	// A Doubt is a question with an answer. Mark it up as one.
 	if ( 'murtadd_doubt' === $type ) {
 		$question = get_post_meta( $post_id, '_murtadd_doubt_statement', true );
 		$answer   = get_post_meta( $post_id, '_murtadd_short_response', true );
@@ -164,23 +169,27 @@ function murtadd_structured_data_primary_node() {
 		}
 
 		return array(
-			'@context'      => 'https://schema.org',
-			'@type'         => 'Article',
-			'@id'           => get_permalink() . '#article',
-			'headline'      => murtadd_schema_text( $question ),
-			'description'   => wp_trim_words( murtadd_schema_text( $answer ), 40 ),
-			'image'         => murtadd_schema_image(),
-			'datePublished' => get_the_date( 'c' ),
-			'dateModified'  => get_the_modified_date( 'c' ),
-			'url'           => get_permalink(),
-			'mainEntityOfPage' => get_permalink(),
-			'publisher'     => murtadd_organization_node(),
-			'author'        => murtadd_author_node() ?: murtadd_organization_node(),
-			'isPartOf'      => array( '@id' => home_url( '/#website' ) ),
+			'@context'   => 'https://schema.org',
+			'@type'      => 'QAPage',
+			'@id'        => get_permalink() . '#qa',
+			'mainEntity' => array(
+				'@type'          => 'Question',
+				'name'           => wp_strip_all_tags( $question ),
+				'text'           => wp_strip_all_tags( $question ),
+				'answerCount'    => 1,
+				'datePublished'  => get_the_date( 'c' ),
+				'acceptedAnswer' => array(
+					'@type' => 'Answer',
+					'text'  => wp_strip_all_tags( $answer ),
+					'url'   => get_permalink(),
+				),
+			),
+			'publisher'  => murtadd_organization_node(),
 		);
 	}
 
-	// A Rebuttal assesses a specific claim, named in `about`.
+	// A Rebuttal assesses a specific claim. ClaimReview is the honest shape:
+	// it forces the claim to be stated, which is what the format requires anyway.
 	if ( 'murtadd_rebuttal' === $type ) {
 		$claim = get_post_meta( $post_id, '_murtadd_claim', true );
 
@@ -289,6 +298,92 @@ function murtadd_schema_text( $html ) {
 }
 
 /**
+ * Question and answer pairs from content written as questions under h2
+ * headings: each heading is a question, and the text up to the next heading
+ * is its answer.
+ *
+ * @param string $html Stored content.
+ * @return array<int,array> Question nodes.
+ */
+function murtadd_faq_pairs_from_html( $html ) {
+	$parts = preg_split( '#(<h2\b[^>]*>.*?</h2>)#is', (string) $html, -1, PREG_SPLIT_DELIM_CAPTURE );
+	if ( ! is_array( $parts ) ) {
+		return array();
+	}
+	$pairs = array();
+	$count = count( $parts );
+	for ( $i = 1; $i < $count; $i += 2 ) {
+		$question = murtadd_schema_text( $parts[ $i ] );
+		$answer   = murtadd_schema_text( preg_replace( '#<!--.*?-->#s', '', $parts[ $i + 1 ] ?? '' ) );
+		if ( '' === $question || '' === $answer ) {
+			continue;
+		}
+		$pairs[] = array(
+			'@type'          => 'Question',
+			'name'           => $question,
+			'acceptedAnswer' => array(
+				'@type' => 'Answer',
+				'text'  => $answer,
+			),
+		);
+	}
+	return $pairs;
+}
+
+/**
+ * The FAQPage for a view written as questions and answers, or null.
+ *
+ * The FAQ page: its h2 questions and the answers under them. A doubt
+ * category archive: each listed doubt's statement, answered by the same
+ * excerpt of its short response the archive shows, so the data says nothing
+ * the page does not. The Emotional and Identity categories get none: their
+ * doubts are written care-first, a grief is not a question awaiting an
+ * answer box (docs/ssot.md), and they stay out of every answer feature the
+ * theme can keep them out of.
+ *
+ * @return array|null
+ */
+function murtadd_faq_node() {
+	$pairs = array();
+
+	if ( is_page( 'faq' ) ) {
+		$page  = get_queried_object();
+		$pairs = murtadd_faq_pairs_from_html( isset( $page->post_content ) ? $page->post_content : '' );
+	} elseif ( is_tax( 'murtadd_doubt_category' ) ) {
+		$term = get_queried_object();
+		if ( ! $term || in_array( $term->slug, array( 'emotional', 'identity' ), true ) ) {
+			return null;
+		}
+		$posts = isset( $GLOBALS['wp_query']->posts ) ? (array) $GLOBALS['wp_query']->posts : array();
+		foreach ( $posts as $post ) {
+			$question = trim( wp_strip_all_tags( (string) get_post_meta( $post->ID, '_murtadd_doubt_statement', true ) ) );
+			$response = (string) get_post_meta( $post->ID, '_murtadd_short_response', true );
+			if ( '' === $question || '' === trim( $response ) ) {
+				continue;
+			}
+			$pairs[] = array(
+				'@type'          => 'Question',
+				'name'           => $question,
+				'acceptedAnswer' => array(
+					'@type' => 'Answer',
+					'text'  => wp_trim_words( $response, 24 ),
+					'url'   => get_permalink( $post ),
+				),
+			);
+		}
+	}
+
+	if ( ! $pairs ) {
+		return null;
+	}
+	return array(
+		'@type'      => 'FAQPage',
+		'@id'        => murtadd_current_url() . '#faq',
+		'mainEntity' => $pairs,
+	);
+}
+
+/**
  * The address of the current view, for @id values and the last crumb.
  *
  * @return string
@@ -310,7 +405,8 @@ function murtadd_current_url() {
 
 /**
  * The graph for the current view, or null where the view has none: the main
- * node and the BreadcrumbList.
+ * node, the BreadcrumbList and, where the page is written as questions and
+ * answers, an FAQPage.
  *
  * Built apart from printing so the same nodes can be printed as the theme's
  * own JSON-LD or handed to Rank Math's graph (inc/rank-math.php). A single
@@ -328,9 +424,10 @@ function murtadd_structured_data_node() {
 			$nodes[] = $node;
 		}
 	}
-	$breadcrumbs = murtadd_breadcrumb_node();
-	if ( $breadcrumbs ) {
-		$nodes[] = $breadcrumbs;
+	foreach ( array( murtadd_breadcrumb_node(), function_exists( 'murtadd_faq_node' ) ? murtadd_faq_node() : null ) as $extra ) {
+		if ( $extra ) {
+			$nodes[] = $extra;
+		}
 	}
 	if ( ! $nodes ) {
 		return null;

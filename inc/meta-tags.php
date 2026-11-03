@@ -97,10 +97,11 @@ function murtadd_meta_description() {
  */
 function murtadd_meta_description_text() {
 	$desc = trim( preg_replace( '/\s+/u', ' ', wp_strip_all_tags( (string) murtadd_meta_description() ) ) ?? '' );
-	if ( function_exists( 'mb_strlen' ) && mb_strlen( $desc, 'UTF-8' ) > 160 ) {
-		$cut  = mb_substr( $desc, 0, 159, 'UTF-8' );
-		$sp   = mb_strrpos( $cut, ' ', 0, 'UTF-8' );
-		$cut  = false !== $sp ? mb_substr( $cut, 0, $sp, 'UTF-8' ) : $cut;
+	// Counted in characters; preg with /u works where mbstring is missing.
+	if ( preg_match_all( '/./us', $desc ) > 160 && preg_match( '/^.{0,159}/us', $desc, $m ) ) {
+		$cut  = $m[0];
+		$sp   = strrpos( $cut, ' ' );
+		$cut  = false !== $sp ? substr( $cut, 0, $sp ) : $cut;
 		$desc = rtrim( $cut, ' ,;:.' ) . '…';
 	}
 	return $desc;

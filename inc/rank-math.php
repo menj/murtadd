@@ -12,17 +12,16 @@
  * when the graph has no node of its family; where it has one, the theme
  * fills fields that node leaves empty and never overwrites one.
  *
- *  - Doubts:    Rank Math's Article gains the image where it has none; with
- *               no Article in its graph, the theme's (the statement as
- *               headline) is added.
+ *  - Doubts:    the QAPage (question and accepted answer) is added. No SEO
+ *               plugin builds one from a doubt's statement and short response.
  *  - Rebuttals: Rank Math's Article gains `about` (the Claim under review)
  *               and `citation` (the sources panel).
  *  - Fatwa:     Rank Math's Article gains `about` (the scholar or body) and
  *               `citation` (the primary source).
- *  - Front page: Rank Math's WebSite and Organization stand, less the
- *               sitelinks SearchAction, which Google no longer supports.
- *  - Types Google does not support (FAQPage, QAPage, HowTo) are taken out
- *               of the graph, whoever added them.
+ *  - Front page: Rank Math's WebSite and Organization stand.
+ *  - Articles:  Rank Math's Article gains the theme's image and the
+ *               author's url where it has none.
+ *  - All schema.org types stay, Google-supported or not (owner, 2026-11-03).
  *  - Title:     the tag reads "<page> | <site name>" under 60 characters,
  *               built by murtadd_document_title() (inc/seo-title.php).
  *  - Breadcrumbs: the theme's BreadcrumbList is added only when Rank Math's
@@ -99,44 +98,6 @@ function murtadd_schema_family( $type ) {
 }
 
 /**
- * Take out of Rank Math's graph what Google Search does not support: FAQPage,
- * QAPage and HowTo nodes, and the SearchAction on WebSite (the sitelinks
- * search box was retired in November 2024).
- *
- * @param array $data Rank Math's entities, keyed by name.
- * @return array
- */
-function murtadd_rank_math_prune( $data ) {
-	foreach ( $data as $key => $node ) {
-		if ( ! is_array( $node ) || ! isset( $node['@type'] ) ) {
-			continue;
-		}
-		$types = (array) $node['@type'];
-		if ( array_intersect( $types, array( 'FAQPage', 'QAPage', 'HowTo' ) ) ) {
-			unset( $data[ $key ] );
-			continue;
-		}
-		if ( isset( $node['potentialAction'] ) ) {
-			$actions = isset( $node['potentialAction']['@type'] ) ? array( $node['potentialAction'] ) : (array) $node['potentialAction'];
-			$actions = array_values(
-				array_filter(
-					$actions,
-					static function ( $a ) {
-						return ! ( is_array( $a ) && isset( $a['@type'] ) && 'SearchAction' === $a['@type'] );
-					}
-				)
-			);
-			if ( $actions ) {
-				$data[ $key ]['potentialAction'] = 1 === count( $actions ) ? $actions[0] : $actions;
-			} else {
-				unset( $data[ $key ]['potentialAction'] );
-			}
-		}
-	}
-	return $data;
-}
-
-/**
  * Merge the theme's nodes into Rank Math's graph by family.
  *
  * Kept free of WordPress calls so it can be tested on plain arrays.
@@ -146,14 +107,9 @@ function murtadd_rank_math_prune( $data ) {
  * @return array
  */
 function murtadd_rank_math_merge( $data, $ours ) {
-	if ( ! is_array( $data ) ) {
+	if ( ! is_array( $data ) || ! is_array( $ours ) ) {
 		return $data;
 	}
-	if ( ! is_array( $ours ) ) {
-		return murtadd_rank_math_prune( $data );
-	}
-
-	$data = murtadd_rank_math_prune( $data );
 
 	$nodes = isset( $ours['@graph'] ) && is_array( $ours['@graph'] ) ? $ours['@graph'] : array( $ours );
 
@@ -194,9 +150,38 @@ function murtadd_rank_math_merge( $data, $ours ) {
 					$data[ $key ][ $field ] = $node[ $field ];
 				}
 			}
+			// The author's About address, where Rank Math's author has none.
+			if ( ! empty( $node['author']['url'] ) && isset( $data[ $key ]['author'] ) && is_array( $data[ $key ]['author'] ) ) {
+				$data = murtadd_rank_math_author_url( $data, $key, (string) $node['author']['url'] );
+			}
 		}
 	}
 
+	return $data;
+}
+
+/**
+ * Give the author of one of Rank Math's nodes a url where it has none: on
+ * the author itself when embedded, else on the Person node it points to.
+ *
+ * @param array  $data Rank Math's entities.
+ * @param string $key  The node whose author is filled.
+ * @param string $url  The theme's author url.
+ * @return array
+ */
+function murtadd_rank_math_author_url( $data, $key, $url ) {
+	$author = $data[ $key ]['author'];
+	if ( isset( $author['@type'] ) || ! isset( $author['@id'] ) ) {
+		if ( empty( $author['url'] ) ) {
+			$data[ $key ]['author']['url'] = $url;
+		}
+		return $data;
+	}
+	foreach ( $data as $k => $n ) {
+		if ( is_array( $n ) && isset( $n['@id'] ) && (string) $n['@id'] === (string) $author['@id'] && empty( $n['url'] ) ) {
+			$data[ $k ]['url'] = $url;
+		}
+	}
 	return $data;
 }
 

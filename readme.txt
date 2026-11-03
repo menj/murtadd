@@ -36,7 +36,7 @@ Two things remain yours:
 == Changelog ==
 = 1.47.0 =
 * Every title tag reads "page title | site name" and stays under 60 characters, with or without Rank Math.
-* Structured data keeps to the types Google Search supports. Doubts are Articles; FAQPage and the search box action are gone.
+* All schema.org markup stays, as the owner decided on 2026-11-03 for GEO, AEO and AIO. Rebuttal and fatwa Articles gain an image, and the author a url.
 * Archives print a canonical link, descriptions stop at 160 characters, and an image sitemap lists featured and attached images.
 
 = 1.46.0 =
