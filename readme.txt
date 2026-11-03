@@ -3,7 +3,7 @@ Contributors: murtadd.org
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.1
-Stable tag: 1.45.2
+Stable tag: 1.46.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,6 +32,13 @@ Nothing is ever overwritten. A page, menu, or Reading option you have already se
 Two things remain yours:
 * Replace the placeholder copy on the new pages before announcing the site.
 * Set the favicon at Settings → General → Site Icon (upload icons/site-icon-512.png), and set colours and cross-link URLs at Appearance → Theme Options.
+
+== Changelog ==
+= 1.46.0 =
+* The home page and the Start Here page carry a "Not sure where to start?" card. Its button opens the Compelling Evidence quiz in the same tab, at the evidential case base URL plus /quiz/?from=murtadd.
+* A switch on the Linked sites tab turns the card off. It is on by default.
+
+See docs/changelog.md for earlier releases.
 
 == Data removal ==
 WordPress does not execute an uninstall routine for themes. If the theme is removed permanently, delete these options manually (WP-CLI: wp option delete <name>): murtadd_colours, murtadd_cross_links, murtadd_contextual_links, murtadd_content_display, murtadd_security, murtadd_upkeep, murtadd_dropins_stamp, murtadd_dropins_status, murtadd_placeholder_copy_retired, murtadd_topics_seeded, murtadd_schools_seeded, murtadd_doubt_categories_seeded, murtadd_rewrite_version, murtadd_needs_setup, murtadd_template_paths_migrated, murtadd_content_seeded, murtadd_seeded_slugs, murtadd_profiles, murtadd_author_name. All CPT posts and taxonomy terms persist by design.

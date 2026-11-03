@@ -52,6 +52,8 @@ while ( have_posts() ) :
 			</a>
 		</div>
 
+		<?php get_template_part( 'template-parts/cards/card', 'quiz' ); ?>
+
 		<?php murtadd_struggling_notice(); ?>
 	</article>
 	<?php

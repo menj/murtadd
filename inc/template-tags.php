@@ -580,3 +580,23 @@ function murtadd_breadcrumbs() {
 	}
 	echo '</ol></nav>';
 }
+
+/**
+ * Address of the Compelling Evidence persona quiz, or '' when the card is off.
+ * Built from the cross-link base URL; the only query argument is from=murtadd.
+ */
+function murtadd_quiz_url() {
+	$o = get_option( 'murtadd_cross_links', array() );
+	$o = is_array( $o ) ? $o : array();
+	if ( '0' === (string) ( $o['show_quiz_card'] ?? '1' ) ) {
+		return '';
+	}
+	// Never saved: use the default address the settings page shows. Saved empty: hide the card.
+	$base = trim( (string) ( array_key_exists( 'ce_base_url', $o ) ? $o['ce_base_url'] : 'https://compelling-evidence.com' ) );
+	if ( '' === $base ) {
+		return '';
+	}
+	// Keep scheme, host and path only, so a saved query or fragment cannot swallow /quiz/.
+	$base = (string) preg_replace( '/[?#].*$/', '', $base );
+	return untrailingslashit( $base ) . '/quiz/?from=murtadd';
+}

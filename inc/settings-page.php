@@ -38,6 +38,7 @@ function murtadd_sanitize_cross_links( $input ) {
 		'ce_base_url'      => esc_url_raw( $input['ce_base_url'] ?? '' ),
 		'bismika_base_url' => esc_url_raw( $input['bismika_base_url'] ?? '' ),
 		'show_counterpart' => empty( $input['show_counterpart'] ) ? '0' : '1',
+		'show_quiz_card'   => empty( $input['show_quiz_card'] ) ? '0' : '1',
 	);
 }
 
@@ -434,6 +435,13 @@ function murtadd_render_settings_page() {
 							<td>
 								<label><input type="checkbox" name="murtadd_cross_links[show_counterpart]" value="1" <?php checked( '0' !== (string) ( $o['show_counterpart'] ?? '1' ) ); ?>> <?php esc_html_e( 'Show the counterpart link', 'murtadd' ); ?></label>
 								<p class="description"><?php esc_html_e( 'On doubts and rebuttals that name a Compelling Evidence article, an aside links to it at the evidential case base URL above (/articles/slug/). On by default.', 'murtadd' ); ?></p>
+							</td>
+						</tr>
+						<tr>
+							<th scope="row"><?php esc_html_e( 'Starting-point card', 'murtadd' ); ?></th>
+							<td>
+								<label><input type="checkbox" name="murtadd_cross_links[show_quiz_card]" value="1" <?php checked( '0' !== (string) ( $o['show_quiz_card'] ?? '1' ) ); ?>> <?php esc_html_e( 'Show the "Not sure where to start?" card', 'murtadd' ); ?></label>
+								<p class="description"><?php esc_html_e( 'On the home page and the Start Here page, a card links to the Compelling Evidence quiz at the evidential case base URL above (/quiz/?from=murtadd). It opens in the same tab. On by default.', 'murtadd' ); ?></p>
 							</td>
 						</tr>
 						<tr>
