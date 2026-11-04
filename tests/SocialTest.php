@@ -79,7 +79,8 @@ final class SocialTest extends TestCase {
 	}
 
 	/**
-	 * The footer icons and the schema sameAs are the same data.
+	 * The footer icons and the schema sameAs are the same data, and sameAs
+	 * always ends with https://menj.bio.
 	 *
 	 * This is the invariant the whole feature exists to guarantee: a link shown
 	 * to a human and a link handed to a parser are one datum, never two.
@@ -97,7 +98,11 @@ final class SocialTest extends TestCase {
 		$footer = array_values( murtadd_social_profiles() );
 		$person = murtadd_author_node();
 
-		$this->assertSame( $footer, $person['sameAs'], 'The footer links and the Person sameAs must be identical.' );
+		$this->assertSame( array_merge( $footer, array( 'https://menj.bio' ) ), $person['sameAs'], 'The Person sameAs is the footer links, then https://menj.bio.' );
+		$this->assertContains( 'https://menj.bio', murtadd_organization_node()['sameAs'], 'The Organization sameAs includes https://menj.bio.' );
+		update_option( 'murtadd_profiles', array() );
+		$this->assertSame( array( 'https://menj.bio' ), murtadd_author_node()['sameAs'], 'With no profiles the author still carries https://menj.bio.' );
+		$this->assertArrayNotHasKey( 'sameAs', murtadd_organization_node(), 'With no profiles the Organization gets no sameAs.' );
 	}
 
 	/** With no author name, the Person node is null and nothing empty is emitted. */

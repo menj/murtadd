@@ -9,6 +9,7 @@
 
 ### Added
 - `inc/data/seed/guide-wording.json` lists the changed sentences as old and new pairs. `murtadd_update_guide_wording()` (`inc/seed-guides.php`, on `admin_init`) gives the new text to a guide whose stored content matches the shipped content with the old sentences put back. An edited guide is left alone. The run is recorded in `murtadd_guide_wording` once every write has landed.
+- `murtadd_schema_with_menj()` (`inc/schema.php`) appends `https://menj.bio` to the Organization's sameAs when it has one, and the author Person always carries it after any saved profiles. Existing entries keep their order and stored profiles are untouched. `tests/SocialTest.php` checks it.
 - `tests/GuidesTest.php`: no guide says "sister site" or "across the network"; an unedited guide takes the new wording and an edited one keeps its own.
 
 ## 1.55.1 (2026-11-04)

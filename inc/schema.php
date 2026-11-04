@@ -51,10 +51,11 @@ function murtadd_organization_node() {
 		),
 	);
 
-	// The saved profile URLs double as the publisher's sameAs set.
+	// The saved profile URLs double as the publisher's sameAs set, with
+	// https://menj.bio appended.
 	$same_as = array_values( murtadd_social_profiles() );
 	if ( $same_as ) {
-		$node['sameAs'] = $same_as;
+		$node['sameAs'] = murtadd_schema_with_menj( $same_as );
 	}
 
 	return $node;
@@ -83,10 +84,8 @@ function murtadd_author_node() {
 		'url'   => murtadd_author_url(),
 	);
 
-	$same_as = array_values( murtadd_social_profiles() );
-	if ( $same_as ) {
-		$node['sameAs'] = $same_as;
-	}
+	// The author always carries https://menj.bio, after any saved profiles.
+	$node['sameAs'] = murtadd_schema_with_menj( array_values( murtadd_social_profiles() ) );
 
 	return $node;
 }
@@ -568,3 +567,20 @@ function murtadd_structured_data() {
 	}
 }
 add_action( 'wp_head', 'murtadd_structured_data' );
+
+/**
+ * A sameAs list with https://menj.bio appended when it is missing.
+ *
+ * Existing entries keep their order. The owner ruled on 4 November 2026 that
+ * every sameAs the theme builds includes this address.
+ *
+ * @param string[] $same_as Existing entries.
+ * @return string[]
+ */
+function murtadd_schema_with_menj( $same_as ) {
+	$same_as = array_values( (array) $same_as );
+	if ( ! in_array( 'https://menj.bio', $same_as, true ) ) {
+		$same_as[] = 'https://menj.bio';
+	}
+	return $same_as;
+}
