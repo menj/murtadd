@@ -45,8 +45,13 @@ function murtadd_progress_settings() {
 	$o = get_option( 'murtadd_content_display', array() );
 	$o = is_array( $o ) ? $o : array();
 
+	// Until the bar is saved here, the plugin's saved options carry over.
+	if ( ! array_key_exists( 'progress_bar', $o ) ) {
+		$o = array_merge( murtadd_progress_from_plugin(), $o );
+	}
+
 	$types = isset( $o['progress_types'] ) && is_array( $o['progress_types'] )
-		? $o['progress_types']
+		? array_filter( $o['progress_types'], 'is_string' )
 		: array( 'murtadd_rebuttal', 'murtadd_guide', 'post', 'page' );
 
 	return array(
@@ -59,12 +64,53 @@ function murtadd_progress_settings() {
 }
 
 /**
+ * The Reading Progress Bar plugin's saved options (rp_settings), mapped to
+ * the theme's keys. Its "custom" position, which pins the bar to an element
+ * of the plugin user's choosing, becomes the top edge. Its templates other
+ * than single entries have no counterpart and are not carried.
+ *
+ * @return array
+ */
+function murtadd_progress_from_plugin() {
+	$rp = get_option( 'rp_settings', array() );
+
+	if ( ! is_array( $rp ) || ! $rp ) {
+		return array();
+	}
+
+	$out = array();
+
+	if ( isset( $rp['rp_field_height'] ) && is_scalar( $rp['rp_field_height'] ) && '' !== (string) $rp['rp_field_height'] ) {
+		$out['progress_height'] = (int) $rp['rp_field_height'];
+	}
+
+	if ( isset( $rp['rp_field_fg_color'] ) && is_string( $rp['rp_field_fg_color'] ) && sanitize_hex_color( $rp['rp_field_fg_color'] ) ) {
+		$out['progress_colour'] = sanitize_hex_color( $rp['rp_field_fg_color'] );
+	}
+
+	if ( isset( $rp['rp_field_position'] ) && is_string( $rp['rp_field_position'] ) ) {
+		$out['progress_position'] = 'bottom' === $rp['rp_field_position'] ? 'bottom' : 'top';
+	}
+
+	if ( isset( $rp['rp_field_posttypes'] ) && is_array( $rp['rp_field_posttypes'] ) ) {
+		$out['progress_types'] = array_values( array_filter( array_map( 'strval', array_keys( array_filter( $rp['rp_field_posttypes'] ) ) ), 'is_string' ) );
+	}
+
+	// The plugin showed nothing on single entries unless that template was ticked.
+	$out['progress_bar'] = ! empty( $rp['rp_field_templates']['single'] ) ? 1 : 0;
+
+	return $out;
+}
+
+/**
  * Whether the current view shows the bar.
  *
  * @return bool
  */
 function murtadd_progress_applies() {
-	if ( function_exists( 'rp_show_it' ) || is_admin() || is_front_page() || ! is_singular() ) {
+	// A static front page is a page and follows the page setting; a front
+	// page of latest posts is not singular and gets no bar.
+	if ( function_exists( 'rp_show_it' ) || is_admin() || ! is_singular() ) {
 		return false;
 	}
 
@@ -117,7 +163,7 @@ add_action( 'wp_enqueue_scripts', 'murtadd_progress_assets', 20 );
  * @return array
  */
 function murtadd_sanitize_progress( $input ) {
-	$types = isset( $input['progress_types'] ) ? array_map( 'sanitize_key', (array) $input['progress_types'] ) : array();
+	$types = isset( $input['progress_types'] ) && is_array( $input['progress_types'] ) ? array_map( 'sanitize_key', array_filter( $input['progress_types'], 'is_string' ) ) : array();
 
 	return array(
 		'progress_bar'      => empty( $input['progress_bar'] ) ? 0 : 1,

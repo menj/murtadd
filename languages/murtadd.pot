@@ -2400,3 +2400,15 @@ msgstr ""
 #: inc/social.php:176
 msgid "The author profile icons set on the Profiles tab of Theme Options."
 msgstr ""
+
+#: inc/search-permalinks.php:217
+msgid "Lowercase letters, numbers, hyphens and underscores; anything else is removed. It cannot be an address the site already uses, such as doubts or topic. Searches open at this address, such as /search/apostasy/. Switch readable search addresses on or off in Theme Options, Content."
+msgstr ""
+
+#: inc/search-permalinks.php:250
+msgid "Lowercase letters, numbers, hyphens and underscores; anything else is removed. It cannot be an address the site already uses, such as doubts or topic."
+msgstr ""
+
+#: inc/search-permalinks.php:316
+msgid "The search base \"%s\" is already an address on this site, so the previous base is kept."
+msgstr ""

@@ -45,5 +45,15 @@
 
 	window.addEventListener( 'scroll', schedule, { passive: true } );
 	window.addEventListener( 'resize', schedule, { passive: true } );
+
+	// Images, embeds and late styles change the entry's height without a
+	// scroll or a resize; measure again whenever it does.
+	if ( 'ResizeObserver' in window ) {
+		var observer = new window.ResizeObserver( schedule );
+		observer.observe( document.body );
+		if ( entry !== document.body ) {
+			observer.observe( entry );
+		}
+	}
 	update();
 }() );

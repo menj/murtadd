@@ -630,6 +630,28 @@ class MurtaddTestRedirect extends Exception {
 		parent::__construct( 'redirect' );
 	}
 }
+if ( ! function_exists( 'delete_post_meta' ) ) {
+	function delete_post_meta( $id, $k ) {
+		unset( $GLOBALS['murtadd_written_meta'][ $id ][ $k ] );
+		return true;
+	}
+}
+/** A $wpdb with the one meta query inc/unlist.php runs; tests install it as needed. */
+class MurtaddTestWpdb {
+	public $postmeta = 'wp_postmeta';
+	public function prepare( $sql, ...$args ) {
+		return array( $sql, $args );
+	}
+	public function get_col( $query ) {
+		$ids = array();
+		foreach ( $GLOBALS['murtadd_written_meta'] ?? array() as $id => $meta ) {
+			if ( isset( $meta[ $query[1][0] ] ) ) {
+				$ids[] = $id;
+			}
+		}
+		return $ids;
+	}
+}
 require_once __DIR__ . '/../inc/unlist.php';
 require_once __DIR__ . '/../inc/search-permalinks.php';
 require_once __DIR__ . '/../inc/reading-progress.php';

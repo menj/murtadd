@@ -22,6 +22,19 @@ The owner asked for the features of 4 plugins to be built into the theme. Two we
 - `[murtadd_social_icons]` and the Profile icons pattern print the profile row anywhere, in the text colour.
 - Each icon is a 32-pixel target, up from 20, with a visible focus ring. The colour is the `--murtadd-social-ink` variable. The hover lift is off under `prefers-reduced-motion`.
 
+### Fixed in review
+- Unlisting kept its list in one option, read and rewritten on every save, so two saves on different entries could erase each other. Each entry now carries its own flag in post meta (`_murtadd_unlisted`), and `murtadd_unlisted` and the plugin's `unlist_posts` are rebuilt from the flags after every change.
+- The plugin's list is imported on the first read of any request, front end included, and again whenever it has changed since the last sync (`murtadd_unlisted_synced`).
+- Rank Math's sitemap, the core sitemaps and the image sitemap read the plugin's list while the plugin is active. The image sitemap kept its batches of 200 counting the IDs fetched, not the IDs kept.
+- `murtadd_rewrite_version` is written only after the flush, and only once the stored rules hold the search rule for the current base.
+- The search redirect keeps array arguments such as `post_type[]` intact.
+- The base is cleaned with `sanitize_key`, and a base the theme already routes (doubts, rebuttals, fatwa, letters, guides, journal, topic, school, any post type or taxonomy base) is refused with a notice. The help text says so.
+- Saving the base in Settings, Permalinks merges it into the saved option, so the readable-addresses switch keeps its value.
+- The bar takes the Reading Progress Bar plugin's saved height, colour, edge, post types and single-entry switch (`rp_settings`) until it is saved on the Content tab.
+- A static front page is a page, and gets the bar when pages do.
+- The bar measures again when the page height changes, through a ResizeObserver.
+- The bar's post types accept only strings.
+
 ### Tests
 - `tests/UnlistTest.php`, `tests/SearchPermalinksTest.php`, `tests/ReadingProgressTest.php`, and 2 tests in `tests/SocialTest.php`.
 

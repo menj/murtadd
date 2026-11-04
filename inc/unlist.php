@@ -49,23 +49,150 @@ function murtadd_unlist_post_types() {
 	return array_values( get_post_types( array( 'public' => true ), 'names' ) );
 }
 
+const MURTADD_UNLISTED_META = '_murtadd_unlisted';
+
 /**
- * The unlisted IDs. On first use the plugin's saved list is imported, so
- * moving from the plugin loses nothing.
+ * The unlisted IDs.
+ *
+ * Each entry carries its own flag in post meta (_murtadd_unlisted), so two
+ * saves on different entries cannot erase each other. murtadd_unlisted is a
+ * cache of those flags, rebuilt from them after every change and kept equal
+ * to the plugin's unlist_posts, so the plugin finds the same entries if it
+ * is switched back on.
+ *
+ * The plugin's list is read on the first call of any request, front end
+ * included, and again whenever it differs from the copy last synced.
  *
  * @return int[]
  */
 function murtadd_unlisted_ids() {
-	$ids = get_option( MURTADD_UNLISTED_OPTION, null );
+	murtadd_unlist_sync_from_plugin();
 
-	if ( null === $ids ) {
-		$imported = get_option( 'unlist_posts', array() );
-		$ids      = is_array( $imported ) ? $imported : array();
-		$ids      = array_values( array_unique( array_filter( array_map( 'intval', $ids ) ) ) );
-		update_option( MURTADD_UNLISTED_OPTION, $ids );
+	return array_values( array_filter( array_map( 'intval', (array) get_option( MURTADD_UNLISTED_OPTION, array() ) ), static fn( $id ) => $id > 0 ) );
+}
+
+/**
+ * The plugin's saved list, cleaned and sorted.
+ *
+ * @return int[]
+ */
+function murtadd_unlist_plugin_ids() {
+	$ids = get_option( 'unlist_posts', array() );
+	$ids = array_values( array_unique( array_filter( array_map( 'intval', is_array( $ids ) ? $ids : array() ), static fn( $id ) => $id > 0 ) ) );
+	sort( $ids );
+
+	return $ids;
+}
+
+/**
+ * Imports the plugin's list when it is new or has changed since the last
+ * sync. On the first sync, entries in the list option without a flag get
+ * one. Runs once a request.
+ *
+ * @param bool $again Run even if this request already ran it (tests).
+ * @return void
+ */
+function murtadd_unlist_sync_from_plugin( $again = false ) {
+	static $done = false;
+
+	if ( $done && ! $again ) {
+		return;
 	}
 
-	return array_values( array_filter( array_map( 'intval', (array) $ids ), static fn( $id ) => $id > 0 ) );
+	$done = true;
+
+	// No database (a very early call, or the test harness without one).
+	if ( empty( $GLOBALS['wpdb'] ) || ! is_object( $GLOBALS['wpdb'] ) ) {
+		return;
+	}
+
+	$plugin = murtadd_unlist_plugin_ids();
+	$synced = get_option( 'murtadd_unlisted_synced', null );
+
+	if ( md5( implode( ',', $plugin ) ) === $synced ) {
+		return;
+	}
+
+	$ids = $plugin;
+
+	if ( null === $synced ) {
+		$ids = array_merge( $ids, array_map( 'intval', (array) get_option( MURTADD_UNLISTED_OPTION, array() ) ) );
+	} else {
+		// The plugin's list changed while it was in charge: it wins.
+		foreach ( murtadd_unlist_flagged_ids() as $id ) {
+			if ( ! in_array( $id, $plugin, true ) ) {
+				delete_post_meta( $id, MURTADD_UNLISTED_META );
+			}
+		}
+	}
+
+	foreach ( array_unique( array_filter( $ids ) ) as $id ) {
+		update_post_meta( (int) $id, MURTADD_UNLISTED_META, 1 );
+	}
+
+	murtadd_unlist_rebuild();
+}
+
+/**
+ * The IDs whose flag is set, read straight from the table so no query
+ * filter, this module's included, can hide one.
+ *
+ * @return int[]
+ */
+function murtadd_unlist_flagged_ids() {
+	global $wpdb;
+
+	if ( ! is_object( $wpdb ) ) {
+		return array();
+	}
+
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery
+	$ids = array_values( array_unique( array_filter( array_map( 'intval', (array) $wpdb->get_col( $wpdb->prepare( "SELECT DISTINCT post_id FROM {$wpdb->postmeta} WHERE meta_key = %s", MURTADD_UNLISTED_META ) ) ) ) ) );
+	sort( $ids );
+
+	return $ids;
+}
+
+/**
+ * Rebuilds the list option and the plugin's list from the flags, and
+ * records the plugin list as synced.
+ *
+ * @return void
+ */
+function murtadd_unlist_rebuild() {
+	$ids = murtadd_unlist_flagged_ids();
+
+	update_option( MURTADD_UNLISTED_OPTION, $ids );
+	update_option( 'unlist_posts', $ids );
+	update_option( 'murtadd_unlisted_synced', md5( implode( ',', $ids ) ) );
+}
+
+/**
+ * Whether an entry is unlisted by the theme or, while it is active, by the
+ * plugin. For the exclusions the theme keeps either way (the sitemaps),
+ * which the plugin does not cover.
+ *
+ * @param int|object $post Post or ID.
+ * @return bool
+ */
+function murtadd_is_unlisted_anywhere( $post ) {
+	$id = is_object( $post ) ? (int) $post->ID : (int) $post;
+
+	if ( murtadd_unlist_enabled() ) {
+		return murtadd_is_unlisted( $id );
+	}
+
+	return $id > 0 && in_array( $id, murtadd_unlist_plugin_ids(), true );
+}
+
+/**
+ * The IDs to leave out of a sitemap: the theme's, or the plugin's while the
+ * plugin is active.
+ *
+ * @return int[]
+ */
+function murtadd_unlist_sitemap_ids() {
+	return murtadd_unlist_enabled() ? murtadd_unlisted_ids() : murtadd_unlist_plugin_ids();
 }
 
 /**
@@ -93,10 +220,20 @@ function murtadd_is_unlisted( $post ) {
  */
 function murtadd_set_unlisted( $post_id, $unlisted ) {
 	$post_id = (int) $post_id;
-	$ids     = murtadd_unlisted_ids();
-	$ids     = $unlisted ? array_merge( $ids, array( $post_id ) ) : array_diff( $ids, array( $post_id ) );
 
-	update_option( MURTADD_UNLISTED_OPTION, array_values( array_unique( array_map( 'intval', $ids ) ) ) );
+	if ( $post_id <= 0 ) {
+		return;
+	}
+
+	// One flag per entry: a save on one entry never rewrites another's.
+	if ( $unlisted ) {
+		update_post_meta( $post_id, MURTADD_UNLISTED_META, 1 );
+	} else {
+		delete_post_meta( $post_id, MURTADD_UNLISTED_META );
+	}
+
+	// Rebuilt from every flag, so the last rebuild sees both of two saves.
+	murtadd_unlist_rebuild();
 }
 
 /**
@@ -241,7 +378,7 @@ add_filter( 'rank_math/frontend/robots', 'murtadd_unlist_rank_math_robots', 20 )
  * @return array|false
  */
 function murtadd_unlist_rank_math_sitemap( $url, $type = '', $object = null ) {
-	if ( 'post' === $type && is_object( $object ) && isset( $object->ID ) && murtadd_is_unlisted( $object ) ) {
+	if ( 'post' === $type && is_object( $object ) && isset( $object->ID ) && murtadd_is_unlisted_anywhere( $object ) ) {
 		return false;
 	}
 
@@ -258,8 +395,10 @@ add_filter( 'rank_math/sitemap/entry', 'murtadd_unlist_rank_math_sitemap', 10, 3
  * @return array
  */
 function murtadd_unlist_core_sitemap( $args ) {
-	if ( murtadd_unlist_enabled() && murtadd_unlisted_ids() ) {
-		$args['post__not_in'] = array_values( array_unique( array_merge( array_map( 'intval', (array) ( $args['post__not_in'] ?? array() ) ), murtadd_unlisted_ids() ) ) );
+	$ids = murtadd_unlist_sitemap_ids();
+
+	if ( $ids ) {
+		$args['post__not_in'] = array_values( array_unique( array_merge( array_filter( array_map( 'intval', (array) ( $args['post__not_in'] ?? array() ) ) ), $ids ) ) );
 	}
 
 	return $args;

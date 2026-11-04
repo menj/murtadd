@@ -35,25 +35,44 @@ final class MurtaddTestQuery {
 final class UnlistTest extends TestCase {
 
 	protected function setUp(): void {
-		$GLOBALS['murtadd_options']       = array( 'murtadd_unlisted' => array( 7, 9 ) );
+		$GLOBALS['wpdb']                  = new MurtaddTestWpdb();
+		$GLOBALS['murtadd_written_meta']  = array( 7 => array( '_murtadd_unlisted' => 1 ), 9 => array( '_murtadd_unlisted' => 1 ) );
+		$GLOBALS['murtadd_options']       = array( 'murtadd_unlisted' => array( 7, 9 ), 'unlist_posts' => array( 7, 9 ), 'murtadd_unlisted_synced' => md5( '7,9' ) );
 		$GLOBALS['murtadd_test_is_admin'] = false;
 		$GLOBALS['murtadd_test_caps']     = array();
 		$GLOBALS['murtadd_view']          = array();
 		unset( $GLOBALS['murtadd_test_request'] );
 	}
 
-	public function test_imports_the_plugin_list_once() {
-		$GLOBALS['murtadd_options'] = array( 'unlist_posts' => array( '7', 9, 0, '7' ) );
-		$this->assertSame( array( 7, 9 ), murtadd_unlisted_ids() );
-		$this->assertSame( array( 7, 9 ), $GLOBALS['murtadd_options']['murtadd_unlisted'] );
+	protected function tearDown(): void {
+		unset( $GLOBALS['wpdb'] );
 	}
 
-	public function test_set_and_check() {
-		murtadd_set_unlisted( 8, true );
-		$this->assertTrue( murtadd_is_unlisted( 8 ) );
+	public function test_imports_the_plugin_list_on_any_request() {
+		$GLOBALS['murtadd_written_meta'] = array();
+		$GLOBALS['murtadd_options']      = array( 'unlist_posts' => array( '9', 7, 0, '7' ) );
+		murtadd_unlist_sync_from_plugin( true );
+		$this->assertSame( array( 7, 9 ), murtadd_unlisted_ids() );
+		$this->assertSame( 1, $GLOBALS['murtadd_written_meta'][7]['_murtadd_unlisted'], 'One flag per entry.' );
+		$this->assertSame( array( 7, 9 ), $GLOBALS['murtadd_options']['unlist_posts'], 'The plugin list is kept in step.' );
+	}
+
+	public function test_a_changed_plugin_list_is_synced_again() {
+		$GLOBALS['murtadd_options']['unlist_posts'] = array( 9, 20 );
+		murtadd_unlist_sync_from_plugin( true );
+		$this->assertSame( array( 9, 20 ), murtadd_unlisted_ids() );
+		$this->assertArrayNotHasKey( '_murtadd_unlisted', $GLOBALS['murtadd_written_meta'][7] );
+	}
+
+	public function test_concurrent_saves_keep_each_other() {
+		murtadd_set_unlisted( 11, true );
+		// A second request that read the list before the first save landed.
+		$GLOBALS['murtadd_options']['murtadd_unlisted'] = array( 7, 9 );
+		murtadd_set_unlisted( 12, true );
+		$this->assertSame( array( 7, 9, 11, 12 ), $GLOBALS['murtadd_options']['murtadd_unlisted'] );
 		murtadd_set_unlisted( 7, false );
 		$this->assertFalse( murtadd_is_unlisted( 7 ) );
-		$this->assertSame( array( 9, 8 ), murtadd_unlisted_ids() );
+		$this->assertSame( array( 9, 11, 12 ), $GLOBALS['murtadd_options']['unlist_posts'] );
 	}
 
 	public function test_listing_queries_leave_them_out() {
@@ -140,5 +159,8 @@ final class UnlistTest extends TestCase {
 		$this->assertFalse( murtadd_unlist_enabled() );
 		$this->assertFalse( murtadd_is_unlisted( 7 ) );
 		$this->assertSame( 'x', murtadd_unlist_adjacent( 'x' ) );
+		$this->assertTrue( murtadd_is_unlisted_anywhere( 7 ), 'Sitemap exclusions read the plugin list.' );
+		$this->assertFalse( murtadd_unlist_rank_math_sitemap( array( 'loc' => 'x' ), 'post', (object) array( 'ID' => 9 ) ) );
+		$this->assertSame( array( 7, 9 ), murtadd_unlist_core_sitemap( array() )['post__not_in'] );
 	}
 }

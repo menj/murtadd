@@ -61,4 +61,37 @@ final class ReadingProgressTest extends TestCase {
 			$this->assertStringNotContainsString( "'progressbar'", (string) file_get_contents( $root . '/assets/js/' . $file ), $file . ' must not draw a second bar.' );
 		}
 	}
+
+	public function test_plugin_options_carry_over_until_saved_here() {
+		$GLOBALS['murtadd_options']['rp_settings'] = array(
+			'rp_field_height'    => '6',
+			'rp_field_fg_color'  => '#aa0000',
+			'rp_field_position'  => 'bottom',
+			'rp_field_templates' => array( 'single' => '1' ),
+			'rp_field_posttypes' => array( 'post' => '1', 'murtadd_doubt' => '1' ),
+		);
+		$s = murtadd_progress_settings();
+		$this->assertSame( array( 1, '#aa0000', 6, 'bottom', array( 'post' ) ), array( $s['on'], $s['colour'], $s['height'], $s['position'], $s['types'] ) );
+
+		$GLOBALS['murtadd_options']['murtadd_content_display'] = array( 'progress_bar' => 1, 'progress_height' => 3 );
+		$this->assertSame( 3, murtadd_progress_settings()['height'], 'Once saved here, the theme\'s settings win.' );
+	}
+
+	public function test_only_strings_are_accepted_as_types() {
+		$clean = murtadd_sanitize_progress( array( 'progress_types' => array( array( 'post' ), 42, 'page' ) ) );
+		$this->assertSame( array( 'page' ), $clean['progress_types'] );
+		$this->assertSame( array(), murtadd_sanitize_progress( array( 'progress_types' => 'post' ) )['progress_types'] );
+	}
+
+	public function test_static_front_page_counts_as_a_page() {
+		$src = (string) file_get_contents( dirname( __DIR__ ) . '/inc/reading-progress.php' );
+		preg_match( '/function murtadd_progress_applies\(\) \{.*?\n\}/s', $src, $m );
+		$this->assertStringNotContainsString( 'is_front_page()', $m[0] ?? 'missing' );
+	}
+
+	public function test_bar_measures_again_when_the_page_grows() {
+		foreach ( array( 'progress.js', 'progress.min.js' ) as $file ) {
+			$this->assertStringContainsString( 'ResizeObserver', (string) file_get_contents( dirname( __DIR__ ) . '/assets/js/' . $file ), $file );
+		}
+	}
 }

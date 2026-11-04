@@ -100,6 +100,39 @@ final class SearchPermalinksTest extends TestCase {
 		$this->assertSame( array( 'pretty' => 1, 'base' => 'search' ), murtadd_sanitize_search( null ) );
 	}
 
+	public function test_array_arguments_stay_arrays() {
+		$r = $this->redirect( array( 's' => 'apostasy', 'post_type' => array( 'murtadd_doubt', 'murtadd_rebuttal' ), 'junk' => array( array() ) ), array( 's' => 'apostasy' ) );
+		$this->assertSame( 'https://murtadd.org/search/apostasy/?post_type%5B0%5D=murtadd_doubt&post_type%5B1%5D=murtadd_rebuttal', $r[0] );
+	}
+
+	public function test_reserved_bases_are_refused() {
+		$GLOBALS['murtadd_options']['murtadd_search'] = array( 'pretty' => 1, 'base' => 'cari' );
+		foreach ( array( 'doubts', 'topic', 'journal', 'guides' ) as $base ) {
+			$this->assertNotSame( '', murtadd_search_base_problem( $base ), $base );
+			$this->assertSame( 'cari', murtadd_sanitize_search( array( 'pretty' => '1', 'base' => $base ) )['base'], $base . ' keeps the old base.' );
+		}
+		$this->assertSame( 'zoek_hier', murtadd_sanitize_search( array( 'pretty' => '1', 'base' => 'Zoek_Hier!' ) )['base'], 'Cleaned with sanitize_key.' );
+	}
+
+	public function test_permalinks_save_keeps_the_switch() {
+		$GLOBALS['murtadd_options']['murtadd_search'] = array( 'pretty' => 0, 'base' => 'search' );
+		$out = murtadd_sanitize_search( array( 'pretty' => murtadd_search_settings()['pretty'], 'base' => 'cari', 'from_permalinks' => 1 ) );
+		$this->assertSame( array( 'pretty' => 0, 'base' => 'cari' ), $out );
+		$src = (string) file_get_contents( dirname( __DIR__ ) . '/inc/search-permalinks.php' );
+		$this->assertStringContainsString( "'pretty'          => murtadd_search_settings()['pretty'],", $src, 'The Permalinks save merges the switch in.' );
+	}
+
+	public function test_stamp_waits_for_the_search_rule() {
+		$GLOBALS['murtadd_options']['murtadd_search'] = array( 'pretty' => 1, 'base' => 'cari' );
+		$GLOBALS['murtadd_options']['rewrite_rules']  = array( 'topic/(.+)/?$' => 'x' );
+		$this->assertFalse( murtadd_search_rules_ready() );
+		$GLOBALS['murtadd_options']['rewrite_rules']['cari/(.+)/?$'] = 'index.php?s=$matches[1]';
+		$this->assertTrue( murtadd_search_rules_ready() );
+		$src = (string) file_get_contents( dirname( __DIR__ ) . '/inc/taxonomy-doubt-category.php' );
+		$this->assertLessThan( strpos( $src, "update_option( 'murtadd_rewrite_version'" ), strpos( $src, 'flush_rewrite_rules();' ) );
+		$this->assertStringContainsString( 'murtadd_search_rules_ready()', $src );
+	}
+
 	/** Runs last: a function cannot be undeclared. */
 	public function test_zz_stands_aside_for_the_plugin() {
 		eval( 'function wpseosearch_base() {}' ); // phpcs:ignore Squiz.PHP.Eval.Discouraged

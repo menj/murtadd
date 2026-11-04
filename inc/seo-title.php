@@ -276,6 +276,12 @@ function murtadd_image_sitemap_entries() {
 		if ( ! $ids ) {
 			break;
 		}
+		$batch = count( $ids );
+		// get_posts() skips the plugin's filter, so unlisted entries are
+		// dropped here whichever of the two is in charge.
+		if ( function_exists( 'murtadd_unlist_sitemap_ids' ) ) {
+			$ids = array_values( array_diff( array_map( 'intval', $ids ), murtadd_unlist_sitemap_ids() ) );
+		}
 		// One query for the batch's post meta and featured images, not one per post.
 		if ( function_exists( 'update_meta_cache' ) ) {
 			update_meta_cache( 'post', $ids );
@@ -307,7 +313,7 @@ function murtadd_image_sitemap_entries() {
 			}
 		}
 		++$paged;
-	} while ( 200 === count( $ids ) );
+	} while ( 200 === $batch );
 	return $out;
 }
 

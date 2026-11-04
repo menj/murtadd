@@ -43,13 +43,14 @@ function murtadd_search_settings() {
 }
 
 /**
- * A base word cleaned for an address, 'search' when nothing is left.
+ * A base word cleaned with sanitize_key (lowercase letters, numbers,
+ * hyphens and underscores), 'search' when nothing is left.
  *
  * @param mixed $base Raw base.
  * @return string
  */
 function murtadd_search_clean_base( $base ) {
-	$base = sanitize_title( (string) $base );
+	$base = sanitize_key( is_scalar( $base ) ? (string) $base : '' );
 
 	return '' !== $base ? $base : 'search';
 }
@@ -73,6 +74,15 @@ function murtadd_sanitize_search( $input ) {
 		'pretty' => array_key_exists( 'base', $input ) && ! array_key_exists( 'from_permalinks', $input ) ? ( empty( $input['pretty'] ) ? 0 : 1 ) : $current['pretty'],
 		'base'   => isset( $input['base'] ) ? murtadd_search_clean_base( $input['base'] ) : $current['base'],
 	);
+
+	$problem = murtadd_search_base_problem( $out['base'] );
+
+	if ( '' !== $problem ) {
+		if ( function_exists( 'add_settings_error' ) ) {
+			add_settings_error( 'murtadd_search', 'murtadd-search-base', $problem );
+		}
+		$out['base'] = $current['base'];
+	}
 
 	if ( $out !== $current ) {
 		delete_option( 'murtadd_rewrite_version' );
@@ -151,10 +161,11 @@ function murtadd_redirect_search() {
 	// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 	$args = wp_unslash( $_GET );
 	unset( $args['s'], $args['paged'] );
-	$args = array_filter( $args, 'is_scalar' );
+	$args = murtadd_search_clean_args( $args );
 
 	if ( $args ) {
-		$url = add_query_arg( array_map( 'rawurlencode', array_map( 'strval', $args ) ), $url );
+		// Arrays such as post_type[] stay arrays.
+		$url .= ( false === strpos( $url, '?' ) ? '?' : '&' ) . http_build_query( $args, '', '&', PHP_QUERY_RFC3986 );
 	}
 
 	wp_safe_redirect( $url, 301 );
@@ -179,8 +190,11 @@ function murtadd_search_permalink_screen() {
 
 		update_option(
 			'murtadd_search',
+			// Merged into what is saved: the switch keeps its value, so a site
+			// with readable addresses off does not get them back.
 			array(
-				'base'            => sanitize_title( wp_unslash( $_POST['murtadd_search_base'] ) ),
+				'pretty'          => murtadd_search_settings()['pretty'],
+				'base'            => sanitize_key( wp_unslash( $_POST['murtadd_search_base'] ) ),
 				'from_permalinks' => 1,
 			)
 		);
@@ -200,7 +214,7 @@ function murtadd_search_permalink_field() {
 	printf(
 		'<input type="text" name="murtadd_search_base" id="murtadd_search_base" class="regular-text code" value="%1$s"><p class="description">%2$s</p>',
 		esc_attr( murtadd_search_settings()['base'] ),
-		esc_html__( 'Searches open at this address, such as /search/apostasy/. Switch readable search addresses on or off in Theme Options, Content.', 'murtadd' )
+		esc_html__( 'Lowercase letters, numbers, hyphens and underscores; anything else is removed. It cannot be an address the site already uses, such as doubts or topic. Searches open at this address, such as /search/apostasy/. Switch readable search addresses on or off in Theme Options, Content.', 'murtadd' )
 	);
 }
 
@@ -231,9 +245,104 @@ function murtadd_render_search_card() {
 	);
 	murtadd_admin_row_open( __( 'Base word', 'murtadd' ), 'murtadd_search_base_tab' );
 	printf(
-		'<input type="text" id="murtadd_search_base_tab" name="murtadd_search[base]" value="%s" class="regular-text">',
-		esc_attr( $s['base'] )
+		'<input type="text" id="murtadd_search_base_tab" name="murtadd_search[base]" value="%1$s" class="regular-text" aria-describedby="murtadd_search_base_tab-desc"><p class="description" id="murtadd_search_base_tab-desc">%2$s</p>',
+		esc_attr( $s['base'] ),
+		esc_html__( 'Lowercase letters, numbers, hyphens and underscores; anything else is removed. It cannot be an address the site already uses, such as doubts or topic.', 'murtadd' )
 	);
 	murtadd_admin_row_close();
 	murtadd_admin_card_close();
+}
+
+/**
+ * Query arguments safe to carry across the redirect: strings, and arrays of
+ * strings (post_type[] and the like), nested as they came.
+ *
+ * @param array $args Raw arguments.
+ * @return array
+ */
+function murtadd_search_clean_args( $args ) {
+	$out = array();
+
+	foreach ( (array) $args as $key => $value ) {
+		if ( is_array( $value ) ) {
+			$value = murtadd_search_clean_args( $value );
+			if ( $value ) {
+				$out[ $key ] = $value;
+			}
+		} elseif ( is_scalar( $value ) ) {
+			$out[ $key ] = (string) $value;
+		}
+	}
+
+	return $out;
+}
+
+/**
+ * Words the base may not take: the theme's own rewrite slugs (its post
+ * types, taxonomies, the doubt doors, the image sitemap, legacy paths) and
+ * WordPress's.
+ *
+ * @return string[]
+ */
+function murtadd_search_reserved_bases() {
+	$reserved = array( 'doubts', 'rebuttals', 'fatwa', 'letters', 'guides', 'journal', 'blog', 'topic', 'school', 'kind', 'category', 'tag', 'author', 'page', 'feed', 'comments', 'embed', 'attachment', 'type', 'wp-admin', 'wp-json', 'wp-content', 'wp-includes', 'wp-sitemap', 'murtadd-image-sitemap' );
+
+	if ( function_exists( 'get_taxonomies' ) ) {
+		foreach ( (array) get_taxonomies( array(), 'objects' ) as $taxonomy ) {
+			if ( is_object( $taxonomy ) && ! empty( $taxonomy->rewrite['slug'] ) ) {
+				$reserved[] = strtok( $taxonomy->rewrite['slug'], '/' );
+			}
+		}
+	}
+
+	foreach ( (array) get_post_types( array(), 'objects' ) as $type ) {
+		if ( is_object( $type ) && ! empty( $type->rewrite['slug'] ) ) {
+			$reserved[] = strtok( $type->rewrite['slug'], '/' );
+		}
+	}
+
+	return array_values( array_unique( array_filter( $reserved ) ) );
+}
+
+/**
+ * Why a base cannot be used, or '' when it can.
+ *
+ * @param string $base Cleaned base.
+ * @return string
+ */
+function murtadd_search_base_problem( $base ) {
+	if ( in_array( $base, murtadd_search_reserved_bases(), true ) ) {
+		/* translators: %s: the refused base word. */
+		return sprintf( __( 'The search base "%s" is already an address on this site, so the previous base is kept.', 'murtadd' ), $base );
+	}
+
+	return '';
+}
+
+/**
+ * Whether the stored rewrite rules contain the search rule for the current
+ * base. With readable addresses off there is nothing to look for.
+ *
+ * @return bool
+ */
+function murtadd_search_rules_ready() {
+	if ( ! murtadd_pretty_search_enabled() ) {
+		return true;
+	}
+
+	$rules = get_option( 'rewrite_rules' );
+
+	if ( ! is_array( $rules ) ) {
+		return false;
+	}
+
+	$prefix = murtadd_search_settings()['base'] . '/(.+)';
+
+	foreach ( array_keys( $rules ) as $regex ) {
+		if ( 0 === strpos( (string) $regex, $prefix ) ) {
+			return true;
+		}
+	}
+
+	return false;
 }

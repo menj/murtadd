@@ -227,7 +227,7 @@ Tabs run in the order the work is done: Setup, Content, Topics & schools, Linked
 
 ## Unlisting, search addresses and the progress bar
 
-Three features rebuilt from plugins in 1.54.0. Each stands down while its plugin is active and imports what the plugin saved.
+Three features rebuilt from plugins in 1.54.0. Each stands down while its plugin is active and imports what the plugin saved: the unlisted list (`unlist_posts`), the search base (`wpseosearch_base`) and the bar's options (`rp_settings`).
 
 - **Unlisting** (`inc/unlist.php`, `assets/js/unlist-admin.js`). Filters at `pre_get_posts`, because `get_posts()` suppresses the `posts_where` filter the plugin used and the related doubts and the rail are built with it. A query naming its posts keeps only the listed ones. Admin screens and editors' REST and admin AJAX requests see everything. An editor's chosen cross-link (`murtadd_related_link()`) still names an unlisted entry, as any direct link may. Pinned in `tests/UnlistTest.php`.
 - **Search addresses** (`inc/search-permalinks.php`). `murtadd_search` is registered in the Content tab's group and is also saved from Settings, Permalinks. The base is applied at `init` 1; a changed base clears `murtadd_rewrite_version`, so the existing flusher rebuilds once. Pinned in `tests/SearchPermalinksTest.php`.
