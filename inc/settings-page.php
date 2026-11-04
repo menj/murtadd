@@ -936,7 +936,7 @@ function murtadd_render_profiles_tab() {
 	murtadd_admin_row_open( __( 'Author name', 'murtadd' ), 'murtadd_author_name' );
 	?>
 	<input type="text" id="murtadd_author_name" name="murtadd_author_name" value="<?php echo esc_attr( get_option( 'murtadd_author_name', '' ) ); ?>" class="regular-text" aria-describedby="murtadd_author_name-desc">
-	<p class="description" id="murtadd_author_name-desc"><?php esc_html_e( 'The person these profiles belong to. Named as the author in the structured data, with the links below as their sameAs set. Leave blank to attribute everything to the site instead.', 'murtadd' ); ?></p>
+	<p class="description" id="murtadd_author_name-desc"><?php esc_html_e( 'Kept for reference and no longer read. The structured data names Mohd Elfie Nieshaem Juferi, at https://menj.bio, as the author of every entry, with the links below ahead of https://menj.bio in sameAs.', 'murtadd' ); ?></p>
 	<?php
 	murtadd_admin_row_close();
 	murtadd_admin_card_close();

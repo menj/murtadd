@@ -293,7 +293,7 @@ final class JournalTest extends TestCase {
 		$this->assertSame( 'Blog', $node['isPartOf'][1]['@type'] );
 		$this->assertSame( 'https://murtadd.org/journal/', $node['isPartOf'][1]['url'] );
 		$this->assertSame( 'A short summary.', $node['description'] );
-		$this->assertNotEmpty( $node['author']['url'] );
+		$this->assertSame( array( '@id' => 'https://murtadd.org/#author' ), $node['author'] );
 
 		$graph = murtadd_structured_data_node();
 		$this->assertArrayHasKey( '@graph', $graph, 'One graph.' );

@@ -85,6 +85,7 @@ Bundled resources:
 == Changelog ==
 = 1.55.2 =
 * Three guides no longer describe other websites as related to this one. Every link stays.
+* The structured data names the author as Mohd Elfie Nieshaem Juferi, at https://menj.bio. Nothing visible changes.
 
 = 1.55.1 =
 * On a multisite subsite the Upkeep tab shows a network note in place of the Write the error pages now button, which gave a false success notice there.

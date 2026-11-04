@@ -105,10 +105,13 @@ final class SocialTest extends TestCase {
 		$this->assertArrayNotHasKey( 'sameAs', murtadd_organization_node(), 'With no profiles the Organization gets no sameAs.' );
 	}
 
-	/** With no author name, the Person node is null and nothing empty is emitted. */
-	public function test_author_node_is_null_without_a_name() {
+	/** The author Person does not depend on the Author name setting. */
+	public function test_author_node_names_the_owner_without_a_name_setting() {
 		update_option( 'murtadd_author_name', '' );
-		$this->assertNull( murtadd_author_node() );
+		$person = murtadd_author_node();
+		$this->assertSame( 'Mohd Elfie Nieshaem Juferi', $person['name'] );
+		$this->assertSame( 'https://menj.bio', $person['url'] );
+		$this->assertSame( 'https://murtadd.org/#author', $person['@id'] );
 	}
 
 	/** The shortcode row: each link named for screen readers, glyphs hidden, nothing when no profile is saved. */
