@@ -28,6 +28,18 @@ In the running text of a single entry, the first mention of a known phrase links
 - **Footer heritage note** — free text in the slim footer bar.
 - **Contact form recipient** (`contact_recipient`, empty) — where messages from the `[murtadd_contact]` form on the Contact page are sent. Empty, or not a valid address, uses the administration email under Settings → General. Saved only if it is a valid address. It is never printed on the site. See the Contact form section below.
 
+- **Reading progress bar** (`progress_bar`, on): a thin bar that fills as the reader moves through an entry. **Bar colour** (`progress_colour`, empty = the accent), **Height** (`progress_height`, 2 to 12 pixels, default 3), **Edge** (`progress_position`, top or bottom; at the top it starts below the admin bar) and **Entry types** (`progress_types`, default rebuttals, guides, posts and pages). Doubts are never offered and are refused if saved: they are short by design. The bar is `role="progressbar"`, labelled, with its values, and cannot be focused. A static front page counts as a page. Until the bar is saved here, the plugin's saved options (`rp_settings`) are used. Stands down while the Reading Progress Bar plugin is active.
+
+## Search addresses (`murtadd_search`, on the Content tab)
+- **Readable addresses** (`pretty`, on): `/?s=term` answers with a 301 to `/search/term/`, keeping the page number (`/search/term/page/2/`) and any other argument. An empty search is never redirected.
+- **Base word** (`base`, `search`): lowercase letters, numbers, hyphens and underscores (`sanitize_key`). A word the site already routes, such as `doubts` or `topic`, is refused and the old base kept. Also editable as **Search base** in Settings, Permalinks, as the Pretty Search Permalinks plugin had it. The plugin's saved base is imported. A changed base rebuilds the rewrite rules once; otherwise they are rebuilt only on a version change. Stands down while the plugin is active.
+
+## Unlisting (editor sidebar, Quick Edit, Bulk Edit)
+An **Unlist** box on every public post type. An unlisted entry opens from its own link but is left out of the front page, archives, feeds, search, the core and Rank Math sitemaps, the image sitemap, previous and next links, related doubts, the rail, page lists and REST listings, and is `noindex` (through Rank Math's robots filter when Rank Math is active; Yoast's own tag is emptied). Post lists show an Unlisted column and an Unlisted view. Each entry's state is a meta flag, `_murtadd_unlisted`; the option `murtadd_unlisted` and the plugin's `unlist_posts` are rebuilt from the flags. The plugin's list is imported on any request, and again when it changes, and the theme stands down while the plugin is active.
+
+## Profile icons anywhere
+`[murtadd_social_icons]`, or the **Profile icons** block pattern, prints the profile row from the Profiles tab in running text. It takes the text colour; the footer row keeps the footer ink. Each icon is a 32-pixel target with a visible focus ring.
+
 ## Security (`murtadd_security`)
 Each switch is independent.
 - **Author names** (on) — closes the REST user list to visitors (logged-in users keep it; the block editor needs it), `?author=` addresses and author archives (301 to the home page), and the users sitemap. Feeds and oEmbed name the author from the Profiles tab, or the site. wp-admin keeps the real names.

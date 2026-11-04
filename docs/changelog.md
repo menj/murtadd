@@ -1,5 +1,43 @@
 # Changelog — Murtadd
 
+## 1.54.0 (2026-11-04)
+
+The owner asked for the features of 4 plugins to be built into the theme. Two were here in part: rebuttals had a reading progress bar, and the footer had the profile icons from the Minimalist Social & Platform Icons Pack. I kept both and filled the gaps. Unlisting and readable search addresses are new. No option key, function or handle was renamed or removed.
+
+### Unlisting (from Unlist Posts & Pages 1.2.1)
+- `inc/unlist.php`: an Unlist box in the editor sidebar of every public post type, Quick Edit and Bulk Edit fields, an Unlisted column and an Unlisted view, all as the plugin had them. The Quick Edit script is `assets/js/unlist-admin.js`, loaded on post lists only.
+- An unlisted entry opens from its own link and is left out of every listing query, previous and next links, `wp_list_pages()`, the core sitemaps and Rank Math's sitemap. It is `noindex` through `wp_robots`, through `rank_math/frontend/robots` when Rank Math is active, and Yoast's robots array is emptied.
+- The list is `murtadd_unlisted`. The plugin's `unlist_posts` is imported on first use, and its `unlist_posts_enabled` filter is honoured.
+
+### Search addresses (from Pretty Search Permalinks 1.3)
+- `inc/search-permalinks.php`: `/?s=term` answers with a 301 to `/search/term/`. The page number and other arguments are kept. An empty search is not redirected, where the plugin redirected it.
+- The base word is set in Settings, Permalinks, as in the plugin, or on the Content tab. Both save `murtadd_search`. A changed base rebuilds the rewrite rules once through the existing flusher; nothing flushes on an ordinary load.
+
+### Reading progress bar (options from Reading Progress Bar 1.3.1)
+- The bar moved from `longform.js` to `inc/reading-progress.php`, `assets/css/progress.css` and `assets/js/progress.js`. A card on the Content tab sets it on or off, its colour in WordPress's colour picker, its height on a slider, the top or bottom edge on cards, and the entry types. The defaults keep rebuttals as they were and add guides, Journal posts and pages.
+- Doubts are never offered, and are refused if saved.
+- It keeps the labelled `role="progressbar"` and gains `aria-valuemin` and `aria-valuemax`. It updates from a passive scroll listener once per animation frame, has no transition under `prefers-reduced-motion`, and from 601 pixels starts below the admin bar, which it used to sit under.
+
+### Profile icons
+- `[murtadd_social_icons]` and the Profile icons pattern print the profile row anywhere, in the text colour.
+- Each icon is a 32-pixel target, up from 20, with a visible focus ring. The colour is the `--murtadd-social-ink` variable. The hover lift is off under `prefers-reduced-motion`.
+
+### Fixed in review
+- Unlisting kept its list in one option, read and rewritten on every save, so two saves on different entries could erase each other. Each entry now carries its own flag in post meta (`_murtadd_unlisted`), and `murtadd_unlisted` and the plugin's `unlist_posts` are rebuilt from the flags after every change.
+- The plugin's list is imported on the first read of any request, front end included, and again whenever it has changed since the last sync (`murtadd_unlisted_synced`).
+- Rank Math's sitemap, the core sitemaps and the image sitemap read the plugin's list while the plugin is active. The image sitemap kept its batches of 200 counting the IDs fetched, not the IDs kept.
+- `murtadd_rewrite_version` is written only after the flush, and only once the stored rules hold the search rule for the current base.
+- The search redirect keeps array arguments such as `post_type[]` intact.
+- The base is cleaned with `sanitize_key`, and a base the theme already routes (doubts, rebuttals, fatwa, letters, guides, journal, topic, school, any post type or taxonomy base) is refused with a notice. The help text says so.
+- Saving the base in Settings, Permalinks merges it into the saved option, so the readable-addresses switch keeps its value.
+- The bar takes the Reading Progress Bar plugin's saved height, colour, edge, post types and single-entry switch (`rp_settings`) until it is saved on the Content tab.
+- A static front page is a page, and gets the bar when pages do.
+- The bar measures again when the page height changes, through a ResizeObserver.
+- The bar's post types accept only strings.
+
+### Tests
+- `tests/UnlistTest.php`, `tests/SearchPermalinksTest.php`, `tests/ReadingProgressTest.php`, and 2 tests in `tests/SocialTest.php`.
+
 ## 1.53.1 (2026-11-04)
 
 - A schema check found Article nodes with no `image` on the front page, doubts, rebuttals and the FAQ page of the live site, which runs an older theme. The theme's own Articles carry an image since 1.47.0. The gap left is an Article Rank Math prints on a view where the theme has no Article to merge (the front page, a doubt, the FAQ page).

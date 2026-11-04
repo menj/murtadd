@@ -105,4 +105,27 @@ final class SocialTest extends TestCase {
 		update_option( 'murtadd_author_name', '' );
 		$this->assertNull( murtadd_author_node() );
 	}
+
+	/** The shortcode row: each link named for screen readers, glyphs hidden, nothing when no profile is saved. */
+	public function test_shortcode_row_is_accessible() {
+		update_option( 'murtadd_profiles', array() );
+		$this->assertSame( '', murtadd_social_icons_shortcode() );
+
+		update_option( 'murtadd_profiles', array( 'github' => 'https://github.com/example' ) );
+		$html = murtadd_social_icons_shortcode();
+		$this->assertStringContainsString( 'murtadd-social-row--inline', $html );
+		$this->assertStringContainsString( '<span class="screen-reader-text">GitHub</span>', $html );
+		$this->assertStringContainsString( 'aria-hidden="true"', $html );
+		$this->assertNotNull( murtadd_test_hook_priority( 'shortcode:murtadd_social_icons', 'murtadd_social_icons_shortcode' ) );
+	}
+
+	/** Targets are at least 24px, focus is visible, and the colours are variables, minified twin included. */
+	public function test_icon_styles_meet_the_target_size() {
+		foreach ( array( 'social.css', 'social.min.css' ) as $file ) {
+			$css = (string) file_get_contents( dirname( __DIR__ ) . '/assets/css/' . $file );
+			$this->assertMatchesRegularExpression( '/min-width:\s*32px/', $css, $file );
+			$this->assertStringContainsString( ':focus-visible', $css, $file );
+			$this->assertStringContainsString( 'var(--murtadd-social-ink)', $css, $file );
+		}
+	}
 }

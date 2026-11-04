@@ -100,7 +100,12 @@ function murtadd_maybe_flush_rewrites() {
 		return;
 	}
 	flush_rewrite_rules();
-	update_option( 'murtadd_rewrite_version', MURTADD_VERSION );
+
+	// The stamp is written only after the flush, and only once the rules
+	// hold the search rule, so a flush that missed it runs again.
+	if ( ! function_exists( 'murtadd_search_rules_ready' ) || murtadd_search_rules_ready() ) {
+		update_option( 'murtadd_rewrite_version', MURTADD_VERSION );
+	}
 }
 add_action( 'init', 'murtadd_maybe_flush_rewrites', 99 );
 

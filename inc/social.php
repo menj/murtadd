@@ -110,3 +110,74 @@ function murtadd_social_profiles() {
 	}
 	return $out;
 }
+
+/**
+ * The profile icons as one row: the markup the footer prints, for the
+ * [murtadd_social_icons] shortcode and the Profile icons pattern. Each link
+ * names its platform for screen readers; the glyphs are aria-hidden.
+ *
+ * @param string $class Extra class on the row.
+ * @return string Empty when no profile is saved.
+ */
+function murtadd_social_row( $class = '' ) {
+	$profiles = murtadd_social_profiles();
+
+	if ( ! $profiles ) {
+		return '';
+	}
+
+	$registry = murtadd_social_registry();
+	$links    = '';
+
+	foreach ( $profiles as $slug => $url ) {
+		$links .= sprintf(
+			'<a class="murtadd-social-link" href="%1$s" rel="me noopener" target="_blank" title="%2$s">%3$s<span class="screen-reader-text">%4$s</span></a>',
+			esc_url( $url ),
+			esc_attr( $registry[ $slug ]['label'] ),
+			murtadd_social_icon( $slug, 20 ),
+			esc_html( $registry[ $slug ]['label'] )
+		);
+	}
+
+	return sprintf(
+		'<nav class="murtadd-social-row%1$s" aria-label="%2$s">%3$s</nav>',
+		'' !== $class ? ' ' . esc_attr( $class ) : '',
+		esc_attr__( 'Author profiles', 'murtadd' ),
+		$links
+	);
+}
+
+/**
+ * [murtadd_social_icons]: the profile icons anywhere in content. They take
+ * the colour of the text around them. The shortcode loads the social
+ * stylesheet, which every front-end view already has.
+ *
+ * @return string
+ */
+function murtadd_social_icons_shortcode() {
+	return murtadd_social_row( 'murtadd-social-row--inline' );
+}
+add_shortcode( 'murtadd_social_icons', 'murtadd_social_icons_shortcode' );
+
+/**
+ * A block pattern holding the shortcode, for the block editor's inserter.
+ *
+ * @return void
+ */
+function murtadd_register_social_pattern() {
+	if ( ! function_exists( 'register_block_pattern' ) ) {
+		return;
+	}
+
+	register_block_pattern(
+		'murtadd/profile-icons',
+		array(
+			'title'       => __( 'Profile icons', 'murtadd' ),
+			'description' => __( 'The author profile icons set on the Profiles tab of Theme Options.', 'murtadd' ),
+			'categories'  => array( 'text' ),
+			'keywords'    => array( 'social', 'profiles', 'icons' ),
+			'content'     => "<!-- wp:shortcode -->\n[murtadd_social_icons]\n<!-- /wp:shortcode -->",
+		)
+	);
+}
+add_action( 'init', 'murtadd_register_social_pattern' );

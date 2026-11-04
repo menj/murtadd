@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'MURTADD_VERSION', '1.53.1' );
+define( 'MURTADD_VERSION', '1.54.0' );
 
 /**
  * Asset suffix. Sources are served when SCRIPT_DEBUG is on, minified otherwise.
@@ -46,6 +46,9 @@ require_once get_stylesheet_directory() . '/inc/seed-guides.php';
 require_once get_stylesheet_directory() . '/inc/seed-journal.php';
 require_once get_stylesheet_directory() . '/inc/slug-renames.php';
 require_once get_stylesheet_directory() . '/inc/search.php';
+require_once get_stylesheet_directory() . '/inc/search-permalinks.php';
+require_once get_stylesheet_directory() . '/inc/unlist.php';
+require_once get_stylesheet_directory() . '/inc/reading-progress.php';
 require_once get_stylesheet_directory() . '/inc/meta-tags.php';
 require_once get_stylesheet_directory() . '/inc/feeds.php';
 require_once get_stylesheet_directory() . '/inc/analytics.php';
@@ -138,7 +141,9 @@ function murtadd_enqueue_assets() {
 	/*
 	 * Long-form furniture is for rebuttals only. Doubts are capped at a few
 	 * hundred words by design; giving them a table of contents and a progress
-	 * bar would advertise a length they do not have and must never have.
+	 * bar would advertise a length they do not have and must never have. The
+	 * progress bar itself is inc/reading-progress.php, which never runs on
+	 * doubts either.
 	 */
 	if ( is_singular( 'murtadd_rebuttal' ) ) {
 		wp_enqueue_style( 'murtadd-longform', get_stylesheet_directory_uri() . '/assets/css/longform' . MURTADD_ASSET_SUFFIX . '.css', array( 'murtadd-main' ), MURTADD_VERSION );
