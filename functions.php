@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'MURTADD_VERSION', '1.52.0' );
+define( 'MURTADD_VERSION', '1.53.0' );
 
 /**
  * Asset suffix. Sources are served when SCRIPT_DEBUG is on, minified otherwise.
@@ -217,8 +217,20 @@ add_action( 'wp_head', 'murtadd_preload_fonts', 2 );
  * Admin assets — only on relevant screens.
  */
 function murtadd_admin_assets( $hook ) {
-	if ( 'appearance_page_murtadd' === $hook ) {
-		wp_enqueue_script( 'murtadd-settings-tabs', get_stylesheet_directory_uri() . '/assets/js/settings-tabs' . MURTADD_ASSET_SUFFIX . '.js', array(), MURTADD_VERSION, true );
+	if ( murtadd_settings_hook() === $hook ) {
+		// Core's colour picker; the tabs, sliders and contrast check are ours.
+		wp_enqueue_style( 'wp-color-picker' );
+		wp_enqueue_script( 'murtadd-settings-tabs', get_stylesheet_directory_uri() . '/assets/js/settings-tabs' . MURTADD_ASSET_SUFFIX . '.js', array( 'jquery', 'wp-color-picker' ), MURTADD_VERSION, true );
+		wp_localize_script(
+			'murtadd-settings-tabs',
+			'murtaddSettings',
+			array(
+				/* translators: %s: contrast ratio, e.g. 5.2 */
+				'contrastPass' => __( '%s:1. Passes WCAG AA against white.', 'murtadd' ),
+				/* translators: %s: contrast ratio, e.g. 3.1 */
+				'contrastFail' => __( '%s:1. Below WCAG AA (4.5:1) against white. Saving is not blocked.', 'murtadd' ),
+			)
+		);
 
 		// Admin skin. The tokens and the wordmark are the SAME files the front end
 		// loads, so the mark in Theme Options is the mark on the site, not a copy.
@@ -322,3 +334,18 @@ function murtadd_fatwa_archive_query( $query ) {
 	}
 }
 add_action( 'pre_get_posts', 'murtadd_fatwa_archive_query' );
+
+/**
+ * Respect Settings → Reading. WordPress uses front-page.php for the front page
+ * whatever Reading says, so a site set to show its latest posts on the front
+ * page would get the hero instead. With "Your latest posts" chosen, the front
+ * page falls through to home.php, the posts index. A static front page (the
+ * theme's own setup) keeps front-page.php as before.
+ *
+ * @param string $template The front-page template path.
+ * @return string
+ */
+function murtadd_front_page_template( $template ) {
+	return 'posts' === get_option( 'show_on_front' ) ? '' : $template;
+}
+add_filter( 'frontpage_template', 'murtadd_front_page_template' );

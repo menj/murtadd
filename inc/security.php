@@ -484,7 +484,7 @@ function murtadd_sec_attack_notice() {
 	if ( ! $hit && ! $today ) {
 		return;
 	}
-	echo '<div class="notice notice-error"><p><strong>' . esc_html__( 'Security:', 'murtadd' ) . '</strong> ';
+	echo '<div class="notice notice-error is-dismissible"><p><strong>' . esc_html__( 'Security:', 'murtadd' ) . '</strong> ';
 	if ( $today ) {
 		esc_html_e( 'Someone sent a correct password through XML-RPC today. The login was refused, but the password is known: change it now.', 'murtadd' );
 		echo ' ';
@@ -1014,9 +1014,8 @@ add_action( 'wp_ajax_murtadd_sec_trash', 'murtadd_sec_ajax_trash' );
  * @param string $hook Screen hook.
  */
 function murtadd_sec_assets( $hook ) {
-	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- tab selection only.
-	$tab = isset( $_GET['tab'] ) ? sanitize_key( wp_unslash( $_GET['tab'] ) ) : '';
-	if ( 'appearance_page_murtadd' !== $hook || 'security' !== $tab || ! current_user_can( 'manage_options' ) ) {
+	// Every tab is on the one screen now, so the tools load wherever it opens.
+	if ( murtadd_settings_hook() !== $hook || ! current_user_can( 'manage_options' ) ) {
 		return;
 	}
 	$base = get_stylesheet_directory_uri() . '/assets';

@@ -10,6 +10,7 @@
  * @package Murtadd\Tests
  */
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 final class RoutingTest extends TestCase {
@@ -29,9 +30,7 @@ final class RoutingTest extends TestCase {
 		);
 	}
 
-	/**
-	 * @dataProvider urls
-	 */
+	#[DataProvider( 'urls' )]
 	public function test_url_routes_to_the_right_rule( string $url, ?string $expected ) {
 		$hit = null;
 		foreach ( $this->rules() as $name => $pattern ) {

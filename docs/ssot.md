@@ -1,6 +1,6 @@
 # Murtadd — Single Source of Truth
 
-Version 1.52.0 · Child theme of Twenty Twenty-Five · murtadd.org
+Version 1.53.0 · Child theme of Twenty Twenty-Five · murtadd.org
 
 ## What this theme is
 
@@ -217,9 +217,9 @@ Extra phrases from the tab ("phrase | /path/" for this site, "phrase | https://�
 
 The **Docs tab** is the exception to the Settings API pattern: it registers no setting group and renders `/docs/*.md` through `inc/docs.php` (Parsedown 1.8.0, vendored at `vendor/parsedown/`, safe mode + `wp_kses()`). Adding or renaming a document means editing `murtadd_docs_manifest()`; nothing else knows the filenames. The docs directory and `vendor/` must both ship in the build, or the tab renders an explanatory notice instead of the manual.
 
-Appearance → Theme Options is the Settings API with a skin (`assets/css/admin.css`), not a custom framework. The markup stays `form-table`, so fields, nonces, sanitisers, and capability checks keep working; only the surface is restyled, and everything is scoped under `.murtadd-admin` so nothing leaks into the rest of wp-admin. No admin markup carries a `style` attribute (`tests/AssetsTest.php`): states use `murtadd-status-missing` and `murtadd-status-ok`, and the dashboard's content-gaps widget, the one rule set outside `.murtadd-admin`, is scoped under `#dashboard-widgets` (`murtadd-gaps-*`).
+Appearance → Theme Options is the Settings API under the owner's admin design system of 2026-11-04 (`assets/css/admin.css`, `assets/js/settings-tabs.js`, both with `.min` twins), not a custom framework. Cards and field rows replace `form-table`: label left and control right, stacked below 782px. Booleans are toggle switches (a real checkbox with `role="switch"`, posting "1" as before), the contextual-link caps are range sliders with a live `<output>`, the fatwa sort is a set of radio selector cards, and the two accents use core's `wp-color-picker` in a grid. Every panel is in the page; the tabs are an ARIA tab list (arrow keys, Home, End) that switch panels without a reload and keep `?tab=` in the address, and without the script each tab is a plain link that renders its panel alone. Each settings tab keeps its own form to `options.php` with its own group; `murtadd_settings_form_fields()` prints the fields `settings_fields()` would, without ids and with the tab's own address as the referer, so a save returns to its tab. The screen calls `settings_errors()` itself, since core does so only on Settings screens. The assets load only on the hook suffix `add_theme_page()` returned (`murtadd_settings_hook()`), and the Security tab's script loads there too. The page keeps `manage_options`: the Security tab writes `.htaccess` and moves the login screen. Everything is scoped under `.murtadd-admin` so nothing leaks into the rest of wp-admin. No admin markup carries a `style` attribute (`tests/AssetsTest.php`): states use `murtadd-status-missing` and `murtadd-status-ok`, and the dashboard's content-gaps widget, the one rule set outside `.murtadd-admin`, is scoped under `#dashboard-widgets` (`murtadd-gaps-*`).
 
-The gradient appears in exactly three places: the hero, the active tab, and the primary button. Do not spread it further. Restraint governs the admin as it governs the front end.
+The gradient appears in exactly three places: the hero, the active tab's indicator, and the primary button. Do not spread it further. Restraint governs the admin as it governs the front end.
 
 The version badge reads `MURTADD_VERSION` directly. It cannot drift, unlike the six files that state a version in text.
 

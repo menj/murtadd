@@ -1,6 +1,6 @@
 # Settings — Appearance → Theme Options
 
-Settings API throughout, one option array per tab.
+Settings API throughout, one option array per tab. Every tab is on one screen: click a tab, or use the arrow keys on the tab row, and its settings appear without a reload. Switches are toggles, the link caps on the Contextual links tab are sliders that show their number as you drag, the fatwa sort on the Content tab is three cards to pick from, and the two accents open WordPress's own colour picker. Each tab has its own Save Changes button and saves only that tab.
 
 ## Colours (`murtadd_colours`)
 - **Accent colour** — links, buttons, sidebar panel. Live WCAG AA contrast check against white (warns below 4.5:1, never blocks). Injected via `wp_add_inline_style` as `--murtadd-accent`.

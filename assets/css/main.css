@@ -25,6 +25,8 @@ img { max-width: 100%; height: auto; }
 	position: absolute !important;
 	width: 1px; height: 1px; overflow: hidden;
 }
+/* The skip link moves focus to <main> (tabindex="-1"); the region needs no ring. */
+.murtadd-main:focus { outline: none; }
 .skip-link:focus {
 	clip: auto; width: auto; height: auto;
 	position: fixed; top: 8px; left: 8px; z-index: 1000;
