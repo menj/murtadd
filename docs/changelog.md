@@ -1,5 +1,22 @@
 # Changelog — Murtadd
 
+## 1.55.0 (2026-11-04)
+
+Error pages, checked against the brief for all eight themes. The drop-ins, their button and maintenance mode were already here and stay as they were; this release fills three gaps. No option key, function or handle was renamed or removed.
+
+### Changed
+- `db-error.php` is titled and headed "We cannot reach our database". It read "Back shortly", the maintenance wording. `php-error.php` is titled "Something went wrong" when it answers 500, and keeps "Back shortly" when it answers 503 for an upload in progress.
+
+### Added
+- `murtadd_dropin_state()` reads each file as missing, written, outdated or kept, and the Upkeep table shows "Written by the theme, outdated" for a copy of the theme's own from another version or with other addresses. `murtadd_dropin_text()` builds the text the theme writes, so the installer and the table compare the same thing.
+- `errors/403.html`, `500.html`, `502.html` and `503.html` for the web server's `ErrorDocument` lines, built by `bin/build-error-pages.php`. Like the drop-ins they carry no inline style or script (rule 1) and link the theme's `tokens.min.css` and `error-page.min.css`. The Upkeep tab prints the `.htaccess` lines (`murtadd_error_htaccess_snippet()`).
+- `tests/MaintenanceTest.php`: each drop-in's status and Retry-After, the four states, and the static pages current.
+
+### Checked, not changed
+- The drop-ins link the error-page stylesheet the theme copies into `wp-content` instead of inlining it: the pages carry no inline style or script by rule 1 of `docs/ssot.md`.
+- The 404 page already had search, the doubt and rebuttal archives, `noindex, follow` and "Page not found | Murtadd". Every template and include file already opened with an `ABSPATH` check.
+- No drop-in writer copied one page into another file: each file comes from its own source in `dropins/`.
+
 ## 1.54.0 (2026-11-04)
 
 The owner asked for the features of 4 plugins to be built into the theme. Two were here in part: rebuttals had a reading progress bar, and the footer had the profile icons from the Minimalist Social & Platform Icons Pack. I kept both and filled the gaps. Unlisting and readable search addresses are new. No option key, function or handle was renamed or removed.

@@ -1132,6 +1132,7 @@ function murtadd_render_upkeep_tab() {
 function murtadd_render_dropins_status() {
 	$labels = array(
 		'written' => __( 'Written by the theme', 'murtadd' ),
+		'outdated' => __( 'Written by the theme, outdated: press the button to refresh it', 'murtadd' ),
 		'kept'    => __( 'Another file is there; left alone', 'murtadd' ),
 		'failed'  => __( 'Could not be written: wp-content is not writable', 'murtadd' ),
 	);
@@ -1150,14 +1151,7 @@ function murtadd_render_dropins_status() {
 		<tbody>
 			<?php foreach ( array_keys( murtadd_dropin_files() ) as $murtadd_name ) : ?>
 				<?php
-				$murtadd_path = WP_CONTENT_DIR . '/' . $murtadd_name;
-				if ( ! file_exists( $murtadd_path ) ) {
-					$murtadd_state = 'missing';
-				} elseif ( murtadd_dropin_is_ours( $murtadd_path ) ) {
-					$murtadd_state = 'written';
-				} else {
-					$murtadd_state = 'kept';
-				}
+				$murtadd_state = murtadd_dropin_state( $murtadd_name );
 				?>
 				<tr>
 					<td><code><?php echo esc_html( $murtadd_name ); ?></code></td>
@@ -1173,6 +1167,8 @@ function murtadd_render_dropins_status() {
 			<?php submit_button( __( 'Write the error pages now', 'murtadd' ), 'secondary', 'submit', false ); ?>
 		</form>
 	<?php endif; ?>
+	<p class="description"><?php esc_html_e( 'For the errors the web server answers before WordPress starts, static pages are in the errors folder of the theme. Add these lines to .htaccess to use them:', 'murtadd' ); ?></p>
+	<textarea readonly rows="5" class="large-text code" aria-label="<?php esc_attr_e( '.htaccess lines', 'murtadd' ); ?>"><?php echo esc_textarea( murtadd_error_htaccess_snippet() ); ?></textarea>
 	<?php
 	murtadd_admin_card_close();
 }

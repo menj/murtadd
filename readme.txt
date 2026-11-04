@@ -3,7 +3,7 @@ Contributors: murtadd.org
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.1
-Stable tag: 1.54.0
+Stable tag: 1.55.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,6 +83,10 @@ Bundled resources:
 * The site icon, the pixel book and envelope images, the calligraphy in assets/images and screenshot.png were made for this theme and are GPL v2 or later with it.
 
 == Changelog ==
+= 1.55.0 =
+* The database error page now says "We cannot reach our database", and the PHP error page is titled "Something went wrong".
+* The Upkeep tab tells an outdated copy of an error page from a current one, and lists the .htaccess lines for the new static 403, 500, 502 and 503 pages in the errors folder.
+
 = 1.54.0 =
 * Unlist any entry from its editor box, Quick Edit or Bulk Edit. It still opens from its own link, but no listing, search, feed or sitemap shows it, and it is marked noindex. Post lists gain an Unlisted column and an Unlisted view.
 * Searches move to readable addresses such as /search/apostasy/ with a permanent redirect. Set the base word in Settings, Permalinks or on the Content tab. An empty search is not redirected.

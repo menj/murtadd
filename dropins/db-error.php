@@ -15,7 +15,7 @@ if ( ! headers_sent() ) {
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>Back shortly | {{SITE_NAME}}</title>
+<title>We cannot reach our database | {{SITE_NAME}}</title>
 <link rel="stylesheet" href="{{TOKENS_URL}}">
 <link rel="stylesheet" href="{{CSS_URL}}">
 </head>
@@ -23,7 +23,7 @@ if ( ! headers_sent() ) {
 <main class="murtadd-error-card">
 <p class="murtadd-error-name">{{SITE_NAME}}<span class="murtadd-error-stop">.</span></p>
 <p class="murtadd-error-status">Temporarily unavailable</p>
-<h1>Back shortly</h1>
+<h1>We cannot reach our database</h1>
 <p>The site cannot reach its database just now. This is a fault on our side, not yours.</p>
 <p>Please try again in a few minutes.</p>
 <a class="murtadd-error-again" href="{{HOME_URL}}">Try again</a>
