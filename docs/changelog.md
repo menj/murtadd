@@ -13,6 +13,8 @@ The owner sent two briefs on 2026-11-04: a mobile-first audit and a WCAG 2.2 AA 
 - Search fields are 16 pixels below 900 pixels. At 12.5 and 14 pixels, iOS zoomed the page on focus.
 - Long URLs in an entry break instead of pushing the page sideways (`overflow-wrap: break-word` on the main column). A guide at 320 pixels ran 4 pixels wide.
 - Menu transitions stop for readers who ask for reduced motion.
+- Review fixes: footer links and the rail's Start here link are `inline-flex` with `min-height: 44px` on phones. Padding alone left them 28 to 33 pixels tall.
+- When a doubt or rebuttal shows the counterpart link, the rail spans both grid rows (`:has()` in `rail.css`), so it stays beside the article and the counterpart sits under it. Browsers without `:has()` put the rail below, as before.
 
 ### Accessibility (main.js and inc/contact.php)
 - Escape closes the open phone menu and puts focus back on the Menu button.

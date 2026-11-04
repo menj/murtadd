@@ -435,7 +435,7 @@ h1, h2, h3 { font-family: var(--murtadd-font-serif); line-height: 1.25; }
 	.murtadd-search-inline .murtadd-search-field { font-size: 16px; min-height: 44px; }
 	.murtadd-sidebar-search .murtadd-search-submit,
 	.murtadd-search-inline .murtadd-search-submit { min-height: 44px; }
-	.murtadd-footer-links a { display: inline-block; padding: 8px 0; }
+	.murtadd-footer-links a { display: inline-flex; align-items: center; min-height: 44px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -23,6 +23,12 @@
 /* The prose keeps its measure; the rail takes the width the old design gave it. */
 .murtadd-single-main { min-width: 0; max-width: 68ch; }
 
+/* The counterpart, when shown, is a third child: it stays under the article
+   and the rail keeps the second column, spanning both rows. Without :has()
+   the rail drops below, as before. */
+.murtadd-single-layout > .murtadd-counterpart { grid-column: 1; }
+.murtadd-single-layout:has(> .murtadd-counterpart) > .murtadd-rail { grid-column: 2; grid-row: 1 / span 2; }
+
 .murtadd-rail {
 	position: sticky;
 	top: 32px;
@@ -130,7 +136,9 @@
 	.murtadd-single-layout { grid-template-columns: 1fr; gap: 40px; }
 	.murtadd-single-main { max-width: none; }
 	.murtadd-rail { position: static; }
-	.murtadd-rail-link { padding: 8px 0; }
+	.murtadd-rail-link { display: inline-flex; align-items: center; min-height: 44px; }
+	.murtadd-single-layout > .murtadd-counterpart,
+	.murtadd-single-layout:has(> .murtadd-counterpart) > .murtadd-rail { grid-column: auto; grid-row: auto; }
 }
 
 @media print {
