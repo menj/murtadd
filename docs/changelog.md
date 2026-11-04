@@ -1,5 +1,11 @@
 # Changelog — Murtadd
 
+## 1.53.1 (2026-11-04)
+
+- A schema check found Article nodes with no `image` on the front page, doubts, rebuttals and the FAQ page of the live site, which runs an older theme. The theme's own Articles carry an image since 1.47.0. The gap left is an Article Rank Math prints on a view where the theme has no Article to merge (the front page, a doubt, the FAQ page).
+- `murtadd_article_backfill()` runs after the merge in `murtadd_rank_math_json_ld()`. Every Article-family node without `image` gets the featured image as an ImageObject (full size, with width and height) where the post has one, else `murtadd_schema_image()`: the 1200 by 630 card on a doubt, rebuttal or fatwa entry, else the site icon. On a single view, a missing `datePublished` or `dateModified` comes from the post. Other views get no date. Fields Rank Math set stay.
+- 3 tests in `tests/RankMathTest.php`.
+
 ## 1.53.0 (2026-11-04)
 
 The owner's upgrade rules of 2026-11-04, applied in priority order: security, stability, compatibility, performance, accessibility, maintainability. The theme folder keeps its name. The audit ran on a local WordPress with WP_DEBUG on and logged no notices.

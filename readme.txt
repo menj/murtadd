@@ -3,7 +3,7 @@ Contributors: murtadd.org
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.1
-Stable tag: 1.53.0
+Stable tag: 1.53.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -82,6 +82,9 @@ Bundled resources:
 * The site icon, the pixel book and envelope images, the calligraphy in assets/images and screenshot.png were made for this theme and are GPL v2 or later with it.
 
 == Changelog ==
+= 1.53.1 =
+* With Rank Math on, an Article it prints where the theme has none of its own (the front page, a doubt, the FAQ page) gains an image: the featured image where the post has one, else the share image. On a single post it also gains the post's publish and modified dates where it lacks them. Nothing Rank Math set is changed.
+
 = 1.53.0 =
 * Theme Options is rebuilt as cards with tabs. The tabs switch without a reload and work from the keyboard. Booleans are toggle switches, the link caps are sliders that show their value, the fatwa sort is three cards, and the accents use WordPress's colour picker. Every option key and saved value is unchanged.
 * A refused login address now shows its error after saving. The screen never printed settings messages before.
@@ -129,6 +132,9 @@ Bundled resources:
 See docs/changelog.md for earlier releases.
 
 == Upgrade Notice ==
+= 1.53.1 =
+Structured data fix. Nothing needs doing.
+
 = 1.53.0 =
 Theme Options has a new layout. Settings keep their values; nothing needs doing.
 

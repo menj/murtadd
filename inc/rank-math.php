@@ -297,7 +297,83 @@ function murtadd_rank_math_author_url( $data, $key, $url ) {
  * @return array
  */
 function murtadd_rank_math_json_ld( $data, $jsonld = null ) {
-	return murtadd_rank_math_merge( $data, murtadd_structured_data_node() );
+	$data = murtadd_rank_math_merge( $data, murtadd_structured_data_node() );
+	return murtadd_article_backfill( $data, murtadd_article_backfill_image(), murtadd_article_backfill_dates() );
+}
+
+/**
+ * Give every Article-family node an image and, on a single post, its dates.
+ *
+ * Rank Math can print an Article on views where the theme has none of its
+ * own (the front page, a doubt, the FAQ page), so the merge has nothing to
+ * fill it from. Fields Rank Math set are kept. Kept free of WordPress calls
+ * so it can be tested on plain arrays.
+ *
+ * @param array      $data  Rank Math's entities, after the merge.
+ * @param array|null $image The image: a reference, an ImageObject or a URL list.
+ * @param array      $dates datePublished and dateModified from the post, or empty.
+ * @return array
+ */
+function murtadd_article_backfill( $data, $image, $dates ) {
+	if ( ! is_array( $data ) ) {
+		return $data;
+	}
+	foreach ( $data as $key => $node ) {
+		if ( ! is_array( $node ) || empty( $node['@type'] ) || 'Article' !== murtadd_schema_family( $node['@type'] ) ) {
+			continue;
+		}
+		if ( empty( $node['image'] ) && $image ) {
+			$data[ $key ]['image'] = $image;
+		}
+		foreach ( (array) $dates as $field => $value ) {
+			if ( empty( $node[ $field ] ) && '' !== (string) $value ) {
+				$data[ $key ][ $field ] = $value;
+			}
+		}
+	}
+	return $data;
+}
+
+/**
+ * The image for an Article that lacks one: the featured image as an
+ * ImageObject where the post has one, else the share image the social tags
+ * carry (the 1200 by 630 card on a content type, else the site icon).
+ *
+ * @return array|null
+ */
+function murtadd_article_backfill_image() {
+	if ( is_singular() && function_exists( 'has_post_thumbnail' ) && has_post_thumbnail() ) {
+		$src = wp_get_attachment_image_src( (int) get_post_thumbnail_id(), 'full' );
+		if ( $src && ! empty( $src[0] ) ) {
+			$node = array(
+				'@type' => 'ImageObject',
+				'url'   => $src[0],
+			);
+			if ( ! empty( $src[1] ) && ! empty( $src[2] ) ) {
+				$node['width']  = (int) $src[1];
+				$node['height'] = (int) $src[2];
+			}
+			return $node;
+		}
+	}
+	$urls = murtadd_schema_image();
+	return $urls ? $urls : null;
+}
+
+/**
+ * The post's own dates on a single view, for an Article that lacks them.
+ * Other views get none: the theme invents no date.
+ *
+ * @return array
+ */
+function murtadd_article_backfill_dates() {
+	if ( ! is_singular() ) {
+		return array();
+	}
+	return array(
+		'datePublished' => (string) get_the_date( 'c' ),
+		'dateModified'  => (string) get_the_modified_date( 'c' ),
+	);
 }
 
 /**
