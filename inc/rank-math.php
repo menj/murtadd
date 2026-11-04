@@ -319,7 +319,17 @@ function murtadd_article_backfill( $data, $image, $dates ) {
 		return $data;
 	}
 	foreach ( $data as $key => $node ) {
-		if ( ! is_array( $node ) || empty( $node['@type'] ) || 'Article' !== murtadd_schema_family( $node['@type'] ) ) {
+		if ( ! is_array( $node ) || empty( $node['@type'] ) ) {
+			continue;
+		}
+		$is_article = false;
+		foreach ( (array) $node['@type'] as $type ) {
+			if ( 'Article' === murtadd_schema_family( $type ) ) {
+				$is_article = true;
+				break;
+			}
+		}
+		if ( ! $is_article ) {
 			continue;
 		}
 		if ( empty( $node['image'] ) && $image ) {
