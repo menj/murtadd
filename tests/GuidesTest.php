@@ -212,5 +212,10 @@ final class GuidesTest extends TestCase {
 		$this->assertSame( murtadd_guide_content( $dilemma ), get_page_by_path( 'islamic-dilemma', OBJECT, 'murtadd_guide' )->post_content );
 		$this->assertStringContainsString( 'our sister site', get_page_by_path( 'is-islam-false', OBJECT, 'murtadd_guide' )->post_content );
 		$this->assertSame( array(), murtadd_update_guide_wording(), 'A second run changes nothing.' );
+
+		// A guide seeded under another locale, with a translated Sources heading.
+		delete_option( 'murtadd_guide_wording' );
+		$GLOBALS['murtadd_posts']['murtadd_guide']['islamic-dilemma']->post_content = str_replace( '<h2>Sources</h2>', '<h2>Sumber</h2>', $old( murtadd_guide_content( $dilemma ) ) );
+		$this->assertSame( array( 'islamic-dilemma' ), murtadd_update_guide_wording(), 'A translated Sources heading still counts as unedited.' );
 	}
 }

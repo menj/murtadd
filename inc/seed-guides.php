@@ -173,8 +173,17 @@ function murtadd_update_guide_wording() {
 	if ( function_exists( 'post_type_exists' ) && ! post_type_exists( 'murtadd_guide' ) ) {
 		return $done;
 	}
+	$guides = murtadd_seed_guides();
+	if ( ! $guides ) {
+		return $done; // guides.json unreadable for now: try again later.
+	}
+	// The Sources heading is translated, so a guide seeded under another
+	// locale still counts as unedited: the heading is left out of the match.
+	$plain  = static function ( $html ) {
+		return murtadd_normalise_markup( (string) preg_replace( '#<h2>[^<]*</h2>(\s*<ol class="murtadd-guide-sources">)#', '<h2></h2>$1', (string) $html ) );
+	};
 	$failed = false;
-	foreach ( murtadd_seed_guides() as $g ) {
+	foreach ( $guides as $g ) {
 		$post = get_page_by_path( $g['slug'], OBJECT, 'murtadd_guide' );
 		if ( ! $post ) {
 			continue;
@@ -189,8 +198,7 @@ function murtadd_update_guide_wording() {
 		if ( $before === $shipped ) {
 			continue; // No changed sentence in this guide.
 		}
-		$stored = murtadd_normalise_markup( $post->post_content );
-		if ( murtadd_normalise_markup( $before ) !== $stored ) {
+		if ( $plain( $before ) !== $plain( $post->post_content ) ) {
 			continue; // Already current, or edited. Leave it alone.
 		}
 		$written = wp_update_post(
