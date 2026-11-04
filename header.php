@@ -18,4 +18,5 @@ defined( 'ABSPATH' ) || exit;
 <a class="skip-link screen-reader-text" href="#murtadd-content"><?php esc_html_e( 'Skip to content', 'murtadd' ); ?></a>
 <div class="murtadd-shell">
 	<?php get_sidebar(); ?>
-	<main id="murtadd-content" class="murtadd-main">
+	<div class="murtadd-main">
+	<main id="murtadd-content" class="murtadd-content" tabindex="-1">

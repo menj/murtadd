@@ -62,4 +62,81 @@ final class AssetsTest extends TestCase {
 			$this->assertStringNotContainsString( 'murtadd-font-quran', $css, $file . ' must not set the Qur\'anic face on unfitted verse text.' );
 		}
 	}
+
+	/** Theme Options follows the admin design system: cards, toggles, sliders, selector cards, colour grid, ARIA tabs. */
+	public function test_theme_options_uses_the_design_system() {
+		$root = dirname( __DIR__ );
+		$php  = (string) file_get_contents( $root . '/inc/settings-page.php' );
+		$this->assertStringNotContainsString( 'class="form-table', $php );
+		foreach ( array( 'role="switch"', 'type="range"', 'role="tablist"', 'role="tabpanel"', 'murtadd-choice__input', 'murtadd-color-field', '<output' ) as $needle ) {
+			$this->assertStringContainsString( $needle, $php, $needle );
+		}
+		foreach ( array( 'admin.css', 'admin.min.css' ) as $file ) {
+			$css = (string) file_get_contents( $root . '/assets/css/' . $file );
+			foreach ( array( 'murtadd-card', 'murtadd-field', 'murtadd-toggle__track', 'murtadd-range__value', 'murtadd-choice__body', 'murtadd-color-grid', 'murtadd-admin-tab' ) as $class ) {
+				$this->assertStringContainsString( '.' . $class, $css, $class . ' missing from ' . $file );
+			}
+			$this->assertStringContainsString( '782px', $css, $file );
+		}
+		foreach ( array( 'settings-tabs.js', 'settings-tabs.min.js' ) as $file ) {
+			$js = (string) file_get_contents( $root . '/assets/js/' . $file );
+			$this->assertStringContainsString( 'ArrowRight', $js, $file );
+			$this->assertStringContainsString( 'wpColorPicker', $js, $file );
+		}
+	}
+
+	/** The options screen's assets load on its hook suffix only. */
+	public function test_options_assets_follow_the_hook_suffix() {
+		$php = (string) file_get_contents( dirname( __DIR__ ) . '/functions.php' );
+		$this->assertStringContainsString( 'murtadd_settings_hook() === $hook', $php );
+		$this->assertStringNotContainsString( "'appearance_page_murtadd' === \$hook", $php );
+	}
+
+	/** JSON-LD cannot be closed early by "</script>" in a title. */
+	public function test_jsonld_escapes_tags() {
+		ob_start();
+		murtadd_print_jsonld( array( 'name' => '</script><script>alert(1)</script>' ) );
+		$out = (string) ob_get_clean();
+		$this->assertSame( 1, substr_count( $out, '</script>' ) );
+	}
+
+	/** Settings, Reading "latest posts" wins over front-page.php. */
+	public function test_front_page_respects_reading() {
+		$php = (string) file_get_contents( dirname( __DIR__ ) . '/functions.php' );
+		$this->assertMatchesRegularExpression( "/add_filter\\(\\s*'frontpage_template',\\s*'murtadd_front_page_template'/", $php );
+		$this->assertStringContainsString( "'posts' === get_option( 'show_on_front' ) ? '' : \$template", $php );
+	}
+
+	/** Only the active panel renders on load; the rest load once, over admin-ajax, behind a nonce. */
+	public function test_inactive_panels_load_lazily() {
+		$php = (string) file_get_contents( dirname( __DIR__ ) . '/inc/settings-page.php' );
+		$this->assertStringContainsString( 'data-murtadd-lazy', $php );
+		$this->assertStringContainsString( "add_action( 'wp_ajax_murtadd_settings_panel', 'murtadd_ajax_settings_panel' )", $php );
+		$this->assertStringContainsString( "check_ajax_referer( 'murtadd_settings_panel', 'nonce' )", $php );
+		foreach ( array( 'settings-tabs.js', 'settings-tabs.min.js' ) as $file ) {
+			$js = (string) file_get_contents( dirname( __DIR__ ) . '/assets/js/' . $file );
+			$this->assertStringContainsString( 'murtadd_settings_panel', $js, $file );
+			$this->assertDoesNotMatchRegularExpression( '/\\[\\s*[\'"]doc[\'"]\\s*,\\s*[\'"]settings-updated/', $js, $file . ' must not drop ?doc=.' );
+		}
+	}
+
+	/** The footer sits outside <main>, in one contentinfo, on every view. */
+	public function test_footer_is_outside_main() {
+		$root   = dirname( __DIR__ );
+		$header = (string) file_get_contents( $root . '/header.php' );
+		$footer = (string) file_get_contents( $root . '/footer.php' );
+		$front  = (string) file_get_contents( $root . '/front-page.php' );
+		$this->assertStringNotContainsString( '</main>', $footer );
+		$this->assertStringContainsString( 'murtadd_open_site_footer()', $footer );
+		$this->assertLessThan( strpos( $front, 'murtadd-footer-columns' ), strpos( $front, 'murtadd_open_site_footer()' ) );
+		$this->assertStringNotContainsString( '<footer', $front );
+		$this->assertStringContainsString( '<main id="murtadd-content"', $header );
+		ob_start();
+		murtadd_open_site_footer();
+		murtadd_open_site_footer();
+		$out = (string) ob_get_clean();
+		$this->assertSame( 1, substr_count( $out, '</main>' ) );
+		$this->assertSame( 1, substr_count( $out, '<footer class="murtadd-site-footer">' ) );
+		$this->assertStringContainsString( '! ( is_front_page() && ! is_home() )', $footer );
+	}
 }

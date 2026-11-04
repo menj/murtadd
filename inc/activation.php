@@ -326,16 +326,20 @@ function murtadd_setup_needed_notice() {
 		return;
 	}
 	$screen = get_current_screen();
-	if ( $screen && 'appearance_page_murtadd' === $screen->id ) {
+	if ( $screen && murtadd_settings_hook() === $screen->id ) {
 		return; // The Setup tab says it better.
 	}
 	$missing = murtadd_missing_pages();
 	if ( ! $missing ) {
 		return;
 	}
+	// Dismissed for this set of missing pages: it returns only if the set changes.
+	if ( get_user_meta( get_current_user_id(), 'murtadd_setup_notice_dismissed', true ) === murtadd_setup_notice_key( $missing ) ) {
+		return;
+	}
 
 	printf(
-		'<div class="notice notice-warning"><p><strong>%1$s</strong> %2$s <a href="%3$s">%4$s</a></p></div>',
+		'<div class="notice notice-warning"><p><strong>%1$s</strong> %2$s <a href="%3$s">%4$s</a> <a href="%5$s">%6$s</a></p></div>',
 		esc_html__( 'Murtadd is missing pages it needs.', 'murtadd' ),
 		esc_html(
 			sprintf(
@@ -345,10 +349,38 @@ function murtadd_setup_needed_notice() {
 			)
 		),
 		esc_url( add_query_arg( array( 'page' => 'murtadd', 'tab' => 'setup' ), admin_url( 'themes.php' ) ) ),
-		esc_html__( 'Run setup →', 'murtadd' )
+		esc_html__( 'Run setup →', 'murtadd' ),
+		esc_url( wp_nonce_url( add_query_arg( 'action', 'murtadd_dismiss_setup_notice', admin_url( 'admin-post.php' ) ), 'murtadd_dismiss_setup_notice' ) ),
+		esc_html__( 'Dismiss', 'murtadd' )
 	);
 }
 add_action( 'admin_notices', 'murtadd_setup_needed_notice' );
+
+/**
+ * The key a dismissal is stored under: the missing pages it was dismissed for.
+ *
+ * @param string[] $missing Missing page slugs.
+ * @return string
+ */
+function murtadd_setup_notice_key( $missing ) {
+	$missing = array_map( 'strval', (array) $missing );
+	sort( $missing );
+	return md5( implode( ',', $missing ) );
+}
+
+/**
+ * Dismiss the missing-pages notice for the current user.
+ */
+function murtadd_handle_dismiss_setup_notice() {
+	if ( ! current_user_can( 'manage_options' ) ) {
+		wp_die( esc_html__( 'You do not have permission to do that.', 'murtadd' ), 403 );
+	}
+	check_admin_referer( 'murtadd_dismiss_setup_notice' );
+	update_user_meta( get_current_user_id(), 'murtadd_setup_notice_dismissed', murtadd_setup_notice_key( murtadd_missing_pages() ) );
+	wp_safe_redirect( wp_get_referer() ? wp_get_referer() : admin_url() );
+	exit;
+}
+add_action( 'admin_post_murtadd_dismiss_setup_notice', 'murtadd_handle_dismiss_setup_notice' );
 
 /**
  * Report what activation did, once.

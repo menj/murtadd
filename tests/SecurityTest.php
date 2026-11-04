@@ -175,7 +175,7 @@ final class SecurityTest extends TestCase {
 
 	public function test_there_is_one_xmlrpc_switch() {
 		$php = (string) file_get_contents( dirname( __DIR__ ) . '/inc/settings-page.php' );
-		$this->assertSame( 1, substr_count( $php, 'name="murtadd_security[xmlrpc_off]"' ) );
+		$this->assertSame( 1, substr_count( $php, "'murtadd_security[xmlrpc_off]'" ) );
 		$this->assertStringContainsString( 'blocks xmlrpc.php in .htaccess', $php );
 	}
 

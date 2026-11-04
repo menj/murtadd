@@ -7,6 +7,37 @@
 
 defined( 'ABSPATH' ) || exit;
 
+/**
+ * Close the <main> landmark that header.php opens, once per request.
+ *
+ * The footer belongs outside <main>: inside it the footer lost its
+ * contentinfo role. Called by murtadd_open_site_footer(). A second call
+ * prints nothing.
+ */
+function murtadd_close_main() {
+	static $closed = false;
+	if ( $closed ) {
+		return;
+	}
+	$closed = true;
+	echo "</main><!-- #murtadd-content -->\n";
+}
+
+/**
+ * Close <main> and open the site footer, once per request. front-page.php
+ * calls it before its footer columns, footer.php before the footer bar, so
+ * the columns and the bar share the one contentinfo landmark.
+ */
+function murtadd_open_site_footer() {
+	static $open = false;
+	if ( $open ) {
+		return;
+	}
+	$open = true;
+	murtadd_close_main();
+	echo '<footer class="murtadd-site-footer">' . "\n";
+}
+
 /** Read one key from a settings group with a default. */
 function murtadd_option( $group, $key, $default = '' ) {
 	$o = get_option( $group, array() );

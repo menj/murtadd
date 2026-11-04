@@ -3,37 +3,95 @@ Contributors: murtadd.org
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.1
-Stable tag: 1.52.0
+Stable tag: 1.53.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 Doubts, taken seriously. A child theme of Twenty Twenty-Five: short answers to doubts, rebuttals of circulated claims, and an on-site fatwa index.
 
 == Description ==
-Murtadd is a classic-template child theme of Twenty Twenty-Five. It registers three custom post types: Doubts (triage short answers), Rebuttals (claim + rebuttal + sources), and Fatwa (scholarly positions summarized in the site's own words, each linked to its primary source). A shared Topic taxonomy spans all three; a fixed four-term Doubt Category taxonomy powers the homepage grid; a School taxonomy drives the fatwa index filters.
+Murtadd is a classic-template child theme of Twenty Twenty-Five, built for murtadd.org. It answers doubts about Islam in short, sourced entries, rebuts claims as they circulate, and keeps an index of scholarly positions on apostasy.
 
-Settings live under Appearance → Theme Options in a tabbed interface: Colours (with live WCAG contrast check), Cross-links, Content display, and Taxonomies (deep links to the native term screens).
+The parent supplies the block library styles. Every front-end view is a PHP template in this theme.
 
-All CSS lives in /css/, all JavaScript in /js/. Colour overrides are injected through wp_add_inline_style; no inline style blocks appear in templates.
+== Features ==
+* Doubts: short answers, grouped into four fixed categories (intellectual, scriptural, emotional, identity) that drive the home page grid.
+* Rebuttals: the claim, the answer and its sources, with a table of contents and a reading-progress bar.
+* Fatwa index: positions by scholar or body, filterable by school, topic and era with a plain GET form.
+* Guides at /guides/ and a Journal of dated posts at /journal/.
+* Letters: an archive of past correspondence, kept outside search and the home page.
+* JSON-LD for every view (QAPage, FAQPage, Article, BlogPosting, BreadcrumbList and more), handed to Rank Math's graph when Rank Math is active.
+* Contextual links to this site and its 6 sister sites, and a glossary of Arabic and Malay terms.
+* A contact form shortcode, [murtadd_contact], which mails messages and stores nothing.
+* Security switches, a private login address, a spam scan, maintenance mode, branded error pages and 410 answers for removed spam.
+* Starter content: pages, 19 doubts, 37 rebuttals, guides and Journal posts, inserted once and never overwritten.
 
-== Setup ==
-1. Install Twenty Twenty-Five (parent) and activate Murtadd.
+== Installation ==
+1. Install and keep Twenty Twenty-Five, the parent theme.
+2. Upload the murtadd folder to wp-content/themes and activate Murtadd under Appearance, Themes.
 
-That is the whole required step. On activation the theme scaffolds itself:
+On activation the theme creates the pages it needs, a footer menu, and the starter content, and points Settings, Reading at the Home and Journal pages if the site still shows its latest posts. Nothing you have already set is overwritten, so activating again is safe. Upgrading in place does not re-run this; use Appearance, Theme Options, Setup.
 
-* Creates the pages it needs (home, journal, start-here, irtidad, about, faq, contact, privacy), assigns the "Start Here" template, and gives each one its written copy. Contact and Privacy carry notes, visible only in the editor, listing what the owner must add.
-* Creates a "Site" menu from About / FAQ / Contact / Privacy and assigns it to the "Footer — Site column" location.
-* Points Reading at the new pages: static front page = Home, posts page = Journal.
-* Registers the CPTs, taxonomies, and seed terms, then flushes rewrite rules.
-* Publishes the starter content: 19 doubts and 37 rebuttals, with their sources, topics, categories, and cross-links already wired.
+Set the Site Icon at Settings, General (assets/icons/site-icon-512.png is ready to upload).
 
-Nothing is ever overwritten. A page, menu, or Reading option you have already set is left exactly as it is, so re-activating is safe.
+== Usage ==
+Everything is at Appearance, Theme Options. Pick a tab, or use the arrow keys on the tab row; each tab saves on its own.
 
-Two things remain yours:
-* Replace the placeholder copy on the new pages before announcing the site.
-* Set the favicon at Settings → General → Site Icon (upload icons/site-icon-512.png), and set colours and cross-link URLs at Appearance → Theme Options.
+* Setup: shows which pages, menus and starter entries exist, and creates anything missing.
+* Content: the soft word cap for a doubt's short answer, the "If you are struggling" notice, breadcrumbs, the glossary, the scripture box in the rail, the fatwa index's default order (three cards), the contact form's recipient and the footer note.
+* Topics & schools: links to the WordPress screens for topics and schools. The 4 doubt categories are locked.
+* Linked sites: the Compelling Evidence address, the counterpart link, the "Not sure where to start?" card, and the polemics address.
+* Contextual links: switches for links to this site and to sister sites, sliders for how many a page gets, extra phrases and pages to skip.
+* Colours: the accent and its tint, with WordPress's colour picker and a live contrast check against white.
+* Profiles: the author's name and a URL for each of 42 platforms. Each one shows as a footer icon and as sameAs in the structured data.
+* Security: author privacy, XML-RPC, application passwords, REST changes, headers, the spam gate, the private login address and the login screen design. Below them: the spam scan, sessions, attack counts and the security log.
+* Upkeep: maintenance mode, the branded error pages, and addresses to answer with 410 Gone.
+* Docs: the manual in docs/, rendered in the admin.
+
+== Frequently Asked Questions ==
+= I set a private login address and cannot log in. =
+Add define( 'MURTADD_HIDE_LOGIN', false ); to wp-config.php, log in at wp-login.php, clear the address on the Security tab, then remove the line.
+
+= My front page shows the latest posts instead of the home page. =
+That is what Settings, Reading asks for. Choose "A static page" there and pick Home. The theme follows whichever you choose.
+
+= Does the theme work with Rank Math? =
+Yes. The theme's meta tags stand down and its schema nodes go into Rank Math's graph without overwriting anything there.
+
+= Can I add a fifth doubt category? =
+No. The 4 categories are locked, and their addresses are fixed rules in the code.
+
+== Privacy ==
+The theme loads nothing from another server. Fonts, icons and scripts ship inside it, and it adds no analytics or tracking.
+
+* The contact form sends each message by email and keeps no copy. To limit abuse it stores a keyed hash of the sender's IP address for 1 hour; the address itself is never written.
+* The security module records failed logins for a day by account name, with the IP addresses they came from, counts attacks per day for 30 days, and keeps each account's last login time and IP address. Only administrators see these, on the Security tab.
+* Comment avatars come from Gravatar when Settings, Discussion, Show Avatars is on, which is WordPress's own setting. Turn it off to stop those requests.
+* Links to the sister sites and the Compelling Evidence quiz are plain links. Nothing is fetched from them.
+
+== Copyright ==
+Murtadd WordPress Theme, Copyright (C) 2026 Langgam Fikir Enterprise.
+Murtadd is distributed under the terms of the GNU GPL v2 or later (license.txt).
+
+Bundled resources:
+* Source Serif 4, Copyright 2014-2023 Adobe, SIL Open Font License 1.1. Source: https://github.com/adobe-fonts/source-serif (assets/fonts/OFL-SourceSerif4.md).
+* Public Sans, Copyright 2015 The Public Sans Project Authors, SIL Open Font License 1.1. Source: https://github.com/uswds/public-sans (assets/fonts/OFL-PublicSans.txt).
+* KFGQPC HAFS Uthmanic Script, King Fahd Glorious Quran Printing Complex, under the Complex's own licence (assets/fonts/kfgqpc-hafs-uthmanic-script-LICENSE.txt). Served as a WOFF2 conversion by the owner's decision of 2026-10-26.
+* Parsedown 1.8.0, Copyright 2013-2018 Emanuil Rusev, MIT. Source: https://github.com/erusev/parsedown (vendor/parsedown/LICENSE.txt).
+* Social icons (assets/icons/social): Simple Icons, CC0 1.0 (https://simpleicons.org); LinkedIn, Scribd and ORCID from Font Awesome Free, CC BY 4.0 (https://fontawesome.com); SoundCloud from IcoMoon Free, CC BY 4.0 or GPL (https://icomoon.io); WordPress from Bootstrap Icons, MIT (https://icons.getbootstrap.com); ISNI, VIAF, Suno and OCLC Entities redrawn for the pack. Details in assets/icons/social/PACK-README.txt.
+* The site icon, the pixel book and envelope images, the calligraphy in assets/images and screenshot.png were made for this theme and are GPL v2 or later with it.
 
 == Changelog ==
+= 1.53.0 =
+* Theme Options is rebuilt as cards with tabs. The tabs switch without a reload and work from the keyboard. Booleans are toggle switches, the link caps are sliders that show their value, the fatwa sort is three cards, and the accents use WordPress's colour picker. Every option key and saved value is unchanged.
+* A refused login address now shows its error after saving. The screen never printed settings messages before.
+* The skip link moves focus into the page content, and the footer sits outside the main content, as its own landmark.
+* Theme Options builds only the tab you open. Other tabs load when you choose them.
+* With "Your latest posts" chosen under Settings, Reading, the front page shows the posts, with the footer links.
+* The structured data escapes "<" and ">", so text in a title cannot close its script tag.
+* The missing-pages notice can be dismissed, and the security warning can be closed.
+* The contrast check's messages are translatable, and languages/murtadd.pot is regenerated.
+
 = 1.52.0 =
 * Doubt and rebuttal pages were missing one ">" in their markup, so a stray character showed above the title, the side rail sat below the article, and the footer bar ran 20 to 48 pixels past the screen edge. Fixed, and the rail sits beside the article again on wide screens.
 * Phones get 44-pixel tap targets in the menu and footer, and 16-pixel search fields, so iOS no longer zooms in.
@@ -70,5 +128,9 @@ Two things remain yours:
 
 See docs/changelog.md for earlier releases.
 
+== Upgrade Notice ==
+= 1.53.0 =
+Theme Options has a new layout. Settings keep their values; nothing needs doing.
+
 == Data removal ==
-WordPress does not execute an uninstall routine for themes. If the theme is removed permanently, delete these options manually (WP-CLI: wp option delete <name>): murtadd_colours, murtadd_cross_links, murtadd_contextual_links, murtadd_content_display, murtadd_security, murtadd_upkeep, murtadd_dropins_stamp, murtadd_dropins_status, murtadd_placeholder_copy_retired, murtadd_topics_seeded, murtadd_schools_seeded, murtadd_doubt_categories_seeded, murtadd_rewrite_version, murtadd_needs_setup, murtadd_template_paths_migrated, murtadd_content_seeded, murtadd_seeded_slugs, murtadd_profiles, murtadd_author_name. All CPT posts and taxonomy terms persist by design.
+WordPress does not execute an uninstall routine for themes. If the theme is removed permanently, delete these options manually (WP-CLI: wp option delete <name>): murtadd_colours, murtadd_cross_links, murtadd_contextual_links, murtadd_content_display, murtadd_security, murtadd_upkeep, murtadd_dropins_stamp, murtadd_dropins_status, murtadd_placeholder_copy_retired, murtadd_topics_seeded, murtadd_schools_seeded, murtadd_doubt_categories_seeded, murtadd_rewrite_version, murtadd_needs_setup, murtadd_template_paths_migrated, murtadd_content_seeded, murtadd_seeded_slugs, murtadd_profiles, murtadd_author_name. Then delete the user meta murtadd_setup_notice_dismissed, which is stored per user, not as an option (WP-CLI: wp user meta delete <user> murtadd_setup_notice_dismissed, for each administrator). All CPT posts and taxonomy terms persist by design.

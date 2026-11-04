@@ -7,13 +7,20 @@
 ( function () {
 	'use strict';
 
+	/*
+	 * Theme Options loads an inactive tab's panel only when it is opened, so
+	 * the tools may arrive after this script. boot() runs now and again on
+	 * each "murtadd:panel" event, and binds the tools once.
+	 */
+	function boot() {
 	var cfg = window.murtaddSecurity || {};
 	var i18n = cfg.i18n || {};
 	var tools = document.getElementById( 'murtadd-security-tools' );
 
-	if ( ! tools ) {
+	if ( ! tools || tools.hasAttribute( 'data-murtadd-ready' ) ) {
 		return;
 	}
+	tools.setAttribute( 'data-murtadd-ready', '1' );
 
 	function format( text ) {
 		var args = Array.prototype.slice.call( arguments, 1 );
@@ -235,4 +242,8 @@
 			}
 		} );
 	} );
+	}
+
+	boot();
+	document.addEventListener( 'murtadd:panel', boot );
 }() );

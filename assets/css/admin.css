@@ -1,16 +1,19 @@
 /*
- * Theme options — admin skin.
+ * Theme Options: the admin design system.
  *
- * WordPress admin defaults are grey tables and 2011 form rows. This restyles
- * the screen without touching the Settings API underneath: the markup is still
- * a form-table, so every field, nonce, and sanitiser keeps working exactly as
- * before. Only the surface changes.
+ * Card layout, no form tables. A hero (icon, mark, title, version badge,
+ * counts), horizontal tabs with an icon and an active indicator, each panel's
+ * settings in white cards on a neutral ground, and a footer with the
+ * documentation links. Field rows put the label on the left and the control on
+ * the right, and stack below 782px, where WordPress itself switches layout.
  *
- * Restraint applies here as much as on the front end. The gradient is confined
- * to the hero; everything below it is flat, generously spaced, and rounded.
- * A gradient on every control would be a 2013 admin theme, not a 2026 one.
+ * Restraint applies here as much as on the front end. The gradient appears in
+ * three places only: the hero, the active tab's indicator and the primary
+ * button. Everything else is flat, generously spaced and rounded.
  *
- * Scoped under .murtadd-admin so nothing leaks into the rest of wp-admin.
+ * Scoped under .murtadd-admin so nothing leaks into the rest of wp-admin. The
+ * content-gaps rules at the end are the one exception, scoped under
+ * #dashboard-widgets instead. Light only.
  */
 
 .murtadd-admin {
@@ -21,7 +24,9 @@
 	--ma-muted: #5d6b66;
 	--ma-line: #e4e9e7;
 	--ma-surface: #fff;
-	--ma-ground: #fbfcfc;
+	--ma-ground: #f6f8f7;
+	--ma-tint: #eefaf7;
+	--ma-accent-ink: #0b5443;
 
 	max-width: 1080px;
 	margin-right: 20px;
@@ -152,142 +157,369 @@
 .murtadd-admin-stat.is-warning { background: rgba( 255, 122, 104, 0.24 ); border-color: rgba( 255, 122, 104, 0.42 ); }
 .murtadd-admin-stat.is-clear dd { color: var(--ma-accent-2); }
 
+/* Title: the screen's one h1, under the mark. */
+.murtadd-admin .murtadd-admin-title {
+	margin: 12px 0 0;
+	padding: 0;
+	font-size: 22px;
+	font-weight: 700;
+	line-height: 1.3;
+	color: #fff;
+}
+
 /* ---------- Tabs ---------- */
 /*
  * Tabs run in the order the work is done: setup, content, filing, links,
- * colour. The numbers are a CSS counter rather than markup, so the sequence
- * is visible without the labels having to carry it, and reordering the PHP
- * array renumbers them automatically.
+ * colour. A tab list in the ARIA sense: arrow keys, Home and End move between
+ * tabs, and the script switches panels without a reload. On a narrow screen
+ * the row scrolls sideways rather than wrapping into a block of buttons.
  */
-.murtadd-admin .nav-tab-wrapper.murtadd-admin-tabs {
+.murtadd-admin-tabs { margin: 26px 0 0; }
+.murtadd-admin-tablist {
 	display: flex;
 	gap: 4px;
-	margin: 26px 0 0;
 	padding: 5px;
+	overflow-x: auto;
+	scrollbar-width: thin;
 	border: 1px solid var(--ma-line);
 	border-radius: 14px;
 	background: var(--ma-surface);
 	box-shadow: 0 1px 2px rgba( 20, 32, 28, 0.04 );
-	counter-reset: murtadd-tab;
 }
-.murtadd-admin .nav-tab-wrapper.murtadd-admin-tabs .nav-tab {
-	counter-increment: murtadd-tab;
-}
-.murtadd-admin .nav-tab-wrapper.murtadd-admin-tabs .nav-tab::before {
-	content: counter( murtadd-tab, decimal-leading-zero );
-	margin-right: 8px;
-	font-size: 10.5px;
-	font-weight: 700;
-	letter-spacing: 0.06em;
-	font-variant-numeric: tabular-nums;
-	opacity: 0.55;
-}
-.murtadd-admin .nav-tab-wrapper.murtadd-admin-tabs .nav-tab {
-	margin: 0;
-	padding: 9px 18px;
-	border: 0;
+.murtadd-admin-tab {
+	position: relative;
+	display: inline-flex;
+	flex: none;
+	align-items: center;
+	gap: 7px;
+	padding: 10px 16px;
 	border-radius: 10px;
-	background: transparent;
 	font-size: 13.5px;
 	font-weight: 600;
 	line-height: 1.4;
+	white-space: nowrap;
+	text-decoration: none;
 	color: var(--ma-muted);
 	transition: background 0.16s ease, color 0.16s ease;
 }
-.murtadd-admin .nav-tab-wrapper.murtadd-admin-tabs .nav-tab:hover {
-	background: #f1f6f4;
-	color: var(--ma-ink);
+.murtadd-admin-tab:hover { background: #f1f6f4; color: var(--ma-ink); }
+.murtadd-admin-tab:focus { box-shadow: none; outline: none; }
+.murtadd-admin-tab:focus-visible { outline: 2px solid var(--ma-accent); outline-offset: 1px; }
+.murtadd-admin-tab__icon { width: 18px; height: 18px; font-size: 18px; }
+.murtadd-admin-tab.is-active,
+.murtadd-admin-tab.is-active:hover { background: var(--ma-tint); color: var(--ma-accent-ink); }
+/* The active indicator: the second of the three gradients. */
+.murtadd-admin-tab.is-active::after {
+	content: '';
+	position: absolute;
+	left: 12px;
+	right: 12px;
+	bottom: 3px;
+	height: 3px;
+	border-radius: 3px;
+	background: linear-gradient( 90deg, var(--ma-accent) 0%, #1c8a6d 100% );
 }
-.murtadd-admin .nav-tab-wrapper.murtadd-admin-tabs .nav-tab-active,
-.murtadd-admin .nav-tab-wrapper.murtadd-admin-tabs .nav-tab-active:hover {
-	background: linear-gradient( 135deg, var(--ma-accent) 0%, #1c8a6d 100% );
-	color: #fff;
-	box-shadow: 0 6px 16px -8px rgba( 15, 110, 86, 0.8 );
-}
-.murtadd-admin .nav-tab-wrapper.murtadd-admin-tabs .nav-tab-active::before { opacity: 0.75; }
 
-/* ---------- Panel ---------- */
-.murtadd-admin-panel {
-	margin-top: 18px;
-	padding: 32px 36px;
+/* ---------- Panels and cards ---------- */
+.murtadd-admin-panel { margin-top: 18px; }
+.murtadd-admin-panel[hidden] { display: none; }
+.murtadd-admin-panel:focus { outline: none; }
+.murtadd-admin-panel:focus-visible { outline: 2px solid var(--ma-accent); outline-offset: 4px; border-radius: 18px; }
+
+.murtadd-card {
+	margin: 0 0 18px;
 	background: var(--ma-surface);
 	border: 1px solid var(--ma-line);
-	border-radius: 18px;
+	border-radius: 16px;
 	box-shadow: 0 1px 2px rgba( 20, 32, 28, 0.04 );
 }
-
-.murtadd-admin-panel h2 {
-	margin: 0 0 6px;
-	font-size: 19px;
+.murtadd-card__head {
+	display: flex;
+	align-items: flex-start;
+	gap: 12px;
+	padding: 22px 28px 0;
+}
+.murtadd-card__icon {
+	flex: none;
+	width: 36px;
+	height: 36px;
+	padding: 8px;
+	border-radius: 10px;
+	background: var(--ma-tint);
+	color: var(--ma-accent);
+	font-size: 20px;
+	line-height: 1;
+}
+.murtadd-card__heading { min-width: 0; }
+.murtadd-admin .murtadd-card__title {
+	margin: 6px 0 0;
+	padding: 0;
+	font-size: 16px;
 	font-weight: 700;
+	line-height: 1.4;
 	color: var(--ma-ink);
 }
-.murtadd-admin-panel .description {
-	color: var(--ma-muted);
+.murtadd-card__desc {
+	max-width: 72ch;
+	margin: 6px 0 0;
 	font-size: 13.5px;
+	line-height: 1.6;
+	color: var(--ma-muted);
+}
+.murtadd-card__body { padding: 8px 28px 22px; }
+.murtadd-admin .description {
+	color: var(--ma-muted);
+	font-size: 13px;
 	line-height: 1.6;
 }
 
-/* Form rows, restyled without touching the markup. */
-.murtadd-admin-panel .form-table { margin-top: 20px; }
-.murtadd-admin-panel .form-table > tbody > tr {
-	display: block;
-	padding: 20px 0;
-	border-bottom: 1px solid var(--ma-line);
+/* ---------- Field rows ---------- */
+.murtadd-field {
+	display: grid;
+	grid-template-columns: minmax( 160px, 240px ) minmax( 0, 1fr );
+	gap: 8px 32px;
+	padding: 18px 0;
+	border-top: 1px solid var(--ma-line);
 }
-.murtadd-admin-panel .form-table > tbody > tr:last-child { border-bottom: 0; padding-bottom: 0; }
-.murtadd-admin-panel .form-table th {
+.murtadd-card__body > .murtadd-field:first-child { border-top: 0; }
+.murtadd-field__label label,
+.murtadd-field__title {
 	display: block;
-	width: auto;
-	padding: 0 0 8px;
+	padding-top: 8px;
+	font-size: 13.5px;
+	font-weight: 700;
+	line-height: 1.4;
+	color: var(--ma-ink);
+}
+.murtadd-field__control { min-width: 0; }
+.murtadd-field__control > :first-child { margin-top: 0; }
+.murtadd-field__control .description { margin: 8px 0 0; max-width: 68ch; }
+.murtadd-field__sublabel {
+	display: block;
+	margin: 0 0 4px;
+	font-size: 12.5px;
+	font-weight: 600;
+	color: var(--ma-ink);
+}
+
+/* Inputs: rounded, one height, a visible focus ring. */
+.murtadd-admin input[type="text"],
+.murtadd-admin input[type="url"],
+.murtadd-admin input[type="email"],
+.murtadd-admin input[type="number"],
+.murtadd-admin select,
+.murtadd-admin textarea {
+	min-height: 40px;
+	padding: 8px 12px;
+	border: 1px solid #c9d3cf;
+	border-radius: 10px;
+	background: var(--ma-surface);
+	font-size: 14px;
+	color: var(--ma-ink);
+	box-shadow: none;
+	transition: border-color 0.16s ease, box-shadow 0.16s ease;
+}
+.murtadd-admin input[type="number"] { width: 7em; }
+.murtadd-admin textarea { resize: vertical; min-height: 96px; max-height: 480px; }
+.murtadd-admin input[type="text"]:focus,
+.murtadd-admin input[type="url"]:focus,
+.murtadd-admin input[type="email"]:focus,
+.murtadd-admin input[type="number"]:focus,
+.murtadd-admin select:focus,
+.murtadd-admin textarea:focus {
+	border-color: var(--ma-accent);
+	outline: 2px solid transparent;
+	box-shadow: 0 0 0 2px var(--ma-surface), 0 0 0 4px var(--ma-accent);
+}
+.murtadd-admin select {
+	padding-right: 32px;
+	background-position: right 10px top 55%;
+}
+.murtadd-input-prefix {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 6px;
+}
+.murtadd-input-prefix code { padding: 9px 10px; border-radius: 8px; background: #f1f6f4; }
+.murtadd-input-prefix input { flex: 1 1 220px; }
+
+/* ---------- Toggle switches ---------- */
+.murtadd-toggle-row {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	min-height: 40px;
+}
+.murtadd-toggle {
+	position: relative;
+	display: inline-flex;
+	flex: none;
+	width: 44px;
+	height: 24px;
+}
+.murtadd-admin .murtadd-toggle__input {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	min-width: 0;
+	margin: 0;
+	border: 0;
+	opacity: 0;
+	cursor: pointer;
+	z-index: 1;
+}
+.murtadd-toggle__track {
+	position: relative;
+	width: 44px;
+	height: 24px;
+	border-radius: 999px;
+	background: #8c9a95;
+	transition: background 0.16s ease;
+}
+.murtadd-toggle__track::after {
+	content: '';
+	position: absolute;
+	top: 3px;
+	left: 3px;
+	width: 18px;
+	height: 18px;
+	border-radius: 50%;
+	background: #fff;
+	box-shadow: 0 1px 2px rgba( 0, 0, 0, 0.25 );
+	transition: transform 0.16s ease;
+}
+.murtadd-toggle__input:checked + .murtadd-toggle__track { background: var(--ma-accent); }
+.murtadd-toggle__input:checked + .murtadd-toggle__track::after { transform: translateX( 20px ); }
+.murtadd-toggle__input:focus-visible + .murtadd-toggle__track {
+	outline: 2px solid var(--ma-accent);
+	outline-offset: 2px;
+}
+.murtadd-toggle__input:disabled + .murtadd-toggle__track { opacity: 0.5; }
+.murtadd-toggle__text { font-size: 13.5px; line-height: 1.5; color: var(--ma-ink); cursor: pointer; }
+
+/* ---------- Range sliders ---------- */
+.murtadd-range {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 10px 14px;
+	min-height: 40px;
+}
+.murtadd-range__input {
+	flex: 1 1 200px;
+	max-width: 360px;
+	accent-color: var(--ma-accent);
+	cursor: pointer;
+}
+.murtadd-range__input:focus-visible { outline: 2px solid var(--ma-accent); outline-offset: 4px; }
+.murtadd-range__value {
+	min-width: 2.6em;
+	padding: 3px 10px;
+	border-radius: 999px;
+	background: var(--ma-tint);
+	color: var(--ma-accent-ink);
+	font-weight: 700;
+	font-variant-numeric: tabular-nums;
+	text-align: center;
+}
+.murtadd-range__unit { color: var(--ma-muted); font-size: 13px; }
+
+/* ---------- Visual selector cards ---------- */
+.murtadd-choices {
+	display: grid;
+	grid-template-columns: repeat( auto-fill, minmax( 180px, 1fr ) );
+	gap: 12px;
+	margin: 14px 0 0;
+	padding: 0;
+	border: 0;
+}
+.murtadd-choice { position: relative; display: block; cursor: pointer; }
+.murtadd-admin .murtadd-choice__input {
+	position: absolute;
+	top: 14px;
+	right: 14px;
+	margin: 0;
+}
+.murtadd-choice__body {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	height: 100%;
+	padding: 16px 40px 16px 16px;
+	border: 2px solid var(--ma-line);
+	border-radius: 12px;
+	background: var(--ma-surface);
+	transition: border-color 0.16s ease, background 0.16s ease;
+}
+.murtadd-choice:hover .murtadd-choice__body { border-color: #b5c4be; }
+.murtadd-choice__input:checked + .murtadd-choice__body {
+	border-color: var(--ma-accent);
+	background: var(--ma-tint);
+}
+.murtadd-choice__input:focus-visible + .murtadd-choice__body {
+	outline: 2px solid var(--ma-accent);
+	outline-offset: 2px;
+}
+.murtadd-choice__icon { color: var(--ma-accent); }
+.murtadd-choice__title { font-size: 14px; font-weight: 700; color: var(--ma-ink); }
+.murtadd-choice__desc { font-size: 12.5px; line-height: 1.5; color: var(--ma-muted); }
+
+/* ---------- Colour pickers ---------- */
+.murtadd-color-grid {
+	display: grid;
+	grid-template-columns: repeat( auto-fill, minmax( 240px, 1fr ) );
+	gap: 14px;
+	margin: 14px 0 0;
+}
+.murtadd-color {
+	padding: 14px 16px;
+	border: 1px solid var(--ma-line);
+	border-radius: 12px;
+	background: var(--ma-ground);
+}
+.murtadd-color__label {
+	display: block;
+	margin: 0 0 8px;
 	font-size: 13.5px;
 	font-weight: 700;
 	color: var(--ma-ink);
 }
-.murtadd-admin-panel .form-table td { display: block; padding: 0; }
+.murtadd-color .wp-picker-container { display: block; }
+.murtadd-admin .murtadd-color .wp-picker-input-wrap input[type="text"] { min-height: 30px; width: 7em; }
+.murtadd-field--plain { border-top: 0; margin-top: 8px; }
+.murtadd-contrast { display: inline-block; padding-top: 8px; font-weight: 600; }
+.murtadd-contrast.is-pass { color: #00450c; }
+.murtadd-contrast.is-fail { color: #8a4b00; }
 
-.murtadd-admin-panel input[type="text"],
-.murtadd-admin-panel input[type="url"],
-.murtadd-admin-panel input[type="number"],
-.murtadd-admin-panel input[type="date"],
-.murtadd-admin-panel select,
-.murtadd-admin-panel textarea {
-	padding: 10px 14px;
-	border: 1px solid var(--ma-line);
-	border-radius: 10px;
-	background: var(--ma-ground);
-	font-size: 14px;
+/* ---------- Profiles ---------- */
+.murtadd-profiles-grid {
+	display: grid;
+	grid-template-columns: repeat( auto-fill, minmax( 280px, 1fr ) );
+	gap: 12px 18px;
+	margin-top: 12px;
+}
+.murtadd-profile__label {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin: 0 0 4px;
+	font-size: 13px;
+	font-weight: 600;
 	color: var(--ma-ink);
-	box-shadow: none;
-	transition: border-color 0.16s ease, background 0.16s ease;
 }
-.murtadd-admin-panel input:focus,
-.murtadd-admin-panel select:focus,
-.murtadd-admin-panel textarea:focus {
-	border-color: var(--ma-accent);
-	background: var(--ma-surface);
-	outline: 2px solid rgba( 15, 110, 86, 0.18 );
-	outline-offset: 1px;
-	box-shadow: none;
-}
-.murtadd-admin-panel input[type="color"] {
-	width: 54px;
-	height: 40px;
-	padding: 3px;
-	border: 1px solid var(--ma-line);
-	border-radius: 10px;
-	background: var(--ma-surface);
-	cursor: pointer;
-}
+.murtadd-profile input { width: 100%; }
+.murtadd-profiles-icon { display: inline-flex; color: var(--ma-muted); }
 
-/* Status table (Setup tab). */
-.murtadd-admin-panel .widefat {
+/* ---------- Status table (Setup and Upkeep tabs) ---------- */
+.murtadd-admin .widefat {
 	border: 1px solid var(--ma-line);
-	border-radius: 14px;
+	border-radius: 12px;
 	overflow: hidden;
 	box-shadow: none;
 }
-.murtadd-admin-panel .widefat thead th {
+.murtadd-admin .widefat thead th {
 	background: #f4f8f7;
 	border-bottom: 1px solid var(--ma-line);
 	font-size: 11px;
@@ -296,35 +528,54 @@
 	text-transform: uppercase;
 	color: var(--ma-muted);
 }
-.murtadd-admin-panel .widefat td { padding: 13px 14px; font-size: 13.5px; }
-.murtadd-admin-panel .widefat code {
+.murtadd-admin .widefat td { padding: 13px 14px; font-size: 13.5px; }
+.murtadd-admin .widefat code {
 	background: #f1f6f4;
 	border-radius: 6px;
 	padding: 2px 7px;
 	font-size: 11.5px;
 	color: var(--ma-muted);
 }
+.murtadd-admin-links { margin: 12px 0 0; }
+.murtadd-admin-links li { margin: 0 0 8px; font-size: 13.5px; }
 
-/* Buttons. */
-.murtadd-admin .button-primary,
-.murtadd-admin-panel .button-primary {
-	padding: 8px 22px;
-	height: auto;
+/* ---------- Buttons ---------- */
+.murtadd-admin-actions { margin: 4px 0 26px; }
+.murtadd-admin .button:not(.wp-color-result):not(.wp-picker-clear):not(.wp-picker-default) { min-height: 36px; padding: 2px 16px; border-radius: 999px; line-height: 2.3; }
+.murtadd-admin .button:focus-visible { outline: 2px solid var(--ma-accent); outline-offset: 2px; box-shadow: none; }
+.murtadd-admin .button-primary {
+	padding: 4px 22px;
 	border: 0;
-	border-radius: 999px;
 	background: linear-gradient( 135deg, var(--ma-accent) 0%, #1c8a6d 100% );
+	color: #fff;
 	font-size: 13.5px;
 	font-weight: 600;
-	line-height: 1.6;
 	text-shadow: none;
 	box-shadow: 0 8px 20px -10px rgba( 15, 110, 86, 0.9 );
 	transition: transform 0.14s ease, box-shadow 0.14s ease;
 }
-.murtadd-admin .button-primary:hover {
+.murtadd-admin .button-primary:hover,
+.murtadd-admin .button-primary:focus {
 	background: linear-gradient( 135deg, #0d6249 0%, #17795f 100% );
-	transform: translateY( -1px );
-	box-shadow: 0 12px 26px -12px rgba( 15, 110, 86, 0.95 );
+	color: #fff;
 }
+.murtadd-admin .button-primary:hover { transform: translateY( -1px ); }
+
+/* ---------- Footer ---------- */
+.murtadd-admin-footer {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	gap: 8px 20px;
+	margin: 8px 0 24px;
+	padding: 16px 4px 0;
+	border-top: 1px solid var(--ma-line);
+	font-size: 13px;
+	color: var(--ma-muted);
+}
+.murtadd-admin-footer p { margin: 0; }
+.murtadd-admin-footer a { color: var(--ma-accent-ink); }
+.murtadd-admin-footer span[aria-hidden] { margin: 0 6px; }
 
 /* Notices, brought inside the rounded language. */
 .murtadd-admin .notice {
@@ -349,11 +600,10 @@
 .murtadd-status-ok { color: var(--ma-accent); font-weight: 600; }
 .murtadd-admin .murtadd-status-missing,
 .murtadd-status-missing { color: #8a4b00; font-weight: 600; }
-.widefat.murtadd-admin-table { max-width: 640px; margin: 16px 0; }
+.widefat.murtadd-admin-table { max-width: 720px; margin: 16px 0; }
 .murtadd-admin-inline-form { margin: 12px 0 0; }
 p.description.murtadd-admin-note { margin-top: 12px; }
-.form-table td p.murtadd-admin-spaced,
-.murtadd-admin-spaced { margin-top: 10px; }
+.murtadd-admin-spaced { margin-top: 12px; }
 
 /* Dashboard: the content-gaps widget. */
 #dashboard-widgets .murtadd-gaps-none { color: #0f6e56; font-weight: 600; }
@@ -366,7 +616,26 @@ p.description.murtadd-admin-note { margin-top: 12px; }
 }
 
 @media ( max-width: 782px ) {
-	.murtadd-admin-hero { padding: 26px 22px; }
-	.murtadd-admin-panel { padding: 22px 20px; }
-	.murtadd-admin .nav-tab-wrapper.murtadd-admin-tabs { flex-wrap: wrap; }
+	.murtadd-admin { margin-right: 10px; }
+	.murtadd-admin-hero { padding: 24px 20px; border-radius: 16px; }
+	.murtadd-card__head { padding: 18px 18px 0; }
+	.murtadd-card__body { padding: 6px 18px 18px; }
+	.murtadd-field { grid-template-columns: minmax( 0, 1fr ); gap: 6px; }
+	.murtadd-field__label label,
+	.murtadd-field__title { padding-top: 0; }
+	.murtadd-admin input[type="text"],
+	.murtadd-admin input[type="url"],
+	.murtadd-admin input[type="email"],
+	.murtadd-admin select,
+	.murtadd-admin textarea,
+	.murtadd-admin .regular-text,
+	.murtadd-admin .large-text { width: 100%; max-width: 100%; }
+	.murtadd-admin .murtadd-color .wp-picker-input-wrap input[type="text"] { width: 7em; }
+	.murtadd-range__input { max-width: none; }
+	.murtadd-choices,
+	.murtadd-color-grid,
+	.murtadd-profiles-grid { grid-template-columns: minmax( 0, 1fr ); }
+	.murtadd-admin-tab { padding: 10px 12px; min-height: 44px; }
+	.murtadd-admin .button:not(.wp-color-result):not(.wp-picker-clear):not(.wp-picker-default) { min-height: 44px; }
+	.widefat.murtadd-admin-table { max-width: none; }
 }
