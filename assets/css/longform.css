@@ -1,15 +1,6 @@
 /* Long-form furniture: rebuttals only. */
 
-.murtadd-progress {
-	position: fixed; top: 0; left: 0; right: 0;
-	height: 3px; background: transparent; z-index: 60;
-	pointer-events: none;
-}
-.murtadd-progress-fill {
-	display: block; height: 100%; width: 0;
-	background: var(--murtadd-accent);
-	transition: width 0.08s linear;
-}
+/* The reading progress bar moved to progress.css. */
 
 .murtadd-toc { }
 .murtadd-toc-label {
@@ -55,8 +46,8 @@
 .murtadd-top:hover { background: #0a4f3e; }
 
 @media (prefers-reduced-motion: reduce) {
-	.murtadd-progress-fill, .murtadd-top { transition: none; }
+	.murtadd-top { transition: none; }
 }
 @media print {
-	.murtadd-progress, .murtadd-top, .murtadd-toc { display: none; }
+	.murtadd-top, .murtadd-toc { display: none; }
 }

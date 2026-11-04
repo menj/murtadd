@@ -359,7 +359,7 @@ function get_queried_object_id() {
 	return isset( $o->ID ) ? (int) $o->ID : ( isset( $o->term_id ) ? (int) $o->term_id : 0 );
 }
 function get_query_var( $var ) {
-	return 'post_type' === $var ? ( $GLOBALS['murtadd_view']['archive'] ?? '' ) : '';
+	return 'post_type' === $var ? ( $GLOBALS['murtadd_view']['archive'] ?? '' ) : ( $GLOBALS['murtadd_test_query_vars'][ $var ] ?? '' );
 }
 function get_post_type_object( $type ) {
 	$names = array( 'murtadd_doubt' => 'Doubts', 'murtadd_rebuttal' => 'Rebuttals', 'murtadd_fatwa' => 'Fatwa', 'murtadd_letter' => 'Letters' );
@@ -600,3 +600,36 @@ if ( ! function_exists( 'add_option' ) ) {
 		return true;
 	}
 }
+
+/*
+ * Unlisting, readable search addresses and the reading progress bar
+ * (inc/unlist.php, inc/search-permalinks.php, inc/reading-progress.php).
+ */
+if ( ! function_exists( 'get_post_types' ) ) {
+	function get_post_types( $args = array(), $output = 'names' ) {
+		return $GLOBALS['murtadd_test_post_types'] ?? array( 'post' => 'post', 'page' => 'page', 'attachment' => 'attachment', 'murtadd_doubt' => 'murtadd_doubt', 'murtadd_rebuttal' => 'murtadd_rebuttal', 'murtadd_guide' => 'murtadd_guide' );
+	}
+}
+if ( ! function_exists( 'user_trailingslashit' ) ) {
+	function user_trailingslashit( $path ) {
+		return trailingslashit( $path );
+	}
+}
+if ( ! function_exists( 'wp_safe_redirect' ) ) {
+	function wp_safe_redirect( $url, $status = 302 ) {
+		throw new MurtaddTestRedirect( $url, $status );
+	}
+}
+/** Thrown by the wp_safe_redirect() stub, so a test can catch the redirect. */
+class MurtaddTestRedirect extends Exception {
+	public $url;
+	public $status;
+	public function __construct( $url, $status ) {
+		$this->url    = $url;
+		$this->status = $status;
+		parent::__construct( 'redirect' );
+	}
+}
+require_once __DIR__ . '/../inc/unlist.php';
+require_once __DIR__ . '/../inc/search-permalinks.php';
+require_once __DIR__ . '/../inc/reading-progress.php';

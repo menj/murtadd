@@ -1,6 +1,6 @@
 # Murtadd — Single Source of Truth
 
-Version 1.53.1 · Child theme of Twenty Twenty-Five · murtadd.org
+Version 1.54.0 · Child theme of Twenty Twenty-Five · murtadd.org
 
 ## What this theme is
 
@@ -224,6 +224,14 @@ The gradient appears in exactly three places: the hero, the active tab's indicat
 The version badge reads `MURTADD_VERSION` directly. It cannot drift, unlike the six files that state a version in text.
 
 Tabs run in the order the work is done: Setup, Content, Topics & schools, Linked sites, Contextual links, Colours, Profiles, Security, Upkeep, Docs. **The tab keys are load-bearing**: `settings_fields( 'murtadd_' . $active )` maps each key to its registered settings group, so relabel and reorder freely, but never rename a key — a renamed key silently detaches the tab from its settings and the fields will appear to save while going nowhere. Labels must name what a person has, not what WordPress calls it internally.
+
+## Unlisting, search addresses and the progress bar
+
+Three features rebuilt from plugins in 1.54.0. Each stands down while its plugin is active and imports what the plugin saved.
+
+- **Unlisting** (`inc/unlist.php`, `assets/js/unlist-admin.js`). Filters at `pre_get_posts`, because `get_posts()` suppresses the `posts_where` filter the plugin used and the related doubts and the rail are built with it. A query naming its posts keeps only the listed ones. Admin screens and editors' REST and admin AJAX requests see everything. An editor's chosen cross-link (`murtadd_related_link()`) still names an unlisted entry, as any direct link may. Pinned in `tests/UnlistTest.php`.
+- **Search addresses** (`inc/search-permalinks.php`). `murtadd_search` is registered in the Content tab's group and is also saved from Settings, Permalinks. The base is applied at `init` 1; a changed base clears `murtadd_rewrite_version`, so the existing flusher rebuilds once. Pinned in `tests/SearchPermalinksTest.php`.
+- **Reading progress bar** (`inc/reading-progress.php`, `assets/css/progress.css`, `assets/js/progress.js`). It moved out of `longform.js`, which no longer draws one. **Never on doubts**, for the reason long-form furniture is not on doubts. Pinned in `tests/ReadingProgressTest.php`.
 
 ## Owner decisions (record)
 

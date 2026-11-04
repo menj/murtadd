@@ -1,6 +1,7 @@
 /**
- * Long-form furniture: reading progress, mini table of contents, back to top.
- * Rebuttals only. Nothing here is required to read the page.
+ * Long-form furniture: mini table of contents, back to top. Rebuttals only.
+ * Nothing here is required to read the page. The reading progress bar moved
+ * to progress.js (inc/reading-progress.php), which Theme Options sets.
  */
 ( function () {
 	'use strict';
@@ -18,15 +19,6 @@
 	};
 
 	var reduced = window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches;
-
-	/* ---------- Progress ---------- */
-	var bar = document.createElement( 'div' );
-	bar.className = 'murtadd-progress';
-	bar.setAttribute( 'role', 'progressbar' );
-	bar.setAttribute( 'aria-label', text.progress );
-	bar.innerHTML = '<span class="murtadd-progress-fill"></span>';
-	document.body.appendChild( bar );
-	var fill = bar.querySelector( '.murtadd-progress-fill' );
 
 	/* ---------- Mini TOC ---------- */
 	var headings = article.querySelectorAll( '.murtadd-rebuttal-body h3' );
@@ -79,13 +71,6 @@
 	var ticking = false;
 
 	function update() {
-		var start = article.offsetTop;
-		var height = article.offsetHeight - window.innerHeight;
-		var scrolled = window.scrollY - start;
-		var pct = height > 0 ? Math.min( 100, Math.max( 0, ( scrolled / height ) * 100 ) ) : 0;
-
-		fill.style.width = pct + '%';
-		bar.setAttribute( 'aria-valuenow', Math.round( pct ) );
 		top.classList.toggle( 'is-visible', window.scrollY > 600 );
 
 		var current = '';

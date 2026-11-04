@@ -3,7 +3,7 @@ Contributors: murtadd.org
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.1
-Stable tag: 1.53.1
+Stable tag: 1.54.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -38,7 +38,7 @@ Set the Site Icon at Settings, General (assets/icons/site-icon-512.png is ready 
 Everything is at Appearance, Theme Options. Pick a tab, or use the arrow keys on the tab row; each tab saves on its own.
 
 * Setup: shows which pages, menus and starter entries exist, and creates anything missing.
-* Content: the soft word cap for a doubt's short answer, the "If you are struggling" notice, breadcrumbs, the glossary, the scripture box in the rail, the fatwa index's default order (three cards), the contact form's recipient and the footer note.
+* Content: the soft word cap for a doubt's short answer, the "If you are struggling" notice, breadcrumbs, the glossary, the scripture box in the rail, the fatwa index's default order (three cards), the contact form's recipient, the footer note, the reading progress bar and readable search addresses.
 * Topics & schools: links to the WordPress screens for topics and schools. The 4 doubt categories are locked.
 * Linked sites: the Compelling Evidence address, the counterpart link, the "Not sure where to start?" card, and the polemics address.
 * Contextual links: switches for links to this site and to sister sites, sliders for how many a page gets, extra phrases and pages to skip.
@@ -78,10 +78,17 @@ Bundled resources:
 * Public Sans, Copyright 2015 The Public Sans Project Authors, SIL Open Font License 1.1. Source: https://github.com/uswds/public-sans (assets/fonts/OFL-PublicSans.txt).
 * KFGQPC HAFS Uthmanic Script, King Fahd Glorious Quran Printing Complex, under the Complex's own licence (assets/fonts/kfgqpc-hafs-uthmanic-script-LICENSE.txt). Served as a WOFF2 conversion by the owner's decision of 2026-10-26.
 * Parsedown 1.8.0, Copyright 2013-2018 Emanuil Rusev, MIT. Source: https://github.com/erusev/parsedown (vendor/parsedown/LICENSE.txt).
+* Unlisting, readable search addresses and the reading progress bar options are adapted from Unlist Posts & Pages by Nikhil Chavan, Pretty Search Permalinks by Angel Costa and Reading Progress Bar by Jean-Baptiste Audras, all GPLv2 or later.
 * Social icons (assets/icons/social): Simple Icons, CC0 1.0 (https://simpleicons.org); LinkedIn, Scribd and ORCID from Font Awesome Free, CC BY 4.0 (https://fontawesome.com); SoundCloud from IcoMoon Free, CC BY 4.0 or GPL (https://icomoon.io); WordPress from Bootstrap Icons, MIT (https://icons.getbootstrap.com); ISNI, VIAF, Suno and OCLC Entities redrawn for the pack. Details in assets/icons/social/PACK-README.txt.
 * The site icon, the pixel book and envelope images, the calligraphy in assets/images and screenshot.png were made for this theme and are GPL v2 or later with it.
 
 == Changelog ==
+= 1.54.0 =
+* Unlist any entry from its editor box, Quick Edit or Bulk Edit. It still opens from its own link, but no listing, search, feed or sitemap shows it, and it is marked noindex. Post lists gain an Unlisted column and an Unlisted view.
+* Searches move to readable addresses such as /search/apostasy/ with a permanent redirect. Set the base word in Settings, Permalinks or on the Content tab. An empty search is not redirected.
+* The reading progress bar, which only rebuttals had, is set on the Content tab: on or off, colour, height, top or bottom, and the entry types. It now runs on guides, Journal posts and pages too by default. Doubts never get it.
+* The [murtadd_social_icons] shortcode and the Profile icons pattern put the profile icons anywhere. Each icon is a 32-pixel target with a visible focus ring.
+
 = 1.53.1 =
 * With Rank Math on, an Article it prints where the theme has none of its own (the front page, a doubt, the FAQ page) gains an image: the featured image where the post has one, else the share image. On a single post it also gains the post's publish and modified dates where it lacks them. Nothing Rank Math set is changed.
 
@@ -132,6 +139,9 @@ Bundled resources:
 See docs/changelog.md for earlier releases.
 
 == Upgrade Notice ==
+= 1.54.0 =
+Readable search addresses and the reading progress bar are on by default. Check both on the Content tab.
+
 = 1.53.1 =
 Structured data fix. Nothing needs doing.
 

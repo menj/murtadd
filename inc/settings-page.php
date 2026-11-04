@@ -43,6 +43,7 @@ function murtadd_register_settings() {
 	register_setting( 'murtadd_cross_links', 'murtadd_cross_links', array( 'sanitize_callback' => 'murtadd_sanitize_cross_links' ) );
 	register_setting( 'murtadd_contextual_links', 'murtadd_contextual_links', array( 'sanitize_callback' => 'murtadd_sanitize_contextual_links' ) );
 	register_setting( 'murtadd_content_display', 'murtadd_content_display', array( 'sanitize_callback' => 'murtadd_sanitize_content_display' ) );
+	register_setting( 'murtadd_content_display', 'murtadd_search', array( 'sanitize_callback' => 'murtadd_sanitize_search' ) );
 	register_setting( 'murtadd_profiles', 'murtadd_profiles', array( 'sanitize_callback' => 'murtadd_sanitize_profiles' ) );
 	register_setting( 'murtadd_profiles', 'murtadd_author_name', array( 'sanitize_callback' => 'sanitize_text_field' ) );
 	register_setting( 'murtadd_security', 'murtadd_security', array( 'sanitize_callback' => 'murtadd_sanitize_security' ) );
@@ -161,7 +162,8 @@ function murtadd_sanitize_profiles( $input ) {
 function murtadd_sanitize_content_display( $input ) {
 	$sorts = array( 'scholar_az', 'era', 'recently_added' );
 	$sort  = sanitize_key( $input['fatwa_index_default_sort'] ?? 'scholar_az' );
-	return array(
+	$input = is_array( $input ) ? $input : array();
+	return murtadd_sanitize_progress( $input ) + array(
 		'short_response_word_cap'  => max( 50, absint( $input['short_response_word_cap'] ?? 400 ) ),
 		'show_struggling_notice'   => ! empty( $input['show_struggling_notice'] ) ? 1 : 0,
 		'show_breadcrumbs'         => ! empty( $input['show_breadcrumbs'] ) ? 1 : 0,
@@ -763,6 +765,9 @@ function murtadd_render_content_tab() {
 	<?php
 	murtadd_admin_row_close();
 	murtadd_admin_card_close();
+
+	murtadd_render_progress_card();
+	murtadd_render_search_card();
 
 	murtadd_admin_card_open( __( 'Fatwa index default sort', 'murtadd' ), __( 'The order the fatwa index opens in. Readers can still re-sort it.', 'murtadd' ), 'sort' );
 	$sort    = (string) ( $o['fatwa_index_default_sort'] ?? 'scholar_az' );
