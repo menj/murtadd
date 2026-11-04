@@ -229,6 +229,8 @@ function murtadd_admin_assets( $hook ) {
 				'contrastPass' => __( '%s:1. Passes WCAG AA against white.', 'murtadd' ),
 				/* translators: %s: contrast ratio, e.g. 3.1 */
 				'contrastFail' => __( '%s:1. Below WCAG AA (4.5:1) against white. Saving is not blocked.', 'murtadd' ),
+				'ajax'         => admin_url( 'admin-ajax.php' ),
+				'nonce'        => wp_create_nonce( 'murtadd_settings_panel' ),
 			)
 		);
 

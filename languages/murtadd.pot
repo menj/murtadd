@@ -41,7 +41,7 @@ msgstr ""
 msgid "It is gone for good, and was never part of this site as it stands. Search, or pick a door below."
 msgstr ""
 
-#: 410.php:27 inc/activation.php:46 inc/schema-graph.php:474 inc/template-tags.php:470 sidebar.php:27
+#: 410.php:27 inc/activation.php:46 inc/schema-graph.php:474 inc/template-tags.php:501 sidebar.php:27
 msgid "Home"
 msgstr ""
 
@@ -107,7 +107,7 @@ msgstr ""
 msgid "All schools"
 msgstr ""
 
-#: archive-murtadd_fatwa.php:70 archive-murtadd_fatwa.php:98 inc/meta-boxes.php:116 inc/settings-page.php:722 taxonomy-murtadd_school.php:26
+#: archive-murtadd_fatwa.php:70 archive-murtadd_fatwa.php:98 inc/meta-boxes.php:116 inc/settings-page.php:771 taxonomy-murtadd_school.php:26
 msgid "Era"
 msgstr ""
 
@@ -171,7 +171,7 @@ msgstr ""
 msgid "No letters archived yet."
 msgstr ""
 
-#: archive-murtadd_rebuttal.php:14 front-page.php:67 inc/cpt-rebuttal.php:15 inc/schema-graph.php:482 inc/settings-page.php:397 sidebar.php:71
+#: archive-murtadd_rebuttal.php:14 front-page.php:68 inc/cpt-rebuttal.php:15 inc/schema-graph.php:482 inc/settings-page.php:397 sidebar.php:71
 msgid "Rebuttals"
 msgstr ""
 
@@ -225,19 +225,19 @@ msgstr ""
 msgid "Your response"
 msgstr ""
 
-#: footer.php:17
+#: footer.php:20
 msgid "share with attribution"
 msgstr ""
 
-#: footer.php:20 inc/schema-graph.php:578
+#: footer.php:28 inc/schema-graph.php:578
 msgid "Secondary"
 msgstr ""
 
-#: footer.php:22 front-page.php:65 home.php:15 inc/activation.php:51 inc/schema-graph.php:475 inc/schema-graph.php:585 inc/schema.php:178 inc/schema.php:186 inc/seed-journal.php:236 inc/seo-title.php:110 inc/template-tags.php:136 sidebar.php:28
+#: footer.php:30 front-page.php:66 home.php:15 inc/activation.php:51 inc/schema-graph.php:475 inc/schema-graph.php:585 inc/schema.php:178 inc/schema.php:186 inc/seed-journal.php:236 inc/seo-title.php:110 inc/template-tags.php:167 sidebar.php:28
 msgid "Journal"
 msgstr ""
 
-#: footer.php:42
+#: footer.php:50
 msgid "Author profiles"
 msgstr ""
 
@@ -281,23 +281,23 @@ msgstr ""
 msgid "Responses to the standard arguments used against Islam, claim by claim."
 msgstr ""
 
-#: front-page.php:63
+#: front-page.php:64
 msgid "Browse"
 msgstr ""
 
-#: front-page.php:66 inc/cpt-doubt.php:15 inc/schema-graph.php:481 inc/settings-page.php:393 inc/settings-page.php:661 sidebar.php:59
+#: front-page.php:67 inc/cpt-doubt.php:15 inc/schema-graph.php:481 inc/settings-page.php:393 inc/settings-page.php:710 sidebar.php:59
 msgid "Doubts"
 msgstr ""
 
-#: front-page.php:69 inc/cpt-fatwa.php:17 inc/schema-graph.php:479 inc/template-tags.php:135 sidebar.php:45
+#: front-page.php:70 inc/cpt-fatwa.php:17 inc/schema-graph.php:479 inc/template-tags.php:166 sidebar.php:45
 msgid "Fatwa"
 msgstr ""
 
-#: front-page.php:74 inc/schema-graph.php:476 inc/taxonomy-topic.php:17 sidebar.php:31
+#: front-page.php:75 inc/schema-graph.php:476 inc/taxonomy-topic.php:17 sidebar.php:31
 msgid "Topics"
 msgstr ""
 
-#: front-page.php:87 inc/activation.php:160
+#: front-page.php:88 inc/activation.php:160
 msgid "Site"
 msgstr ""
 
@@ -329,11 +329,11 @@ msgstr ""
 msgid "%s:1. Below WCAG AA (4.5:1) against white. Saving is not blocked."
 msgstr ""
 
-#: functions.php:269
+#: functions.php:271
 msgid "Over the soft cap — consider trimming. Saving is not blocked."
 msgstr ""
 
-#: functions.php:270
+#: functions.php:272
 msgid "words"
 msgstr ""
 
@@ -353,7 +353,7 @@ msgstr ""
 msgid "“The truth is from your Lord — so never be among the doubters.” — Qur’an 2:147"
 msgstr ""
 
-#: home.php:44 inc/settings-page.php:723 template-parts/rail/rail-single.php:63
+#: home.php:44 inc/settings-page.php:772 template-parts/rail/rail-single.php:63
 msgid "Recently added"
 msgstr ""
 
@@ -377,19 +377,19 @@ msgstr ""
 msgid "Irtidad"
 msgstr ""
 
-#: inc/activation.php:66 inc/template-tags.php:232
+#: inc/activation.php:66 inc/template-tags.php:263
 msgid "About"
 msgstr ""
 
-#: inc/activation.php:71 inc/template-tags.php:233
+#: inc/activation.php:71 inc/template-tags.php:264
 msgid "FAQ"
 msgstr ""
 
-#: inc/activation.php:76 inc/template-tags.php:234
+#: inc/activation.php:76 inc/template-tags.php:265
 msgid "Contact"
 msgstr ""
 
-#: inc/activation.php:81 inc/contact.php:329 inc/template-tags.php:235
+#: inc/activation.php:81 inc/contact.php:329 inc/template-tags.php:266
 msgid "Privacy"
 msgstr ""
 
@@ -457,7 +457,7 @@ msgstr ""
 msgid "Placeholder. This page carries the second route from Start Here: what irtidad actually is, and what does not take a person out of Islam. Replace this text."
 msgstr ""
 
-#: inc/analytics.php:112 inc/template-tags.php:57
+#: inc/analytics.php:112 inc/template-tags.php:88
 msgid "%d min read"
 msgid_plural "%d min read"
 msgstr[0] ""
@@ -543,7 +543,7 @@ msgstr ""
 msgid "Your message is sent by email to the people who run this site and is not stored here."
 msgstr ""
 
-#: inc/cpt-doubt.php:16 inc/template-tags.php:133
+#: inc/cpt-doubt.php:16 inc/template-tags.php:164
 msgid "Doubt"
 msgstr ""
 
@@ -639,7 +639,7 @@ msgstr ""
 msgid "Use this where an archived position needs framing for a reader who arrives at it today."
 msgstr ""
 
-#: inc/cpt-rebuttal.php:16 inc/template-tags.php:134
+#: inc/cpt-rebuttal.php:16 inc/template-tags.php:165
 msgid "Rebuttal"
 msgstr ""
 
@@ -703,7 +703,7 @@ msgstr ""
 msgid "Every option on this screen, explained."
 msgstr ""
 
-#: inc/docs.php:55 inc/settings-page.php:708 inc/settings-page.php:709
+#: inc/docs.php:55 inc/settings-page.php:757 inc/settings-page.php:758
 msgid "Reference"
 msgstr ""
 
@@ -727,7 +727,7 @@ msgstr ""
 msgid "What changed, when, and why."
 msgstr ""
 
-#: inc/docs.php:176 inc/settings-page.php:488
+#: inc/docs.php:176 inc/settings-page.php:538
 msgid "Documentation"
 msgstr ""
 
@@ -747,7 +747,7 @@ msgstr ""
 msgid "Page removed"
 msgstr ""
 
-#: inc/login.php:182 inc/template-tags.php:205
+#: inc/login.php:182 inc/template-tags.php:236
 msgid "murtadd"
 msgstr ""
 
@@ -915,11 +915,11 @@ msgstr ""
 msgid "Essays and notes from murtadd.org."
 msgstr ""
 
-#: inc/schema-graph.php:157 inc/settings-page.php:705 template-parts/rail/rail-single.php:22
+#: inc/schema-graph.php:157 inc/settings-page.php:754 template-parts/rail/rail-single.php:22
 msgid "Let there be no compulsion in religion."
 msgstr ""
 
-#: inc/schema-graph.php:158 inc/settings-page.php:709 template-parts/rail/rail-single.php:23
+#: inc/schema-graph.php:158 inc/settings-page.php:758 template-parts/rail/rail-single.php:23
 msgid "Qur’an 2:256"
 msgstr ""
 
@@ -1055,7 +1055,7 @@ msgstr ""
 msgid "Type and status"
 msgstr ""
 
-#: inc/security.php:1224 inc/settings-page.php:881
+#: inc/security.php:1224 inc/settings-page.php:930
 msgid "Author"
 msgstr ""
 
@@ -1139,7 +1139,7 @@ msgstr ""
 msgid "Sessions"
 msgstr ""
 
-#: inc/security.php:1279 inc/settings-page.php:940
+#: inc/security.php:1279 inc/settings-page.php:989
 msgid "Application passwords"
 msgstr ""
 
@@ -1315,7 +1315,7 @@ msgstr ""
 msgid "Colours"
 msgstr ""
 
-#: inc/settings-page.php:208 inc/settings-page.php:890
+#: inc/settings-page.php:208 inc/settings-page.php:939
 msgid "Profiles"
 msgstr ""
 
@@ -1343,633 +1343,637 @@ msgstr ""
 msgid "Theme Options sections"
 msgstr ""
 
-#: inc/settings-page.php:457
+#: inc/settings-page.php:458
+msgid "Open the %s tab"
+msgstr ""
+
+#: inc/settings-page.php:470
 msgid "Theme documentation"
 msgstr ""
 
-#: inc/settings-page.php:459
+#: inc/settings-page.php:472
 msgid "What each setting does"
 msgstr ""
 
-#: inc/settings-page.php:461
+#: inc/settings-page.php:474
 msgid "Setup guide"
 msgstr ""
 
-#: inc/settings-page.php:466
+#: inc/settings-page.php:479
 msgid "Murtadd %s"
 msgstr ""
 
-#: inc/settings-page.php:488
+#: inc/settings-page.php:538
 msgid "The theme's own manual, rendered from the markdown that ships inside it. There is no second copy to fall out of date."
 msgstr ""
 
-#: inc/settings-page.php:520
+#: inc/settings-page.php:569
 msgid "Save Changes"
 msgstr ""
 
-#: inc/settings-page.php:537
+#: inc/settings-page.php:586
 msgid "Setup complete."
 msgstr ""
 
-#: inc/settings-page.php:541
+#: inc/settings-page.php:590
 msgid "Site scaffolding"
 msgstr ""
 
-#: inc/settings-page.php:541
+#: inc/settings-page.php:590
 msgid "The theme creates these on activation. Upgrading the theme in place does not re-run that, so this button does it without switching themes away and back. It never overwrites: anything already present is left exactly as it is."
 msgstr ""
 
-#: inc/settings-page.php:547 inc/template-tags.php:137
+#: inc/settings-page.php:596 inc/template-tags.php:168
 msgid "Page"
 msgstr ""
 
-#: inc/settings-page.php:548
+#: inc/settings-page.php:597
 msgid "Status"
 msgstr ""
 
-#: inc/settings-page.php:561
+#: inc/settings-page.php:610
 msgid "Exists — edit"
 msgstr ""
 
-#: inc/settings-page.php:563
+#: inc/settings-page.php:612
 msgid "Missing"
 msgstr ""
 
-#: inc/settings-page.php:569
+#: inc/settings-page.php:618
 msgid "Footer menu"
 msgstr ""
 
-#: inc/settings-page.php:572
+#: inc/settings-page.php:621
 msgid "Assigned"
 msgstr ""
 
-#: inc/settings-page.php:574
+#: inc/settings-page.php:623
 msgid "Not assigned"
 msgstr ""
 
-#: inc/settings-page.php:580
+#: inc/settings-page.php:629
 msgid "Starter content"
 msgstr ""
 
-#: inc/settings-page.php:585
+#: inc/settings-page.php:634
 msgid "%1$d doubts, %2$d rebuttals"
 msgstr ""
 
-#: inc/settings-page.php:595
+#: inc/settings-page.php:644
 msgid "All present — view"
 msgstr ""
 
-#: inc/settings-page.php:601
+#: inc/settings-page.php:650
 msgid "%d entry missing"
 msgid_plural "%d entries missing"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/settings-page.php:610
+#: inc/settings-page.php:659
 msgid "Reading settings"
 msgstr ""
 
-#: inc/settings-page.php:613
+#: inc/settings-page.php:662
 msgid "Front page and posts page are set"
 msgstr ""
 
-#: inc/settings-page.php:615
+#: inc/settings-page.php:664
 msgid "Not fully set"
 msgstr ""
 
-#: inc/settings-page.php:623
+#: inc/settings-page.php:672
 msgid "The \"Start here\" button in the sidebar renders only when the start-here page exists. That is why it is absent right now."
 msgstr ""
 
-#: inc/settings-page.php:629
+#: inc/settings-page.php:678
 msgid "Create anything missing"
 msgstr ""
 
-#: inc/settings-page.php:633
+#: inc/settings-page.php:682
 msgid "New pages are published immediately with their copy written. Before announcing the site, send a test message through the form on the Contact page (it goes to the address on the Content tab, or the administration email), and check that the Privacy page still describes the site if you add plugins that collect data. Starter content is published as written and can be edited freely: nothing here ever overwrites a post that already exists, so editing a doubt and running this again will not undo the edit."
 msgstr ""
 
-#: inc/settings-page.php:643
+#: inc/settings-page.php:692
 msgid "Term management"
 msgstr ""
 
-#: inc/settings-page.php:643
+#: inc/settings-page.php:692
 msgid "Terms are managed on the native WordPress screens — nothing is duplicated here."
 msgstr ""
 
-#: inc/settings-page.php:646
+#: inc/settings-page.php:695
 msgid "Manage Topics →"
 msgstr ""
 
-#: inc/settings-page.php:647
+#: inc/settings-page.php:696
 msgid "Manage Schools →"
 msgstr ""
 
-#: inc/settings-page.php:648
+#: inc/settings-page.php:697
 msgid "Doubt categories are locked — four fixed terms power the homepage grid."
 msgstr ""
 
-#: inc/settings-page.php:662
+#: inc/settings-page.php:711
 msgid "Short response word cap"
 msgstr ""
 
-#: inc/settings-page.php:665
+#: inc/settings-page.php:714
 msgid "Soft cap. The doubt editor shows a live word count and warns past this — it never blocks saving."
 msgstr ""
 
-#: inc/settings-page.php:669
+#: inc/settings-page.php:718
 msgid "\"If you are struggling\" notice"
 msgstr ""
 
-#: inc/settings-page.php:673
+#: inc/settings-page.php:722
 msgid "Show on Emotional and Identity doubt pages"
 msgstr ""
 
-#: inc/settings-page.php:674
+#: inc/settings-page.php:723
 msgid "A quiet crisis-support block. No tracking, no preaching."
 msgstr ""
 
-#: inc/settings-page.php:678
+#: inc/settings-page.php:727
 msgid "Reading aids"
 msgstr ""
 
-#: inc/settings-page.php:680
+#: inc/settings-page.php:729
 msgid "Breadcrumbs"
 msgstr ""
 
-#: inc/settings-page.php:684
+#: inc/settings-page.php:733
 msgid "Show the trail above entries, pages and archives"
 msgstr ""
 
-#: inc/settings-page.php:685
+#: inc/settings-page.php:734
 msgid "The same trail is given to search engines as a BreadcrumbList. With Rank Math's breadcrumbs switched on, Rank Math's trail is shown instead."
 msgstr ""
 
-#: inc/settings-page.php:688
+#: inc/settings-page.php:737
 msgid "Glossary of terms"
 msgstr ""
 
-#: inc/settings-page.php:692
+#: inc/settings-page.php:741
 msgid "Define Arabic and Malay terms where they first appear"
 msgstr ""
 
-#: inc/settings-page.php:693
+#: inc/settings-page.php:742
 msgid "The first mention of a term on a page gets a short definition and its source, shown on hover, focus or tap. Never on Emotional or Identity doubts."
 msgstr ""
 
-#: inc/settings-page.php:695
+#: inc/settings-page.php:744
 msgid "Scripture box"
 msgstr ""
 
-#: inc/settings-page.php:700
+#: inc/settings-page.php:749
 msgid "Show the scripture box in the rail on doubt and rebuttal pages"
 msgstr ""
 
-#: inc/settings-page.php:704
+#: inc/settings-page.php:753
 msgid "Verse"
 msgstr ""
 
-#: inc/settings-page.php:705
+#: inc/settings-page.php:754
 msgid "The verse, in whichever rendering you prefer"
 msgstr ""
 
-#: inc/settings-page.php:712
+#: inc/settings-page.php:761
 msgid "Choose the rendering yourself. The wording of a translation is an editorial decision and belongs to you, not to the theme."
 msgstr ""
 
-#: inc/settings-page.php:718 inc/settings-page.php:730
+#: inc/settings-page.php:767 inc/settings-page.php:779
 msgid "Fatwa index default sort"
 msgstr ""
 
-#: inc/settings-page.php:718
+#: inc/settings-page.php:767
 msgid "The order the fatwa index opens in. Readers can still re-sort it."
 msgstr ""
 
-#: inc/settings-page.php:721
+#: inc/settings-page.php:770
 msgid "Scholar A–Z"
 msgstr ""
 
-#: inc/settings-page.php:721
+#: inc/settings-page.php:770
 msgid "By the scholar or body, alphabetically."
 msgstr ""
 
-#: inc/settings-page.php:722
+#: inc/settings-page.php:771
 msgid "Earliest positions first."
 msgstr ""
 
-#: inc/settings-page.php:723
+#: inc/settings-page.php:772
 msgid "Newest entries first."
 msgstr ""
 
-#: inc/settings-page.php:745
+#: inc/settings-page.php:794
 msgid "Contact and footer"
 msgstr ""
 
-#: inc/settings-page.php:746
+#: inc/settings-page.php:795
 msgid "Contact form recipient"
 msgstr ""
 
-#: inc/settings-page.php:749
+#: inc/settings-page.php:798
 msgid "Where messages from the contact form ([murtadd_contact]) are sent. Leave empty to use the administration email address under Settings, General. The address is never shown on the site."
 msgstr ""
 
-#: inc/settings-page.php:752
+#: inc/settings-page.php:801
 msgid "Footer heritage note"
 msgstr ""
 
-#: inc/settings-page.php:767
+#: inc/settings-page.php:816
 msgid "Compelling Evidence"
 msgstr ""
 
-#: inc/settings-page.php:767
+#: inc/settings-page.php:816
 msgid "The companion site that builds the positive case."
 msgstr ""
 
-#: inc/settings-page.php:768
+#: inc/settings-page.php:817
 msgid "Evidential case base URL"
 msgstr ""
 
-#: inc/settings-page.php:771
+#: inc/settings-page.php:820
 msgid "Used by the homepage \"full argument\" card and doubt pages' outbound deep links. Cleared = links hidden."
 msgstr ""
 
-#: inc/settings-page.php:775
+#: inc/settings-page.php:824
 msgid "Counterpart link"
 msgstr ""
 
-#: inc/settings-page.php:779
+#: inc/settings-page.php:828
 msgid "Show the counterpart link"
 msgstr ""
 
-#: inc/settings-page.php:780
+#: inc/settings-page.php:829
 msgid "On doubts and rebuttals that name a Compelling Evidence article, an aside links to it at the evidential case base URL above (/articles/slug/). On by default."
 msgstr ""
 
-#: inc/settings-page.php:783
+#: inc/settings-page.php:832
 msgid "Starting-point card"
 msgstr ""
 
-#: inc/settings-page.php:787
+#: inc/settings-page.php:836
 msgid "Show the \"Not sure where to start?\" card"
 msgstr ""
 
-#: inc/settings-page.php:788
+#: inc/settings-page.php:837
 msgid "On the home page and the Start Here page, a card links to the Compelling Evidence quiz at the evidential case base URL above (/quiz/?from=murtadd). It opens in the same tab. On by default."
 msgstr ""
 
-#: inc/settings-page.php:792
+#: inc/settings-page.php:841
 msgid "Polemics"
 msgstr ""
 
-#: inc/settings-page.php:793
+#: inc/settings-page.php:842
 msgid "Polemics base URL"
 msgstr ""
 
-#: inc/settings-page.php:796
+#: inc/settings-page.php:845
 msgid "All outbound links open in a new tab with rel=\"noopener\". No relationship is stated on the frontend."
 msgstr ""
 
-#: inc/settings-page.php:808
+#: inc/settings-page.php:857
 msgid "Links in the running text"
 msgstr ""
 
-#: inc/settings-page.php:808
+#: inc/settings-page.php:857
 msgid "In the running text of a single entry, the first mention of a known phrase links to the page that treats it, on this site or on one of the six sister sites. Links are added as the page renders; stored text is never changed. Headings, quotations, Qur’anic text, Arabic, sources and existing links are never touched, and Emotional and Identity doubts get no links at all."
 msgstr ""
 
-#: inc/settings-page.php:810
+#: inc/settings-page.php:859
 msgid "Links to this site"
 msgstr ""
 
-#: inc/settings-page.php:814
+#: inc/settings-page.php:863
 msgid "Link phrases to other doubts and rebuttals here"
 msgstr ""
 
-#: inc/settings-page.php:816
+#: inc/settings-page.php:865
 msgid "At most, to this site"
 msgstr ""
 
-#: inc/settings-page.php:817
+#: inc/settings-page.php:866
 msgid "a page (0 to 15)"
 msgstr ""
 
-#: inc/settings-page.php:820
+#: inc/settings-page.php:869
 msgid "Links to sister sites"
 msgstr ""
 
-#: inc/settings-page.php:824
+#: inc/settings-page.php:873
 msgid "Link phrases to the page on a sister site that treats them"
 msgstr ""
 
-#: inc/settings-page.php:826
+#: inc/settings-page.php:875
 msgid "At most, to sister sites"
 msgstr ""
 
-#: inc/settings-page.php:827
+#: inc/settings-page.php:876
 msgid "a page (0 to 10)"
 msgstr ""
 
-#: inc/settings-page.php:831
+#: inc/settings-page.php:880
 msgid "Phrases"
 msgstr ""
 
-#: inc/settings-page.php:832
+#: inc/settings-page.php:881
 msgid "Extra phrases"
 msgstr ""
 
-#: inc/settings-page.php:834
+#: inc/settings-page.php:883
 msgid "tudung | /rebuttals/the-head-cover-and-modesty/"
 msgstr ""
 
-#: inc/settings-page.php:835
+#: inc/settings-page.php:884
 msgid "One per line: phrase | address. A path such as /rebuttals/slug/ is this site; a full address must be on one of the sister sites. These are tried before the shared list, so they win. Lines in any other shape are dropped on save."
 msgstr ""
 
-#: inc/settings-page.php:838
+#: inc/settings-page.php:887
 msgid "Never link on"
 msgstr ""
 
-#: inc/settings-page.php:841
+#: inc/settings-page.php:890
 msgid "Slugs of entries or pages that get no contextual links, one per line."
 msgstr ""
 
-#: inc/settings-page.php:854
+#: inc/settings-page.php:903
 msgid "Accent colours"
 msgstr ""
 
-#: inc/settings-page.php:854
+#: inc/settings-page.php:903
 msgid "Used for links, buttons, and the sidebar. Applied via wp_add_inline_style."
 msgstr ""
 
-#: inc/settings-page.php:858
+#: inc/settings-page.php:907
 msgid "Accent colour"
 msgstr ""
 
-#: inc/settings-page.php:862
+#: inc/settings-page.php:911
 msgid "Accent tint"
 msgstr ""
 
-#: inc/settings-page.php:867
+#: inc/settings-page.php:916
 msgid "Contrast check"
 msgstr ""
 
-#: inc/settings-page.php:881
+#: inc/settings-page.php:930
 msgid "A link for any platform the author is on. Every URL entered here does two jobs at once: it appears as an icon in the site footer, and it is emitted as a sameAs entry on the author in the structured data, so search engines and AI systems can connect this site to the same person elsewhere. Leave a field blank and it appears in neither place."
 msgstr ""
 
-#: inc/settings-page.php:882
+#: inc/settings-page.php:931
 msgid "Author name"
 msgstr ""
 
-#: inc/settings-page.php:885
+#: inc/settings-page.php:934
 msgid "The person these profiles belong to. Named as the author in the structured data, with the links below as their sameAs set. Leave blank to attribute everything to the site instead."
 msgstr ""
 
-#: inc/settings-page.php:915
+#: inc/settings-page.php:964
 msgid "Hardening"
 msgstr ""
 
-#: inc/settings-page.php:915
+#: inc/settings-page.php:964
 msgid "The site at this address was compromised in 2024. These switches close what WordPress leaves open by default. Each is independent."
 msgstr ""
 
-#: inc/settings-page.php:917
+#: inc/settings-page.php:966
 msgid "Author names"
 msgstr ""
 
-#: inc/settings-page.php:921
+#: inc/settings-page.php:970
 msgid "Keep account names private"
 msgstr ""
 
-#: inc/settings-page.php:922
+#: inc/settings-page.php:971
 msgid "Closes the REST user list, ?author= addresses and author archives, and the users sitemap. Feeds and embeds name the author from the Profiles tab, or the site."
 msgstr ""
 
-#: inc/settings-page.php:924
+#: inc/settings-page.php:973
 msgid "XML-RPC"
 msgstr ""
 
-#: inc/settings-page.php:929
+#: inc/settings-page.php:978
 msgid "Switch XML-RPC off"
 msgstr ""
 
-#: inc/settings-page.php:930
+#: inc/settings-page.php:979
 msgid "The endpoint password-guessing scripts use: xmlrpc.php answers 403 and the pingback header goes. On Apache the theme also blocks xmlrpc.php in .htaccess, and removes that block when this is switched off. Leave XML-RPC on only if you publish from the WordPress mobile app or Jetpack."
 msgstr ""
 
-#: inc/settings-page.php:934
+#: inc/settings-page.php:983
 msgid "The web server also refuses xmlrpc.php: the theme keeps a \"Block xmlrpc.php\" section in .htaccess and repairs it if it goes missing."
 msgstr ""
 
-#: inc/settings-page.php:936
+#: inc/settings-page.php:985
 msgid "The theme could not write .htaccess (the server is not Apache, or the file is read-only). WordPress still refuses xmlrpc.php; ask the host to deny it at the server as well."
 msgstr ""
 
-#: inc/settings-page.php:944
+#: inc/settings-page.php:993
 msgid "Turn off application passwords"
 msgstr ""
 
-#: inc/settings-page.php:945
+#: inc/settings-page.php:994
 msgid "Stored application passwords stop working at once. Revoke them as well, below, so they cannot return if this is switched off."
 msgstr ""
 
-#: inc/settings-page.php:948
+#: inc/settings-page.php:997
 msgid "REST API changes"
 msgstr ""
 
-#: inc/settings-page.php:952
+#: inc/settings-page.php:1001
 msgid "Allow REST API changes only from a logged-in browser"
 msgstr ""
 
-#: inc/settings-page.php:953
+#: inc/settings-page.php:1002
 msgid "Any logged-in request that creates, changes or deletes content must come from a browser session on this site with a valid nonce. Basic authentication and passwords sent in a header are refused. Reading through the API, the contact form and anything a visitor sends are unchanged."
 msgstr ""
 
-#: inc/settings-page.php:956
+#: inc/settings-page.php:1005
 msgid "Security headers"
 msgstr ""
 
-#: inc/settings-page.php:960
+#: inc/settings-page.php:1009
 msgid "Send security headers on every page"
 msgstr ""
 
-#: inc/settings-page.php:961
+#: inc/settings-page.php:1010
 msgid "X-Content-Type-Options, Referrer-Policy, X-Frame-Options and Permissions-Policy. A header the server already sends is left alone."
 msgstr ""
 
-#: inc/settings-page.php:965
+#: inc/settings-page.php:1014
 msgid "Spam"
 msgstr ""
 
-#: inc/settings-page.php:967
+#: inc/settings-page.php:1016
 msgid "Spam gate"
 msgstr ""
 
-#: inc/settings-page.php:971
+#: inc/settings-page.php:1020
 msgid "Hold suspected gambling spam as Pending"
 msgstr ""
 
-#: inc/settings-page.php:972
+#: inc/settings-page.php:1021
 msgid "A post, page, doubt, rebuttal, fatwa, letter or guide whose title, address or text reads as casino or betting spam is saved as Pending, never published, and logged below. So is anything published from outside the editor (XML-RPC, or REST without a browser session). Starter content is exempt."
 msgstr ""
 
-#: inc/settings-page.php:974
+#: inc/settings-page.php:1023
 msgid "Removed spam"
 msgstr ""
 
-#: inc/settings-page.php:979
+#: inc/settings-page.php:1028
 msgid "Answer 410 Gone on the address of removed spam"
 msgstr ""
 
-#: inc/settings-page.php:980
+#: inc/settings-page.php:1029
 msgid "Search engines drop a 410 address faster than a 404 one. Only addresses of spam moved to the trash from this tab are affected."
 msgstr ""
 
-#: inc/settings-page.php:983
+#: inc/settings-page.php:1032
 msgid "MURTADD_SECURITY_LOCK is false in wp-config.php, so the XML-RPC, application password and REST switches are off whatever they show."
 msgstr ""
 
-#: inc/settings-page.php:988
+#: inc/settings-page.php:1037
 msgid "Login"
 msgstr ""
 
-#: inc/settings-page.php:989
+#: inc/settings-page.php:1038
 msgid "Private login address"
 msgstr ""
 
-#: inc/settings-page.php:993
+#: inc/settings-page.php:1042
 msgid "leave empty to keep wp-login.php"
 msgstr ""
 
-#: inc/settings-page.php:996
+#: inc/settings-page.php:1045
 msgid "Write the address down before saving."
 msgstr ""
 
-#: inc/settings-page.php:996
+#: inc/settings-page.php:1045
 msgid "Once set, wp-login.php and wp-admin show a page not found to anyone not logged in. Off while the field is empty."
 msgstr ""
 
-#: inc/settings-page.php:997
+#: inc/settings-page.php:1046
 msgid "Locked out? Add define( 'MURTADD_HIDE_LOGIN', false ); to wp-config.php, log in at wp-login.php, clear this field, then remove the line."
 msgstr ""
 
-#: inc/settings-page.php:1000
+#: inc/settings-page.php:1049
 msgid "Inactive: MURTADD_HIDE_LOGIN is false in wp-config.php, or the WPS Hide Login plugin is handling the login address."
 msgstr ""
 
-#: inc/settings-page.php:1005
+#: inc/settings-page.php:1054
 msgid "Your login address: %s"
 msgstr ""
 
-#: inc/settings-page.php:1012
+#: inc/settings-page.php:1061
 msgid "Login page"
 msgstr ""
 
-#: inc/settings-page.php:1016
+#: inc/settings-page.php:1065
 msgid "Dress the login screen in the site's colours and type"
 msgstr ""
 
-#: inc/settings-page.php:1017
+#: inc/settings-page.php:1066
 msgid "A green brand panel beside a rounded form card, on every login screen (log in, lost password, reset, register). The mark is the custom logo, then the Site Icon, then the theme's own mark, and links to the site. The accents follow the Colours tab. Works at the private login address too."
 msgstr ""
 
-#: inc/settings-page.php:1019
+#: inc/settings-page.php:1068
 msgid "Note above the form"
 msgstr ""
 
-#: inc/settings-page.php:1022
+#: inc/settings-page.php:1071
 msgid "Plain text, up to 500 characters, shown on the log-in screen only. Leave empty for none."
 msgstr ""
 
-#: inc/settings-page.php:1025
+#: inc/settings-page.php:1074
 msgid "Line on the brand panel"
 msgstr ""
 
-#: inc/settings-page.php:1028
+#: inc/settings-page.php:1077
 msgid "Plain text, up to 160 characters, beside the form on wide screens and above it on phones. Leave empty to use the site tagline."
 msgstr ""
 
-#: inc/settings-page.php:1032
+#: inc/settings-page.php:1081
 msgid "Privacy note"
 msgstr ""
 
-#: inc/settings-page.php:1036
+#: inc/settings-page.php:1085
 msgid "Show a privacy note under the log-in, lost-password and registration forms"
 msgstr ""
 
-#: inc/settings-page.php:1045
+#: inc/settings-page.php:1094
 msgid "Outages"
 msgstr ""
 
-#: inc/settings-page.php:1047
+#: inc/settings-page.php:1096
 msgid "Maintenance mode"
 msgstr ""
 
-#: inc/settings-page.php:1051
+#: inc/settings-page.php:1100
 msgid "Show visitors the \"Back shortly\" page"
 msgstr ""
 
-#: inc/settings-page.php:1052
+#: inc/settings-page.php:1101
 msgid "Visitors get the maintenance page with a 503, so search engines keep the pages and come back. Anyone who can change these options still sees the site, and the admin bar says maintenance is on. The login screen stays open."
 msgstr ""
 
-#: inc/settings-page.php:1055
+#: inc/settings-page.php:1104
 msgid "Error pages"
 msgstr ""
 
-#: inc/settings-page.php:1059
+#: inc/settings-page.php:1108
 msgid "Use the branded pages for updates, PHP errors and database errors"
 msgstr ""
 
-#: inc/settings-page.php:1060
+#: inc/settings-page.php:1109
 msgid "The theme writes maintenance.php, php-error.php and db-error.php into wp-content, where WordPress looks for them, and never overwrites a file it did not write. Switching this off, or switching theme, removes its copies."
 msgstr ""
 
-#: inc/settings-page.php:1064
+#: inc/settings-page.php:1113
 msgid "Removed for good (410)"
 msgstr ""
 
-#: inc/settings-page.php:1065
+#: inc/settings-page.php:1114
 msgid "Addresses"
 msgstr ""
 
-#: inc/settings-page.php:1068
+#: inc/settings-page.php:1117
 msgid "Addresses that never belonged to this site, such as spam pages left by the 2024 compromise, answered 410 Gone so search engines drop them. One per line: an exact path (/cheap-pills/), or a prefix ending in * (/shop/* covers /shop/ and everything under it). Applies only where the site has no page: a live page, and any old address the legacy redirects recover, are never touched. \"/\" and \"/*\" alone are refused."
 msgstr ""
 
-#: inc/settings-page.php:1080
+#: inc/settings-page.php:1129
 msgid "Written by the theme"
 msgstr ""
 
-#: inc/settings-page.php:1081
+#: inc/settings-page.php:1130
 msgid "Another file is there; left alone"
 msgstr ""
 
-#: inc/settings-page.php:1082
+#: inc/settings-page.php:1131
 msgid "Could not be written: wp-content is not writable"
 msgstr ""
 
-#: inc/settings-page.php:1084
+#: inc/settings-page.php:1133
 msgid "Error pages in wp-content"
 msgstr ""
 
-#: inc/settings-page.php:1087
+#: inc/settings-page.php:1136
 msgid "The error pages were written again."
 msgstr ""
 
-#: inc/settings-page.php:1092
+#: inc/settings-page.php:1141
 msgid "File"
 msgstr ""
 
-#: inc/settings-page.php:1093
+#: inc/settings-page.php:1142
 msgid "State"
 msgstr ""
 
-#: inc/settings-page.php:1110
+#: inc/settings-page.php:1159
 msgid "Not there"
 msgstr ""
 
-#: inc/settings-page.php:1119
+#: inc/settings-page.php:1168
 msgid "Write the error pages now"
 msgstr ""
 
@@ -2023,27 +2027,27 @@ msgstr ""
 msgid "Schools"
 msgstr ""
 
-#: inc/template-tags.php:85
+#: inc/template-tags.php:116
 msgid "online since 2004"
 msgstr ""
 
-#: inc/template-tags.php:165
+#: inc/template-tags.php:196
 msgid "Awaiting moderation."
 msgstr ""
 
-#: inc/template-tags.php:303
+#: inc/template-tags.php:334
 msgid "Last reviewed"
 msgstr ""
 
-#: inc/template-tags.php:312
+#: inc/template-tags.php:343
 msgid "Published"
 msgstr ""
 
-#: inc/template-tags.php:353
+#: inc/template-tags.php:384
 msgid "More %s doubts"
 msgstr ""
 
-#: inc/template-tags.php:566 inc/template-tags.php:574
+#: inc/template-tags.php:597 inc/template-tags.php:605
 msgid "Breadcrumb"
 msgstr ""
 

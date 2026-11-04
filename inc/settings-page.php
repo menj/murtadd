@@ -431,25 +431,38 @@ function murtadd_render_settings_page() {
 
 		<?php
 		/*
-		 * The tool forms on the Setup, Security and Upkeep tabs print
-		 * wp_nonce_field() and submit_button(), which repeat the ids
-		 * "_wpnonce", "_wp_http_referer" and "submit" in every form. With every
-		 * panel on one page those ids would collide, and nothing refers to
-		 * them, so they are dropped from the printed markup. The fields keep
-		 * their names, which is all the handlers read.
+		 * Only the active tab's panel is rendered here, so only its queries
+		 * run (the Security tools and the Setup counts are the heavy ones).
+		 * The other panels are empty shells: the script fetches a panel the
+		 * first time its tab is chosen, and without the script each shell
+		 * holds a link to its tab's own address.
 		 */
-		ob_start();
-		foreach ( array_keys( $tabs ) as $slug ) {
+		$murtadd_doc = isset( $_GET['doc'] ) ? sanitize_key( wp_unslash( $_GET['doc'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display only.
+		foreach ( $tabs as $slug => $tab ) {
 			$is_active = $active === $slug;
 			printf(
-				'<section class="murtadd-admin-panel" id="murtadd-panel-%1$s" role="tabpanel" aria-labelledby="murtadd-tab-%1$s" tabindex="0"%2$s>',
+				'<section class="murtadd-admin-panel" id="murtadd-panel-%1$s" role="tabpanel" aria-labelledby="murtadd-tab-%1$s" tabindex="0"%2$s%3$s>',
 				esc_attr( $slug ),
-				$is_active ? '' : ' hidden'
+				$is_active ? '' : ' hidden',
+				$is_active ? '' : ' data-murtadd-lazy="1"'
 			);
-			murtadd_render_settings_panel( $slug );
+			if ( $is_active ) {
+				echo murtadd_settings_panel_html( $slug, $murtadd_doc ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- every part escaped where it was printed.
+			} else {
+				printf(
+					'<p class="murtadd-admin-panel__loading"><a href="%s">%s</a></p>',
+					esc_url( murtadd_settings_tab_url( $slug ) ),
+					esc_html(
+						sprintf(
+							/* translators: %s: tab label */
+							__( 'Open the %s tab', 'murtadd' ),
+							$tab['label']
+						)
+					)
+				);
+			}
 			echo '</section>';
 		}
-		echo preg_replace( '/\sid="(?:_wpnonce|_wp_http_referer|submit)"/', '', (string) ob_get_clean() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- every part escaped where it was printed.
 		?>
 
 		<footer class="murtadd-admin-footer">
@@ -472,11 +485,48 @@ function murtadd_render_settings_page() {
 }
 
 /**
+ * One panel's markup, as a string.
+ *
+ * The tool forms on the Setup, Security and Upkeep tabs print
+ * wp_nonce_field() and submit_button(), which give every form the ids
+ * "_wpnonce", "_wp_http_referer" and "submit". Panels loaded into the same
+ * page would repeat them, and nothing refers to them, so they are dropped.
+ * The fields keep their names, which is all the handlers read.
+ *
+ * @param string $slug Tab key.
+ * @param string $doc  Docs tab: the document to show.
+ * @return string
+ */
+function murtadd_settings_panel_html( $slug, $doc = '' ) {
+	ob_start();
+	murtadd_render_settings_panel( $slug, $doc );
+	return (string) preg_replace( '/\sid="(?:_wpnonce|_wp_http_referer|submit)"/', '', (string) ob_get_clean() );
+}
+
+/**
+ * AJAX: one inactive panel, the first time its tab is chosen.
+ */
+function murtadd_ajax_settings_panel() {
+	check_ajax_referer( 'murtadd_settings_panel', 'nonce' );
+	if ( ! current_user_can( 'manage_options' ) ) {
+		wp_send_json_error( null, 403 );
+	}
+	$slug = isset( $_POST['tab'] ) ? sanitize_key( wp_unslash( $_POST['tab'] ) ) : '';
+	if ( ! isset( murtadd_settings_tabs()[ $slug ] ) ) {
+		wp_send_json_error( null, 400 );
+	}
+	$doc = isset( $_POST['doc'] ) ? sanitize_key( wp_unslash( $_POST['doc'] ) ) : '';
+	wp_send_json_success( array( 'html' => murtadd_settings_panel_html( $slug, $doc ) ) );
+}
+add_action( 'wp_ajax_murtadd_settings_panel', 'murtadd_ajax_settings_panel' );
+
+/**
  * One tab's panel content.
  *
  * @param string $slug Tab key.
+ * @param string $doc  Docs tab: the document to show.
  */
-function murtadd_render_settings_panel( $slug ) {
+function murtadd_render_settings_panel( $slug, $doc = '' ) {
 	switch ( $slug ) {
 		case 'setup':
 			murtadd_render_setup_tab();
@@ -486,8 +536,7 @@ function murtadd_render_settings_panel( $slug ) {
 			return;
 		case 'docs':
 			murtadd_admin_card_open( __( 'Documentation', 'murtadd' ), __( 'The theme\'s own manual, rendered from the markdown that ships inside it. There is no second copy to fall out of date.', 'murtadd' ), 'book' );
-			$murtadd_doc = isset( $_GET['doc'] ) ? sanitize_key( wp_unslash( $_GET['doc'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display only.
-			murtadd_docs_render_tab( $murtadd_doc );
+			murtadd_docs_render_tab( sanitize_key( (string) $doc ) );
 			murtadd_admin_card_close();
 			return;
 	}

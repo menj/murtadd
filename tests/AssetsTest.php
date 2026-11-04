@@ -106,4 +106,37 @@ final class AssetsTest extends TestCase {
 		$this->assertMatchesRegularExpression( "/add_filter\\(\\s*'frontpage_template',\\s*'murtadd_front_page_template'/", $php );
 		$this->assertStringContainsString( "'posts' === get_option( 'show_on_front' ) ? '' : \$template", $php );
 	}
+
+	/** Only the active panel renders on load; the rest load once, over admin-ajax, behind a nonce. */
+	public function test_inactive_panels_load_lazily() {
+		$php = (string) file_get_contents( dirname( __DIR__ ) . '/inc/settings-page.php' );
+		$this->assertStringContainsString( 'data-murtadd-lazy', $php );
+		$this->assertStringContainsString( "add_action( 'wp_ajax_murtadd_settings_panel', 'murtadd_ajax_settings_panel' )", $php );
+		$this->assertStringContainsString( "check_ajax_referer( 'murtadd_settings_panel', 'nonce' )", $php );
+		foreach ( array( 'settings-tabs.js', 'settings-tabs.min.js' ) as $file ) {
+			$js = (string) file_get_contents( dirname( __DIR__ ) . '/assets/js/' . $file );
+			$this->assertStringContainsString( 'murtadd_settings_panel', $js, $file );
+			$this->assertDoesNotMatchRegularExpression( '/\\[\\s*[\'"]doc[\'"]\\s*,\\s*[\'"]settings-updated/', $js, $file . ' must not drop ?doc=.' );
+		}
+	}
+
+	/** The footer sits outside <main>, in one contentinfo, on every view. */
+	public function test_footer_is_outside_main() {
+		$root   = dirname( __DIR__ );
+		$header = (string) file_get_contents( $root . '/header.php' );
+		$footer = (string) file_get_contents( $root . '/footer.php' );
+		$front  = (string) file_get_contents( $root . '/front-page.php' );
+		$this->assertStringNotContainsString( '</main>', $footer );
+		$this->assertStringContainsString( 'murtadd_open_site_footer()', $footer );
+		$this->assertLessThan( strpos( $front, 'murtadd-footer-columns' ), strpos( $front, 'murtadd_open_site_footer()' ) );
+		$this->assertStringNotContainsString( '<footer', $front );
+		$this->assertStringContainsString( '<main id="murtadd-content"', $header );
+		ob_start();
+		murtadd_open_site_footer();
+		murtadd_open_site_footer();
+		$out = (string) ob_get_clean();
+		$this->assertSame( 1, substr_count( $out, '</main>' ) );
+		$this->assertSame( 1, substr_count( $out, '<footer class="murtadd-site-footer">' ) );
+		$this->assertStringContainsString( '! ( is_front_page() && ! is_home() )', $footer );
+	}
 }

@@ -6,7 +6,7 @@ The owner's upgrade rules of 2026-11-04, applied in priority order: security, st
 
 ### Theme Options
 - Rebuilt to the owner's admin design system. Cards and field rows replace `form-table`. Booleans are toggle switches, the contextual-link caps are range sliders with a live value, the fatwa sort is three radio cards, and the accents use `wp-color-picker` in a grid. The layout stacks below 782 pixels and the tab row scrolls sideways.
-- All panels render on one page. The tabs are an ARIA tab list: arrow keys, Home and End move between them, no reload, and the address keeps `?tab=`. Without JavaScript each tab is a plain link.
+- Only the active panel renders on load, so only its queries run. Another panel is fetched once over admin-ajax (nonce, `manage_options`) when its tab is first chosen; `security.js` binds its tools on the `murtadd:panel` event. The tabs are an ARIA tab list: arrow keys, Home and End move between them, no reload, and the address keeps `?tab=` and the Docs `?doc=`. Without JavaScript each tab is a plain link.
 - Each tab still posts to `options.php` with its own group. `murtadd_settings_form_fields()` prints the fields `settings_fields()` would, without ids, and with the tab's own address as the referer, so a save lands back on its tab. Option keys, sanitisers and saved values are unchanged; a save of every untouched form left every option as it was.
 - The screen calls `settings_errors()`. Core prints settings messages only on Settings screens, so the refused-login-address error had never been shown.
 - The assets load on the hook suffix `add_theme_page()` returns (`murtadd_settings_hook()`). The Security tab's script now loads on the screen whatever tab opened it.
@@ -15,6 +15,8 @@ The owner's upgrade rules of 2026-11-04, applied in priority order: security, st
 
 ### Elsewhere
 - `<main>` takes `tabindex="-1"`, so the skip link moves focus into it.
+- `<main>` closes before the footer. It used to wrap the footer bar, which then lost its contentinfo landmark. `<div class="murtadd-main">` is the column, and `murtadd_open_site_footer()` closes `<main>` and opens one `<footer class="murtadd-site-footer">` for the front page's columns and the bar. axe on 7 views at 1280 and 375 pixels: no new violations.
+- With the latest posts on the front page, the footer bar shows the Journal and secondary links. It hid them on every front page, though only `front-page.php` prints the columns that carry them.
 - `frontpage_template` gives way to `home.php` when Settings, Reading shows the latest posts.
 - JSON-LD is encoded with `JSON_HEX_TAG`, so "</script>" in a title cannot end the block.
 - The missing-pages notice has a Dismiss link (nonce, `manage_options`), stored per user against the set of missing pages. The attack notice is dismissible.

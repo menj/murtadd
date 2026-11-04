@@ -1,7 +1,9 @@
 <?php
 /**
  * Footer — slim bar on inner pages. front-page.php prints its own
- * four-column footer section before including this.
+ * four-column footer section before including this. Both sit in one
+ * <footer class="murtadd-site-footer">, outside <main>, which
+ * murtadd_open_site_footer() closes first: the page has one contentinfo.
  *
  * The Journal link and the secondary links (About / FAQ / Contact / Privacy)
  * live here. The secondary links stay out of the sidebar, which is the triage
@@ -12,11 +14,17 @@
  */
 
 defined( 'ABSPATH' ) || exit;
+murtadd_open_site_footer();
 ?>
-	<footer class="murtadd-footer-bar">
+	<div class="murtadd-footer-bar">
 		<span class="murtadd-footer-copy"><?php echo esc_html( '© ' . wp_parse_url( home_url(), PHP_URL_HOST ) ); ?> · <?php esc_html_e( 'share with attribution', 'murtadd' ); ?></span>
 
-		<?php if ( ! is_front_page() ) : ?>
+		<?php
+		// Hidden only where front-page.php prints the four footer columns,
+		// which carry these links. With Reading set to latest posts the front
+		// page is the posts index (home.php), which has no columns.
+		if ( ! ( is_front_page() && ! is_home() ) ) :
+			?>
 			<nav class="murtadd-footer-links" aria-label="<?php esc_attr_e( 'Secondary', 'murtadd' ); ?>">
 				<ul class="murtadd-secondary-list murtadd-footer-journal">
 					<li><a href="<?php echo esc_url( murtadd_journal_url() ); ?>"><?php esc_html_e( 'Journal', 'murtadd' ); ?></a></li>
@@ -51,8 +59,9 @@ defined( 'ABSPATH' ) || exit;
 		<?php endif; ?>
 
 		<span class="murtadd-footer-heritage"><?php murtadd_the_heritage_note(); ?></span>
-	</footer>
-	</main><!-- .murtadd-main -->
+	</div>
+	</footer><!-- .murtadd-site-footer -->
+	</div><!-- .murtadd-main -->
 </div><!-- .murtadd-shell -->
 <?php wp_footer(); ?>
 </body>

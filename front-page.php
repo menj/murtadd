@@ -54,7 +54,8 @@ if ( $murtadd_ce || $murtadd_bismika ) :
 	</section>
 <?php endif; ?>
 
-<footer class="murtadd-footer-columns">
+<?php murtadd_open_site_footer(); ?>
+<div class="murtadd-footer-columns">
 	<div class="murtadd-footer-col murtadd-footer-about">
 		<?php murtadd_the_logo( 'on-light', false ); ?>
 		<p><?php echo esc_html( get_bloginfo( 'description' ) ); ?></p>
@@ -97,6 +98,6 @@ if ( $murtadd_ce || $murtadd_bismika ) :
 			?>
 		</div>
 	<?php endif; ?>
-</footer>
+</div>
 
 <?php get_footer(); ?>

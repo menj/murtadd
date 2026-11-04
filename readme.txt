@@ -85,8 +85,9 @@ Bundled resources:
 = 1.53.0 =
 * Theme Options is rebuilt as cards with tabs. The tabs switch without a reload and work from the keyboard. Booleans are toggle switches, the link caps are sliders that show their value, the fatwa sort is three cards, and the accents use WordPress's colour picker. Every option key and saved value is unchanged.
 * A refused login address now shows its error after saving. The screen never printed settings messages before.
-* The skip link moves focus into the page content.
-* With "Your latest posts" chosen under Settings, Reading, the front page shows the posts.
+* The skip link moves focus into the page content, and the footer sits outside the main content, as its own landmark.
+* Theme Options builds only the tab you open. Other tabs load when you choose them.
+* With "Your latest posts" chosen under Settings, Reading, the front page shows the posts, with the footer links.
 * The structured data escapes "<" and ">", so text in a title cannot close its script tag.
 * The missing-pages notice can be dismissed, and the security warning can be closed.
 * The contrast check's messages are translatable, and languages/murtadd.pot is regenerated.
@@ -132,4 +133,4 @@ See docs/changelog.md for earlier releases.
 Theme Options has a new layout. Settings keep their values; nothing needs doing.
 
 == Data removal ==
-WordPress does not execute an uninstall routine for themes. If the theme is removed permanently, delete these options manually (WP-CLI: wp option delete <name>): murtadd_colours, murtadd_cross_links, murtadd_contextual_links, murtadd_content_display, murtadd_security, murtadd_upkeep, murtadd_dropins_stamp, murtadd_dropins_status, murtadd_placeholder_copy_retired, murtadd_topics_seeded, murtadd_schools_seeded, murtadd_doubt_categories_seeded, murtadd_rewrite_version, murtadd_needs_setup, murtadd_template_paths_migrated, murtadd_content_seeded, murtadd_seeded_slugs, murtadd_profiles, murtadd_author_name, and the user meta murtadd_setup_notice_dismissed. All CPT posts and taxonomy terms persist by design.
+WordPress does not execute an uninstall routine for themes. If the theme is removed permanently, delete these options manually (WP-CLI: wp option delete <name>): murtadd_colours, murtadd_cross_links, murtadd_contextual_links, murtadd_content_display, murtadd_security, murtadd_upkeep, murtadd_dropins_stamp, murtadd_dropins_status, murtadd_placeholder_copy_retired, murtadd_topics_seeded, murtadd_schools_seeded, murtadd_doubt_categories_seeded, murtadd_rewrite_version, murtadd_needs_setup, murtadd_template_paths_migrated, murtadd_content_seeded, murtadd_seeded_slugs, murtadd_profiles, murtadd_author_name. Then delete the user meta murtadd_setup_notice_dismissed, which is stored per user, not as an option (WP-CLI: wp user meta delete <user> murtadd_setup_notice_dismissed, for each administrator). All CPT posts and taxonomy terms persist by design.

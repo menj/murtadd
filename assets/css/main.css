@@ -26,7 +26,7 @@ img { max-width: 100%; height: auto; }
 	width: 1px; height: 1px; overflow: hidden;
 }
 /* The skip link moves focus to <main> (tabindex="-1"); the region needs no ring. */
-.murtadd-main:focus { outline: none; }
+.murtadd-content:focus { outline: none; }
 .skip-link:focus {
 	clip: auto; width: auto; height: auto;
 	position: fixed; top: 8px; left: 8px; z-index: 1000;
@@ -59,11 +59,22 @@ img { max-width: 100%; height: auto; }
 .single-murtadd_doubt .murtadd-main,
 .single-murtadd_rebuttal .murtadd-main { --murtadd-measure: 1060px; }
 
-.murtadd-main > * {
+.murtadd-main > *,
+.murtadd-content > * {
 	width: 100%;
 	max-width: var(--murtadd-measure);
 	margin-left: auto;
 	margin-right: auto;
+}
+
+/* <main> sits inside the column with the footers after it. It passes the
+   measure on to its own children and takes the full width itself. */
+.murtadd-main > .murtadd-content {
+	display: flex;
+	flex-direction: column;
+	flex: 1 0 auto;
+	max-width: none;
+	margin: 0;
 }
 
 /* ---------- Sidebar ---------- */
@@ -305,6 +316,20 @@ h1, h2, h3 { font-family: var(--murtadd-font-serif); line-height: 1.25; }
 .murtadd-quiz-card__btn:hover { color: #fff; opacity: 0.88; }
 
 /* ---------- Footers ---------- */
+/* One contentinfo for the column and the bar, outside <main>. It spans the
+   padded column; the columns inside keep the measure, the bar bleeds. */
+.murtadd-main > .murtadd-site-footer {
+	margin: auto 0 0;
+	max-width: none;
+	display: flex;
+	flex-direction: column;
+}
+.murtadd-site-footer > .murtadd-footer-columns {
+	width: 100%;
+	max-width: var(--murtadd-measure);
+	margin-left: auto;
+	margin-right: auto;
+}
 .murtadd-footer-columns {
 	display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 32px;
 	padding: 40px 0; border-top: 1px solid var(--murtadd-border);
@@ -487,7 +512,8 @@ h1, h2, h3 { font-family: var(--murtadd-font-serif); line-height: 1.25; }
 
 	body, .murtadd-main { background: #fff; color: #000; }
 	.murtadd-main { padding: 0; }
-	.murtadd-main > * { max-width: none; }
+	.murtadd-main > *,
+	.murtadd-content > * { max-width: none; }
 
 	/* Sources must survive on paper: print the URL after each external link. */
 	.murtadd-rebuttal-sources a[href^='http']::after,
