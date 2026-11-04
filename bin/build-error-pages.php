@@ -55,7 +55,10 @@ foreach ( $murtadd_pages as $murtadd_code => $murtadd_p ) {
 		}
 		continue;
 	}
-	file_put_contents( $murtadd_path, $murtadd_html );
+	if ( false === file_put_contents( $murtadd_path, $murtadd_html ) ) {
+		fwrite( STDERR, "cannot write errors/$murtadd_code.html\n" );
+		exit( 1 );
+	}
 	echo "wrote errors/$murtadd_code.html\n";
 }
 exit( $murtadd_stale ? 1 : 0 );
