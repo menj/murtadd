@@ -1726,7 +1726,7 @@ msgid "Author name"
 msgstr ""
 
 #: inc/settings-page.php:934
-msgid "The person these profiles belong to. Named as the author in the structured data, with the links below as their sameAs set. Leave blank to attribute everything to the site instead."
+msgid "Kept for reference and no longer read. The structured data names Mohd Elfie Nieshaem Juferi, at https://menj.bio, as the author of every entry, with the links below ahead of https://menj.bio in sameAs."
 msgstr ""
 
 #: inc/settings-page.php:964

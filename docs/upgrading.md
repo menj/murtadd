@@ -1,5 +1,9 @@
 # Upgrading — Murtadd
 
+## 1.55.1 → 1.55.2
+
+Drop-in. Upload the whole theme folder: the new file is `inc/data/seed/guide-wording.json`. On the first admin visit, the `islamic-dilemma` and `is-islam-false` guides take the new wording if nobody has edited them. An edited guide keeps its text: change the sentences by hand, as `docs/changelog.md` gives them.
+
 ## 1.55.0 → 1.55.1
 
 Drop-in. Upload the whole theme folder. Nothing to run.

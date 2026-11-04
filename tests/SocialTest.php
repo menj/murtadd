@@ -79,7 +79,8 @@ final class SocialTest extends TestCase {
 	}
 
 	/**
-	 * The footer icons and the schema sameAs are the same data.
+	 * The footer icons and the schema sameAs are the same data, and sameAs
+	 * always ends with https://menj.bio.
 	 *
 	 * This is the invariant the whole feature exists to guarantee: a link shown
 	 * to a human and a link handed to a parser are one datum, never two.
@@ -97,13 +98,20 @@ final class SocialTest extends TestCase {
 		$footer = array_values( murtadd_social_profiles() );
 		$person = murtadd_author_node();
 
-		$this->assertSame( $footer, $person['sameAs'], 'The footer links and the Person sameAs must be identical.' );
+		$this->assertSame( array_merge( $footer, array( 'https://menj.bio' ) ), $person['sameAs'], 'The Person sameAs is the footer links, then https://menj.bio.' );
+		$this->assertContains( 'https://menj.bio', murtadd_organization_node()['sameAs'], 'The Organization sameAs includes https://menj.bio.' );
+		update_option( 'murtadd_profiles', array() );
+		$this->assertSame( array( 'https://menj.bio' ), murtadd_author_node()['sameAs'], 'With no profiles the author still carries https://menj.bio.' );
+		$this->assertArrayNotHasKey( 'sameAs', murtadd_organization_node(), 'With no profiles the Organization gets no sameAs.' );
 	}
 
-	/** With no author name, the Person node is null and nothing empty is emitted. */
-	public function test_author_node_is_null_without_a_name() {
+	/** The author Person does not depend on the Author name setting. */
+	public function test_author_node_names_the_owner_without_a_name_setting() {
 		update_option( 'murtadd_author_name', '' );
-		$this->assertNull( murtadd_author_node() );
+		$person = murtadd_author_node();
+		$this->assertSame( 'Mohd Elfie Nieshaem Juferi', $person['name'] );
+		$this->assertSame( 'https://menj.bio', $person['url'] );
+		$this->assertSame( 'https://murtadd.org/#author', $person['@id'] );
 	}
 
 	/** The shortcode row: each link named for screen readers, glyphs hidden, nothing when no profile is saved. */

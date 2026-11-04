@@ -51,10 +51,11 @@ function murtadd_organization_node() {
 		),
 	);
 
-	// The saved profile URLs double as the publisher's sameAs set.
+	// The saved profile URLs double as the publisher's sameAs set, with
+	// https://menj.bio appended.
 	$same_as = array_values( murtadd_social_profiles() );
 	if ( $same_as ) {
-		$node['sameAs'] = $same_as;
+		$node['sameAs'] = murtadd_schema_with_menj( $same_as );
 	}
 
 	return $node;
@@ -63,32 +64,35 @@ function murtadd_organization_node() {
 /**
  * The author as a Person node, carrying the profile URLs as sameAs.
  *
- * The same saved URLs that render as footer icons are emitted here, so a
- * structured-data consumer can resolve the author to the same person on every
- * platform listed. Returns null when no author name is configured, so the
- * graph never carries an empty Person.
+ * The owner ruled on 4 November 2026 that the structured data names him,
+ * Mohd Elfie Nieshaem Juferi, at https://menj.bio, as the author of every
+ * entry. Nothing visible names him. The saved profile URLs that render as
+ * footer icons stay in sameAs, ahead of https://menj.bio. The Author name
+ * setting is no longer read here.
  *
- * @return array|null
+ * @return array
  */
 function murtadd_author_node() {
-	$name = get_option( 'murtadd_author_name', '' );
-	if ( ! $name ) {
-		return null;
-	}
-
 	$node = array(
 		'@type' => 'Person',
-		'@id'   => home_url( '/#author' ),
-		'name'  => $name,
-		'url'   => murtadd_author_url(),
+		'@id'   => murtadd_author_id(),
+		'name'  => 'Mohd Elfie Nieshaem Juferi',
+		'url'   => 'https://menj.bio',
 	);
 
-	$same_as = array_values( murtadd_social_profiles() );
-	if ( $same_as ) {
-		$node['sameAs'] = $same_as;
-	}
+	// The author always carries https://menj.bio, after any saved profiles.
+	$node['sameAs'] = murtadd_schema_with_menj( array_values( murtadd_social_profiles() ) );
 
 	return $node;
+}
+
+/**
+ * The author Person's @id, which every author reference uses.
+ *
+ * @return string
+ */
+function murtadd_author_id() {
+	return home_url( '/#author' );
 }
 
 /**
@@ -177,7 +181,7 @@ function murtadd_structured_data_primary_node() {
 			'mainEntityOfPage' => get_permalink(),
 			'articleSection'   => __( 'Journal', 'murtadd' ),
 			'publisher'        => murtadd_organization_node(),
-			'author'           => murtadd_author_node() ?: murtadd_organization_node(),
+			'author'           => array( '@id' => murtadd_author_id() ),
 			'isPartOf'         => array(
 				array( '@id' => home_url( '/#website' ) ),
 				array(
@@ -240,7 +244,7 @@ function murtadd_structured_data_primary_node() {
 			'url'           => get_permalink(),
 			'mainEntityOfPage' => get_permalink(),
 			'publisher'     => murtadd_organization_node(),
-			'author'        => murtadd_author_node() ?: murtadd_organization_node(),
+			'author'        => array( '@id' => murtadd_author_id() ),
 			'isPartOf'      => array( '@id' => home_url( '/#website' ) ),
 		);
 
@@ -291,7 +295,7 @@ function murtadd_structured_data_primary_node() {
 			'url'              => get_permalink(),
 			'mainEntityOfPage' => get_permalink(),
 			'publisher'        => murtadd_organization_node(),
-			'author'           => murtadd_author_node() ?: murtadd_organization_node(),
+			'author'           => array( '@id' => murtadd_author_id() ),
 			'isPartOf'         => array( '@id' => home_url( '/#website' ) ),
 		);
 		// The dateline shows the date the letter first ran.
@@ -321,7 +325,7 @@ function murtadd_structured_data_primary_node() {
 		'url'           => get_permalink(),
 		'mainEntityOfPage' => get_permalink(),
 		'publisher'     => murtadd_organization_node(),
-		'author'        => murtadd_author_node() ?: murtadd_organization_node(),
+		'author'        => array( '@id' => murtadd_author_id() ),
 	);
 	$about = array();
 	if ( $scholar ) {
@@ -544,6 +548,7 @@ function murtadd_structured_data_node() {
 	if ( ! $nodes ) {
 		return null;
 	}
+	$nodes = murtadd_schema_one_author( $nodes );
 	if ( 1 === count( $nodes ) ) {
 		return array( '@context' => 'https://schema.org' ) + $nodes[0];
 	}
@@ -568,3 +573,121 @@ function murtadd_structured_data() {
 	}
 }
 add_action( 'wp_head', 'murtadd_structured_data' );
+
+/**
+ * A sameAs list with https://menj.bio appended when it is missing.
+ *
+ * Existing entries keep their order. The owner ruled on 4 November 2026 that
+ * every sameAs the theme builds includes this address.
+ *
+ * @param string[] $same_as Existing entries.
+ * @return string[]
+ */
+function murtadd_schema_with_menj( $same_as ) {
+	$same_as = array_values( (array) $same_as );
+	if ( ! in_array( 'https://menj.bio', $same_as, true ) ) {
+		$same_as[] = 'https://menj.bio';
+	}
+	return $same_as;
+}
+
+/**
+ * Types that carry the author: articles and the pages of the site.
+ *
+ * @return string[]
+ */
+function murtadd_schema_authored_types() {
+	return array( 'Article', 'BlogPosting', 'NewsArticle', 'ScholarlyArticle', 'WebPage', 'AboutPage', 'ProfilePage', 'FAQPage', 'CollectionPage', 'ContactPage', 'QAPage', 'ItemPage' );
+}
+
+/**
+ * One author across a graph, the theme's own or Rank Math's after the merge.
+ *
+ * Every author value, at any depth, points to murtadd_author_id(); every
+ * top-level article or page node without an author gets that reference; a
+ * Person that Rank Math made for the WordPress user, which nothing points to
+ * once the authors are repointed, is dropped and its sameAs entries join the
+ * author's; and the author Person is added where the graph lacks it. The
+ * publisher is left as it is.
+ *
+ * @param array $nodes Top-level nodes (a list, or Rank Math's keyed array).
+ * @return array
+ */
+function murtadd_schema_one_author( $nodes ) {
+	if ( ! is_array( $nodes ) ) {
+		return $nodes;
+	}
+	$id   = murtadd_author_id();
+	$old  = array();
+	$walk = function ( $node ) use ( &$walk, &$old, $id ) {
+		if ( ! is_array( $node ) ) {
+			return $node;
+		}
+		foreach ( $node as $k => $v ) {
+			if ( 'author' === $k && is_array( $v ) ) {
+				if ( ! empty( $v['@id'] ) && $id !== $v['@id'] ) {
+					$old[ (string) $v['@id'] ] = true;
+				}
+				$node[ $k ] = array( '@id' => $id );
+			} elseif ( is_array( $v ) ) {
+				$node[ $k ] = $walk( $v );
+			}
+		}
+		return $node;
+	};
+	$nodes = $walk( $nodes );
+
+	// Any other reference to a dropped Person points to the author.
+	$relink = function ( $n ) use ( &$relink, $old, $id ) {
+		if ( ! is_array( $n ) ) {
+			return $n;
+		}
+		if ( 1 === count( $n ) && isset( $n['@id'] ) && isset( $old[ (string) $n['@id'] ] ) ) {
+			return array( '@id' => $id );
+		}
+		foreach ( $n as $k => $v ) {
+			if ( is_array( $v ) ) {
+				$n[ $k ] = $relink( $v );
+			}
+		}
+		return $n;
+	};
+	$nodes = $relink( $nodes );
+	$extra = array();
+	$out   = array();
+	$have  = null;
+	foreach ( $nodes as $key => $node ) {
+		if ( ! is_array( $node ) ) {
+			$out[ $key ] = $node;
+			continue;
+		}
+		$types = (array) ( $node['@type'] ?? array() );
+		if ( ! empty( $node['@id'] ) && isset( $old[ (string) $node['@id'] ] ) && in_array( 'Person', $types, true ) ) {
+			$extra = array_merge( $extra, array_filter( (array) ( $node['sameAs'] ?? array() ), 'is_string' ) );
+			continue;
+		}
+		if ( array_intersect( $types, murtadd_schema_authored_types() ) && empty( $node['author'] ) ) {
+			$node['author'] = array( '@id' => $id );
+		}
+		if ( $id === ( $node['@id'] ?? '' ) ) {
+			$have = $key;
+		}
+		$out[ $key ] = $node;
+	}
+	$person = murtadd_author_node();
+	if ( null === $have ) {
+		if ( array_values( $nodes ) === $nodes ) {
+			$out[] = $person;
+			$have  = count( $out ) - 1;
+		} else {
+			$have         = 'murtadd_author';
+			$out[ $have ] = $person;
+		}
+	} else {
+		$out[ $have ] = array_merge( $out[ $have ], $person );
+	}
+	$same = array_merge( (array) ( $out[ $have ]['sameAs'] ?? array() ), $extra );
+	$same = array_values( array_unique( array_diff( $same, array( 'https://menj.bio' ) ) ) );
+	$out[ $have ]['sameAs'] = murtadd_schema_with_menj( $same );
+	return array_values( $nodes ) === $nodes ? array_values( $out ) : $out;
+}

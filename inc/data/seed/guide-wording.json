@@ -1,0 +1,18 @@
+{
+	"version": 1,
+	"note": "Sentences changed in shipped guides after they were seeded. Each pair is [old, new], as it appears in inc/data/seed/guides.json. A guide whose stored content still matches the shipped text with every new sentence put back to the old one is unedited, and takes the new text; any other guide is left alone. Read by murtadd_update_guide_wording() in inc/seed-guides.php.",
+	"pairs": [
+		[
+			"The sister site apostleofdoom.org takes up that assumption in detail, in <a href=\"https://apostleofdoom.org/islamic-dilemma/\">its piece on Paul and the Islamic dilemma</a>.",
+			"That assumption is taken up in detail in <a href=\"https://apostleofdoom.org/islamic-dilemma/\">a study of Paul and the Islamic dilemma</a>."
+		],
+		[
+			"<p><strong>The Islamic dilemma across the network</strong></p>",
+			"<p><strong>Further reading on the Islamic dilemma</strong></p>"
+		],
+		[
+			"is made at length on our sister site. Read <a href=\"https://compelling-evidence.com/articles/is-islam-false/\">Is Islam false? The evidence, on Compelling Evidence</a>.",
+			"is made at length in <a href=\"https://compelling-evidence.com/articles/is-islam-false/\">Is Islam false? The evidence</a>, on Compelling Evidence."
+		]
+	]
+}

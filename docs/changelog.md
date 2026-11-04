@@ -1,5 +1,20 @@
 # Changelog — Murtadd
 
+## 1.55.2 (2026-11-04)
+
+### Changed
+- The guides no longer present other sites as related to this one. Every link stays.
+  - `islamic-dilemma`: "The sister site apostleofdoom.org takes up that assumption in detail, in its piece on Paul and the Islamic dilemma." reads "That assumption is taken up in detail in a study of Paul and the Islamic dilemma." The closing box is headed "Further reading on the Islamic dilemma", in place of "The Islamic dilemma across the network". Its six links are unchanged.
+  - `is-islam-false`: "is made at length on our sister site. Read Is Islam false? The evidence, on Compelling Evidence." reads "is made at length in Is Islam false? The evidence, on Compelling Evidence."
+
+### Added
+- `inc/data/seed/guide-wording.json` lists the changed sentences as old and new pairs. `murtadd_update_guide_wording()` (`inc/seed-guides.php`, on `admin_init`) gives the new text to a guide whose stored content matches the shipped content with the old sentences put back. An edited guide is left alone. The run is recorded in `murtadd_guide_wording` once every write has landed.
+- `murtadd_schema_with_menj()` (`inc/schema.php`) appends `https://menj.bio` to the Organization's sameAs when it has one, and the author Person always carries it after any saved profiles. Existing entries keep their order and stored profiles are untouched. `tests/SocialTest.php` checks it.
+- The structured data names one author: a Person, `#author` at the site root, named "Mohd Elfie Nieshaem Juferi", with `url` `https://menj.bio` and the saved profiles, then `https://menj.bio`, in `sameAs` (`murtadd_author_node()`, `murtadd_author_id()`). Every Article, BlogPosting and page node points to it by `@id`; before, each embedded its own copy, or the Organization when no Author name was set. `murtadd_schema_one_author()` runs on the theme's graph and, through `rank_math/json_ld`, on Rank Math's: it repoints every `author`, gives the page nodes that lack one the reference, drops the Person Rank Math made for the WordPress user (keeping its `sameAs`), and adds the author Person where it is missing. The publisher stays the site. Nothing visible names the author. The Author name setting is kept; its help text says it is no longer read.
+- `tests/StructuredDataTest.php`, `JournalTest.php` and `SocialTest.php` check one author Person on each graph, its name, url and sameAs, every author pointing to it, and the Rank Math fold.
+- The wording update leaves the translated Sources heading out of the match, so a guide seeded under another locale is still recognised as unedited, and it records nothing while `guides.json` cannot be read, so it runs again later.
+- `tests/GuidesTest.php`: no guide says "sister site" or "across the network"; an unedited guide takes the new wording and an edited one keeps its own.
+
 ## 1.55.1 (2026-11-04)
 
 ### Fixed

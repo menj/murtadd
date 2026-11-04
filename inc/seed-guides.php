@@ -149,3 +149,73 @@ function murtadd_maybe_seed_guides() {
 	return $created;
 }
 add_action( 'admin_init', 'murtadd_maybe_seed_guides' );
+
+/**
+ * Carry changed sentences into guides seeded before the change.
+ *
+ * inc/data/seed/guide-wording.json lists [old, new] sentence pairs. A guide
+ * whose stored content matches the shipped content with every new sentence
+ * put back to the old one is unedited: it takes the shipped content, through
+ * wp_update_post(), which keeps a revision. A guide that differs in any other
+ * way has been edited and is left alone. The file's version is stored in
+ * murtadd_guide_wording once every write has landed.
+ *
+ * @return string[] Slugs updated on this run.
+ */
+function murtadd_update_guide_wording() {
+	$done    = array();
+	$wording = murtadd_seed_read_json( 'guide-wording' );
+	$version = isset( $wording['version'] ) ? (int) $wording['version'] : 0;
+	$pairs   = isset( $wording['pairs'] ) && is_array( $wording['pairs'] ) ? $wording['pairs'] : array();
+	if ( $version < 1 || ! $pairs || (int) get_option( 'murtadd_guide_wording' ) >= $version ) {
+		return $done;
+	}
+	if ( function_exists( 'post_type_exists' ) && ! post_type_exists( 'murtadd_guide' ) ) {
+		return $done;
+	}
+	$guides = murtadd_seed_guides();
+	if ( ! $guides ) {
+		return $done; // guides.json unreadable for now: try again later.
+	}
+	// The Sources heading is translated, so a guide seeded under another
+	// locale still counts as unedited: the heading is left out of the match.
+	$plain  = static function ( $html ) {
+		return murtadd_normalise_markup( (string) preg_replace( '#<h2>[^<]*</h2>(\s*<ol class="murtadd-guide-sources">)#', '<h2></h2>$1', (string) $html ) );
+	};
+	$failed = false;
+	foreach ( $guides as $g ) {
+		$post = get_page_by_path( $g['slug'], OBJECT, 'murtadd_guide' );
+		if ( ! $post ) {
+			continue;
+		}
+		$shipped = murtadd_guide_content( $g );
+		$before  = $shipped;
+		foreach ( $pairs as $pair ) {
+			if ( is_array( $pair ) && 2 === count( $pair ) && is_string( $pair[0] ) && is_string( $pair[1] ) && '' !== $pair[1] ) {
+				$before = str_replace( $pair[1], $pair[0], $before );
+			}
+		}
+		if ( $before === $shipped ) {
+			continue; // No changed sentence in this guide.
+		}
+		if ( $plain( $before ) !== $plain( $post->post_content ) ) {
+			continue; // Already current, or edited. Leave it alone.
+		}
+		$written = wp_update_post(
+			array(
+				'ID'           => $post->ID,
+				'post_content' => $shipped,
+			)
+		);
+		if ( ! $written || is_wp_error( $written ) ) {
+			$failed = true;
+			continue;
+		}
+		$done[] = $g['slug'];
+	}
+	if ( ! $failed ) {
+		update_option( 'murtadd_guide_wording', $version );
+	}
+	return $done;
+}
+add_action( 'admin_init', 'murtadd_update_guide_wording', 20 );

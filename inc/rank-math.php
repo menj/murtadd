@@ -298,7 +298,8 @@ function murtadd_rank_math_author_url( $data, $key, $url ) {
  */
 function murtadd_rank_math_json_ld( $data, $jsonld = null ) {
 	$data = murtadd_rank_math_merge( $data, murtadd_structured_data_node() );
-	return murtadd_article_backfill( $data, murtadd_article_backfill_image(), murtadd_article_backfill_dates() );
+	$data = murtadd_article_backfill( $data, murtadd_article_backfill_image(), murtadd_article_backfill_dates() );
+	return murtadd_schema_one_author( $data );
 }
 
 /**
