@@ -3,7 +3,7 @@ Contributors: murtadd.org
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.1
-Stable tag: 1.51.0
+Stable tag: 1.52.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -34,6 +34,13 @@ Two things remain yours:
 * Set the favicon at Settings → General → Site Icon (upload icons/site-icon-512.png), and set colours and cross-link URLs at Appearance → Theme Options.
 
 == Changelog ==
+= 1.52.0 =
+* Doubt and rebuttal pages were missing one ">" in their markup, so a stray character showed above the title, the side rail sat below the article, and the footer bar ran 20 to 48 pixels past the screen edge. Fixed, and the rail sits beside the article again on wide screens.
+* Phones get 44-pixel tap targets in the menu and footer, and 16-pixel search fields, so iOS no longer zooms in.
+* Escape closes the phone menu and any open submenu. Submenu links report aria-expanded.
+* The contact form ties each error to its field and marks the message as required in text.
+* 4 colour pairs that failed WCAG AA contrast now pass.
+
 = 1.51.0 =
 * A Journal at /journal/: dated posts on doubt, leaving and the rulings on apostasy, beside the guides, which stay as they are. The menu and the footer link to it.
 * 8 posts ship with fixed dates: 3 from October, 1 on 16 November and 4 in December, one of them for 1 Rajab. A past date is published, a future date is scheduled, and a second run of the seeder changes nothing.

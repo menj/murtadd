@@ -70,7 +70,7 @@ $murtadd_start = get_page_by_path( 'start-here' );
 
 			<li><a<?php murtadd_nav_state( 'rebuttals' ); ?> href="<?php echo esc_url( get_post_type_archive_link( 'murtadd_rebuttal' ) ); ?>"><?php esc_html_e( 'Rebuttals', 'murtadd' ); ?></a></li>
 
-			<li class="murtadd-nav-divider" role="separator"></li>
+			<li class="murtadd-nav-divider" aria-hidden="true"></li>
 
 			<li><a<?php murtadd_nav_state( 'letters' ); ?> href="<?php echo esc_url( get_post_type_archive_link( 'murtadd_letter' ) ); ?>"><?php esc_html_e( 'Letters', 'murtadd' ); ?></a></li>
 		</ul>
