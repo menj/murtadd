@@ -279,15 +279,23 @@ function murtadd_contact_shortcode() {
 	} elseif ( $result ) {
 		$codes = 'invalid' === $result['status'] ? $result['errors'] : array( $result['status'] );
 		foreach ( $codes as $code ) {
-			$notices[] = array( 'error', murtadd_contact_message( $code ) );
+			$notices[] = array( 'error', murtadd_contact_message( $code ), $code );
 		}
 	}
+
+	// A field with an error is marked invalid and points at the notice that explains it.
+	$invalid = function ( $code ) use ( $result ) {
+		if ( ! $result || 'invalid' !== $result['status'] || ! in_array( $code, $result['errors'], true ) ) {
+			return '';
+		}
+		return ' aria-invalid="true" aria-describedby="murtadd-contact-error-' . esc_attr( $code ) . '"';
+	};
 
 	ob_start();
 	?>
 	<div class="murtadd-contact" id="murtadd-contact">
 		<?php foreach ( $notices as $notice ) : ?>
-			<p class="murtadd-contact__notice murtadd-contact__notice--<?php echo esc_attr( $notice[0] ); ?>" role="<?php echo 'error' === $notice[0] ? 'alert' : 'status'; ?>"><?php echo esc_html( $notice[1] ); ?></p>
+			<p class="murtadd-contact__notice murtadd-contact__notice--<?php echo esc_attr( $notice[0] ); ?>"<?php echo isset( $notice[2] ) ? ' id="murtadd-contact-error-' . esc_attr( $notice[2] ) . '"' : ''; ?> role="<?php echo 'error' === $notice[0] ? 'alert' : 'status'; ?>"><?php echo esc_html( $notice[1] ); ?></p>
 		<?php endforeach; ?>
 
 		<form class="murtadd-contact__form" method="post" action="<?php echo esc_url( get_permalink() . '#murtadd-contact' ); ?>">
@@ -300,12 +308,12 @@ function murtadd_contact_shortcode() {
 
 			<p class="murtadd-contact__field">
 				<label for="murtadd-contact-email"><?php esc_html_e( 'Your email', 'murtadd' ); ?> <span class="murtadd-contact__hint"><?php esc_html_e( '(optional, only if you would like a reply)', 'murtadd' ); ?></span></label>
-				<input type="email" id="murtadd-contact-email" name="murtadd_contact_email" value="<?php echo esc_attr( $fields['email'] ); ?>" maxlength="254" autocomplete="email">
+				<input type="email" id="murtadd-contact-email" name="murtadd_contact_email" value="<?php echo esc_attr( $fields['email'] ); ?>" maxlength="254" autocomplete="email"<?php echo $invalid( 'email' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in the closure. ?>>
 			</p>
 
 			<p class="murtadd-contact__field">
-				<label for="murtadd-contact-message"><?php esc_html_e( 'Your message', 'murtadd' ); ?></label>
-				<textarea id="murtadd-contact-message" name="murtadd_contact_message" rows="8" maxlength="<?php echo (int) $limits['message']; ?>" required><?php echo esc_textarea( $fields['message'] ); ?></textarea>
+				<label for="murtadd-contact-message"><?php esc_html_e( 'Your message', 'murtadd' ); ?> <span class="murtadd-contact__hint"><?php esc_html_e( '(required)', 'murtadd' ); ?></span></label>
+				<textarea id="murtadd-contact-message" name="murtadd_contact_message" rows="8" maxlength="<?php echo (int) $limits['message']; ?>" required<?php echo $invalid( 'message' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in the closure. ?>><?php echo esc_textarea( $fields['message'] ); ?></textarea>
 			</p>
 
 			<div class="murtadd-contact__trap" aria-hidden="true">

@@ -130,6 +130,7 @@
 	.murtadd-single-layout { grid-template-columns: 1fr; gap: 40px; }
 	.murtadd-single-main { max-width: none; }
 	.murtadd-rail { position: static; }
+	.murtadd-rail-link { padding: 8px 0; }
 }
 
 @media print {

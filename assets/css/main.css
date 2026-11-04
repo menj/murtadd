@@ -33,7 +33,7 @@ img { max-width: 100%; height: auto; }
 
 /* ---------- Shell: sidebar + main ---------- */
 .murtadd-shell { display: flex; min-height: 100vh; }
-.murtadd-main { flex: 1; min-width: 0; display: flex; flex-direction: column; padding: 0 48px; }
+.murtadd-main { flex: 1; min-width: 0; display: flex; flex-direction: column; padding: 0 48px; overflow-wrap: break-word; }
 
 /*
  * One column width per view, never per element.
@@ -73,7 +73,7 @@ img { max-width: 100%; height: auto; }
 }
 .murtadd-brand { padding: 0 26px 22px; }
 
-.murtadd-tagline { display: block; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.75; margin-top: 5px; }
+.murtadd-tagline { display: block; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.85; margin-top: 5px; }
 
 /*
  * Set in caps through text-transform rather than by capitalising the string,
@@ -99,7 +99,7 @@ img { max-width: 100%; height: auto; }
 	border-left: 3px solid transparent;
 	transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
-.murtadd-nav-list > li > a.is-current { background: #1a7a61; border-right: 0; }
+.murtadd-nav-list > li > a.is-current { background: #1a7a61; border-right: 0; color: #fff; }
 .murtadd-nav-list > li > a:hover,
 .murtadd-nav-list > li.current-menu-item > a {
 	background: rgba(255,255,255,0.1); color: #fff;
@@ -116,6 +116,8 @@ img { max-width: 100%; height: auto; }
 }
 .has-sub:hover .murtadd-sub,
 .has-sub:focus-within .murtadd-sub { max-height: 320px; opacity: 1; }
+/* Escape dismisses an open submenu (main.js) until focus or the pointer leaves it. */
+.has-sub.is-dismissed .murtadd-sub { max-height: 0; opacity: 0; }
 .murtadd-sub a {
 	display: block; color: rgba(255,255,255,0.8); text-decoration: none;
 	font-size: 13px; padding: 9px 26px 9px 38px;
@@ -135,7 +137,7 @@ img { max-width: 100%; height: auto; }
 .murtadd-sidebar-search .murtadd-search-field { width: 100%; min-width: 0; }
 .murtadd-sidebar-search .murtadd-search-submit {
 	width: 100%; padding: 8px 12px; font: 600 12px var(--murtadd-font-sans);
-	background: rgba(255,255,255,0.18); color: #fff;
+	background: rgba(255,255,255,0.12); color: #fff;
 	border: 1px solid rgba(255,255,255,0.25); border-radius: 8px; cursor: pointer;
 	transition: background 0.15s;
 }
@@ -395,7 +397,8 @@ h1, h2, h3 { font-family: var(--murtadd-font-serif); line-height: 1.25; }
 	border: 1px solid var(--murtadd-border); border-radius: 8px; background: var(--murtadd-surface);
 }
 .murtadd-category-tab.is-active { color: #fff; background: var(--murtadd-accent); border-color: var(--murtadd-accent); }
-.murtadd-tab-num { font-size: 11px; color: var(--murtadd-accent-secondary); }
+.murtadd-tab-num { font-size: 11px; color: var(--murtadd-accent); }
+.murtadd-category-tab.is-active .murtadd-tab-num { color: #fff; }
 
 /* ---------- Pagination ---------- */
 .pagination, .nav-links { display: flex; gap: 8px; padding: 24px 0 48px; font-family: var(--murtadd-font-sans); }
@@ -423,6 +426,22 @@ h1, h2, h3 { font-family: var(--murtadd-font-serif); line-height: 1.25; }
 	.murtadd-hero { grid-template-columns: 1fr; gap: 16px; align-items: start; padding: 40px 0 32px; }
 	.murtadd-hero h1 { font-size: 32px; }
 	.murtadd-hero p { max-width: none; }
+
+	/* Touch: targets at least 44px tall, form text at 16px so iOS does not zoom. */
+	.murtadd-nav-toggle { min-height: 44px; }
+	.murtadd-start-cta { min-height: 44px; display: flex; align-items: center; justify-content: center; }
+	.murtadd-sub a { padding-top: 12px; padding-bottom: 12px; }
+	.murtadd-sidebar-search input[type='search'],
+	.murtadd-search-inline .murtadd-search-field { font-size: 16px; min-height: 44px; }
+	.murtadd-sidebar-search .murtadd-search-submit,
+	.murtadd-search-inline .murtadd-search-submit { min-height: 44px; }
+	.murtadd-footer-links a { display: inline-block; padding: 8px 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.murtadd-sub,
+	.murtadd-start-cta,
+	.murtadd-nav-list > li > a { transition: none; }
 }
 
 

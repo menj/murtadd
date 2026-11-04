@@ -24,9 +24,9 @@ while ( have_posts() ) :
 		'other'             => __( 'Other', 'murtadd' ),
 	);
 	?>
-	<article <?php post_class( 'murtadd-rebuttal' ); ?>
+	<article <?php post_class( 'murtadd-rebuttal' ); ?>>
 	<div class="murtadd-single-layout">
-	<div class="murtadd-single-main">>
+	<div class="murtadd-single-main">
 		<header class="murtadd-entry-header">
 			<?php murtadd_breadcrumbs(); ?>
 			<div class="murtadd-chips">

@@ -1,5 +1,25 @@
 # Changelog — Murtadd
 
+## 1.52.0 (2026-11-04)
+
+The owner sent two briefs on 2026-11-04: a mobile-first audit and a WCAG 2.2 AA policy. Both were run against a local copy of the site at 9 widths from 320 to 1280 pixels, with axe-core and a keyboard pass. The reports sit outside the repository.
+
+### Markup
+- `single-murtadd_doubt.php` and `single-murtadd_rebuttal.php` opened the article without its closing ">" and put a spare one after the next div. Browsers read the layout div as an attribute, printed ">" above the title and closed the main column early. The footer bar then fell outside it and ran 20 pixels past a phone screen (48 on a desktop). With the bracket back in place the rail sits beside the article above 900 pixels, as `rail.css` always meant. This is the one change desktop readers will see.
+- The menu divider in `sidebar.php` carried `role="separator"` inside a list, which axe flags. It is now `aria-hidden="true"`.
+
+### Phones (main.css and rail.css, with their `.min` pairs)
+- Below 900 pixels: the menu button, the Start here button and both search buttons are at least 44 pixels tall. Submenu links have more padding. Footer links and the rail's "Start here" link get 8 pixels above and below.
+- Search fields are 16 pixels below 900 pixels. At 12.5 and 14 pixels, iOS zoomed the page on focus.
+- Long URLs in an entry break instead of pushing the page sideways (`overflow-wrap: break-word` on the main column). A guide at 320 pixels ran 4 pixels wide.
+- Menu transitions stop for readers who ask for reduced motion.
+
+### Accessibility (main.js and inc/contact.php)
+- Escape closes the open phone menu and puts focus back on the Menu button.
+- Topics, Fatwa and Doubts report `aria-expanded`. Escape dismisses an open submenu and returns focus to its link; moving focus into it opens it again, so a focused link is never hidden.
+- A contact field with an error gets `aria-invalid` and `aria-describedby`, pointing at the notice that explains it. The message label says "(required)".
+- Contrast: the tagline (4.25 to 4.97), the current menu item (4.27 to 5.25), the sidebar search button (4.23 to 4.80) and the archive tab counts (1.99 to 6.20). The counts are the accent green now, white on the active tab.
+
 ## 1.51.0 (2026-11-03)
 
 The site has a Journal. The owner decided on 2026-11-03 to keep the guides as they are and add dated posts beside them.

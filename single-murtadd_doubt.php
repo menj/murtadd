@@ -15,9 +15,9 @@ while ( have_posts() ) :
 	$murtadd_deep_link   = get_post_meta( get_the_ID(), '_murtadd_external_deep_link', true );
 	$murtadd_response    = get_post_meta( get_the_ID(), '_murtadd_short_response', true );
 	?>
-	<article <?php post_class( 'murtadd-doubt' ); ?>
+	<article <?php post_class( 'murtadd-doubt' ); ?>>
 	<div class="murtadd-single-layout">
-	<div class="murtadd-single-main">>
+	<div class="murtadd-single-main">
 		<header class="murtadd-entry-header">
 			<?php murtadd_breadcrumbs(); ?>
 			<div class="murtadd-chips">
