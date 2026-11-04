@@ -227,6 +227,10 @@ function murtadd_handle_write_dropins() {
 		wp_die( esc_html__( 'You are not allowed to do that.', 'murtadd' ), 403 );
 	}
 	check_admin_referer( 'murtadd_write_dropins' );
+	if ( is_multisite() && ! is_main_site() ) {
+		wp_safe_redirect( add_query_arg( array( 'page' => 'murtadd', 'tab' => 'upkeep' ), admin_url( 'themes.php' ) ) );
+		exit;
+	}
 	murtadd_maybe_install_dropins( true );
 	wp_safe_redirect( add_query_arg( array( 'page' => 'murtadd', 'tab' => 'upkeep', 'murtadd_dropins' => 1 ), admin_url( 'themes.php' ) ) );
 	exit;

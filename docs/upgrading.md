@@ -1,5 +1,9 @@
 # Upgrading — Murtadd
 
+## 1.55.0 → 1.55.1
+
+Drop-in. Upload the whole theme folder. Nothing to run.
+
 ## 1.54.0 → 1.55.0
 
 Replace the theme and open any admin page as an administrator: the error pages are rewritten once, with the new database wording. To use the static pages, add the `ErrorDocument` lines from the Upkeep tab to `.htaccess`.

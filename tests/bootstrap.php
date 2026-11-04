@@ -494,11 +494,21 @@ function content_url( $path = '' ) {
 function wp_specialchars_decode( $s, $q = ENT_NOQUOTES ) {
 	return htmlspecialchars_decode( (string) $s, $q );
 }
+if ( ! function_exists( 'wp_nonce_field' ) ) {
+	function wp_nonce_field( $action = -1, $name = '_wpnonce', $referer = true, $display = true ) {
+		echo '<input type="hidden" name="' . esc_attr( $name ) . '" value="nonce-' . esc_attr( $action ) . '">';
+	}
+}
+if ( ! function_exists( 'submit_button' ) ) {
+	function submit_button( $text = '' ) {
+		echo '<button type="submit">' . htmlspecialchars( (string) $text ) . '</button>';
+	}
+}
 function is_multisite() {
-	return false;
+	return ! empty( $GLOBALS['murtadd_test_subsite'] );
 }
 function is_main_site() {
-	return true;
+	return empty( $GLOBALS['murtadd_test_subsite'] );
 }
 function delete_option( $name ) {
 	unset( $GLOBALS['murtadd_options'][ $name ] );

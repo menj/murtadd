@@ -31,6 +31,8 @@ final class MaintenanceTest extends TestCase {
 
 	protected function tearDown(): void {
 		$GLOBALS['murtadd_test_is_admin'] = false;
+		$GLOBALS['murtadd_test_subsite']  = false;
+		unset( $_GET['murtadd_dropins'] );
 		foreach ( glob( $this->dir . '/*' ) as $file ) {
 			unlink( $file );
 		}
@@ -171,5 +173,31 @@ final class MaintenanceTest extends TestCase {
 			$this->assertMatchesRegularExpression( '~<title>[^<|]+ \| Murtadd</title>~', $html );
 		}
 		$this->assertStringContainsString( 'ErrorDocument 503 /wp-content/themes/murtadd/errors/503.html', murtadd_error_htaccess_snippet() );
+	}
+
+	public function test_a_subsite_shows_the_network_note_in_place_of_the_button() {
+		$GLOBALS['murtadd_options']['murtadd_upkeep'] = array( 'error_pages' => 1 );
+		$_GET['murtadd_dropins']                     = 1;
+		ob_start();
+		murtadd_render_dropins_status();
+		$main = ob_get_clean();
+		$this->assertStringContainsString( 'murtadd_write_dropins', $main );
+		$this->assertStringNotContainsString( 'The whole network shares wp-content', $main );
+
+		$GLOBALS['murtadd_test_subsite'] = true;
+		ob_start();
+		murtadd_render_dropins_status();
+		$sub = ob_get_clean();
+		$this->assertStringNotContainsString( 'murtadd_write_dropins', $sub );
+		$this->assertStringNotContainsString( 'written again', $sub );
+		$this->assertStringContainsString( 'The whole network shares wp-content', $sub );
+	}
+
+	public function test_a_failed_file_no_longer_blames_wp_content_alone() {
+		update_option( 'murtadd_dropins_status', array( 'db-error.php' => 'failed' ) );
+		ob_start();
+		murtadd_render_dropins_status();
+		$out = ob_get_clean();
+		$this->assertStringContainsString( 'wp-content not writable or source file unreadable', $out );
 	}
 }

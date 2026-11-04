@@ -1134,7 +1134,7 @@ function murtadd_render_dropins_status() {
 		'written' => __( 'Written by the theme', 'murtadd' ),
 		'outdated' => __( 'Written by the theme, outdated: press the button to refresh it', 'murtadd' ),
 		'kept'    => __( 'Another file is there; left alone', 'murtadd' ),
-		'failed'  => __( 'Could not be written: wp-content is not writable', 'murtadd' ),
+		'failed'  => __( 'Could not be written (wp-content not writable or source file unreadable)', 'murtadd' ),
 	);
 	murtadd_admin_card_open( __( 'Error pages in wp-content', 'murtadd' ), '', 'media-document' );
 	?>
@@ -1142,9 +1142,10 @@ function murtadd_render_dropins_status() {
 	$murtadd_saved = (array) get_option( 'murtadd_dropins_status', array() );
 	$murtadd_fail  = in_array( 'failed', $murtadd_saved, true );
 	?>
-	<?php if ( isset( $_GET['murtadd_dropins'] ) ) : // phpcs:ignore WordPress.Security.NonceVerification.Recommended ?>
+	<?php $murtadd_subsite = is_multisite() && ! is_main_site(); ?>
+	<?php if ( ! $murtadd_subsite && isset( $_GET['murtadd_dropins'] ) ) : // phpcs:ignore WordPress.Security.NonceVerification.Recommended ?>
 		<?php if ( $murtadd_fail ) : ?>
-			<div class="notice notice-error is-dismissible inline"><p><?php esc_html_e( 'Some error pages could not be written: wp-content is not writable.', 'murtadd' ); ?></p></div>
+			<div class="notice notice-error is-dismissible inline"><p><?php esc_html_e( 'Some error pages could not be written: wp-content is not writable, or the source file is unreadable.', 'murtadd' ); ?></p></div>
 		<?php else : ?>
 			<div class="notice notice-success is-dismissible inline"><p><?php esc_html_e( 'The error pages were written again.', 'murtadd' ); ?></p></div>
 		<?php endif; ?>
@@ -1172,7 +1173,9 @@ function murtadd_render_dropins_status() {
 			<?php endforeach; ?>
 		</tbody>
 	</table>
-	<?php if ( murtadd_upkeep( 'error_pages' ) ) : ?>
+	<?php if ( $murtadd_subsite ) : ?>
+		<p class="description"><?php esc_html_e( 'The whole network shares wp-content, so the error pages are installed from the main site.', 'murtadd' ); ?></p>
+	<?php elseif ( murtadd_upkeep( 'error_pages' ) ) : ?>
 		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="murtadd-admin-inline-form">
 			<input type="hidden" name="action" value="murtadd_write_dropins">
 			<?php wp_nonce_field( 'murtadd_write_dropins' ); ?>

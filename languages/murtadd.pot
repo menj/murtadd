@@ -1,7 +1,7 @@
 # Copyright (C) 2026 Langgam Fikir Enterprise
 msgid ""
 msgstr ""
-"Project-Id-Version: Murtadd 1.55.0\n"
+"Project-Id-Version: Murtadd 1.55.1\n"
 "POT-Creation-Date: 2026-11-04\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1950,7 +1950,15 @@ msgid "Another file is there; left alone"
 msgstr ""
 
 #: inc/settings-page.php:1131
-msgid "Could not be written: wp-content is not writable"
+msgid "Could not be written (wp-content not writable or source file unreadable)"
+msgstr ""
+
+#: inc/settings-page.php:1148
+msgid "Some error pages could not be written: wp-content is not writable, or the source file is unreadable."
+msgstr ""
+
+#: inc/settings-page.php:1179
+msgid "The whole network shares wp-content, so the error pages are installed from the main site."
 msgstr ""
 
 #: inc/settings-page.php:1133
