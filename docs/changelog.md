@@ -1,5 +1,12 @@
 # Changelog — Murtadd
 
+## 1.55.1 (2026-11-04)
+
+### Fixed
+- On a multisite subsite the Upkeep tab showed "Write the error pages now", and pressing it gave a green "written again" notice while nothing was written: the whole network shares wp-content and only the main site writes there. A subsite now shows the network note the sister themes use, the handler sends it back without the notice, and `murtadd_handle_write_dropins()` writes nothing there.
+- A file that failed no longer always blames wp-content. It reads "Could not be written (wp-content not writable or source file unreadable)", and the error notice says the same.
+- `tests/MaintenanceTest.php`: the subsite shows the note in place of the button, and the failed label.
+
 ## 1.55.0 (2026-11-04)
 
 Error pages, checked against the brief for all eight themes. The drop-ins, their button and maintenance mode were already here and stay as they were; this release fills three gaps. No option key, function or handle was renamed or removed.

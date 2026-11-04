@@ -3,7 +3,7 @@ Contributors: murtadd.org
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.1
-Stable tag: 1.55.0
+Stable tag: 1.55.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,6 +83,10 @@ Bundled resources:
 * The site icon, the pixel book and envelope images, the calligraphy in assets/images and screenshot.png were made for this theme and are GPL v2 or later with it.
 
 == Changelog ==
+= 1.55.1 =
+* On a multisite subsite the Upkeep tab shows a network note in place of the Write the error pages now button, which gave a false success notice there.
+* A file that could not be written no longer always blames wp-content: the source file may be unreadable.
+
 = 1.55.0 =
 * The database error page now says "We cannot reach our database", and the PHP error page is titled "Something went wrong".
 * The Upkeep tab tells an outdated copy of an error page from a current one, and lists the .htaccess lines for the new static 403, 500, 502 and 503 pages in the errors folder.
