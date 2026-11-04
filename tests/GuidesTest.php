@@ -12,6 +12,7 @@ use PHPUnit\Framework\TestCase;
 
 require_once __DIR__ . '/../inc/seed-guides.php';
 require_once __DIR__ . '/../inc/cpt-guide.php';
+require_once __DIR__ . '/../inc/activation.php';
 
 final class GuidesTest extends TestCase {
 
@@ -183,5 +184,33 @@ final class GuidesTest extends TestCase {
 		$bad['topics'] = 'identity';
 		$this->assertFalse( murtadd_seed_entry_valid( $bad, array( 'topics' => 'strings' ) ) );
 		$this->assertSame( array(), murtadd_seed_load_entries( 'no-such-file', array( 'slug' => 'string' ) ) );
+	}
+
+	/** No guide text tells a reader that another site is related to this one. */
+	public function test_no_guide_calls_another_site_related() {
+		foreach ( murtadd_seed_guides() as $g ) {
+			$this->assertDoesNotMatchRegularExpression( '/sister site|across the network|wider network|our other site/i', $g['body'], $g['slug'] );
+		}
+	}
+
+	/** An unedited guide takes the new wording; an edited one is left alone. */
+	public function test_guide_wording_reaches_unedited_guides_only() {
+		$wording = murtadd_seed_read_json( 'guide-wording' );
+		$old     = function ( $html ) use ( $wording ) {
+			foreach ( $wording['pairs'] as $pair ) {
+				$html = str_replace( $pair[1], $pair[0], $html );
+			}
+			return $html;
+		};
+		$dilemma = $this->guide( 'islamic-dilemma' );
+		$false   = $this->guide( 'is-islam-false' );
+		wp_insert_post( array( 'post_type' => 'murtadd_guide', 'post_name' => 'islamic-dilemma', 'post_content' => $old( murtadd_guide_content( $dilemma ) ) ) );
+		wp_insert_post( array( 'post_type' => 'murtadd_guide', 'post_name' => 'is-islam-false', 'post_content' => $old( murtadd_guide_content( $false ) ) . '<p>Added by an editor.</p>' ) );
+		delete_option( 'murtadd_guide_wording' );
+
+		$this->assertSame( array( 'islamic-dilemma' ), murtadd_update_guide_wording() );
+		$this->assertSame( murtadd_guide_content( $dilemma ), get_page_by_path( 'islamic-dilemma', OBJECT, 'murtadd_guide' )->post_content );
+		$this->assertStringContainsString( 'our sister site', get_page_by_path( 'is-islam-false', OBJECT, 'murtadd_guide' )->post_content );
+		$this->assertSame( array(), murtadd_update_guide_wording(), 'A second run changes nothing.' );
 	}
 }

@@ -1,5 +1,16 @@
 # Changelog — Murtadd
 
+## 1.55.2 (2026-11-04)
+
+### Changed
+- The guides no longer present other sites as related to this one. Every link stays.
+  - `islamic-dilemma`: "The sister site apostleofdoom.org takes up that assumption in detail, in its piece on Paul and the Islamic dilemma." reads "That assumption is taken up in detail in a study of Paul and the Islamic dilemma." The closing box is headed "Further reading on the Islamic dilemma", in place of "The Islamic dilemma across the network". Its six links are unchanged.
+  - `is-islam-false`: "is made at length on our sister site. Read Is Islam false? The evidence, on Compelling Evidence." reads "is made at length in Is Islam false? The evidence, on Compelling Evidence."
+
+### Added
+- `inc/data/seed/guide-wording.json` lists the changed sentences as old and new pairs. `murtadd_update_guide_wording()` (`inc/seed-guides.php`, on `admin_init`) gives the new text to a guide whose stored content matches the shipped content with the old sentences put back. An edited guide is left alone. The run is recorded in `murtadd_guide_wording` once every write has landed.
+- `tests/GuidesTest.php`: no guide says "sister site" or "across the network"; an unedited guide takes the new wording and an edited one keeps its own.
+
 ## 1.55.1 (2026-11-04)
 
 ### Fixed
