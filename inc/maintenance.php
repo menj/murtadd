@@ -81,6 +81,46 @@ function murtadd_dropin_is_ours( $path ) {
 }
 
 /**
+ * The text the theme writes for one file, with its placeholders filled.
+ *
+ * @param string $name Target name, a key of murtadd_dropin_files().
+ * @return string|null Null when the source is missing.
+ */
+function murtadd_dropin_text( $name ) {
+	$files  = murtadd_dropin_files();
+	$source = get_stylesheet_directory() . '/' . ( $files[ $name ] ?? '' );
+	if ( ! isset( $files[ $name ] ) || ! is_readable( $source ) ) {
+		return null;
+	}
+	$text = (string) file_get_contents( $source ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+	if ( '.css' === substr( $name, -4 ) ) {
+		return '/* ' . MURTADD_DROPIN_MARKER . ' ' . MURTADD_VERSION . '. Written by the Murtadd theme; safe to delete. */' . "\n" . $text;
+	}
+	$css_url = untrailingslashit( (string) wp_parse_url( content_url( '/' ), PHP_URL_PATH ) ) . '/murtadd-error-page.css?ver=' . MURTADD_VERSION;
+	return strtr( $text, murtadd_dropin_tokens( $css_url ) );
+}
+
+/**
+ * The state of one file in a directory: missing, written (the theme's own and
+ * current), outdated (the theme's own, from another version or with other
+ * addresses) or kept (another file, left alone).
+ *
+ * @param string $name Target name.
+ * @param string $dir  Directory, wp-content by default.
+ * @return string
+ */
+function murtadd_dropin_state( $name, $dir = '' ) {
+	$path = rtrim( '' !== $dir ? $dir : WP_CONTENT_DIR, '/' ) . '/' . $name;
+	if ( ! file_exists( $path ) ) {
+		return 'missing';
+	}
+	if ( ! murtadd_dropin_is_ours( $path ) ) {
+		return 'kept';
+	}
+	return (string) file_get_contents( $path ) === murtadd_dropin_text( $name ) ? 'written' : 'outdated'; // phpcs:ignore WordPress.WP.AlternativeFunctions
+}
+
+/**
  * Write or refresh the drop-ins in a directory.
  *
  * Free of request checks so it can be tested against a temporary directory;
@@ -90,25 +130,17 @@ function murtadd_dropin_is_ours( $path ) {
  * @return array<string,string> Target name => written, kept (not ours), failed.
  */
 function murtadd_install_dropins( $dir ) {
-	$css_url = untrailingslashit( (string) wp_parse_url( content_url( '/' ), PHP_URL_PATH ) ) . '/murtadd-error-page.css?ver=' . MURTADD_VERSION;
-	$tokens  = murtadd_dropin_tokens( $css_url );
-	$result  = array();
-	foreach ( murtadd_dropin_files() as $name => $from ) {
-		$source = get_stylesheet_directory() . '/' . $from;
+	$result = array();
+	foreach ( array_keys( murtadd_dropin_files() ) as $name ) {
 		$target = rtrim( $dir, '/' ) . '/' . $name;
 		if ( file_exists( $target ) && ! murtadd_dropin_is_ours( $target ) ) {
 			$result[ $name ] = 'kept';
 			continue;
 		}
-		if ( ! is_readable( $source ) ) {
+		$text = murtadd_dropin_text( $name );
+		if ( null === $text ) {
 			$result[ $name ] = 'failed';
 			continue;
-		}
-		$text = (string) file_get_contents( $source ); // phpcs:ignore WordPress.WP.AlternativeFunctions
-		if ( '.css' === substr( $name, -4 ) ) {
-			$text = '/* ' . MURTADD_DROPIN_MARKER . ' ' . MURTADD_VERSION . '. Written by the Murtadd theme; safe to delete. */' . "\n" . $text;
-		} else {
-			$text = strtr( $text, $tokens );
 		}
 		// A temporary name, then a rename, so WordPress never reads half a file.
 		$tmp = $target . '.' . uniqid( 'murtadd-', true ) . '.tmp';
@@ -215,6 +247,21 @@ function murtadd_dropins_on_switch() {
 	delete_option( 'murtadd_dropins_status' );
 }
 add_action( 'switch_theme', 'murtadd_dropins_on_switch' );
+
+/**
+ * The lines for .htaccess that point the web server at the static pages in
+ * errors/ (built by bin/build-error-pages.php).
+ *
+ * @return string
+ */
+function murtadd_error_htaccess_snippet() {
+	$base  = untrailingslashit( (string) wp_parse_url( get_stylesheet_directory_uri(), PHP_URL_PATH ) ) . '/errors/';
+	$lines = array( '# Murtadd: pages for the errors the web server answers before WordPress runs' );
+	foreach ( array( 403, 500, 502, 503 ) as $code ) {
+		$lines[] = 'ErrorDocument ' . $code . ' ' . $base . $code . '.html';
+	}
+	return implode( "\n", $lines );
+}
 
 /* ---------- Maintenance mode ---------- */
 

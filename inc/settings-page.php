@@ -1132,13 +1132,22 @@ function murtadd_render_upkeep_tab() {
 function murtadd_render_dropins_status() {
 	$labels = array(
 		'written' => __( 'Written by the theme', 'murtadd' ),
+		'outdated' => __( 'Written by the theme, outdated: press the button to refresh it', 'murtadd' ),
 		'kept'    => __( 'Another file is there; left alone', 'murtadd' ),
 		'failed'  => __( 'Could not be written: wp-content is not writable', 'murtadd' ),
 	);
 	murtadd_admin_card_open( __( 'Error pages in wp-content', 'murtadd' ), '', 'media-document' );
 	?>
+	<?php
+	$murtadd_saved = (array) get_option( 'murtadd_dropins_status', array() );
+	$murtadd_fail  = in_array( 'failed', $murtadd_saved, true );
+	?>
 	<?php if ( isset( $_GET['murtadd_dropins'] ) ) : // phpcs:ignore WordPress.Security.NonceVerification.Recommended ?>
-		<div class="notice notice-success is-dismissible inline"><p><?php esc_html_e( 'The error pages were written again.', 'murtadd' ); ?></p></div>
+		<?php if ( $murtadd_fail ) : ?>
+			<div class="notice notice-error is-dismissible inline"><p><?php esc_html_e( 'Some error pages could not be written: wp-content is not writable.', 'murtadd' ); ?></p></div>
+		<?php else : ?>
+			<div class="notice notice-success is-dismissible inline"><p><?php esc_html_e( 'The error pages were written again.', 'murtadd' ); ?></p></div>
+		<?php endif; ?>
 	<?php endif; ?>
 	<table class="widefat striped murtadd-admin-table">
 		<thead>
@@ -1150,13 +1159,10 @@ function murtadd_render_dropins_status() {
 		<tbody>
 			<?php foreach ( array_keys( murtadd_dropin_files() ) as $murtadd_name ) : ?>
 				<?php
-				$murtadd_path = WP_CONTENT_DIR . '/' . $murtadd_name;
-				if ( ! file_exists( $murtadd_path ) ) {
-					$murtadd_state = 'missing';
-				} elseif ( murtadd_dropin_is_ours( $murtadd_path ) ) {
-					$murtadd_state = 'written';
-				} else {
-					$murtadd_state = 'kept';
+				$murtadd_state = murtadd_dropin_state( $murtadd_name );
+				// A failed write leaves the old state on disk; the saved result says why.
+				if ( 'written' !== $murtadd_state && 'kept' !== $murtadd_state && 'failed' === ( $murtadd_saved[ $murtadd_name ] ?? '' ) ) {
+					$murtadd_state = 'failed';
 				}
 				?>
 				<tr>
@@ -1173,6 +1179,8 @@ function murtadd_render_dropins_status() {
 			<?php submit_button( __( 'Write the error pages now', 'murtadd' ), 'secondary', 'submit', false ); ?>
 		</form>
 	<?php endif; ?>
+	<p class="description"><?php esc_html_e( 'For the errors the web server answers before WordPress starts, static pages are in the errors folder of the theme. Add these lines to .htaccess to use them:', 'murtadd' ); ?></p>
+	<textarea readonly rows="5" class="large-text code" aria-label="<?php esc_attr_e( '.htaccess lines', 'murtadd' ); ?>"><?php echo esc_textarea( murtadd_error_htaccess_snippet() ); ?></textarea>
 	<?php
 	murtadd_admin_card_close();
 }

@@ -28,7 +28,7 @@ if ( ! headers_sent() ) {
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>Back shortly | {{SITE_NAME}}</title>
+<title><?php echo $murtadd_updating ? 'Back shortly' : 'Something went wrong'; ?> | {{SITE_NAME}}</title>
 <link rel="stylesheet" href="{{TOKENS_URL}}">
 <link rel="stylesheet" href="{{CSS_URL}}">
 </head>

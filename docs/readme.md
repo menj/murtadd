@@ -7,7 +7,7 @@ A classic-template child theme of Twenty Twenty-Five for **murtadd.org**.
 | Theme slug | `murtadd` |
 | Text domain | `murtadd` |
 | Parent | `twentytwentyfive` |
-| Version | 1.54.0 |
+| Version | 1.55.0 |
 | Author | Langgam Fikir Enterprise |
 | Licence | GPLv2 or later |
 | Requires WP | 6.4+ |
@@ -60,6 +60,19 @@ Only files WordPress requires at the theme root stay there: `style.css`, `theme.
 **JavaScript is an enhancement.** Every front-end behaviour works with JS disabled. The fatwa filters are a plain GET form; the script only auto-submits on change.
 
 **Settings use the Settings API.** One option array per tab, in a tabbed screen at Appearance → Theme Options: Colours (with a live WCAG contrast check), Cross-links, Content display, Taxonomies, Setup.
+
+## Error pages
+
+The Upkeep tab writes `wp-content/maintenance.php` (503, Retry-After), `php-error.php` (500, or 503 for an upload in progress) and `db-error.php` (503, Retry-After) from `dropins/`, with `murtadd-error-page.css`, and never over a file without the marker `Murtadd error page drop-in`. Its table reads each file as written, outdated, missing or kept.
+
+Static pages for the errors the web server answers before WordPress runs are in `errors/` (`php bin/build-error-pages.php`). Add to `.htaccess`, with the folder name of the theme:
+
+```
+ErrorDocument 403 /wp-content/themes/murtadd/errors/403.html
+ErrorDocument 500 /wp-content/themes/murtadd/errors/500.html
+ErrorDocument 502 /wp-content/themes/murtadd/errors/502.html
+ErrorDocument 503 /wp-content/themes/murtadd/errors/503.html
+```
 
 ## Setup
 

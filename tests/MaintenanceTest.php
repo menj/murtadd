@@ -47,14 +47,15 @@ final class MaintenanceTest extends TestCase {
 			$this->assertStringContainsString( MURTADD_DROPIN_MARKER, $text );
 			$this->assertStringContainsString( 'href="/wp-content/murtadd-error-page.css?ver=', $text );
 			$this->assertStringContainsString( 'href="/wp-content/themes/murtadd/assets/css/tokens.min.css?ver=', $text );
-			$this->assertStringContainsString( '<title>Back shortly | Murtadd</title>', $text );
 		}
+		$this->assertStringContainsString( '<title>Back shortly | Murtadd</title>', file_get_contents( $this->dir . '/maintenance.php' ) );
+		$this->assertStringContainsString( '<title>We cannot reach our database | Murtadd</title>', file_get_contents( $this->dir . '/db-error.php' ) );
 		$this->assertTrue( murtadd_dropin_is_ours( $this->dir . '/murtadd-error-page.css' ), 'The stylesheet carries the marker too, so it can be removed.' );
 	}
 
 	public function test_each_dropin_runs_alone_and_prints_its_page() {
 		murtadd_install_dropins( $this->dir );
-		foreach ( array( 'maintenance.php' => 'Back shortly', 'db-error.php' => 'cannot reach its database', 'php-error.php' => 'This page could not load' ) as $name => $expect ) {
+		foreach ( array( 'maintenance.php' => 'Back shortly', 'db-error.php' => 'We cannot reach our database', 'php-error.php' => 'Something went wrong | Murtadd' ) as $name => $expect ) {
 			$out = shell_exec( escapeshellarg( PHP_BINARY ) . ' -d display_errors=1 -f ' . escapeshellarg( $this->dir . '/' . $name ) . ' 2>&1' );
 			$this->assertStringContainsString( $expect, (string) $out, $name );
 			$this->assertDoesNotMatchRegularExpression( '/(Warning|Notice|Fatal error|Deprecated):/', (string) $out, $name . ' must need nothing from WordPress.' );
@@ -134,5 +135,41 @@ final class MaintenanceTest extends TestCase {
 		$this->assertFileDoesNotExist( $this->dir . '/maintenance.php', 'A drop-in from the partial install stayed active.' );
 		$this->assertFileDoesNotExist( $this->dir . '/php-error.php' );
 		$this->assertFalse( get_option( 'murtadd_dropins_status' ) );
+	}
+
+	public function test_each_dropin_sends_its_own_status() {
+		murtadd_install_dropins( $this->dir );
+		$this->assertStringContainsString( "503 Service Unavailable', true, 503", file_get_contents( $this->dir . '/maintenance.php' ) );
+		$this->assertStringContainsString( "503 Service Unavailable', true, 503", file_get_contents( $this->dir . '/db-error.php' ) );
+		$this->assertStringContainsString( "500 Internal Server Error', true, 500", file_get_contents( $this->dir . '/php-error.php' ) );
+		foreach ( array( 'maintenance.php', 'db-error.php' ) as $name ) {
+			$this->assertStringContainsString( 'Retry-After', file_get_contents( $this->dir . '/' . $name ), $name );
+		}
+		$this->assertStringNotContainsString( 'Maintenance', file_get_contents( $this->dir . '/db-error.php' ) );
+	}
+
+	public function test_state_reads_missing_written_outdated_and_kept() {
+		$this->assertSame( 'missing', murtadd_dropin_state( 'php-error.php', $this->dir ) );
+		murtadd_install_dropins( $this->dir );
+		$this->assertSame( 'written', murtadd_dropin_state( 'php-error.php', $this->dir ) );
+		file_put_contents( $this->dir . '/php-error.php', file_get_contents( $this->dir . '/maintenance.php' ) );
+		$this->assertSame( 'outdated', murtadd_dropin_state( 'php-error.php', $this->dir ), 'The maintenance page in php-error.php is not current.' );
+		$this->assertSame( 'written', murtadd_install_dropins( $this->dir )['php-error.php'] );
+		$this->assertSame( 'written', murtadd_dropin_state( 'php-error.php', $this->dir ) );
+		file_put_contents( $this->dir . '/db-error.php', "<?php // someone else's\n" );
+		$this->assertSame( 'kept', murtadd_dropin_state( 'db-error.php', $this->dir ) );
+	}
+
+	public function test_static_pages_are_current_and_carry_no_inline_style() {
+		exec( escapeshellarg( PHP_BINARY ) . ' ' . escapeshellarg( dirname( __DIR__ ) . '/bin/build-error-pages.php' ) . ' --check 2>&1', $out, $code );
+		$this->assertSame( 0, $code, implode( "\n", $out ) );
+		foreach ( array( '403', '500', '502', '503' ) as $page ) {
+			$html = file_get_contents( dirname( __DIR__ ) . '/errors/' . $page . '.html' );
+			$this->assertStringContainsString( '<meta name="robots" content="noindex">', $html );
+			$this->assertStringNotContainsString( '<style', $html );
+			$this->assertStringNotContainsString( '<script', $html );
+			$this->assertMatchesRegularExpression( '~<title>[^<|]+ \| Murtadd</title>~', $html );
+		}
+		$this->assertStringContainsString( 'ErrorDocument 503 /wp-content/themes/murtadd/errors/503.html', murtadd_error_htaccess_snippet() );
 	}
 }
