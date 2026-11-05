@@ -276,7 +276,9 @@ ErrorDocument 503 /wp-content/murtadd-errors/503.html
 ErrorDocument 504 /wp-content/murtadd-errors/504.html
 ```
 
-On Nginx the same pages go in with `error_page 403 /wp-content/murtadd-errors/403.html;` and so on for each code. Where `wp-content` sits below a subfolder, use its real address, as in `/blog/wp-content/murtadd-errors/403.html`; the tab's lines show it.
+On Nginx the same pages go in with `error_page 403 /wp-content/murtadd-errors/403.html;` and so on for each code. These cover the errors Nginx answers itself, such as a 502 or 504 from a stalled PHP-FPM. A 500 from PHP passes through unless `fastcgi_intercept_errors on;` is set in the PHP location, and it is better left off: the theme's `php-error.php` drop-in already answers those in the site's design.
+
+Where `wp-content` sits below a subfolder, use its real address, as in `/blog/wp-content/murtadd-errors/403.html`; the tab's lines show it.
 
 On a network every site shares `wp-content`. The main site writes the files; while it runs another theme, the subsite with the lowest ID that runs Murtadd writes them (`murtadd_dropins_writer()`). The last site to leave the theme removes them.
 
