@@ -41,7 +41,7 @@ The folder must be called murtadd, all lower case.
 
 Uploading into the live folder file by file is riskier. While one of the theme's PHP files in inc/ is missing or half written, visitors see the "Back shortly" page instead of an error. That page covers only those files: functions.php, the templates, the stylesheets and the scripts are not checked, so the temporary folder and the rename stay the safe way.
 
-Never upload WordPress itself (wp-admin, wp-includes and the files beside them) to a live folder that has no wp-config.php. In that state the WordPress installer answers anyone who finds it. Put wp-config.php in place first, or upload WordPress to a temporary folder and rename it.
+Never upload WordPress itself (wp-admin, wp-includes and the files beside them) to a live folder that has no wp-config.php. In that state the WordPress installer answers anyone who finds it. Put wp-config.php in place first, or upload WordPress to a folder the web server does not serve (one outside public_html), then move it into place.
 
 On activation the theme creates the pages it needs, a footer menu, and the starter content, and points Settings, Reading at the Home and Journal pages if the site still shows its latest posts. Nothing you have already set is overwritten, so activating again is safe. Upgrading in place does not re-run this; use Appearance, Theme Options, Setup.
 
@@ -135,7 +135,7 @@ Bundled resources:
 * A static 504 page in the errors folder, with its .htaccess line.
 
 = 1.55.2 =
-* Three guides no longer describe other websites as related to this one. Every link stays.
+* Three guides take new wording about the other websites they link to. Every link stays.
 * The structured data names the author as Mohd Elfie Nieshaem Juferi, at https://menj.bio. Nothing visible changes.
 
 = 1.55.1 =
