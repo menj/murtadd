@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'MURTADD_VERSION', '1.55.6' );
+define( 'MURTADD_VERSION', '1.55.7' );
 
 /**
  * Asset suffix. Sources are served when SCRIPT_DEBUG is on, minified otherwise.
@@ -15,53 +15,128 @@ define( 'MURTADD_VERSION', '1.55.6' );
  */
 define( 'MURTADD_ASSET_SUFFIX', ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min' );
 
-require_once get_stylesheet_directory() . '/inc/cpt-doubt.php';
-require_once get_stylesheet_directory() . '/inc/cpt-rebuttal.php';
-require_once get_stylesheet_directory() . '/inc/cpt-fatwa.php';
-require_once get_stylesheet_directory() . '/inc/cpt-letter.php';
-require_once get_stylesheet_directory() . '/inc/cpt-guide.php';
-require_once get_stylesheet_directory() . '/inc/taxonomy-topic.php';
-require_once get_stylesheet_directory() . '/inc/taxonomy-school.php';
-require_once get_stylesheet_directory() . '/inc/taxonomy-doubt-category.php';
-require_once get_stylesheet_directory() . '/inc/meta-boxes.php';
-require_once get_stylesheet_directory() . '/inc/settings-page.php';
-require_once get_stylesheet_directory() . '/inc/hardening.php';
-require_once get_stylesheet_directory() . '/inc/security-detector.php';
-require_once get_stylesheet_directory() . '/inc/security.php';
-require_once get_stylesheet_directory() . '/inc/hide-login.php';
-require_once get_stylesheet_directory() . '/inc/login.php';
-require_once get_stylesheet_directory() . '/inc/docs.php';
-require_once get_stylesheet_directory() . '/inc/legacy-redirects.php';
-require_once get_stylesheet_directory() . '/inc/gone.php';
-require_once get_stylesheet_directory() . '/inc/maintenance.php';
-require_once get_stylesheet_directory() . '/inc/social.php';
-require_once get_stylesheet_directory() . '/inc/site-icon.php';
-require_once get_stylesheet_directory() . '/inc/activation.php';
-require_once get_stylesheet_directory() . '/inc/schema.php';
-require_once get_stylesheet_directory() . '/inc/schema-graph.php';
-require_once get_stylesheet_directory() . '/inc/rank-math.php';
-require_once get_stylesheet_directory() . '/inc/seo-title.php';
-require_once get_stylesheet_directory() . '/inc/seed-content.php';
-require_once get_stylesheet_directory() . '/inc/seed-guides.php';
-require_once get_stylesheet_directory() . '/inc/seed-journal.php';
-require_once get_stylesheet_directory() . '/inc/slug-renames.php';
-require_once get_stylesheet_directory() . '/inc/search.php';
-require_once get_stylesheet_directory() . '/inc/search-permalinks.php';
-require_once get_stylesheet_directory() . '/inc/unlist.php';
-require_once get_stylesheet_directory() . '/inc/reading-progress.php';
-require_once get_stylesheet_directory() . '/inc/meta-tags.php';
-require_once get_stylesheet_directory() . '/inc/feeds.php';
-require_once get_stylesheet_directory() . '/inc/analytics.php';
-require_once get_stylesheet_directory() . '/inc/share.php';
-require_once get_stylesheet_directory() . '/inc/social-card.php';
-require_once get_stylesheet_directory() . '/inc/dashboard.php';
-require_once get_stylesheet_directory() . '/inc/relations.php';
-require_once get_stylesheet_directory() . '/inc/contextual-links.php';
-require_once get_stylesheet_directory() . '/inc/glossary.php';
-require_once get_stylesheet_directory() . '/inc/lanah.php';
-require_once get_stylesheet_directory() . '/inc/contact.php';
-require_once get_stylesheet_directory() . '/inc/quran-text.php';
-require_once get_stylesheet_directory() . '/inc/template-tags.php';
+/**
+ * The theme's files in inc/, in the order they load, without ".php".
+ *
+ * @return string[]
+ */
+function murtadd_theme_files() {
+	return array(
+		'cpt-doubt', 'cpt-rebuttal', 'cpt-fatwa', 'cpt-letter', 'cpt-guide', 'taxonomy-topic', 'taxonomy-school',
+		'taxonomy-doubt-category', 'meta-boxes', 'settings-page', 'hardening', 'security-detector', 'security',
+		'dev-files', 'hide-login', 'login', 'docs', 'legacy-redirects', 'gone', 'maintenance', 'social',
+		'site-icon', 'activation', 'schema', 'schema-graph', 'rank-math', 'seo-title', 'seed-content',
+		'seed-guides', 'seed-journal', 'slug-renames', 'search', 'search-permalinks', 'unlist', 'reading-progress',
+		'meta-tags', 'feeds', 'analytics', 'share', 'social-card', 'dashboard', 'relations', 'contextual-links',
+		'glossary', 'lanah', 'contact', 'quran-text', 'template-tags',
+	);
+}
+
+/**
+ * The theme caught half uploaded. An FTP upload that sends functions.php
+ * before inc/ left murtadd.org answering a fatal error for every visitor
+ * (237 in the October and November 2026 logs). Every file is now checked
+ * before any loads, and each loads inside a try, so a half-written one (a
+ * ParseError) is caught too. The request gets the "Back shortly" page with
+ * a 503 and Retry-After; the error log gets one line per problem every ten
+ * minutes, not one per request. A missing file leaves the admin alone, so
+ * the upload can finish; a file that breaks part-way through loading sends
+ * the page to the admin too, since the theme is then half set up. The login
+ * screen, AJAX, cron and the command line go on without it.
+ *
+ * @param string $what What is wrong, for the log.
+ * @param bool   $all  Send the page to the admin screens too.
+ */
+function murtadd_incomplete_theme( $what, $all = false ) {
+	$key = 'murtadd_incomplete_' . md5( $what );
+	if ( ! get_transient( $key ) ) {
+		set_transient( $key, 1, 10 * MINUTE_IN_SECONDS );
+		error_log( 'Murtadd: the theme is incomplete or being uploaded (' . $what . '); visitors see the maintenance page until it is whole.' ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
+	}
+	if ( ! murtadd_incomplete_serves( $all ) ) {
+		return;
+	}
+	if ( ! headers_sent() ) {
+		header( 'HTTP/1.1 503 Service Unavailable', true, 503 );
+		header( 'Content-Type: text/html; charset=utf-8' );
+		header( 'Retry-After: 300' );
+		header( 'X-Robots-Tag: noindex' );
+		header( 'Cache-Control: no-store, max-age=0' );
+	}
+	// The site's own copy of the static page, then the theme's, then a plain one.
+	foreach ( array( WP_CONTENT_DIR . '/murtadd-errors/503.html', get_stylesheet_directory() . '/errors/503.html' ) as $page ) {
+		if ( is_readable( $page ) ) {
+			readfile( $page ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+			exit;
+		}
+	}
+	echo '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="robots" content="noindex"><title>Back shortly</title></head><body><h1>Back shortly</h1><p>The site is being updated. Please try again in a few minutes.</p></body></html>';
+	exit;
+}
+
+/**
+ * Whether this request is for the login screen: wp-login.php, or a private
+ * login address (the WPS Hide Login plugin's, or the theme's own), read from
+ * the stored options, since the theme's own code may be the part missing.
+ * The owner must be able to log in while an upload finishes.
+ *
+ * @return bool
+ */
+function murtadd_incomplete_is_login() {
+	$uri = (string) ( $_SERVER['REQUEST_URI'] ?? '' ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+	if ( 'wp-login.php' === ( $GLOBALS['pagenow'] ?? '' ) || false !== strpos( $uri, 'wp-login' ) ) {
+		return true;
+	}
+	$slugs = array( (string) get_option( 'whl_page', '' ) );
+	$stored = (array) get_option( 'murtadd_security', array() );
+	if ( ! empty( $stored['login_slug'] ) ) {
+		$slugs[] = (string) $stored['login_slug'];
+	}
+	$path = trim( (string) parse_url( $uri, PHP_URL_PATH ), '/' ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+	$home = function_exists( 'home_url' ) ? trim( (string) parse_url( home_url( '/' ), PHP_URL_PATH ), '/' ) : ''; // phpcs:ignore WordPress.WP.AlternativeFunctions
+	if ( '' !== $home && 0 === strpos( $path . '/', $home . '/' ) ) {
+		$path = trim( substr( $path, strlen( $home ) ), '/' );
+	}
+	foreach ( array_filter( $slugs ) as $slug ) {
+		if ( $slug === $path || isset( $_GET[ $slug ] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			return true;
+		}
+	}
+	return false;
+}
+
+/**
+ * Whether murtadd_incomplete_theme() sends the page to this request. The
+ * login screen, AJAX, cron and the command line never get it; the admin gets
+ * it only when $all is set.
+ *
+ * @param bool   $all  Send the page to the admin screens too.
+ * @param string $sapi The PHP interface, PHP_SAPI by default.
+ * @return bool
+ */
+function murtadd_incomplete_serves( $all = false, $sapi = PHP_SAPI ) {
+	if ( wp_doing_ajax() || wp_doing_cron() || 'cli' === $sapi || murtadd_incomplete_is_login() ) {
+		return false;
+	}
+	return $all || ! is_admin();
+}
+
+// inc/seed-data.php is loaded by the seeders, not here; it is checked with the rest.
+foreach ( array_merge( murtadd_theme_files(), array( 'seed-data' ) ) as $murtadd_file ) {
+	if ( ! is_readable( get_stylesheet_directory() . '/inc/' . $murtadd_file . '.php' ) ) {
+		murtadd_incomplete_theme( 'inc/' . $murtadd_file . '.php is missing' );
+		return;
+	}
+}
+try {
+	foreach ( murtadd_theme_files() as $murtadd_file ) {
+		require_once get_stylesheet_directory() . '/inc/' . $murtadd_file . '.php';
+	}
+} catch ( Throwable $murtadd_error ) {
+	murtadd_incomplete_theme( $murtadd_error->getMessage() . ' in ' . basename( $murtadd_error->getFile() ), true );
+	return;
+}
+unset( $murtadd_file );
 
 /**
  * Theme setup.

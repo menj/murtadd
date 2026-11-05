@@ -9,6 +9,11 @@
  * @package Murtadd\Tests
  */
 
+// Run from the command line only (phpdbg included): on a web server this file does nothing.
+if ( ! in_array( PHP_SAPI, array( 'cli', 'phpdbg' ), true ) ) {
+	exit;
+}
+
 use PHPUnit\Framework\TestCase;
 
 require_once __DIR__ . '/../inc/activation.php';
@@ -316,7 +321,7 @@ final class JournalTest extends TestCase {
 		}
 
 		$fn = file_get_contents( "$root/functions.php" );
-		$this->assertStringContainsString( "/inc/seed-journal.php'", $fn );
+		$this->assertContains( 'seed-journal', murtadd_theme_files() );
 		$this->assertStringContainsString( "'/assets/css/journal' . MURTADD_ASSET_SUFFIX . '.css'", $fn );
 
 		$css = file_get_contents( "$root/assets/css/journal.css" ) . file_get_contents( "$root/assets/css/main.css" );

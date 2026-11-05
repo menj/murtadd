@@ -8,6 +8,11 @@
  * @package Murtadd\Tests
  */
 
+// Run from the command line only (phpdbg included): on a web server this file does nothing.
+if ( ! in_array( PHP_SAPI, array( 'cli', 'phpdbg' ), true ) ) {
+	exit;
+}
+
 use PHPUnit\Framework\TestCase;
 
 /** The two WP_Rewrite members the module touches. */

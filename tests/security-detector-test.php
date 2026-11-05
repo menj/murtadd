@@ -12,6 +12,11 @@
  * @package murtadd
  */
 
+// Run from the command line only (phpdbg included): on a web server this file does nothing.
+if ( ! in_array( PHP_SAPI, array( 'cli', 'phpdbg' ), true ) ) {
+	exit;
+}
+
 if ( ! defined( 'MURTADD_SECURITY_TEST' ) ) {
 	define( 'MURTADD_SECURITY_TEST', true );
 }

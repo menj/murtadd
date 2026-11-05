@@ -7,3 +7,4 @@ composer.lock
 # Composer installs into vendor/; only the vendored Parsedown ships with the theme.
 /vendor/*
 !/vendor/parsedown/
+!/vendor/.htaccess
