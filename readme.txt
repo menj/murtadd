@@ -94,7 +94,7 @@ No. The 4 categories are locked, and their addresses are fixed rules in the code
 
 = My site is in a subfolder. Where does the browser icon go? =
 
-Browsers ask for /favicon.ico at the top of the domain, such as example.com/favicon.ico, even when the site lives in example.com/blog/. WordPress never sees that request, so put a copy of the theme's favicon.ico in the domain root folder. The icon tags in each page cover the pages either way. If you have set a Site Icon, put that icon there as favicon.ico instead.
+Browsers ask for /favicon.ico at the top of the domain, such as example.com/favicon.ico, even when the site lives in example.com/blog/. WordPress never sees that request, so put a copy of the theme's favicon.ico in the domain root folder. The icon tags in each page cover the pages either way. If you have set a Site Icon, put that icon there, converted to an ICO file named favicon.ico, instead.
 
 == Privacy ==
 The theme loads nothing from another server. Fonts, icons and scripts ship inside it, and it adds no analytics or tracking.
@@ -224,7 +224,7 @@ See docs/changelog.md for earlier releases.
 
 == Upgrade Notice ==
 = 1.55.11 =
-Replace the theme files. On a site in a subfolder, also put a copy of assets/icons/favicon.ico in the domain root folder (or, with a Site Icon set, that icon as favicon.ico); otherwise nothing to do.
+Replace the theme files. On a site in a subfolder, also put a copy of assets/icons/favicon.ico in the domain root folder (or, with a Site Icon set, that icon converted to an ICO file named favicon.ico); otherwise nothing to do.
 
 = 1.55.10 =
 Upload the whole theme folder. Open one admin page so the error pages are written again with the icon.
