@@ -401,8 +401,21 @@ function murtadd_article_sources_panel() {
  * ------------------------------------------------------------------ */
 
 /**
+ * Whether post a comes after post b in the Journal's reading order: by date,
+ * then by ID, so two posts with the same date still have an order.
+ *
+ * @param WP_Post $a Post.
+ * @param WP_Post $b Post.
+ * @return int 1, 0 or -1.
+ */
+function murtadd_article_order( $a, $b ) {
+	return array( (string) $a->post_date, (int) $a->ID ) <=> array( (string) $b->post_date, (int) $b->ID );
+}
+
+/**
  * The next post in the Journal's reading order: the next one published, or,
- * on the newest post, the one before it.
+ * on the newest post, the one before it. Posts on the same date as this one
+ * are compared by ID, so none is skipped.
  *
  * @param WP_Post|null $post Post; the current one when null.
  * @return array{0:WP_Post,1:bool}|null The post, and whether it comes after this one.
@@ -412,26 +425,55 @@ function murtadd_article_next_post( $post = null ) {
 	if ( ! $post ) {
 		return null;
 	}
-	foreach ( array( array( 'after', 'ASC', true ), array( 'before', 'DESC', false ) ) as $way ) {
-		$found = get_posts(
+	$query = static function ( $date_query, $order, $count ) use ( $post ) {
+		return get_posts(
 			array(
 				'post_type'      => 'post',
 				'post_status'    => 'publish',
-				'posts_per_page' => 1,
+				'posts_per_page' => $count,
 				'no_found_rows'  => true,
-				'orderby'        => 'date',
-				'order'          => $way[1],
-				'post__not_in'   => array( $post->ID ),
-				'date_query'     => array(
-					array(
-						$way[0]     => $post->post_date,
-						'inclusive' => false,
-					),
+				'orderby'        => array(
+					'date' => $order,
+					'ID'   => $order,
 				),
+				'post__not_in'   => array( $post->ID ),
+				'date_query'     => array( $date_query ),
 			)
 		);
+	};
+	// Posts on this very date, which only the ID can put before or after it.
+	$same = $query(
+		array(
+			'after'     => $post->post_date,
+			'before'    => $post->post_date,
+			'inclusive' => true,
+		),
+		'ASC',
+		-1
+	);
+	foreach ( array( 'after' => 'ASC', 'before' => 'DESC' ) as $way => $order ) {
+		$sign = 'after' === $way ? 1 : -1;
+		$ties = array_values(
+			array_filter(
+				$same,
+				static function ( $p ) use ( $post, $sign ) {
+					return murtadd_article_order( $p, $post ) === $sign;
+				}
+			)
+		);
+		if ( $ties ) {
+			return array( 'after' === $way ? $ties[0] : end( $ties ), 1 === $sign );
+		}
+		$found = $query(
+			array(
+				$way        => $post->post_date,
+				'inclusive' => false,
+			),
+			$order,
+			1
+		);
 		if ( $found ) {
-			return array( $found[0], $way[2] );
+			return array( $found[0], 1 === $sign );
 		}
 	}
 	return null;

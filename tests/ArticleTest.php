@@ -128,6 +128,16 @@ final class ArticleTest extends TestCase {
 		$this->assertSame( array( 11, 12, 13 ), murtadd_article_rank( $mine, $cand, $dates, 3 ) );
 	}
 
+	public function test_reading_order_breaks_date_ties_by_id() {
+		$a = (object) array( 'ID' => 7, 'post_date' => '2026-10-08 09:00:00' );
+		$b = (object) array( 'ID' => 9, 'post_date' => '2026-10-08 09:00:00' );
+		$c = (object) array( 'ID' => 3, 'post_date' => '2026-10-09 09:00:00' );
+		$this->assertSame( 1, murtadd_article_order( $b, $a ), 'Same date: the higher ID comes after.' );
+		$this->assertSame( -1, murtadd_article_order( $a, $b ) );
+		$this->assertSame( 1, murtadd_article_order( $c, $b ), 'A later date comes after, whatever the ID.' );
+		$this->assertSame( 0, murtadd_article_order( $a, $a ) );
+	}
+
 	public function test_settings_defaults_and_sanitiser() {
 		$this->assertTrue( murtadd_article_on( 'contents' ) );
 		$this->assertTrue( murtadd_article_on( 'answer_box' ) );
