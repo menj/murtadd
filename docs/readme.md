@@ -300,7 +300,7 @@ On a network every site shares `wp-content`. The main site writes the files; whi
 
 `inc/site-icon.php` prints `site-icon-32.png`, `site-icon-192.png`, `site-icon.svg`, `apple-touch-icon.png` and `site.webmanifest` on `wp_head`, `admin_head` and `login_head` while `has_site_icon()` is false, and `theme-color` (the Colours accent) on `wp_head` and `login_head`. With a core Site Icon, core prints its own tags.
 
-`/favicon.ico` reaches WordPress when no such file sits in the site root. `murtadd_serve_favicon()` answers it on `template_redirect` (priority 0, so HEAD is covered) and `do_faviconico` with `assets/icons/favicon.ico`, `Cache-Control: public, max-age=86400` and an ETag, with a 304 on a match. The manifest is a static file with relative icon paths. The theme `.htaccess` refuses dot entries, Markdown, Composer and PHPUnit files and the development folders only, so the icons are served.
+`/favicon.ico` reaches WordPress when no such file sits in the site root. `murtadd_serve_favicon()` answers it on `template_redirect` (priority 0, so HEAD is covered) and `do_faviconico` with `assets/icons/favicon.ico`, `Cache-Control: public, max-age=86400` and an ETag, with a 304 on a match. The manifest is a static file with relative icon paths. Its `theme_color` stays at the default accent, #0f6e56, while the page's `theme-color` follows the Colours setting; a site with another accent can edit the file, and a later release may build it from the setting. The theme `.htaccess` refuses dot entries, Markdown, Composer and PHPUnit files and the development folders only, so the icons are served.
 
 ## Setup
 
