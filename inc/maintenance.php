@@ -242,9 +242,10 @@ function murtadd_dropins_stamp() {
 
 /**
  * Whether this site writes the shared drop-ins: the main site, or on a
- * network whose main site runs another theme, any site that runs this one.
- * A subsite then puts back files removed while it was switching to the
- * theme, when another site switched away at the same moment.
+ * network whose main site runs another theme, the one site with the lowest
+ * ID that runs this one (murtadd_dropins_first_theme_site()). That subsite
+ * then puts back files removed while it was switching to the theme, when
+ * another site switched away at the same moment.
  *
  * @return bool
  */
@@ -295,8 +296,8 @@ function murtadd_dropins_first_theme_site() {
  * Install, refresh or remove the drop-ins as the Upkeep switch says. Runs for
  * an administrator in wp-admin only: a write into wp-content belongs to the
  * owner, and two visitors' requests must never write the same file at once.
- * On a network the main site writes, since wp-content is shared, or a
- * subsite that runs the theme when the main site does not.
+ * On a network the main site writes, since wp-content is shared, or, when
+ * the main site runs another theme, the lowest-ID subsite that runs this one.
  *
  * @param bool $force Rewrite even when nothing has changed.
  */

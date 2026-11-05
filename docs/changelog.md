@@ -1,5 +1,16 @@
 # Changelog — Murtadd
 
+## 1.55.6 (2026-11-05)
+
+### Changed
+- The home page reads as one story: the claim, the reader's question, help for a reader who cannot name it, the questions underneath, then the footer's next steps. The sections were already in that order and stay there. `docs/readme.md` sets out each step and its job.
+- The hero lede is two sentences and drops its dash. The doubt grid gains a one-line lede (`.murtadd-section-lede`, in `main.css` and `main.min.css`). The cross-link block's heading reads "When the doubt runs deeper", with a line that names what each card answers (the older questions, such as whether God exists, and the arguments made against Islam), true with one card or both. `languages/murtadd.pot` carries the new strings.
+- The docblocks of `murtadd_dropins_writer()` and `murtadd_maybe_install_dropins()` said any subsite that runs the theme writes the drop-ins when the main site runs another. Since 1.55.5 only the lowest-ID one does, and they say so.
+- `docs/readme.md` named version 1.55.1; it names 1.55.6.
+
+### Fixed
+- axe reported two moderate findings on every page. The site sidebar and the starting-point card were both unnamed `<aside>` landmarks (landmark-unique): the sidebar is now labelled "Site menu and search" and the card takes its heading as its name (`aria-labelledby`). The reading progress bar was added at the end of `<body>`, outside every landmark (region): `progress.js` and its `.min` pair now put it first in `<main>`, and `progress.css` and its `.min` pair undo the measure `<main>` sets on its children, so the bar still spans the viewport. axe reports no violations on the home page at 1280 and 375 pixels, nor on Start Here, a doubt category or a rebuttal. `tests/AssetsTest.php` checks all four changes.
+
 ## 1.55.5 (2026-11-05)
 
 ### Changed

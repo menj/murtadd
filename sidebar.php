@@ -10,7 +10,7 @@ defined( 'ABSPATH' ) || exit;
 
 $murtadd_start = get_page_by_path( 'start-here' );
 ?>
-<aside class="murtadd-sidebar">
+<aside class="murtadd-sidebar" aria-label="<?php esc_attr_e( 'Site menu and search', 'murtadd' ); ?>">
 	<div class="murtadd-brand">
 		<?php murtadd_the_logo( 'on-dark' ); ?>
 		<span class="murtadd-tagline"><?php esc_html_e( 'before you decide', 'murtadd' ); ?></span>

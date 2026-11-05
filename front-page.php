@@ -1,6 +1,9 @@
 <?php
 /**
- * Front page — hero, doubt category grid, cross-link block, four-column footer.
+ * Front page, told as one story (docs/readme.md, "The home page as a story"):
+ * the claim (hero), the reader's question (the doubt category grid), help
+ * for a reader who cannot name it yet (the starting-point card), the
+ * questions underneath (the cross-link block), then the four-column footer.
  *
  * @package murtadd
  */
@@ -12,7 +15,7 @@ get_header();
 
 <section class="murtadd-hero">
 	<h1><?php esc_html_e( 'Doubts, taken seriously.', 'murtadd' ); ?></h1>
-	<p><?php esc_html_e( 'Honest, sourced answers to the questions that shake faith — stated fairly, answered without dismissal, and linked to the scholarship behind them.', 'murtadd' ); ?></p>
+	<p><?php esc_html_e( 'Honest, sourced answers to the questions that shake faith. Each doubt is stated fairly and answered without dismissal, with the scholarship behind the answer linked.', 'murtadd' ); ?></p>
 </section>
 
 <section class="murtadd-category-grid-wrap">
@@ -20,6 +23,7 @@ get_header();
 		<h2 class="murtadd-kicker"><?php esc_html_e( 'Where does your doubt start?', 'murtadd' ); ?></h2>
 		<a class="murtadd-more" href="<?php echo esc_url( get_post_type_archive_link( 'murtadd_doubt' ) ); ?>"><?php esc_html_e( 'All doubts →', 'murtadd' ); ?></a>
 	</div>
+	<p class="murtadd-section-lede"><?php esc_html_e( 'Pick the door nearest your doubt. Each one opens on the doubts filed there, with a short answer to each.', 'murtadd' ); ?></p>
 	<div class="murtadd-category-grid">
 		<?php
 		$murtadd_cats = murtadd_doubt_categories_ordered();
@@ -41,9 +45,9 @@ if ( $murtadd_ce || $murtadd_bismika ) :
 	?>
 	<section class="murtadd-crosslinks">
 		<div class="murtadd-section-head murtadd-section-head--center">
-			<h2 class="murtadd-heading-caps"><?php esc_html_e( 'This site gives the short answer', 'murtadd' ); ?></h2>
+			<h2 class="murtadd-heading-caps"><?php esc_html_e( 'When the doubt runs deeper', 'murtadd' ); ?></h2>
 			<span class="murtadd-rule" aria-hidden="true"></span>
-			<p><?php esc_html_e( 'This site answers what is said against Islam. These two carry the arguments it sits on top of.', 'murtadd' ); ?></p>
+			<p><?php esc_html_e( 'Some doubts rest on older questions, such as whether God exists at all; others on arguments made against Islam. Each site below answers one of them at length.', 'murtadd' ); ?></p>
 		</div>
 		<div class="murtadd-crosslink-cards">
 			<?php

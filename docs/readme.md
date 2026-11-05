@@ -7,7 +7,7 @@ A classic-template child theme of Twenty Twenty-Five for **murtadd.org**.
 | Theme slug | `murtadd` |
 | Text domain | `murtadd` |
 | Parent | `twentytwentyfive` |
-| Version | 1.55.1 |
+| Version | 1.55.6 |
 | Author | Langgam Fikir Enterprise |
 | Licence | GPLv2 or later |
 | Requires WP | 6.4+ |
@@ -22,6 +22,20 @@ A shared **Topic** taxonomy spans all three. A locked four-term **Doubt Category
 The theme ships its own content: 12 Doubts and 17 Rebuttals, published on activation with their claims, sources, topics, categories, and cross-links already wired.
 
 Long-form **Guides** (`/guides/`) are a post type of their own. The **Journal** (`/journal/`) holds dated standard posts, seeded from `inc/data/seed/journal.json` by `inc/seed-journal.php` with fixed dates: a past date is published and a future one is scheduled.
+
+## The home page as a story
+
+`front-page.php` reads as one path for a reader who arrives carrying a doubt. Each section answers the question the one before it leaves open.
+
+| Step | Section | Its job |
+| --- | --- | --- |
+| 1 | Hero, "Doubts, taken seriously." | The claim: every doubt is stated fairly and answered from sources. |
+| 2 | "Where does your doubt start?" (the four-door doubt category grid) | The reader's question. A one-line lede says what each door opens on. |
+| 3 | "Not sure where to start?" (the starting-point card, `template-parts/cards/card-quiz.php`) | Help for a reader who cannot name the doubt yet. |
+| 4 | "When the doubt runs deeper" (the two cross-link cards) | The older questions some doubts rest on, at length elsewhere. |
+| 5 | Footer columns (Browse, Topics, Site) | The next step: the Journal, the doubts, the rebuttals and the site pages. |
+
+The order already ran this way; 1.55.6 rewrote the headings and lines to read as steps. Sections 3 and 4 hide as their settings say (Linked sites tab). Keep a new home-page section inside this path, and write its heading as the step it takes.
 
 ## Directory structure
 

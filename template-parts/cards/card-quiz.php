@@ -14,8 +14,8 @@ if ( '' === $murtadd_quiz ) {
 	return;
 }
 ?>
-<aside class="murtadd-quiz-card">
-	<h2 class="murtadd-quiz-card__title"><?php esc_html_e( 'Not sure where to start?', 'murtadd' ); ?></h2>
+<aside class="murtadd-quiz-card" aria-labelledby="murtadd-quiz-card-title">
+	<h2 class="murtadd-quiz-card__title" id="murtadd-quiz-card-title"><?php esc_html_e( 'Not sure where to start?', 'murtadd' ); ?></h2>
 	<p class="murtadd-quiz-card__body"><?php esc_html_e( 'A few quick questions can point you to a reading path that fits where you are. There are no right answers, and your answers stay on your device.', 'murtadd' ); ?></p>
 	<a class="murtadd-btn murtadd-quiz-card__btn" href="<?php echo esc_url( $murtadd_quiz ); ?>" aria-label="<?php esc_attr_e( 'Find your starting point: a short quiz on Compelling Evidence that suggests a reading path', 'murtadd' ); ?>"><?php esc_html_e( 'Find your starting point', 'murtadd' ); ?></a>
 </aside>

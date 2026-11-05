@@ -1,5 +1,9 @@
 # Upgrading — Murtadd
 
+## 1.55.5 → 1.55.6
+
+Drop-in. Upload the whole theme folder. Nothing to run. A translation of the theme needs the three changed home-page strings, the new lede and the sidebar's label ("Site menu and search") translated.
+
 ## 1.55.4 → 1.55.5
 
 Upload the whole theme folder. The first admin page writes the copies of the static error pages into `wp-content/murtadd-errors/`. If `.htaccess` carries the old `ErrorDocument` lines, which point at the theme's `errors/` folder, replace them with the lines from the Upkeep tab. The old lines still work on a site at the domain root.

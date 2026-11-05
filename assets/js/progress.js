@@ -21,7 +21,11 @@
 	var fill = document.createElement( 'span' );
 	fill.className = 'murtadd-progress-fill';
 	bar.appendChild( fill );
-	document.body.appendChild( bar );
+	// Inside the main landmark, so every piece of the page sits in a landmark
+	// (axe: region). The bar is fixed to the viewport, so where it sits in the
+	// document does not move it.
+	var host = document.getElementById( 'murtadd-content' ) || document.body;
+	host.insertBefore( bar, host.firstChild );
 
 	var ticking = false;
 
