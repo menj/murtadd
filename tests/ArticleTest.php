@@ -61,6 +61,15 @@ final class ArticleTest extends TestCase {
 		$this->assertSame( array( 'murtadd-sources-2', 'murtadd-related-title-2' ), $ids );
 	}
 
+	public function test_a_clashing_author_id_is_replaced() {
+		$html = '<h2 id="murtadd-sources">Where to look</h2><h2 id="twice">One</h2><h2 id="twice">Two</h2>';
+		$this->assertSame( array( 'where-to-look', 'twice', 'two' ), array_column( murtadd_article_headings( $html ), 0 ) );
+		$out = murtadd_article_heading_ids( $html );
+		$this->assertStringNotContainsString( 'id="murtadd-sources"', $out, 'The sources panel keeps its id to itself.' );
+		$this->assertSame( 1, substr_count( $out, 'id="twice"' ) );
+		$this->assertStringContainsString( '<h2 id="two">Two</h2>', $out, 'The clashing id is replaced, not doubled.' );
+	}
+
 	public function test_mid_step_goes_before_the_third_heading_only() {
 		$out = murtadd_article_insert_mid( self::BODY, '<div class="x">step</div>' );
 		$this->assertSame( strpos( $out, '<div class="x">' ) + strlen( '<div class="x">step</div>' ), strpos( $out, '<h2>The man at the head of them</h2><p>C.' ) );

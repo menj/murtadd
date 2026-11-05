@@ -102,8 +102,8 @@ function murtadd_article_reserved_ids() {
 
 /**
  * The level-two headings of some markup, in order: the author's own id where
- * a heading has one, else one made from its text. The author's ids are
- * reserved first, so a made id never repeats one.
+ * a heading has one that is free, else one made from its text. The page's
+ * own ids and the author's free ids are reserved first, so no id repeats.
  *
  * @param string $html Stored or rendered text.
  * @return array<int,array{0:string,1:string,2:bool}> Id, text, whether the author set the id.
@@ -116,7 +116,9 @@ function murtadd_article_heading_list( $html ) {
 	$seen = array_fill_keys( murtadd_article_reserved_ids(), true );
 	$own  = array();
 	foreach ( $found as $i => $m ) {
-		if ( preg_match( '/\sid\s*=\s*["\']([^"\']+)["\']/i', (string) ( $m[1] ?? '' ), $idm ) ) {
+		// An id the author set is kept unless one of the page's pieces or an
+		// earlier heading already has it; then the heading gets a made one.
+		if ( preg_match( '/\sid\s*=\s*["\']([^"\']+)["\']/i', (string) ( $m[1] ?? '' ), $idm ) && ! isset( $seen[ $idm[1] ] ) ) {
 			$own[ $i ]       = $idm[1];
 			$seen[ $idm[1] ] = true;
 		}
@@ -162,7 +164,9 @@ function murtadd_article_heading_ids( $html ) {
 			if ( $h[2] || '' === $h[0] ) {
 				return $m[0];
 			}
-			return '<h2 id="' . esc_attr( $h[0] ) . '"' . (string) ( $m[1] ?? '' ) . '>' . $m[2] . '</h2>';
+			// A clashing id of the author's own is replaced, never doubled.
+			$attrs = (string) preg_replace( '/\s+id\s*=\s*(["\'])[^"\']*\1/i', '', (string) ( $m[1] ?? '' ) );
+			return '<h2 id="' . esc_attr( $h[0] ) . '"' . $attrs . '>' . $m[2] . '</h2>';
 		},
 		(string) $html
 	);
