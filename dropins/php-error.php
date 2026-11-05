@@ -7,8 +7,11 @@
 $murtadd_e        = error_get_last();
 $murtadd_message  = is_array( $murtadd_e ) ? (string) $murtadd_e['message'] : '';
 $murtadd_file     = is_array( $murtadd_e ) ? (string) $murtadd_e['file'] : '';
+// Only the file and the first line of the message count: the stack trace
+// below it names wp-includes/ for any fatal raised through a hook.
+$murtadd_head     = strtok( $murtadd_message, "\n" );
 $murtadd_updating = '' !== $murtadd_message
-	&& preg_match( '~/(wp-content/themes/|wp-content/plugins/|wp-includes/|wp-admin/)~', $murtadd_file . ' ' . $murtadd_message )
+	&& preg_match( '~/(wp-content/themes/|wp-content/plugins/|wp-includes/|wp-admin/)~', $murtadd_file . ' ' . preg_replace( '~ in /\S+:\d+$~', '', (string) $murtadd_head ) )
 	&& preg_match( '~Failed opening required|No such file or directory|syntax error|Unclosed|Unterminated|unexpected end of file|Call to undefined (function|method)|Class "[^"]+" not found~', $murtadd_message );
 if ( ! headers_sent() ) {
 	if ( $murtadd_updating ) {

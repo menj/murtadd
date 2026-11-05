@@ -81,6 +81,34 @@ function murtadd_dropin_is_ours( $path ) {
 }
 
 /**
+ * Whether a file is a leftover of one of the owner's sister themes, which
+ * mark every drop-in "Written by the ... theme; safe to delete". Such a file
+ * may be replaced at install time. A file with no such mark is never touched,
+ * and only the theme's own files are removed when it is switched off.
+ *
+ * @param string $path File path.
+ * @return bool
+ */
+function murtadd_dropin_is_sibling( $path ) {
+	if ( ! is_readable( $path ) ) {
+		return false;
+	}
+	$head = (string) file_get_contents( $path, false, null, 0, 400 ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+	return (bool) preg_match( '/Written by the [A-Za-z0-9 .\'-]{1,40} theme; safe to delete/', $head );
+}
+
+/**
+ * Whether the installer may write over a file: the theme's own, or a sister
+ * theme's marked leftover.
+ *
+ * @param string $path File path.
+ * @return bool
+ */
+function murtadd_dropin_is_replaceable( $path ) {
+	return murtadd_dropin_is_ours( $path ) || murtadd_dropin_is_sibling( $path );
+}
+
+/**
  * The text the theme writes for one file, with its placeholders filled.
  *
  * @param string $name Target name, a key of murtadd_dropin_files().
@@ -133,7 +161,7 @@ function murtadd_install_dropins( $dir ) {
 	$result = array();
 	foreach ( array_keys( murtadd_dropin_files() ) as $name ) {
 		$target = rtrim( $dir, '/' ) . '/' . $name;
-		if ( file_exists( $target ) && ! murtadd_dropin_is_ours( $target ) ) {
+		if ( file_exists( $target ) && ! murtadd_dropin_is_replaceable( $target ) ) {
 			$result[ $name ] = 'kept';
 			continue;
 		}
@@ -261,7 +289,7 @@ add_action( 'switch_theme', 'murtadd_dropins_on_switch' );
 function murtadd_error_htaccess_snippet() {
 	$base  = untrailingslashit( (string) wp_parse_url( get_stylesheet_directory_uri(), PHP_URL_PATH ) ) . '/errors/';
 	$lines = array( '# Murtadd: pages for the errors the web server answers before WordPress runs' );
-	foreach ( array( 403, 500, 502, 503 ) as $code ) {
+	foreach ( array( 403, 500, 502, 503, 504 ) as $code ) {
 		$lines[] = 'ErrorDocument ' . $code . ' ' . $base . $code . '.html';
 	}
 	return implode( "\n", $lines );

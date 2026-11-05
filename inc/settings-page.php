@@ -1183,7 +1183,7 @@ function murtadd_render_dropins_status() {
 		</form>
 	<?php endif; ?>
 	<p class="description"><?php esc_html_e( 'For the errors the web server answers before WordPress starts, static pages are in the errors folder of the theme. Add these lines to .htaccess to use them:', 'murtadd' ); ?></p>
-	<textarea readonly rows="5" class="large-text code" aria-label="<?php esc_attr_e( '.htaccess lines', 'murtadd' ); ?>"><?php echo esc_textarea( murtadd_error_htaccess_snippet() ); ?></textarea>
+	<textarea readonly rows="6" class="large-text code" aria-label="<?php esc_attr_e( '.htaccess lines', 'murtadd' ); ?>"><?php echo esc_textarea( murtadd_error_htaccess_snippet() ); ?></textarea>
 	<?php
 	murtadd_admin_card_close();
 }
