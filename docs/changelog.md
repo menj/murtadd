@@ -3,7 +3,9 @@
 ## 1.55.4 (2026-11-05)
 
 ### Fixed
-- On a network, switching the main site to another theme deleted the shared drop-ins while a subsite still ran Murtadd. `murtadd_dropins_on_switch()` now skips the removal when `murtadd_dropins_in_use_elsewhere()` finds another site, among the first 500 from `get_sites()`, whose `stylesheet` or `template` option names the theme.
+- On a network, switching the main site to another theme deleted the shared drop-ins while a subsite still ran Murtadd. `murtadd_dropins_on_switch()` now skips the removal when `murtadd_dropins_in_use_elsewhere()` finds another site, whose `stylesheet` or `template` option names the theme. It reads the sites from `get_sites()` 500 at a time until the list runs out.
+- On a network whose main site had already switched away, the last subsite to leave Murtadd left the drop-ins behind. Whichever site is the last to run the theme now removes the theme's own files.
+- A subsite that switched to Murtadd while another site switched away could lose the drop-ins with no way to write them back, since only the main site wrote them. `murtadd_dropins_writer()` lets a subsite that runs the theme write them when the main site runs another theme, so its next admin page puts them back.
 - When a sister theme's marked drop-in could not be replaced, the Upkeep tab still read "Another file is there; left alone", since `murtadd_dropin_state()` calls such a file `kept`. `murtadd_render_dropins_status()` now shows the saved `failed` for a `kept` file that `murtadd_dropin_is_replaceable()` accepts.
 
 ## 1.55.3 (2026-11-05)

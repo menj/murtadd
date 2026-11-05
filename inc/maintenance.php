@@ -209,15 +209,33 @@ function murtadd_dropins_stamp() {
 }
 
 /**
+ * Whether this site writes the shared drop-ins: the main site, or on a
+ * network whose main site runs another theme, any site that runs this one.
+ * A subsite then puts back files removed while it was switching to the
+ * theme, when another site switched away at the same moment.
+ *
+ * @return bool
+ */
+function murtadd_dropins_writer() {
+	if ( ! is_multisite() || is_main_site() ) {
+		return true;
+	}
+	$slug = basename( dirname( __DIR__ ) );
+	$main = get_main_site_id();
+	return ! in_array( $slug, array( get_blog_option( $main, 'stylesheet' ), get_blog_option( $main, 'template' ) ), true );
+}
+
+/**
  * Install, refresh or remove the drop-ins as the Upkeep switch says. Runs for
  * an administrator in wp-admin only: a write into wp-content belongs to the
  * owner, and two visitors' requests must never write the same file at once.
- * On a network only the main site writes, since wp-content is shared.
+ * On a network the main site writes, since wp-content is shared, or a
+ * subsite that runs the theme when the main site does not.
  *
  * @param bool $force Rewrite even when nothing has changed.
  */
 function murtadd_maybe_install_dropins( $force = false ) {
-	if ( ! is_admin() || wp_doing_ajax() || ! current_user_can( 'manage_options' ) || ( is_multisite() && ! is_main_site() ) ) {
+	if ( ! is_admin() || wp_doing_ajax() || ! current_user_can( 'manage_options' ) || ! murtadd_dropins_writer() ) {
 		return;
 	}
 	if ( ! murtadd_upkeep( 'error_pages' ) ) {
@@ -255,7 +273,7 @@ function murtadd_handle_write_dropins() {
 		wp_die( esc_html__( 'You are not allowed to do that.', 'murtadd' ), 403 );
 	}
 	check_admin_referer( 'murtadd_write_dropins' );
-	if ( is_multisite() && ! is_main_site() ) {
+	if ( ! murtadd_dropins_writer() ) {
 		wp_safe_redirect( add_query_arg( array( 'page' => 'murtadd', 'tab' => 'upkeep' ), admin_url( 'themes.php' ) ) );
 		exit;
 	}
@@ -268,7 +286,8 @@ add_action( 'admin_post_murtadd_write_dropins', 'murtadd_handle_write_dropins' )
 /**
  * Whether another site of the network still runs this theme, as its
  * stylesheet or its template. The drop-ins in the shared wp-content then
- * stay. At most 500 sites are checked.
+ * stay. Sites are read 500 at a time, so a large network is checked in
+ * full without loading every site at once.
  *
  * @return bool
  */
@@ -276,19 +295,24 @@ function murtadd_dropins_in_use_elsewhere() {
 	if ( ! is_multisite() ) {
 		return false;
 	}
-	$slug = basename( dirname( __DIR__ ) );
-	$ids  = get_sites(
-		array(
-			'fields'       => 'ids',
-			'number'       => 500,
-			'site__not_in' => array( get_current_blog_id() ),
-		)
-	);
-	foreach ( $ids as $id ) {
-		if ( in_array( $slug, array( get_blog_option( $id, 'stylesheet' ), get_blog_option( $id, 'template' ) ), true ) ) {
-			return true;
+	$slug   = basename( dirname( __DIR__ ) );
+	$offset = 0;
+	do {
+		$ids = get_sites(
+			array(
+				'fields'       => 'ids',
+				'number'       => 500,
+				'offset'       => $offset,
+				'site__not_in' => array( get_current_blog_id() ),
+			)
+		);
+		foreach ( $ids as $id ) {
+			if ( in_array( $slug, array( get_blog_option( $id, 'stylesheet' ), get_blog_option( $id, 'template' ) ), true ) ) {
+				return true;
+			}
 		}
-	}
+		$offset += 500;
+	} while ( 500 === count( $ids ) );
 	return false;
 }
 
@@ -297,7 +321,10 @@ function murtadd_dropins_in_use_elsewhere() {
  * link points into a theme that may no longer be there.
  */
 function murtadd_dropins_on_switch() {
-	if ( ( is_multisite() && ! is_main_site() ) || murtadd_dropins_in_use_elsewhere() ) {
+	// On a network the files are shared: they stay while any other site,
+	// the main site included, still runs the theme. The last site to switch
+	// away removes them, even a subsite.
+	if ( murtadd_dropins_in_use_elsewhere() ) {
 		delete_option( 'murtadd_dropins_stamp' );
 		return;
 	}
