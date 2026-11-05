@@ -16,6 +16,14 @@
 	pointer-events: none;
 }
 
+/* The bar sits first in <main> (a landmark); undo the measure every child
+   of <main> takes, so it still spans the viewport. */
+.murtadd-content > .murtadd-progress {
+	width: auto;
+	max-width: none;
+	margin: 0;
+}
+
 .murtadd-progress--bottom {
 	top: auto;
 	bottom: 0;

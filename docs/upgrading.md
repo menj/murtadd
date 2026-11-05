@@ -2,7 +2,7 @@
 
 ## 1.55.5 → 1.55.6
 
-Drop-in. Upload the whole theme folder. Nothing to run. A translation of the theme needs the three changed home-page strings and the new lede translated again.
+Drop-in. Upload the whole theme folder. Nothing to run. A translation of the theme needs the three changed home-page strings, the new lede and the sidebar's label ("Site menu and search") translated.
 
 ## 1.55.4 → 1.55.5
 

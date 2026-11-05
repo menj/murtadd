@@ -85,6 +85,7 @@ Bundled resources:
 == Changelog ==
 = 1.55.6 =
 * The home page reads as one story, from the claim to the reader's question, the help for a reader who cannot name it, and the questions underneath, with headings that read as steps.
+* The sidebar and the starting-point card are named for screen readers, and the reading progress bar sits inside the main content.
 
 = 1.55.5 =
 * CLAUDE.md and FARUQI.md move into the .claude folder, which the release zip leaves out and the web server never serves.

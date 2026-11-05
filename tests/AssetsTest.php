@@ -139,4 +139,20 @@ final class AssetsTest extends TestCase {
 		$this->assertSame( 1, substr_count( $out, '<footer class="murtadd-site-footer">' ) );
 		$this->assertStringContainsString( '! ( is_front_page() && ! is_home() )', $footer );
 	}
+
+	/** Every complementary landmark has its own name, and the progress bar sits inside <main> (axe: landmark-unique, region). */
+	public function test_landmarks_are_named_and_bar_sits_in_main() {
+		$root = dirname( __DIR__ );
+		$this->assertMatchesRegularExpression( '/<aside class="murtadd-sidebar" aria-label="/', (string) file_get_contents( $root . '/sidebar.php' ) );
+		$this->assertStringContainsString( '<aside class="murtadd-quiz-card" aria-labelledby="murtadd-quiz-card-title">', (string) file_get_contents( $root . '/template-parts/cards/card-quiz.php' ) );
+		$this->assertStringContainsString( 'id="murtadd-quiz-card-title"', (string) file_get_contents( $root . '/template-parts/cards/card-quiz.php' ) );
+		foreach ( array( 'progress.js', 'progress.min.js' ) as $file ) {
+			$js = (string) file_get_contents( $root . '/assets/js/' . $file );
+			$this->assertStringContainsString( "host.insertBefore( bar, host.firstChild )", $js, $file );
+			$this->assertStringNotContainsString( 'document.body.appendChild( bar )', $js, $file );
+		}
+		foreach ( array( 'progress.css', 'progress.min.css' ) as $file ) {
+			$this->assertMatchesRegularExpression( '/\.murtadd-content\s*>\s*\.murtadd-progress\s*\{[^}]*max-width:\s*none/', (string) file_get_contents( $root . '/assets/css/' . $file ), $file );
+		}
+	}
 }

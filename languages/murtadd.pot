@@ -2089,6 +2089,10 @@ msgstr ""
 msgid "Search the site…"
 msgstr ""
 
+#: sidebar.php:13
+msgid "Site menu and search"
+msgstr ""
+
 #: sidebar.php:16
 msgid "before you decide"
 msgstr ""
