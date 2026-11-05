@@ -14,6 +14,14 @@ An upload straight into the live folder is riskier. While one of the files in `i
 
 Never upload WordPress core to a live folder without `wp-config.php` in place. The installer answers anyone in that state.
 
+## 1.55.8 → 1.55.9
+
+Upload the whole theme folder. The new files are `LICENSE`, `inc/article.php`, `assets/css/article.css` and `assets/css/article.min.css`, and `tests/ArticleTest.php` in a working copy. Nothing needs running.
+
+- The Content tab has a Journal posts card. "In short", the contents and related posts are on; the one-line next step in the text is off.
+- "In short" and the sources show only on a post that has them. Write them in the Journal fields box on the post screen. The seeded posts carry none, so they show the contents, the next step and related posts until you add them.
+- The theme is now under the GNU GPL, version 3 or later.
+
 ## 1.55.7 → 1.55.8
 
 Drop-in. Nothing to run. The release changes documents only.
@@ -484,6 +492,8 @@ Everything below is a plan, open to change. Each item says why it is here. An it
 
 ### Next
 
+- Give guides the Journal post's parts: the contents, "In short" and the next step. Guides share `single.php` with Journal posts, run past 1,500 words and have no contents list; their sources are already in the text, so the panel would repeat them.
+- Key points and sources for the eight seeded Journal posts. They cite al-Bukhari, Muslim and the Qur'an by number in the text, but `inc/data/seed/journal.json` has no field for either, so the new box and panel stay empty on them.
 - Keep the `.htaccess` blocks on a network. `murtadd_sec_remove_htaccess()` takes them out on any theme switch, while another site may still run Murtadd; the error pages already stay.
 - Refuse `wp-admin/includes/*.php` by address as well. "Murtadd: deny direct core files" leaves it out, and the error log shows bots calling `wp-admin/includes/admin.php` directly on 2 November. (`wp-config.php` at the top of the site or of WordPress's folder is already refused by the root-PHP block, which allows only WordPress's entry points.)
 - Refuse the core files on a server without mod_rewrite. Both Murtadd blocks sit inside `<IfModule mod_rewrite.c>`; an Apache 2.4 `<If>` would cover that case.

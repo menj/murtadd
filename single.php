@@ -20,17 +20,33 @@ while ( have_posts() ) :
 			<?php elseif ( get_post_type_archive_link( get_post_type() ) ) : ?>
 				<a class="murtadd-back" href="<?php echo esc_url( get_post_type_archive_link( get_post_type() ) ); ?>">← <?php esc_html_e( 'Back to Guides', 'murtadd' ); ?></a>
 			<?php endif; ?>
-			<div class="murtadd-meta-row murtadd-journal-dateline">
-				<span><?php echo esc_html( get_the_date() ); ?></span>
-				<span>·</span>
-				<span><?php echo esc_html( murtadd_read_time( get_the_content() ) ); ?></span>
-			</div>
+			<?php if ( 'post' === get_post_type() ) : ?>
+				<?php murtadd_article_meta_row(); ?>
+			<?php else : ?>
+				<div class="murtadd-meta-row murtadd-journal-dateline">
+					<span><?php echo esc_html( get_the_date() ); ?></span>
+					<span>·</span>
+					<span><?php echo esc_html( murtadd_read_time( get_the_content() ) ); ?></span>
+				</div>
+			<?php endif; ?>
 			<h1><?php the_title(); ?></h1>
+			<?php
+			if ( 'post' === get_post_type() ) {
+				murtadd_article_dek();
+			}
+			?>
 		</header>
 
 		<?php if ( has_post_thumbnail() ) : ?>
 			<figure class="murtadd-featured"><?php the_post_thumbnail( 'large' ); ?></figure>
 		<?php endif; ?>
+
+		<?php
+		// The Journal post page (inc/article.php): "In short" and the contents before the text.
+		if ( 'post' === get_post_type() ) {
+			echo murtadd_article_answer_box() . murtadd_article_contents(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- built from escaped parts.
+		}
+		?>
 
 		<div class="murtadd-blog-body murtadd-dropcap">
 			<?php the_content(); ?>
@@ -46,6 +62,14 @@ while ( have_posts() ) :
 				<?php endforeach; ?>
 			</div>
 		<?php endif; ?>
+
+		<?php
+		// Sources, then the next step and related posts after the text.
+		if ( 'post' === get_post_type() ) {
+			murtadd_article_sources_panel();
+			echo murtadd_article_next_step( 'end' ) . murtadd_article_related(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- built from escaped parts.
+		}
+		?>
 	</article>
 
 	<?php

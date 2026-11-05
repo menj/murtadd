@@ -2428,3 +2428,153 @@ msgstr ""
 #: inc/search-permalinks.php:316
 msgid "The search base \"%s\" is already an address on this site, so the previous base is kept."
 msgstr ""
+
+#: inc/article.php:213
+msgid "Table"
+msgstr ""
+
+#: inc/article.php:349
+msgid "In short"
+msgstr ""
+
+#. translators: %s: link.
+#: inc/article.php:465
+msgid "A question this post leaves open? %s, and it may become the next answer."
+msgstr ""
+
+#: inc/article.php:466
+msgid "Ask it"
+msgstr ""
+
+#. translators: %s: link.
+#: inc/article.php:471
+msgid "Every claim here can be checked: %s."
+msgstr ""
+
+#: inc/article.php:472
+msgid "see the sources"
+msgstr ""
+
+#: inc/article.php:485
+msgid "Next step"
+msgstr ""
+
+#: inc/article.php:487
+msgid "Next in the Journal"
+msgstr ""
+
+#: inc/article.php:487
+msgid "Earlier in the Journal"
+msgstr ""
+
+#: inc/article.php:492
+msgid "Check the sources"
+msgstr ""
+
+#: inc/article.php:495
+msgid "Ask a question"
+msgstr ""
+
+#: inc/article.php:607
+msgid "More from the Journal"
+msgstr ""
+
+#: inc/article.php:680
+msgid "Questions and answers"
+msgstr ""
+
+#: inc/article.php:681
+msgid "A heading and two questions, each a Details block in the FAQ style. The questions show on the page and feed the FAQPage data."
+msgstr ""
+
+#: inc/article.php:684
+msgid "Questions readers ask"
+msgstr ""
+
+#: inc/article.php:685
+msgid "The question, as a reader would ask it"
+msgstr ""
+
+#: inc/article.php:685
+msgid "The answer, in one or two sentences."
+msgstr ""
+
+#: inc/article.php:686
+msgid "A second question"
+msgstr ""
+
+#: inc/article.php:686
+msgid "Its answer."
+msgstr ""
+
+#: inc/article.php:702
+msgid "Journal fields"
+msgstr ""
+
+#: inc/article.php:725
+msgid "Key points, one a line"
+msgstr ""
+
+#: inc/article.php:727
+msgid "Shown in the \"In short\" box under the title. The excerpt shows above it. Leave empty for no box."
+msgstr ""
+
+#: inc/article.php:734
+msgid "Source address"
+msgstr ""
+
+#: inc/settings-page.php:774
+msgid "Journal posts"
+msgstr ""
+
+#: inc/settings-page.php:774
+msgid "The parts around the text of a Journal post. The excerpt shows under the title and the sources under the text whenever a post has them."
+msgstr ""
+
+#: inc/settings-page.php:776
+msgid "\"In short\" box"
+msgstr ""
+
+#: inc/settings-page.php:780
+msgid "Show the key points under the title"
+msgstr ""
+
+#: inc/settings-page.php:781
+msgid "Written in the Journal fields box on the post screen, one a line. A post without key points shows no box."
+msgstr ""
+
+#: inc/settings-page.php:784
+msgid "Contents"
+msgstr ""
+
+#: inc/settings-page.php:788
+msgid "List the sections before the text"
+msgstr ""
+
+#: inc/settings-page.php:789
+msgid "Built from the level-two headings, on posts with three or more."
+msgstr ""
+
+#: inc/settings-page.php:792
+msgid "Next step in the text"
+msgstr ""
+
+#: inc/settings-page.php:796
+msgid "Add one line before the third heading"
+msgstr ""
+
+#: inc/settings-page.php:797
+msgid "It invites a question through the Contact page, or points to the sources. The next step after the text always shows."
+msgstr ""
+
+#: inc/settings-page.php:800
+msgid "Related posts"
+msgstr ""
+
+#: inc/settings-page.php:804
+msgid "Show three more posts from the Journal"
+msgstr ""
+
+#: inc/settings-page.php:805
+msgid "Posts that share a topic, a tag or a category come first, then the newest."
+msgstr ""

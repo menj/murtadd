@@ -3,9 +3,9 @@ Contributors: murtadd.org
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.1
-Stable tag: 1.55.8
-License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Stable tag: 1.55.9
+License: GNU General Public License v3 or later
+License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
 Doubts, taken seriously. A child theme of Twenty Twenty-Five: short answers to doubts, rebuttals of circulated claims, and an on-site fatwa index.
 
@@ -18,7 +18,7 @@ The parent supplies the block library styles. Every front-end view is a PHP temp
 * Doubts: short answers, grouped into four fixed categories (intellectual, scriptural, emotional, identity) that drive the home page grid.
 * Rebuttals: the claim, the answer and its sources, with a table of contents and a reading-progress bar.
 * Fatwa index: positions by scholar or body, filterable by school, topic and era with a plain GET form.
-* Guides at /guides/ and a Journal of dated posts at /journal/.
+* Guides at /guides/ and a Journal of dated posts at /journal/. A Journal post shows its excerpt under the title, an "In short" box, a list of its sections, its sources, a next step and related posts.
 * Letters: an archive of past correspondence, kept outside search and the home page.
 * JSON-LD for every view (QAPage, FAQPage, Article, BlogPosting, BreadcrumbList and more), handed to Rank Math's graph when Rank Math is active.
 * Contextual links from the first mention of a subject to the page that treats it, here or on another site, and a glossary of Arabic and Malay terms.
@@ -60,7 +60,7 @@ docs/upgrading.md has a note for each version and says what is planned next. It 
 Everything is at Appearance, Theme Options. Pick a tab, or use the arrow keys on the tab row; each tab saves on its own.
 
 * Setup: shows which pages, menus and starter entries exist, and creates anything missing.
-* Content: the soft word cap for a doubt's short answer, the "If you are struggling" notice, breadcrumbs, the glossary, the scripture box in the rail, the fatwa index's default order (three cards), the contact form's recipient, the footer note, the reading progress bar and readable search addresses.
+* Content: the soft word cap for a doubt's short answer, the "If you are struggling" notice, breadcrumbs, the glossary, the scripture box in the rail, the fatwa index's default order (three cards), the contact form's recipient, the footer note, the parts of a Journal post ("In short", the contents, a one-line next step in the text, related posts), the reading progress bar and readable search addresses.
 * Topics & schools: links to the WordPress screens for topics and schools. The 4 doubt categories are locked.
 * Linked sites: the Compelling Evidence address, the counterpart link, the "Not sure where to start?" card, and the polemics address.
 * Contextual links: switches for links to this site and to other sites, sliders for how many a page gets, extra phrases and pages to skip.
@@ -71,6 +71,9 @@ Everything is at Appearance, Theme Options. Pick a tab, or use the arrow keys on
 * Docs: the manual in docs/, rendered in the admin.
 
 == Frequently Asked Questions ==
+= Where do I write a Journal post's key points and sources? =
+In the Journal fields box on the post screen. Key points go one a line and show in the "In short" box. Each source needs its citation text; the address is optional.
+
 = I set a private login address and cannot log in. =
 Add define( 'MURTADD_HIDE_LOGIN', false ); to wp-config.php, log in at wp-login.php, clear the address on the Security tab, then remove the line.
 
@@ -99,7 +102,7 @@ The theme loads nothing from another server. Fonts, icons and scripts ship insid
 
 == Copyright ==
 Murtadd WordPress Theme, Copyright (C) 2026 Langgam Fikir Enterprise.
-Murtadd is distributed under the terms of the GNU GPL v2 or later (license.txt).
+Murtadd is distributed under the terms of the GNU General Public License v3 or later. The full text is in the LICENSE file, and license.txt lists the bundled fonts.
 
 Bundled resources:
 * Source Serif 4, Copyright 2014-2023 Adobe, SIL Open Font License 1.1. Source: https://github.com/adobe-fonts/source-serif (assets/fonts/OFL-SourceSerif4.md).
@@ -108,9 +111,14 @@ Bundled resources:
 * Parsedown 1.8.0, Copyright 2013-2018 Emanuil Rusev, MIT. Source: https://github.com/erusev/parsedown (vendor/parsedown/LICENSE.txt).
 * Unlisting, readable search addresses and the reading progress bar options are adapted from Unlist Posts & Pages by Nikhil Chavan, Pretty Search Permalinks by Angel Costa and Reading Progress Bar by Jean-Baptiste Audras, all GPLv2 or later.
 * Social icons (assets/icons/social): Simple Icons, CC0 1.0 (https://simpleicons.org); LinkedIn, Scribd and ORCID from Font Awesome Free, CC BY 4.0 (https://fontawesome.com); SoundCloud from IcoMoon Free, CC BY 4.0 or GPL (https://icomoon.io); WordPress from Bootstrap Icons, MIT (https://icons.getbootstrap.com); ISNI, VIAF, Suno and OCLC Entities redrawn for the pack. Details in assets/icons/social/PACK-README.txt.
-* The site icon, the pixel book and envelope images, the calligraphy in assets/images and screenshot.png were made for this theme and are GPL v2 or later with it.
+* The site icon, the pixel book and envelope images, the calligraphy in assets/images and screenshot.png were made for this theme and are GPL v3 or later with it.
 
 == Changelog ==
+= 1.55.9 =
+* A Journal post shows its excerpt under the title, "Last reviewed" once it is edited later, an "In short" box with its key points, a list of its sections, its sources, a next step (the next post, the sources or a question) and three related posts.
+* Tables in a post scroll on a phone. A FAQ style for Details blocks, with a pattern.
+* The theme is now licensed under the GNU General Public License, version 3 or later. The full text is in the LICENSE file.
+
 = 1.55.8 =
 * Documentation only. The readme covers updating over FTP, the overview gains the technical reference (boot, commands, options, filters, constants, server rules with their Nginx form), and the upgrade notes gain a roadmap. The counts of shipped entries are corrected.
 
@@ -204,6 +212,9 @@ Bundled resources:
 See docs/changelog.md for earlier releases.
 
 == Upgrade Notice ==
+= 1.55.9 =
+Upload the whole theme folder. Nothing else needs doing. The new parts of a Journal post are on the Content tab, under Journal posts; key points and sources are written on the post screen.
+
 = 1.55.8 =
 Documentation only. Nothing needs doing.
 
