@@ -3,7 +3,7 @@
  * Remote-publishing lockdown, spam gate, clean-up tools and 410 Gone for
  * removed spam: Appearance, Theme Options, Security.
  *
- * Ported from the sister theme Abrahamic (2.87.0), written after an attack on
+ * Ported from the Abrahamic theme (2.87.0), written after an attack on
  * abrahamic-religions.com in October 2026: password guessing through
  * xmlrpc.php from 701 rotating addresses under forged "Jetpack by
  * WordPress.com" user agents, a correct password found, then a casino post
@@ -93,7 +93,7 @@ add_action( 'after_setup_theme', 'murtadd_sec_xmlrpc_gate', 1 );
 
 /**
  * Lines that deny xmlrpc.php at the web server, for Apache 2.4 and 2.2. The
- * marker name is shared by the sister themes, so switching between them never
+ * marker name is shared by the seven themes, so switching between them never
  * writes the block twice.
  *
  * @return string[]
@@ -346,7 +346,7 @@ add_action( 'update_option_murtadd_security', 'murtadd_sec_sync_htaccess_now' );
 add_action( 'add_option_murtadd_security', 'murtadd_sec_sync_htaccess_now' );
 
 /**
- * Take the block out when the site moves to another theme. A sister theme
+ * Take the block out when the site moves to another theme. Another of the seven themes
  * writes the same block back on its first admin load.
  */
 function murtadd_sec_remove_htaccess() {

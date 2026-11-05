@@ -2,11 +2,11 @@
 /**
  * Contextual links: in the running text of a single entry, the first mention
  * of a known phrase links to the inner page that treats it, on this site or
- * on one of the six sister sites.
+ * on one of the six other sites.
  *
  * The phrases live in inc/data/network-links.json, a shared file kept
  * byte-for-byte identical across all seven themes. Entries owned by this site
- * resolve through home_url(), so staging links stay on staging; sister entries
+ * resolve through home_url(), so staging links stay on staging; entries for the other sites
  * resolve against the map's own `sites` table. Extra lines from Appearance →
  * Murtadd → Contextual links are tried before the map, so they win.
  *

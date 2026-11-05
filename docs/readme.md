@@ -7,7 +7,7 @@ A classic-template child theme of Twenty Twenty-Five for **murtadd.org**.
 | Theme slug | `murtadd` |
 | Text domain | `murtadd` |
 | Parent | `twentytwentyfive` |
-| Version | 1.55.10 |
+| Version | 1.55.11 |
 | Author | Langgam Fikir Enterprise |
 | Licence | GNU General Public License v3 or later; the full text is in `LICENSE` |
 | Requires WP | 6.4+ |
@@ -300,7 +300,7 @@ On a network every site shares `wp-content`. The main site writes the files; whi
 
 `inc/site-icon.php` prints `site-icon-32.png`, `site-icon-192.png`, `site-icon.svg`, `apple-touch-icon.png` and `site.webmanifest` on `wp_head`, `admin_head` and `login_head` while `has_site_icon()` is false, and `theme-color` (the Colours accent) on `wp_head` and `login_head`. With a core Site Icon, core prints its own tags.
 
-`/favicon.ico` reaches WordPress when no such file sits in the site root. `murtadd_serve_favicon()` answers it on `template_redirect` (priority -1, ahead of maintenance mode, so HEAD and a site in maintenance are covered; with a Site Icon it redirects there for every method) and `do_faviconico` with `assets/icons/favicon.ico`, `Cache-Control: public, max-age=86400` and an ETag, with a 304 on a match. The manifest is a static file with relative icon paths. Its `theme_color` stays at the default accent, #0f6e56, while the page's `theme-color` follows the Colours setting; a site with another accent can edit the file, and a later release may build it from the setting. The theme `.htaccess` refuses dot entries, Markdown, Composer and PHPUnit files and the development folders only, so the icons are served.
+`/favicon.ico` reaches WordPress when no such file sits in the site root. `murtadd_serve_favicon()` answers it on `template_redirect` (priority -1, ahead of maintenance mode, so HEAD and a site in maintenance are covered; with a Site Icon it redirects there for every method) and `do_faviconico` with `assets/icons/favicon.ico`, `Cache-Control: public, max-age=86400` and an ETag, with a 304 on a match. The manifest is a static file with relative icon paths. Its `theme_color` stays at the default accent, #0f6e56, while the page's `theme-color` follows the Colours setting; a site with another accent can edit the file, and a later release may build it from the setting. The theme `.htaccess` refuses dot entries, Markdown, Composer and PHPUnit files and the development folders only, so the icons are served. On a site in a subfolder, such as `example.com/blog/`, browsers still ask for `example.com/favicon.ico`, which WordPress never sees: put a copy of `assets/icons/favicon.ico` at the domain root there. The head tags cover the pages either way. If a Site Icon is set, put that icon there as favicon.ico instead.
 
 ## Setup
 

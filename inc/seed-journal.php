@@ -3,7 +3,7 @@
  * The Journal: dated posts at /journal/, and the page that holds them.
  *
  * Guides stay a post type of their own (inc/cpt-guide.php): they are
- * evergreen and the sister sites link to fixed addresses. The Journal holds
+ * evergreen and the other sites link to fixed addresses. The Journal holds
  * what is dated: standard posts, rendered by home.php and single.php, listed
  * on the posts page, which is the "journal" page (owner, 2026-11-03).
  *

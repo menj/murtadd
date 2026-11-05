@@ -1642,7 +1642,7 @@ msgid "Links in the running text"
 msgstr ""
 
 #: inc/settings-page.php:857
-msgid "In the running text of a single entry, the first mention of a known phrase links to the page that treats it, on this site or on one of the six sister sites. Links are added as the page renders; stored text is never changed. Headings, quotations, Qur’anic text, Arabic, sources and existing links are never touched, and Emotional and Identity doubts get no links at all."
+msgid "In the running text of a single entry, the first mention of a known phrase links to the page that treats it, on this site or on one of the six other sites. Links are added as the page renders; stored text is never changed. Headings, quotations, Qur’anic text, Arabic, sources and existing links are never touched, and Emotional and Identity doubts get no links at all."
 msgstr ""
 
 #: inc/settings-page.php:859
@@ -1662,15 +1662,15 @@ msgid "a page (0 to 15)"
 msgstr ""
 
 #: inc/settings-page.php:869
-msgid "Links to sister sites"
+msgid "Links to other sites"
 msgstr ""
 
 #: inc/settings-page.php:873
-msgid "Link phrases to the page on a sister site that treats them"
+msgid "Link phrases to the page on another site that treats them"
 msgstr ""
 
 #: inc/settings-page.php:875
-msgid "At most, to sister sites"
+msgid "At most, to other sites"
 msgstr ""
 
 #: inc/settings-page.php:876
@@ -1690,7 +1690,7 @@ msgid "tudung | /rebuttals/the-head-cover-and-modesty/"
 msgstr ""
 
 #: inc/settings-page.php:884
-msgid "One per line: phrase | address. A path such as /rebuttals/slug/ is this site; a full address must be on one of the sister sites. These are tried before the shared list, so they win. Lines in any other shape are dropped on save."
+msgid "One per line: phrase | address. A path such as /rebuttals/slug/ is this site; a full address must be on one of the other sites. These are tried before the shared list, so they win. Lines in any other shape are dropped on save."
 msgstr ""
 
 #: inc/settings-page.php:887

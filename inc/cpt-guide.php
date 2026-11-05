@@ -5,7 +5,7 @@
  * Long-form guides (1,500 words and more) for a reader working through a
  * question at length. Guides stay separate from the Journal: a Journal post
  * is dated and listed at /journal/ (inc/seed-journal.php), while a guide is
- * evergreen reference that the sister sites link to at a fixed address
+ * evergreen reference that the other sites link to at a fixed address
  * (/guides/islamic-dilemma/). A post type gives that address without touching
  * the site-wide permalink structure, and keeps guides out of the Journal. Single guides render through
  * single.php and the index through archive.php.
