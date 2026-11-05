@@ -276,7 +276,7 @@ Defined once in `css/main.css` `:root`. Accent `#0f6e56` (green), tint `#eefaf7`
 
 ## Data removal
 
-Themes have no uninstall hook. The six `murtadd_*` options listed in readme.txt must be deleted manually if the theme is retired. Content persists by design.
+Themes have no uninstall hook. The `murtadd_*` options and the two user meta keys listed in readme.txt must be deleted manually if the theme is retired. Content persists by design.
 
 ## Public wording
 

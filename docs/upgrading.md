@@ -4,7 +4,7 @@
 
 1. Turn on hidden files in the FTP program (in FileZilla: Server, Force showing hidden files). The theme carries `.htaccess` files in its own folder and in `tests/`, `bin/`, `docs/`, `config/` and `vendor/`.
 2. Upload the new `murtadd` folder into `wp-content/themes/` as `murtadd-new`.
-3. Rename the live folder to `murtadd-old` and at once `murtadd-new` to `murtadd`, with Appearance, Themes closed: that screen switches the site to another theme if it finds the folder missing. Delete the old one once the site looks right.
+3. Rename the live folder to `murtadd-old` and at once `murtadd-new` to `murtadd`, at a quiet hour and with Appearance, Themes closed. A page asked for between the two renames finds no theme, and that screen switches the site to another theme if it finds the folder missing. Delete the old one once the site looks right.
 4. Open any admin page as an administrator. The error pages and the `.htaccess` blocks are brought up to date, and the first request after the version change removes the development files.
 5. Read the note below for every version you pass.
 

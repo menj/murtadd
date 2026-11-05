@@ -92,9 +92,9 @@ Colour overrides inject through `wp_add_inline_style()` only. Every source file 
 ## Boot sequence
 
 1. `functions.php` defines `MURTADD_VERSION` and `MURTADD_ASSET_SUFFIX`.
-2. `murtadd_theme_files()` lists every file in `inc/` in load order. Each is checked before any loads, and each loads inside a `try`. A missing or half-written file gives `murtadd_incomplete_theme()`, the upload guard below.
+2. `murtadd_theme_files()` lists the files in `inc/` that `functions.php` loads, in order. Each, and `inc/seed-data.php`, is checked before any loads, and the listed files load inside a `try`. `inc/seed-data.php` is loaded later by `inc/seed-content.php`, outside that `try`, so a half-written copy of it can still give a PHP error. A missing or half-written file gives `murtadd_incomplete_theme()`, the upload guard below.
 3. `init` runs `murtadd_cleanup_on_version_change()` once per version, which removes development files from a live site (below).
-4. Activation (`after_switch_theme`) scaffolds the pages and the footer menu, sets the Reading options and rewrite rules, and inserts the starter content (`inc/activation.php`). It never overwrites and never deletes.
+4. Activation (`after_switch_theme`) only raises the `murtadd_needs_setup` flag. `murtadd_activate()` then runs on `init` at priority 90, after the post types and taxonomies exist: it scaffolds the pages and the footer menu, sets the Reading options and rewrite rules, and inserts the starter content (`inc/activation.php`). It never overwrites and never deletes.
 5. `admin_init` registers the settings, writes or repairs the error pages for an administrator, and keeps the `.htaccess` blocks in step at most once an hour.
 6. Front-end views are the PHP templates at the theme root. Per-template CSS loads only on its own views.
 
@@ -236,7 +236,7 @@ location ~* ^/(?!(index|wp-activate|wp-blog-header|wp-comments-post|wp-cron|wp-l
 location = /xmlrpc.php { return 403; }
 ```
 
-Leave out the last line while XML-RPC is on. For a site in a subfolder, put its path in front, as in `^/blog/wp-includes/`.
+Leave out the last line while XML-RPC is on. For a site in a subfolder, put its path in front of every rule, as in `^/blog/wp-includes/`. With WordPress in its own folder below the site (`/wp/`), repeat the root-PHP rule for that folder too, as the Apache block does: `location ~* ^/wp/(?!(index|wp-activate|wp-blog-header|wp-comments-post|wp-cron|wp-links-opml|wp-load|wp-login|wp-mail|wp-signup|wp-trackback|xmlrpc)\.php$)[^/]+\.php$ { return 403; }`.
 
 ### The installer
 
@@ -284,7 +284,7 @@ Full detail in [setup.md](setup.md).
 - Fonts are self-hosted WOFF2 files; the Qur'an face is fetched only on a page that shows a verse.
 - The glossary's CSS and JS load only on an entry that mentions a term.
 - Theme Options builds only the open tab, and fills the others over admin-ajax when chosen.
-- No script is needed for any front-end feature.
+- JavaScript is an enhancement: every page reads without it. The reading progress bar, the glossary's tap and Escape handling and the fatwa filters' auto-submit need it; the rest is plain HTML and CSS.
 
 ## Documentation
 
