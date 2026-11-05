@@ -926,7 +926,7 @@ function murtadd_render_contextual_links_tab() {
 	murtadd_admin_row_open( __( 'Extra phrases', 'murtadd' ), 'murtadd_ctx_extra' );
 	?>
 	<textarea id="murtadd_ctx_extra" name="murtadd_contextual_links[extra]" rows="8" class="large-text code" placeholder="<?php esc_attr_e( 'tudung | /rebuttals/the-head-cover-and-modesty/', 'murtadd' ); ?>" aria-describedby="murtadd_ctx_extra-desc"><?php echo esc_textarea( $o['extra'] ); ?></textarea>
-	<p class="description" id="murtadd_ctx_extra-desc"><?php esc_html_e( 'One per line: phrase | address. A path such as /rebuttals/slug/ is this site; a full address must be on one of the other sites. These are tried before the shared list, so they win. Lines in any other shape are dropped on save.', 'murtadd' ); ?></p>
+	<p class="description" id="murtadd_ctx_extra-desc"><?php esc_html_e( 'One per line: phrase | address. A path such as /rebuttals/slug/ is this site; a full address must be on this site or one of the other sites. These are tried before the shared list, so they win. Lines in any other shape are dropped on save.', 'murtadd' ); ?></p>
 	<?php
 	murtadd_admin_row_close();
 	murtadd_admin_row_open( __( 'Never link on', 'murtadd' ), 'murtadd_ctx_excluded' );
