@@ -29,7 +29,8 @@ function murtadd_fallback_site_icon() {
 	printf( '<link rel="icon" href="%s" sizes="32x32">' . "\n", esc_url( $base . '/site-icon-32.png' ) );
 	printf( '<link rel="icon" href="%s" sizes="192x192">' . "\n", esc_url( $base . '/site-icon-192.png' ) );
 	printf( '<link rel="icon" href="%s" type="image/svg+xml">' . "\n", esc_url( $base . '/site-icon.svg' ) );
-	printf( '<link rel="apple-touch-icon" href="%s">' . "\n", esc_url( $base . '/site-icon-180.png' ) );
+	printf( '<link rel="apple-touch-icon" href="%s">' . "\n", esc_url( $base . '/apple-touch-icon.png' ) );
+	printf( '<link rel="manifest" href="%s">' . "\n", esc_url( $base . '/site.webmanifest' ) );
 }
 add_action( 'wp_head', 'murtadd_fallback_site_icon' );
 add_action( 'admin_head', 'murtadd_fallback_site_icon' );
@@ -45,3 +46,59 @@ function murtadd_theme_colour_meta() {
 	}
 }
 add_action( 'wp_head', 'murtadd_theme_colour_meta' );
+add_action( 'login_head', 'murtadd_theme_colour_meta' );
+
+/**
+ * Browsers and bots ask for /favicon.ico on their own. Until a core Site Icon
+ * is set, answer with assets/icons/favicon.ico: a day's cache and an ETag,
+ * with a 304 while it is unchanged. With a Site Icon, core redirects to it.
+ */
+function murtadd_serve_favicon() {
+	$file = get_stylesheet_directory() . '/assets/icons/favicon.ico';
+	if ( has_site_icon() || ! is_readable( $file ) ) {
+		return;
+	}
+	$etag = '"' . md5_file( $file ) . '"';
+	header( 'Content-Type: image/x-icon' );
+	header( 'Cache-Control: public, max-age=86400' );
+	header( 'ETag: ' . $etag );
+	// If-None-Match may list several validators, weak ones (W/"...") or *.
+	$sent = array_map(
+		static function ( $v ) {
+			return preg_replace( '#^W/#', '', trim( $v ) );
+		},
+		explode( ',', wp_unslash( (string) ( $_SERVER['HTTP_IF_NONE_MATCH'] ?? '' ) ) ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+	);
+	if ( in_array( '*', $sent, true ) || in_array( $etag, $sent, true ) ) {
+		status_header( 304 );
+		exit;
+	}
+	status_header( 200 );
+	header( 'Content-Length: ' . (string) filesize( $file ) );
+	// A HEAD request gets the headers alone.
+	if ( 'HEAD' !== ( $_SERVER['REQUEST_METHOD'] ?? 'GET' ) ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+		readfile( $file ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+	}
+	exit;
+}
+add_action( 'do_faviconico', 'murtadd_serve_favicon', 5 );
+
+/**
+ * Core ends a HEAD request before do_favicon, with an empty HTML answer.
+ * template_redirect runs first, so a HEAD request gets the icon's headers,
+ * or the redirect to the Site Icon, too.
+ */
+function murtadd_favicon_head_request() {
+	if ( ! is_favicon() ) {
+		return;
+	}
+	if ( has_site_icon() ) {
+		// Core's do_favicon redirect never runs for HEAD; send it from here for every method.
+		wp_redirect( get_site_icon_url( 32 ) ); // phpcs:ignore WordPress.Security.SafeRedirect -- core's own redirect; the icon may sit on a CDN.
+		exit;
+	}
+	murtadd_serve_favicon();
+}
+// Before murtadd_maintenance_mode() (also priority 0, and loaded first), so a browser gets its icon during
+// maintenance as well.
+add_action( 'template_redirect', 'murtadd_favicon_head_request', -1 );

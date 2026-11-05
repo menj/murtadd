@@ -3,7 +3,7 @@ Contributors: murtadd.org
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.1
-Stable tag: 1.55.9
+Stable tag: 1.55.10
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -114,6 +114,9 @@ Bundled resources:
 * The site icon, the pixel book and envelope images, the calligraphy in assets/images and screenshot.png were made for this theme and are GPL v3 or later with it.
 
 == Changelog ==
+= 1.55.10 =
+* The browser icon set is complete: a home screen icon on a solid background, a maskable icon and a web app manifest join the mark's existing sizes. The site answers /favicon.ico with the icon, the login screen gets the theme colour, and the error pages show the icon in the tab. A Site Icon you set still wins.
+
 = 1.55.9 =
 * A Journal post shows its excerpt under the title, "Last reviewed" once it is edited later, an "In short" box with its key points, a list of its sections, its sources, a next step (the next post, the sources or a question) and three related posts.
 * Tables in a post scroll on a phone. A FAQ style for Details blocks, with a pattern.
@@ -212,6 +215,9 @@ Bundled resources:
 See docs/changelog.md for earlier releases.
 
 == Upgrade Notice ==
+= 1.55.10 =
+Upload the whole theme folder. Open one admin page so the error pages are written again with the icon.
+
 = 1.55.9 =
 Upload the whole theme folder. Nothing else needs doing. The new parts of a Journal post are on the Content tab, under Journal posts; key points and sources are written on the post screen.
 

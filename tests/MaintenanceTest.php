@@ -55,6 +55,7 @@ final class MaintenanceTest extends TestCase {
 			$this->assertStringContainsString( MURTADD_DROPIN_MARKER, $text );
 			$this->assertStringContainsString( 'href="/wp-content/murtadd-error-page.css?ver=', $text );
 			$this->assertStringContainsString( 'href="/wp-content/themes/murtadd/assets/css/tokens.min.css?ver=', $text );
+			$this->assertStringContainsString( '<link rel="icon" href="/wp-content/themes/murtadd/assets/icons/site-icon-32.png?ver=', $text );
 		}
 		$this->assertStringContainsString( '<title>Back shortly | Murtadd</title>', file_get_contents( $this->dir . '/maintenance.php' ) );
 		$this->assertStringContainsString( '<title>We cannot reach our database | Murtadd</title>', file_get_contents( $this->dir . '/db-error.php' ) );
@@ -193,6 +194,7 @@ final class MaintenanceTest extends TestCase {
 		$sub = file_get_contents( $this->dir . '/murtadd-errors/403.html' );
 		$this->assertStringContainsString( 'href="/blog/"', $sub );
 		$this->assertStringContainsString( 'href="/blog/wp-content/themes/murtadd/assets/css/tokens.min.css"', $sub );
+		$this->assertStringContainsString( '<link rel="icon" href="/blog/wp-content/themes/murtadd/assets/icons/site-icon-32.png"', $sub );
 		$this->assertStringNotContainsString( 'href="/"', $sub );
 		$this->assertStringNotContainsString( 'href="/wp-content/', $sub );
 		$this->assertStringContainsString( 'ErrorDocument 403 /blog/wp-content/murtadd-errors/403.html', murtadd_error_htaccess_snippet() );

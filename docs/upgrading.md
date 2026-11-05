@@ -14,6 +14,10 @@ An upload straight into the live folder is riskier. While one of the files in `i
 
 Never upload WordPress core to a live folder without `wp-config.php` in place. The installer answers anyone in that state.
 
+## 1.55.9 → 1.55.10
+
+Upload the whole theme folder. The new files are in `assets/icons/`: `apple-touch-icon.png`, `site-icon-maskable-512.png` and `site.webmanifest`. Open one admin page so the error pages are written again with the icon. If a `favicon.ico` file sits in the site root, the web server sends it and the theme never answers; delete it to use the theme's.
+
 ## 1.55.8 → 1.55.9
 
 Upload the whole theme folder. The new files are `LICENSE`, `inc/article.php`, `assets/css/article.css` and `assets/css/article.min.css`, and `tests/ArticleTest.php` in a working copy. Nothing needs running.
@@ -506,6 +510,7 @@ Everything below is a plan, open to change. Each item says why it is here. An it
 
 ### Ideas
 
+- Build `site.webmanifest` from the Colours setting, so an installed web app takes the chosen accent. Today the file holds the default #0f6e56 (CodeAnt review of 1.55.10).
 - A digest of the PHP error log on the dashboard, so a run of fatal errors like the one above is seen the same day.
 - Check that the Rank Math warning about the author's `url` (4 times between 25 and 27 October) has not come back since 1.47.0 gave the author a url.
 

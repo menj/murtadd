@@ -40,6 +40,7 @@ foreach ( $murtadd_pages as $murtadd_code => $murtadd_p ) {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
 <title>' . $murtadd_p[0] . ' | Murtadd</title>
+<link rel="icon" href="/wp-content/themes/murtadd/assets/icons/site-icon-32.png" type="image/png" sizes="32x32">
 <link rel="stylesheet" href="' . $murtadd_css . 'tokens.min.css">
 <link rel="stylesheet" href="' . $murtadd_css . 'error-page.min.css">
 </head>

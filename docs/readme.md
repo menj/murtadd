@@ -7,7 +7,7 @@ A classic-template child theme of Twenty Twenty-Five for **murtadd.org**.
 | Theme slug | `murtadd` |
 | Text domain | `murtadd` |
 | Parent | `twentytwentyfive` |
-| Version | 1.55.9 |
+| Version | 1.55.10 |
 | Author | Langgam Fikir Enterprise |
 | Licence | GNU General Public License v3 or later; the full text is in `LICENSE` |
 | Requires WP | 6.4+ |
@@ -48,7 +48,7 @@ murtadd/
 ├── assets/
 │   ├── css/           Stylesheets, each with a .min counterpart
 │   ├── fonts/         Source Serif 4 and Public Sans (OFL), self-hosted
-│   ├── icons/         Site-icon mark: SVG source, PNG sizes, favicon.ico
+│   ├── icons/         Site-icon mark: SVG source, PNG sizes, favicon.ico, touch and maskable icons, site.webmanifest
 │   └── js/            Scripts, each with a .min counterpart
 ├── bin/               build-error-pages.php (ships; exits outside the command line)
 ├── config/            Lighthouse settings (development only)
@@ -274,6 +274,8 @@ The Upkeep tab writes `wp-content/maintenance.php` (503, `Retry-After: 600`), `p
 
 Static pages for the errors the web server answers before WordPress runs are in `errors/` (`php bin/build-error-pages.php`). They assume a site at the domain root, with the theme in `/wp-content/themes/murtadd/`.
 
+Each page links the 32px icon by the same path rule as its stylesheets: `{{ICON_URL}}` in the drop-ins, and the theme prefix rewritten in the copies.
+
 The Upkeep tab also writes a copy of each into `wp-content/murtadd-errors/`, with the site's own home address and theme folder, under the same rules as the drop-ins.
 
 A site installed in a subfolder, such as `example.com/blog/`, gets links that work. Switching theme, or the Error pages switch off, removes the copies.
@@ -293,6 +295,12 @@ On Nginx the same pages go in with `error_page 403 /wp-content/murtadd-errors/40
 Where `wp-content` sits below a subfolder, use its real address, as in `/blog/wp-content/murtadd-errors/403.html`; the tab's lines show it.
 
 On a network every site shares `wp-content`. The main site writes the files; while it runs another theme, the subsite with the lowest ID that runs Murtadd writes them (`murtadd_dropins_writer()`). The last site to leave the theme removes them.
+
+## Browser icons
+
+`inc/site-icon.php` prints `site-icon-32.png`, `site-icon-192.png`, `site-icon.svg`, `apple-touch-icon.png` and `site.webmanifest` on `wp_head`, `admin_head` and `login_head` while `has_site_icon()` is false, and `theme-color` (the Colours accent) on `wp_head` and `login_head`. With a core Site Icon, core prints its own tags.
+
+`/favicon.ico` reaches WordPress when no such file sits in the site root. `murtadd_serve_favicon()` answers it on `template_redirect` (priority -1, ahead of maintenance mode, so HEAD and a site in maintenance are covered; with a Site Icon it redirects there for every method) and `do_faviconico` with `assets/icons/favicon.ico`, `Cache-Control: public, max-age=86400` and an ETag, with a 304 on a match. The manifest is a static file with relative icon paths. Its `theme_color` stays at the default accent, #0f6e56, while the page's `theme-color` follows the Colours setting; a site with another accent can edit the file, and a later release may build it from the setting. The theme `.htaccess` refuses dot entries, Markdown, Composer and PHPUnit files and the development folders only, so the icons are served.
 
 ## Setup
 
