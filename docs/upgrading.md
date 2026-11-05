@@ -20,6 +20,7 @@ Upload the whole theme folder. The new files are `LICENSE`, `inc/article.php`, `
 
 - The Content tab has a Journal posts card. "In short", the contents and related posts are on; the one-line next step in the text is off.
 - "In short" and the sources show only on a post that has them. Write them in the Journal fields box on the post screen. The seeded posts carry none, so they show the contents, the next step and related posts until you add them.
+- Journal posts now have a Topics box. Topic pages list a post once it has a topic.
 - The theme is now under the GNU GPL, version 3 or later.
 
 ## 1.55.7 → 1.55.8

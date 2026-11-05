@@ -42,8 +42,15 @@
 	border: 1px solid var(--murtadd-border);
 	border-radius: 10px;
 }
-.murtadd-toc--inline ol { gap: 8px; }
-.murtadd-toc--inline a { padding-block: 2px; }
+/* longform.css draws the rule on the left; here it follows the text's start, so a right-to-left page has it on the right. */
+.murtadd-toc--inline ol { gap: 8px; border-left: 0; border-inline-start: 2px solid var(--murtadd-border); }
+.murtadd-toc--inline a {
+	padding-block: 2px;
+	padding-left: 0; padding-inline-start: 14px;
+	margin-left: 0; margin-inline-start: -2px;
+	border-left: 0; border-inline-start: 2px solid transparent;
+}
+.murtadd-toc--inline a.is-current { border-inline-start-color: var(--murtadd-accent); }
 .murtadd-blog-body h2[id] { scroll-margin-top: 24px; }
 
 /* ---------- Tables and captions ---------- */

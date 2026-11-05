@@ -92,6 +92,15 @@ function murtadd_article_slug( $text, array &$seen ) {
 }
 
 /**
+ * The ids the Journal post page gives its own pieces.
+ *
+ * @return string[]
+ */
+function murtadd_article_reserved_ids() {
+	return array( 'murtadd-sources', 'murtadd-sources-title', 'murtadd-toc-title', 'murtadd-answer-title', 'murtadd-next-title', 'murtadd-related-title' );
+}
+
+/**
  * The level-two headings of some markup, in order: the author's own id where
  * a heading has one, else one made from its text. The author's ids are
  * reserved first, so a made id never repeats one.
@@ -103,7 +112,8 @@ function murtadd_article_heading_list( $html ) {
 	if ( ! preg_match_all( '#<h2(\s[^>]*)?>(.*?)</h2>#is', (string) $html, $found, PREG_SET_ORDER ) ) {
 		return array();
 	}
-	$seen = array();
+	// The ids of the page's own pieces are taken, so no heading can claim one.
+	$seen = array_fill_keys( murtadd_article_reserved_ids(), true );
 	$own  = array();
 	foreach ( $found as $i => $m ) {
 		if ( preg_match( '/\sid\s*=\s*["\']([^"\']+)["\']/i', (string) ( $m[1] ?? '' ), $idm ) ) {
@@ -214,6 +224,10 @@ function murtadd_article_tables( $html ) {
 			$attrs = ' role="region" tabindex="0" aria-label="' . esc_attr( $label ) . '"';
 			if ( 0 === stripos( $html, '<figure' ) ) {
 				$html = (string) preg_replace( '#^<figure\b([^>]*)>#i', '<figure$1' . $attrs . '>', $html, 1 );
+				if ( ! preg_match( '#^<figure\b[^>]*\sclass\s*=#i', $html ) ) {
+					// A figure with no class of its own gets one.
+					return (string) preg_replace( '#^<figure\b#i', '<figure class="murtadd-table"', $html, 1 );
+				}
 				return (string) preg_replace( '#^<figure\b(?![^>]*\bmurtadd-table\b)([^>]*?)class="([^"]*)"#i', '<figure$1class="$2 murtadd-table"', $html, 1 );
 			}
 			return '<div class="murtadd-table"' . $attrs . '>' . $html . '</div>';
@@ -262,7 +276,7 @@ add_filter( 'the_content', 'murtadd_article_filter_content', 12 );
  * ------------------------------------------------------------------ */
 
 /**
- * Whether the post was edited a day or more after it went up: the rule
+ * Whether the post was edited more than a day after it went up: the rule
  * murtadd_the_reviewed_date() uses for "Last reviewed".
  *
  * @param WP_Post|null $post Post; the current one when null.
@@ -278,7 +292,7 @@ function murtadd_article_was_reviewed( $post = null ) {
 
 /**
  * The meta row: the date the post went up, "Last reviewed" once it has been
- * edited a day or more later (murtadd_the_reviewed_date()), and the reading
+ * edited more than a day later (murtadd_the_reviewed_date()), and the reading
  * time. The date leads, as on every Journal view.
  *
  * @return void
@@ -387,7 +401,7 @@ function murtadd_article_sources_panel() {
 	if ( ! $sources ) {
 		return;
 	}
-	echo '<section class="murtadd-sources-panel" id="sources" aria-labelledby="murtadd-sources-title"><h2 id="murtadd-sources-title" class="murtadd-kicker">' . esc_html__( 'Sources', 'murtadd' ) . '</h2><ol class="murtadd-sources-list">';
+	echo '<section class="murtadd-sources-panel" id="murtadd-sources" aria-labelledby="murtadd-sources-title"><h2 id="murtadd-sources-title" class="murtadd-kicker">' . esc_html__( 'Sources', 'murtadd' ) . '</h2><ol class="murtadd-sources-list">';
 	foreach ( $sources as $src ) {
 		echo '<li>' . esc_html( $src['citation_text'] );
 		murtadd_external_link( $src['url'], __( 'source ↗', 'murtadd' ), 'murtadd-source-link' );
@@ -511,7 +525,7 @@ function murtadd_article_next_step( $variant = 'end' ) {
 			$line = sprintf(
 				/* translators: %s: link to the sources panel. */
 				esc_html__( 'Every claim here can be checked: %s.', 'murtadd' ),
-				'<a href="#sources">' . esc_html__( 'see the sources', 'murtadd' ) . '</a>'
+				'<a href="#murtadd-sources">' . esc_html__( 'see the sources', 'murtadd' ) . '</a>'
 			);
 		} else {
 			return '';
@@ -531,7 +545,7 @@ function murtadd_article_next_step( $variant = 'end' ) {
 	if ( '' !== $ask || $sources ) {
 		$out .= '<p class="murtadd-next-actions">';
 		if ( $sources ) {
-			$out .= '<a class="murtadd-btn murtadd-btn--outline" href="#sources">' . esc_html__( 'Check the sources', 'murtadd' ) . '</a>';
+			$out .= '<a class="murtadd-btn murtadd-btn--outline" href="#murtadd-sources">' . esc_html__( 'Check the sources', 'murtadd' ) . '</a>';
 		}
 		if ( '' !== $ask ) {
 			$out .= '<a class="murtadd-btn murtadd-btn--outline" href="' . esc_url( $ask ) . '">' . esc_html__( 'Ask a question', 'murtadd' ) . '</a>';

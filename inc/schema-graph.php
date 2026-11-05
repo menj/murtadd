@@ -390,7 +390,7 @@ function murtadd_webpage_frame( $has_breadcrumb, $has_image ) {
 		$frame['primaryImageOfPage'] = array( '@id' => $here . '#primaryimage' );
 	}
 	// "Last reviewed" shows on doubts, rebuttals, letters and Journal posts
-	// once an entry is edited a day or more after it went up
+	// once an entry is edited more than a day after it went up
 	// (murtadd_the_reviewed_date()).
 	if ( is_singular( array( 'murtadd_doubt', 'murtadd_rebuttal', 'murtadd_letter', 'post' ) ) ) {
 		$published = strtotime( (string) get_the_date( 'c' ) );

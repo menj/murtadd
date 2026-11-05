@@ -56,6 +56,11 @@ final class ArticleTest extends TestCase {
 		$this->assertSame( 1, substr_count( $html, 'id="own"' ), 'An id the author set is kept as it is.' );
 	}
 
+	public function test_headings_never_take_a_piece_id() {
+		$ids = array_column( murtadd_article_headings( '<h2>Murtadd sources</h2><h2>Murtadd related title</h2>' ), 0 );
+		$this->assertSame( array( 'murtadd-sources-2', 'murtadd-related-title-2' ), $ids );
+	}
+
 	public function test_mid_step_goes_before_the_third_heading_only() {
 		$out = murtadd_article_insert_mid( self::BODY, '<div class="x">step</div>' );
 		$this->assertSame( strpos( $out, '<div class="x">' ) + strlen( '<div class="x">step</div>' ), strpos( $out, '<h2>The man at the head of them</h2><p>C.' ) );
@@ -70,6 +75,8 @@ final class ArticleTest extends TestCase {
 		$bare = murtadd_article_tables( '<p>x</p><table><tr><td>1</td></tr></table>' );
 		$this->assertStringContainsString( '<div class="murtadd-table" role="region" tabindex="0" aria-label="Table"><table>', $bare );
 		$this->assertSame( $fig, murtadd_article_tables( $fig ), 'A region is never wrapped twice.' );
+		$plain = murtadd_article_tables( '<figure><table><tr><td>1</td></tr></table></figure>' );
+		$this->assertStringStartsWith( '<figure class="murtadd-table" role="region"', $plain, 'A figure with no class gets one.' );
 	}
 
 	public function test_faq_pairs_come_only_from_faq_details() {
