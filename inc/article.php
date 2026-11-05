@@ -614,8 +614,9 @@ function murtadd_article_rank( array $mine, array $candidates, array $dates, $li
 
 /**
  * Related posts in the Journal, as cards: three, scored by
- * murtadd_article_rank() from the 30 newest posts. The next post in the
- * next step is left out, so a card never repeats it.
+ * murtadd_article_rank() from every post that shares a topic, a tag or a
+ * category with this one, and the three newest. The next post in the next
+ * step is left out, so a card never repeats it.
  *
  * @return string
  */
@@ -629,22 +630,34 @@ function murtadd_article_related() {
 	if ( $next ) {
 		$skip[] = (int) $next[0]->ID;
 	}
-	$pool = get_posts(
-		array(
-			'post_type'      => 'post',
-			'post_status'    => 'publish',
-			'posts_per_page' => 30,
-			'no_found_rows'  => true,
-			'post__not_in'   => $skip,
-		)
-	);
-	if ( ! $pool ) {
-		return '';
-	}
 	$taxes = array( 'murtadd_topic', 'post_tag', 'category' );
 	$mine  = array();
+	$terms = array( 'relation' => 'OR' );
 	foreach ( $taxes as $tax ) {
 		$mine[ $tax ] = murtadd_article_term_ids( $id, $tax );
+		if ( $mine[ $tax ] ) {
+			$terms[] = array(
+				'taxonomy' => $tax,
+				'field'    => 'term_id',
+				'terms'    => $mine[ $tax ],
+			);
+		}
+	}
+	$base = array(
+		'post_type'              => 'post',
+		'post_status'            => 'publish',
+		'no_found_rows'          => true,
+		'post__not_in'           => $skip,
+		'update_post_meta_cache' => false,
+	);
+	// Every post that shares a term, however old, and the three newest,
+	// which fill the cards when fewer than three share one.
+	$pool = get_posts( $base + array( 'posts_per_page' => 3 ) );
+	if ( count( $terms ) > 1 ) {
+		$pool = array_merge( get_posts( $base + array( 'posts_per_page' => -1, 'tax_query' => $terms ) ), $pool ); // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- one post's own terms, on its own page.
+	}
+	if ( ! $pool ) {
+		return '';
 	}
 	$candidates = array();
 	$dates      = array();
