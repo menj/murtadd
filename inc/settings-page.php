@@ -899,7 +899,7 @@ function murtadd_render_cross_links_tab() {
 function murtadd_render_contextual_links_tab() {
 	$o = murtadd_ctx_settings();
 
-	murtadd_admin_card_open( __( 'Links in the running text', 'murtadd' ), __( 'In the running text of a single entry, the first mention of a known phrase links to the page that treats it, on this site or on one of the six sister sites. Links are added as the page renders; stored text is never changed. Headings, quotations, Qur’anic text, Arabic, sources and existing links are never touched, and Emotional and Identity doubts get no links at all.', 'murtadd' ), 'paperclip' );
+	murtadd_admin_card_open( __( 'Links in the running text', 'murtadd' ), __( 'In the running text of a single entry, the first mention of a known phrase links to the page that treats it, on this site or on one of the six other sites. Links are added as the page renders; stored text is never changed. Headings, quotations, Qur’anic text, Arabic, sources and existing links are never touched, and Emotional and Identity doubts get no links at all.', 'murtadd' ), 'paperclip' );
 	murtadd_admin_toggle_row(
 		__( 'Links to this site', 'murtadd' ),
 		'murtadd_ctx_own',
@@ -911,13 +911,13 @@ function murtadd_render_contextual_links_tab() {
 	murtadd_admin_range( 'murtadd_ctx_own_max', 'murtadd_contextual_links[own_max]', (int) $o['own_max'], 0, 15, __( 'a page (0 to 15)', 'murtadd' ) );
 	murtadd_admin_row_close();
 	murtadd_admin_toggle_row(
-		__( 'Links to sister sites', 'murtadd' ),
+		__( 'Links to other sites', 'murtadd' ),
 		'murtadd_ctx_sister',
 		'murtadd_contextual_links[sister_enabled]',
 		! empty( $o['sister_enabled'] ),
-		__( 'Link phrases to the page on a sister site that treats them', 'murtadd' )
+		__( 'Link phrases to the page on another site that treats them', 'murtadd' )
 	);
-	murtadd_admin_row_open( __( 'At most, to sister sites', 'murtadd' ), 'murtadd_ctx_sister_max' );
+	murtadd_admin_row_open( __( 'At most, to other sites', 'murtadd' ), 'murtadd_ctx_sister_max' );
 	murtadd_admin_range( 'murtadd_ctx_sister_max', 'murtadd_contextual_links[sister_max]', (int) $o['sister_max'], 0, 10, __( 'a page (0 to 10)', 'murtadd' ) );
 	murtadd_admin_row_close();
 	murtadd_admin_card_close();
@@ -926,7 +926,7 @@ function murtadd_render_contextual_links_tab() {
 	murtadd_admin_row_open( __( 'Extra phrases', 'murtadd' ), 'murtadd_ctx_extra' );
 	?>
 	<textarea id="murtadd_ctx_extra" name="murtadd_contextual_links[extra]" rows="8" class="large-text code" placeholder="<?php esc_attr_e( 'tudung | /rebuttals/the-head-cover-and-modesty/', 'murtadd' ); ?>" aria-describedby="murtadd_ctx_extra-desc"><?php echo esc_textarea( $o['extra'] ); ?></textarea>
-	<p class="description" id="murtadd_ctx_extra-desc"><?php esc_html_e( 'One per line: phrase | address. A path such as /rebuttals/slug/ is this site; a full address must be on one of the sister sites. These are tried before the shared list, so they win. Lines in any other shape are dropped on save.', 'murtadd' ); ?></p>
+	<p class="description" id="murtadd_ctx_extra-desc"><?php esc_html_e( 'One per line: phrase | address. A path such as /rebuttals/slug/ is this site; a full address must be on this site or one of the other sites. These are tried before the shared list, so they win. Lines in any other shape are dropped on save.', 'murtadd' ); ?></p>
 	<?php
 	murtadd_admin_row_close();
 	murtadd_admin_row_open( __( 'Never link on', 'murtadd' ), 'murtadd_ctx_excluded' );

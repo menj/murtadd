@@ -3,7 +3,7 @@ Contributors: murtadd.org
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.1
-Stable tag: 1.55.10
+Stable tag: 1.55.11
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -92,6 +92,10 @@ Yes. The theme's meta tags stand down and its schema nodes go into Rank Math's g
 = Can I add a fifth doubt category? =
 No. The 4 categories are locked, and their addresses are fixed rules in the code.
 
+= My site is in a subfolder. Where does the browser icon go? =
+
+Browsers ask for /favicon.ico at the top of the domain, such as example.com/favicon.ico, even when the site lives in example.com/blog/. WordPress never sees that request, so put a copy of the theme's favicon.ico in the domain root folder. The icon tags in each page cover the pages either way. If you have set a Site Icon, put that icon there, converted to an ICO file named favicon.ico, instead.
+
 == Privacy ==
 The theme loads nothing from another server. Fonts, icons and scripts ship inside it, and it adds no analytics or tracking.
 
@@ -114,6 +118,10 @@ Bundled resources:
 * The site icon, the pixel book and envelope images, the calligraphy in assets/images and screenshot.png were made for this theme and are GPL v3 or later with it.
 
 == Changelog ==
+= 1.55.11 =
+* The settings and the readme speak of the other sites in plain words. Links to them stay.
+* The readme says where the browser icon goes on a site in a subfolder: a copy of favicon.ico in the domain root.
+
 = 1.55.10 =
 * The browser icon set is complete: a home screen icon on a solid background, a maskable icon and a web app manifest join the mark's existing sizes. The site answers /favicon.ico with the icon, the login screen gets the theme colour, and the error pages show the icon in the tab. A Site Icon you set still wins.
 
@@ -215,6 +223,9 @@ Bundled resources:
 See docs/changelog.md for earlier releases.
 
 == Upgrade Notice ==
+= 1.55.11 =
+Replace the theme files. On a site in a subfolder, also put a copy of assets/icons/favicon.ico in the domain root folder (or, with a Site Icon set, that icon converted to an ICO file named favicon.ico); otherwise nothing to do.
+
 = 1.55.10 =
 Upload the whole theme folder. Open one admin page so the error pages are written again with the icon.
 

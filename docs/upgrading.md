@@ -14,6 +14,10 @@ An upload straight into the live folder is riskier. While one of the files in `i
 
 Never upload WordPress core to a live folder without `wp-config.php` in place. The installer answers anyone in that state.
 
+## 1.55.10 → 1.55.11
+
+Replace the theme files. Nothing else changes. On a site in a subfolder, put a copy of `assets/icons/favicon.ico` in the domain root (or, with a Site Icon set, that icon converted to an ICO file named `favicon.ico`), since browsers ask for `/favicon.ico` there.
+
 ## 1.55.9 → 1.55.10
 
 Upload the whole theme folder. The new files are in `assets/icons/`: `apple-touch-icon.png`, `site-icon-maskable-512.png` and `site.webmanifest`. Open one admin page so the error pages are written again with the icon. If a `favicon.ico` file sits in the site root, the web server sends it and the theme never answers; delete it to use the theme's.

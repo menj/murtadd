@@ -96,7 +96,7 @@ function murtadd_dropin_is_ours( $path ) {
 }
 
 /**
- * Whether a file is a leftover of one of the owner's sister themes, which
+ * Whether a file is a leftover of one of the owner's other themes, which
  * mark every drop-in "Written by the ... theme; safe to delete". Such a file
  * may be replaced at install time. A file with no such mark is never touched,
  * and only the theme's own files are removed when it is switched off.
@@ -113,7 +113,7 @@ function murtadd_dropin_is_sibling( $path ) {
 }
 
 /**
- * Whether the installer may write over a file: the theme's own, or a sister
+ * Whether the installer may write over a file: the theme's own, or another
  * theme's marked leftover.
  *
  * @param string $path File path.
@@ -353,7 +353,7 @@ function murtadd_handle_write_dropins() {
 add_action( 'admin_post_murtadd_write_dropins', 'murtadd_handle_write_dropins' );
 
 /**
- * Whether another site of the network still runs this theme, as its
+ * Whether another site on this install still runs this theme, as its
  * stylesheet or its template. The drop-ins in the shared wp-content then
  * stay. Sites are read 500 at a time, so a large network is checked in
  * full without loading every site at once.

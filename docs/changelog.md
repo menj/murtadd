@@ -1,5 +1,14 @@
 # Murtadd changelog
 
+## 1.55.11 (2026-11-05)
+
+The settings and readme speak of the other sites in plain words, and readme.txt names the subfolder favicon step. No feature removed and no public identifier renamed.
+
+### Changed
+- The Contextual links card (its help text, the two switch labels and the extra-phrases hint), `languages/murtadd.pot`, `docs/settings.md` and the code and CSS comments say "the other sites". The `sister_enabled` option keys keep their names.
+- `readme.txt` and `docs/readme.md` say that a site in a subfolder needs a copy of `favicon.ico` at the domain root, because browsers ask for it there and WordPress never sees the request.
+- `inc/data/seed/guide-wording.json` keeps its old sentences: the update matches them against stored guides, so they must stay as they were.
+
 ## 1.55.10 (2026-11-05)
 
 The browser icon set is complete. No feature removed and no public identifier renamed.
