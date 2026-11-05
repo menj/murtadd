@@ -261,6 +261,23 @@ final class LiveLogsTest extends TestCase {
 		$this->assertSame( '', murtadd_gone_clean( "/?utm%5fsource=x\n/?%70=1\n/?S%3dx" ) );
 	}
 
+	public function test_a_link_is_removed_without_touching_its_target() {
+		$dir    = sys_get_temp_dir() . '/murtadd-ln-' . uniqid();
+		$target = sys_get_temp_dir() . '/murtadd-ln-target-' . uniqid();
+		mkdir( "$dir/inner", 0755, true );
+		file_put_contents( $target, 'x' );
+		chmod( $target, 0600 );
+		symlink( $target, "$dir/.link" );
+		symlink( $target, "$dir/inner/link" );
+		murtadd_remove_tree( "$dir/.link" );
+		murtadd_remove_tree( $dir );
+		clearstatcache();
+		$this->assertFileDoesNotExist( $dir );
+		$this->assertFileExists( $target );
+		$this->assertSame( 0600, fileperms( $target ) & 0777 );
+		unlink( $target );
+	}
+
 	public function test_a_linked_vendor_folder_is_never_walked() {
 		$dir    = sys_get_temp_dir() . '/murtadd-link-' . uniqid();
 		$target = sys_get_temp_dir() . '/murtadd-target-' . uniqid();
@@ -379,6 +396,14 @@ final class LiveLogsTest extends TestCase {
 		$this->assertFalse( murtadd_incomplete_serves( true, 'cli' ) );
 		$_SERVER['REQUEST_URI'] = '/wp-login.php';
 		$this->assertFalse( murtadd_incomplete_serves( true, 'apache2handler' ) );
+		$GLOBALS['murtadd_options']['murtadd_security'] = array( 'login_slug' => 'door' );
+		$_SERVER['REQUEST_URI']                         = '/door/';
+		$this->assertFalse( murtadd_incomplete_serves( true, 'apache2handler' ), 'The private login address goes on.' );
+		$_SERVER['REQUEST_URI'] = '/doorway/';
+		$this->assertTrue( murtadd_incomplete_serves( true, 'apache2handler' ) );
+		$GLOBALS['murtadd_options']['whl_page'] = 'gate';
+		$_SERVER['REQUEST_URI']                 = '/gate';
+		$this->assertFalse( murtadd_incomplete_serves( true, 'apache2handler' ), 'So does the WPS Hide Login address.' );
 		unset( $_SERVER['REQUEST_URI'] );
 	}
 

@@ -695,7 +695,7 @@ if ( ! function_exists( 'wp_normalize_path' ) ) {
  */
 ( static function () {
 	$src = (string) file_get_contents( dirname( __DIR__ ) . '/functions.php' );
-	foreach ( array( 'murtadd_theme_files', 'murtadd_incomplete_theme', 'murtadd_incomplete_serves' ) as $name ) {
+	foreach ( array( 'murtadd_theme_files', 'murtadd_incomplete_theme', 'murtadd_incomplete_is_login', 'murtadd_incomplete_serves' ) as $name ) {
 		if ( preg_match( '/^function ' . $name . '\(.*?^}\n/ms', $src, $m ) ) {
 			eval( $m[0] ); // phpcs:ignore Squiz.PHP.Eval
 		}

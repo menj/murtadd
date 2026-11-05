@@ -75,6 +75,37 @@ function murtadd_incomplete_theme( $what, $all = false ) {
 }
 
 /**
+ * Whether this request is for the login screen: wp-login.php, or a private
+ * login address (the WPS Hide Login plugin's, or the theme's own), read from
+ * the stored options, since the theme's own code may be the part missing.
+ * The owner must be able to log in while an upload finishes.
+ *
+ * @return bool
+ */
+function murtadd_incomplete_is_login() {
+	$uri = (string) ( $_SERVER['REQUEST_URI'] ?? '' ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+	if ( 'wp-login.php' === ( $GLOBALS['pagenow'] ?? '' ) || false !== strpos( $uri, 'wp-login' ) ) {
+		return true;
+	}
+	$slugs = array( (string) get_option( 'whl_page', '' ) );
+	$stored = (array) get_option( 'murtadd_security', array() );
+	if ( ! empty( $stored['login_slug'] ) ) {
+		$slugs[] = (string) $stored['login_slug'];
+	}
+	$path = trim( (string) parse_url( $uri, PHP_URL_PATH ), '/' ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+	$home = function_exists( 'home_url' ) ? trim( (string) parse_url( home_url( '/' ), PHP_URL_PATH ), '/' ) : ''; // phpcs:ignore WordPress.WP.AlternativeFunctions
+	if ( '' !== $home && 0 === strpos( $path . '/', $home . '/' ) ) {
+		$path = trim( substr( $path, strlen( $home ) ), '/' );
+	}
+	foreach ( array_filter( $slugs ) as $slug ) {
+		if ( $slug === $path || isset( $_GET[ $slug ] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			return true;
+		}
+	}
+	return false;
+}
+
+/**
  * Whether murtadd_incomplete_theme() sends the page to this request. The
  * login screen, AJAX, cron and the command line never get it; the admin gets
  * it only when $all is set.
@@ -84,7 +115,7 @@ function murtadd_incomplete_theme( $what, $all = false ) {
  * @return bool
  */
 function murtadd_incomplete_serves( $all = false, $sapi = PHP_SAPI ) {
-	if ( wp_doing_ajax() || wp_doing_cron() || 'cli' === $sapi || false !== strpos( (string) ( $_SERVER['REQUEST_URI'] ?? '' ), 'wp-login' ) ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+	if ( wp_doing_ajax() || wp_doing_cron() || 'cli' === $sapi || murtadd_incomplete_is_login() ) {
 		return false;
 	}
 	return $all || ! is_admin();

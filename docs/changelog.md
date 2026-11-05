@@ -19,7 +19,7 @@ Fixes from the live logs of October and November 2026. murtadd.org was compromis
 - XML-RPC is off (`xmlrpc_enabled` false, no methods, 403) and denied by the "Block xmlrpc.php" section. The XML-RPC switch and `MURTADD_SECURITY_LOCK` still turn it back on, for Jetpack.
 
 ### Tests
-- `tests/LiveLogsTest.php` pins every fix above. `GoneTest` now expects `/x*y` to be kept, and `GuidesTest` and `JournalTest` read the module list from `murtadd_theme_files()`. 458 tests pass.
+- `tests/LiveLogsTest.php` pins every fix above. `GoneTest` now expects `/x*y` to be kept, and `GuidesTest` and `JournalTest` read the module list from `murtadd_theme_files()`. 459 tests pass.
 - Apache 2.4 with mod_php, with and without mod_alias: every denied path answers 403; the login screen, the admin, the REST API, TinyMCE's loader, the stylesheets, scripts and error pages, `.well-known` and WordPress's own root files answer 200. A request for a missing root file, `/?items/…` and `/index.php/sitemap298.xml` reach WordPress. With a stubbed WordPress, a missing or half-written `inc/` file gives the 503 page and one log line.
 
 ## 1.55.6 (2026-11-05)
