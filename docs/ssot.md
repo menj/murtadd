@@ -1,6 +1,6 @@
-# Murtadd — Single Source of Truth
+# Murtadd: single source of truth
 
-Version 1.55.7 · Child theme of Twenty Twenty-Five · murtadd.org
+Version 1.55.8 · Child theme of Twenty Twenty-Five · murtadd.org
 
 ## What this theme is
 
@@ -35,7 +35,7 @@ Every function is prefixed `murtadd_`, and the prefix alone does not prevent col
 
 ## Search
 
-Front-end main-query search joins the meta keys listed in `murtadd_searchable_meta_keys()`. Any new meta field that carries reader-facing substance must be added there, or content stored in it is invisible to the site's own search — which is how Doubts shipped unsearchable in the first place.
+Front-end main-query search joins the meta keys listed in `murtadd_searchable_meta_keys()`. Any new meta field that carries reader-facing substance must be added there, or content stored in it is invisible to the site's own search: which is how Doubts shipped unsearchable in the first place.
 
 ## Markup and CSS must ship together
 
@@ -94,7 +94,7 @@ Where an archived position needs framing for a present-day reader, that is what 
 
 Taxonomies: `murtadd_topic` (shared, flat, seeded 6 terms, `/topic/`), `murtadd_school` (fatwa, seeded 5 terms, `/school/`), `murtadd_doubt_category` (fixed 4 terms, locked, `/doubts/kind/`).
 
-**URL note.** Doubt categories sit at `/doubts/{slug}/` with no interior segment: `/doubts/intellectual/`. This works only because the taxonomy is four locked terms, so the four URLs are explicit `top` rewrite rules ahead of the CPT rules; a wildcard there would shadow single doubts. The generated rewrite is off and the `term_link` filter is the single source of the public shape. The four category slugs are reserved against doubt posts in code (`wp_unique_post_slug`). Retired shapes 301 on `template_redirect`, 404s only: `/doubt-category/{slug}/` (pre-1.7.0) and `/doubts/kind/{slug}/` (1.7.0 to 1.17.0), both landing on the clean URL in one hop. If a fifth category is ever unlocked, the rule set must be extended with it — the URLs do not follow the terms automatically.
+**URL note.** Doubt categories sit at `/doubts/{slug}/` with no interior segment: `/doubts/intellectual/`. This works only because the taxonomy is four locked terms, so the four URLs are explicit `top` rewrite rules ahead of the CPT rules; a wildcard there would shadow single doubts. The generated rewrite is off and the `term_link` filter is the single source of the public shape. The four category slugs are reserved against doubt posts in code (`wp_unique_post_slug`). Retired shapes 301 on `template_redirect`, 404s only: `/doubt-category/{slug}/` (pre-1.7.0) and `/doubts/kind/{slug}/` (1.7.0 to 1.17.0), both landing on the clean URL in one hop. If a fifth category is ever unlocked, the rule set must be extended with it: the URLs do not follow the terms automatically.
 
 ## Options
 
@@ -110,17 +110,17 @@ Taxonomies: `murtadd_topic` (shared, flat, seeded 6 terms, `/topic/`), `murtadd_
 
 ## Template map
 
-- `front-page.php` — hero, four-category grid, cross-link block, four-column footer (renders whenever a static front page is set).
-- `home.php` — the Journal index at `/journal/`, with right rail (ayah box + recently added).
-- `single.php` / `page.php` / `index.php` — Journal post, generic page, fallback.
-- `page-start-here.php` — "Start Here" template (assign to slug `start-here`).
-- `archive-murtadd_doubt.php`, `archive-murtadd_rebuttal.php`, `archive-murtadd_fatwa.php` — CPT archives; the fatwa archive carries the GET filter form and table layout.
-- `single-murtadd_doubt.php`, `single-murtadd_rebuttal.php`, `single-murtadd_fatwa.php` — CPT singles.
-- `taxonomy-murtadd_doubt_category.php`, `taxonomy-murtadd_topic.php`, `taxonomy-murtadd_school.php` — term archives. The school archive reuses the fatwa index table.
-- `search.php`, `searchform.php`, `404.php`, `archive.php` — every fallback view is templated; nothing renders through a bare `index.php`.
-- `template-parts/` — card-cross-link, card-doubt-category, notice-struggling, row-fatwa-entry, row-list-entry (shared mixed-type list row).
-- `comments.php` — threaded comment list and response form; called from `single.php` and `page.php`. The three CPTs do not declare `comments` support.
-- `header.php` / `sidebar.php` / `footer.php` — two-column shell. `.murtadd-main` is the column; `<main id="murtadd-content">` inside it holds the content only. `murtadd_open_site_footer()` closes `<main>` and opens the one `<footer class="murtadd-site-footer">`, which holds the front page's columns and the bar, so the footer is the contentinfo landmark on every view. The sidebar is the primary navigation and carries routing only: brand, Start here, the content types, search. Utility links (About / FAQ / Contact / Privacy) belong in the footer, never the sidebar — they compete with triage and duplicate the front-page footer column. The `footer_site` menu location renders in exactly one place per view: the columns on the front page, the slim bar on inner pages.
+- `front-page.php`: hero, four-category grid, cross-link block, four-column footer (renders whenever a static front page is set).
+- `home.php`: the Journal index at `/journal/`, with right rail (ayah box + recently added).
+- `single.php` / `page.php` / `index.php`: Journal post, generic page, fallback.
+- `page-start-here.php`: "Start Here" template (assign to slug `start-here`).
+- `archive-murtadd_doubt.php`, `archive-murtadd_rebuttal.php`, `archive-murtadd_fatwa.php`: CPT archives; the fatwa archive carries the GET filter form and table layout.
+- `single-murtadd_doubt.php`, `single-murtadd_rebuttal.php`, `single-murtadd_fatwa.php`: CPT singles.
+- `taxonomy-murtadd_doubt_category.php`, `taxonomy-murtadd_topic.php`, `taxonomy-murtadd_school.php`: term archives. The school archive reuses the fatwa index table.
+- `search.php`, `searchform.php`, `404.php`, `archive.php`: every fallback view is templated; nothing renders through a bare `index.php`.
+- `template-parts/`: card-cross-link, card-doubt-category, card-quiz, notice-struggling, rail-single, row-fatwa-entry, row-list-entry (shared mixed-type list row) and counterpart.
+- `comments.php`: threaded comment list and response form; called from `single.php` and `page.php`. The three CPTs do not declare `comments` support.
+- `header.php` / `sidebar.php` / `footer.php`: two-column shell. `.murtadd-main` is the column; `<main id="murtadd-content">` inside it holds the content only. `murtadd_open_site_footer()` closes `<main>` and opens the one `<footer class="murtadd-site-footer">`, which holds the front page's columns and the bar, so the footer is the contentinfo landmark on every view. The sidebar is the primary navigation and carries routing only: brand, Start here, the content types, search. Utility links (About / FAQ / Contact / Privacy) belong in the footer, never the sidebar: they compete with triage and duplicate the front-page footer column. The `footer_site` menu location renders in exactly one place per view: the columns on the front page, the slim bar on inner pages.
 
 ## Activation
 
@@ -132,11 +132,11 @@ Taxonomies: `murtadd_topic` (shared, flat, seeded 6 terms, `/topic/`), `murtadd_
 
 It is re-runnable from Appearance → Theme Options → Setup, because upgrading the theme in place does not fire `after_switch_theme` and would otherwise leave an existing site unscaffolded. Any template that depends on a page must degrade visibly, not silently: when a required page is absent, `murtadd_setup_needed_notice()` says so in the admin.
 
-Ordering matters. `after_switch_theme` fires on `after_setup_theme` (99), before `init`, so the routine only raises the `murtadd_needs_setup` flag there. The work itself runs on `init` at 90 — after the CPTs and taxonomies register — and clears `murtadd_rewrite_version` so the `init`/99 flusher writes a complete rule set.
+Ordering matters. `after_switch_theme` fires on `after_setup_theme` (99), before `init`, so the routine only raises the `murtadd_needs_setup` flag there. The work itself runs on `init` at 90: after the CPTs and taxonomies register: and clears `murtadd_rewrite_version` so the `init`/99 flusher writes a complete rule set.
 
 ## The wordmark
 
-One component: `murtadd_the_logo( $variant )`, with `on-dark` (green panel) and `on-light` (ivory ground) variants. The strike and the full stop are the identity and are constant; only the ground changes, through the `--murtadd-logo-ink`, `--murtadd-logo-strike`, and `--murtadd-logo-stop-ink` custom properties. Generic rules must not reach into the component: `.murtadd-footer-col a` was outranking `.murtadd-logo` on specificity and stripping its typeface, which is why the footer link rule carries `:not(.murtadd-logo)`. Sizing is set only through `--murtadd-logo-size` (sidebar 24px, footer 34px) and the strike is specified in `em`, so it holds its weight against the letterforms at any size. The sidebar mark links home; the footer mark does not, and renders as a `span` so that nothing unclickable behaves as though it were. Hover and focus states are scoped to `a.murtadd-logo` and act on the strike, not the letters. Never write the wordmark markup inline — that is how the sidebar and footer marks diverged before 1.8.0.
+One component: `murtadd_the_logo( $variant )`, with `on-dark` (green panel) and `on-light` (ivory ground) variants. The strike and the full stop are the identity and are constant; only the ground changes, through the `--murtadd-logo-ink`, `--murtadd-logo-strike`, and `--murtadd-logo-stop-ink` custom properties. Generic rules must not reach into the component: `.murtadd-footer-col a` was outranking `.murtadd-logo` on specificity and stripping its typeface, which is why the footer link rule carries `:not(.murtadd-logo)`. Sizing is set only through `--murtadd-logo-size` (sidebar 24px, footer 34px) and the strike is specified in `em`, so it holds its weight against the letterforms at any size. The sidebar mark links home; the footer mark does not, and renders as a `span` so that nothing unclickable behaves as though it were. Hover and focus states are scoped to `a.murtadd-logo` and act on the strike, not the letters. Never write the wordmark markup inline: that is how the sidebar and footer marks diverged before 1.8.0.
 
 ## Colour on the green panel
 
@@ -148,29 +148,29 @@ The wide views (front page, blog, fatwa index, school archive) run a 1000px colu
 
 ## Column width
 
-`--murtadd-measure` on `.murtadd-main` sets the content column for the whole view; every direct child inherits it, so all blocks share the same left and right edges. Default 780px (prose). The front page, blog, fatwa index, and school archive take 1000px, since they carry grids and tables. Never cap an individual block with its own `max-width` — that is what broke alignment before 1.7.1. The slim footer bar is the sole exception and deliberately bleeds full width.
+`--murtadd-measure` on `.murtadd-main` sets the content column for the whole view; every direct child inherits it, so all blocks share the same left and right edges. Default 780px (prose). The front page, blog, fatwa index, and school archive take 1000px, since they carry grids and tables. Never cap an individual block with its own `max-width`: that is what broke alignment before 1.7.1. The slim footer bar is the sole exception and deliberately bleeds full width.
 
 ## The rail, and what it is quoting
 
-Doubt and rebuttal singles carry a sticky right-hand rail of framed cards. This is deliberate détournement: the site murtadd.org answers used a stacked right-hand column of panels, and the silhouette is quoted so that a returning visitor recognises the skeleton and then registers that everything inside it has been turned. The scripture box is the payload — the same verse, in the same position, answering the opposite way.
+Doubt and rebuttal singles carry a sticky right-hand rail of framed cards. This is deliberate détournement: the site murtadd.org answers used a stacked right-hand column of panels, and the silhouette is quoted so that a returning visitor recognises the skeleton and then registers that everything inside it has been turned. The scripture box is the payload: the same verse, in the same position, answering the opposite way.
 
 The rule governing this: **echo the structure, never the styling.** Period tells (serif navigation, filled header strips, olive attribution, beveled chrome, centred foot rules) are not to be introduced; they turn an argument into pastiche. Nothing of the original's assets, copy, or markup is reproduced. The execution stays current.
 
 ## Imagery
 
-Featured images are for **documentary** images only: a folio, a court document, a screenshot of a claim as it actually circulates. Never mood photography — no praying hands, no rain-streaked windows, no silhouettes. A reader in genuine distress can smell a stock photo from the first scroll, and it would cheapen the one page where they decide whether to trust this site.
+Featured images are for **documentary** images only: a folio, a court document, a screenshot of a claim as it actually circulates. Never mood photography: no praying hands, no rain-streaked windows, no silhouettes. A reader in genuine distress can smell a stock photo from the first scroll, and it would cheapen the one page where they decide whether to trust this site.
 
 Where no image is set, `inc/social-card.php` generates a card carrying the doubt itself. That is the honest equivalent of the photograph the answered site used: not a face, but the reader's own sentence, set as an object.
 
 ## Tests
 
-`tests/` runs without a WordPress installation. Every assertion corresponds to a defect that actually shipped. When a new invariant is discovered the hard way, add a test for it in the same release — that is the entire point of the suite. Mutation-check new tests by re-introducing the defect: a test that cannot fail is worth nothing.
+`tests/` runs without a WordPress installation. Every assertion corresponds to a defect that actually shipped. When a new invariant is discovered the hard way, add a test for it in the same release: that is the entire point of the suite. Mutation-check new tests by re-introducing the defect: a test that cannot fail is worth nothing.
 
 ## Stylesheet ownership
 
 `assets/css/tokens.css` owns the `:root` design tokens and the three `@font-face` declarations (Source Serif 4, Public Sans, and the Qur'an face). `assets/css/logo.css` owns the wordmark component. **Both are loaded by the front end and by the Theme Options screen** (`tokens → logo → main`, `tokens → logo → admin`). The login screen loads `tokens → login`, and the standalone error pages link `tokens.min.css` from the theme. The block editor canvas loads `tokens → editor` through `add_editor_style()` (`assets/css/editor.css`: the body, links, headings, quotations and Arabic of the front end), so an editor writes in the faces a reader sees; it never sets the Qur'an face, because the editor shows verse text the mapper has not fitted.
 
-There is exactly one definition of the mark and one of the brand colours in this codebase. Never restate either. The wordmark has now drifted twice by being hand-copied into a second context — once into the footer, once into the admin hero — and this structure is what makes a third time impossible. A rule that styles a *placement* (the footer's `:not(.murtadd-logo)` exclusion, a size override) belongs with its consumer; a rule that defines the *mark* belongs in `logo.css`.
+There is exactly one definition of the mark and one of the brand colours in this codebase. Never restate either. The wordmark has now drifted twice by being hand-copied into a second context: once into the footer, once into the admin hero: and this structure is what makes a third time impossible. A rule that styles a *placement* (the footer's `:not(.murtadd-logo)` exclusion, a size override) belongs with its consumer; a rule that defines the *mark* belongs in `logo.css`.
 
 ## Theme Options
 
@@ -189,7 +189,7 @@ There is exactly one definition of the mark and one of the brand colours in this
 
 Malaysia is the site's home, and it is not its frame. Malaysian law or usage may appear as one example among several; no entry should be built on it alone, because the reader may be in Cairo, Jakarta, Lahore, or London.
 
-The operative test before publishing a paired entry: **if the companion article already makes this argument, do not make it again — compress it to a sentence, point across, and spend the entry on what only this site can say.** `the-age-of-aisha` is the worked example. The companion piece runs the source criticism and the presentism argument at length; this one compresses both to two paragraphs and spends itself on how the same report is used by both the polemicist and the child-marriage apologist, and on what Muslim-majority legislatures have since enacted, which is forensic and legal ground the companion site's pastoral register does not occupy.
+The operative test before publishing a paired entry: **if the companion article already makes this argument, do not make it again; compress it to a sentence, point across, and spend the entry on what only this site can say.** `the-age-of-aisha` is the worked example. The companion piece runs the source criticism and the presentism argument at length; this one compresses both to two paragraphs and spends itself on how the same report is used by both the polemicist and the child-marriage apologist, and on what Muslim-majority legislatures have since enacted, which is forensic and legal ground the companion site's pastoral register does not occupy.
 
 **Counterpart links.** `_murtadd_ce_slug` on rebuttals and doubts stores a bare article slug on the companion site; `template-parts/counterpart.php` renders it as `{ce_base_url}/articles/{slug}/`. Both the slug and the base URL must be present or nothing renders. The two sites overlap on roughly two thirds of this site's entries by design: this one answers charges in a forensic register, the other works the same questions through pastorally.
 
@@ -229,7 +229,7 @@ The gradient appears in exactly three places: the hero, the active tab's indicat
 
 The version badge reads `MURTADD_VERSION` directly. It cannot drift, unlike the six files that state a version in text.
 
-Tabs run in the order the work is done: Setup, Content, Topics & schools, Linked sites, Contextual links, Colours, Profiles, Security, Upkeep, Docs. **The tab keys are load-bearing**: `settings_fields( 'murtadd_' . $active )` maps each key to its registered settings group, so relabel and reorder freely, but never rename a key — a renamed key silently detaches the tab from its settings and the fields will appear to save while going nowhere. Labels must name what a person has, not what WordPress calls it internally.
+Tabs run in the order the work is done: Setup, Content, Topics & schools, Linked sites, Contextual links, Colours, Profiles, Security, Upkeep, Docs. **The tab keys are load-bearing**: `settings_fields( 'murtadd_' . $active )` maps each key to its registered settings group, so relabel and reorder freely, but never rename a key: a renamed key silently detaches the tab from its settings and the fields will appear to save while going nowhere. Labels must name what a person has, not what WordPress calls it internally.
 
 ## Unlisting, search addresses and the progress bar
 
@@ -276,4 +276,23 @@ Defined once in `css/main.css` `:root`. Accent `#0f6e56` (green), tint `#eefaf7`
 
 ## Data removal
 
-Themes have no uninstall hook. The six `murtadd_*` options listed in readme.txt must be deleted manually if the theme is retired. Content persists by design.
+Themes have no uninstall hook. The `murtadd_*` options and the two user meta keys listed in readme.txt must be deleted manually if the theme is retired. Content persists by design.
+
+## Public wording
+
+`readme.txt` is served by the web server, and the pages are public. Neither says that the site is related to other sites or belongs to a group of them. Links to other sites are ordinary links, and the readme calls them links to other sites.
+
+The Theme Options screen, which only administrators see, still uses an older label for them.
+
+On Apache the theme's `.htaccess` refuses the `docs/` files, and the Docs tab reads them from disk. Nginx reads no `.htaccess`, so there they stay reachable until the host adds the Nginx rules in `docs/readme.md`, under Security.
+
+## Release checklist
+
+1. The six files that state the version agree (see Documentation, above).
+2. `docs/changelog.md` has the new entry, and `readme.txt` has the short form and, where the owner must act, an Upgrade Notice.
+3. `docs/upgrading.md` has a note for the version, and its roadmap drops what shipped.
+4. `docs/readme.md` covers any new hook, filter, constant, setting, file or server rule.
+5. This file covers any new fixed fact or owner decision.
+6. Every path named in a document exists.
+7. `composer lint`, `composer test` and `php bin/build-error-pages.php --check` pass, and every edited source asset has its `.min` twin regenerated.
+
