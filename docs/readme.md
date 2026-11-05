@@ -85,7 +85,7 @@ Colour overrides inject through `wp_add_inline_style()` only. Every source file 
 
 **Loading is conditional.** Per-template CSS enqueues only on its own views. Admin JS enqueues only on the theme's own screens.
 
-**JavaScript is an enhancement.** Every front-end behaviour works with JS disabled. The fatwa filters are a plain GET form; the script only auto-submits on change.
+**JavaScript is an enhancement.** Every page reads, and its menus and forms work, with JS disabled. The fatwa filters are a plain GET form; the script only auto-submits on change. The reading progress bar is the one feature that needs it.
 
 **Settings use the Settings API.** One option array per tab, in a tabbed screen at Appearance → Theme Options. The tabs run Setup, Content, Topics & schools, Linked sites, Contextual links, Colours (with a live WCAG contrast check), Profiles, Security, Upkeep and Docs. `inc/settings-page.php` registers them; [settings.md](settings.md) describes every field.
 
@@ -179,7 +179,7 @@ The private login address is a port of WPS Hide Login. It is off until an addres
 
 ### The theme folder's rules
 
-`.htaccess` in the theme folder refuses every dot entry (`.well-known` open), the `tests`, `tools`, `bin`, `docs`, `config` and `vendor` folders, Markdown, `composer.*` and `phpunit.xml*`. Each of those folders carries a deny file of its own. The Docs tab reads `docs/*.md` from disk, never by address.
+`.htaccess` in the theme folder refuses every dot entry (`.well-known` open), the `tests`, `tools`, `bin`, `docs`, `config` and `vendor` folders, Markdown, `composer.*` and `phpunit.xml*`. `tests/`, `bin/`, `docs/`, `config/` and `vendor/` each carry a deny file of its own; `tools/` has none, since the theme has no such folder, and is covered by the rule alone. The Docs tab reads `docs/*.md` from disk, never by address.
 
 ### Development files on a live site
 
@@ -224,7 +224,7 @@ With WordPress in its own subfolder, the core rules carry that folder in front, 
 
 ### Nginx
 
-Nginx reads no `.htaccess`. Put these in the server block, above the `location ~ \.php$` block:
+Nginx reads no `.htaccess`. Put these in the server block above every other regex `location`, the `location ~ \.php$` block that hands PHP to PHP-FPM and any static-file block among them: Nginx takes the first regex location that matches, so a rule further down never runs. Where the host keeps such blocks in an include, merge the denials into them instead.
 
 ```nginx
 location ~ /\.(git|claude) { return 403; }
@@ -240,7 +240,7 @@ location = /xmlrpc.php { return 403; }
 
 The first line goes further than the Apache rules, which refuse dot entries only inside the theme folder: it refuses `.git` and `.claude` anywhere on the site. The second matches the theme folder's own `.htaccess`, `.well-known` left open.
 
-Leave out the last line while XML-RPC is on. For a site in a subfolder, put its path in front of every rule, as in `^/blog/wp-includes/`.
+Leave out the last line while XML-RPC is on. For a site in a subfolder, put its path in front of every rule, as in `^/blog/wp-includes/`, and the theme-folder rules with it (`^/blog/wp-content/themes/murtadd/`).
 
 With WordPress in its own folder below the site (`/wp/`), the Apache blocks carry that folder, so add the same rules with it in front: `location ~ ^/wp/wp-includes/(?!js/tinymce/|ms-files\.php$).+\.php$ { return 403; }` and `location ~ ^/wp/(wp-settings\.php|wp-config-sample\.php|readme\.html|wp-admin/install\.php)$ { return 403; }`. Repeat the root-PHP rule for that folder too: `location ~* ^/wp/(?!(index|wp-activate|wp-blog-header|wp-comments-post|wp-cron|wp-links-opml|wp-load|wp-login|wp-mail|wp-signup|wp-trackback|xmlrpc)\.php$)[^/]+\.php$ { return 403; }`.
 

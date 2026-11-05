@@ -5,7 +5,7 @@
 1. Turn on hidden files in the FTP program (in FileZilla: Server, Force showing hidden files). The theme carries `.htaccess` files in its own folder and in `tests/`, `bin/`, `docs/`, `config/` and `vendor/`.
 2. Upload the new `murtadd` folder into `wp-content/themes/` as `murtadd-new`.
 3. Rename the live folder to `murtadd-old` and at once `murtadd-new` to `murtadd`, at a quiet hour and with Appearance, Themes closed. A page asked for between the two renames finds no theme, and that screen switches the site to another theme if it finds the folder missing. Delete the old one once the site looks right.
-4. Open any admin page as an administrator. The error pages and the `.htaccess` blocks are brought up to date, and the first request after the version change removes the development files.
+4. Open any admin page as an administrator. The error pages are brought up to date, and the first request after the version change removes the development files. The `.htaccess` blocks are checked at most once an hour, so they follow on the next check; saving the Security tab runs it at once.
 5. Read the note below for every version you pass.
 
 Upgrading in place does not run the activation steps. If something is missing, use Appearance, Theme Options, Setup, Create anything missing.
