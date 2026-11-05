@@ -266,7 +266,7 @@ msgid "When the doubt runs deeper"
 msgstr ""
 
 #: front-page.php:50
-msgid "Some doubts rest on older questions, such as whether God exists at all. These two sites take them up at length."
+msgid "Some doubts rest on older questions, such as whether God exists at all; others on arguments made against Islam. Each site below answers one of them at length."
 msgstr ""
 
 #: front-page.php:50

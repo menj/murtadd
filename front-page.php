@@ -47,7 +47,7 @@ if ( $murtadd_ce || $murtadd_bismika ) :
 		<div class="murtadd-section-head murtadd-section-head--center">
 			<h2 class="murtadd-heading-caps"><?php esc_html_e( 'When the doubt runs deeper', 'murtadd' ); ?></h2>
 			<span class="murtadd-rule" aria-hidden="true"></span>
-			<p><?php esc_html_e( 'Some doubts rest on older questions, such as whether God exists at all. These two sites take them up at length.', 'murtadd' ); ?></p>
+			<p><?php esc_html_e( 'Some doubts rest on older questions, such as whether God exists at all; others on arguments made against Islam. Each site below answers one of them at length.', 'murtadd' ); ?></p>
 		</div>
 		<div class="murtadd-crosslink-cards">
 			<?php
