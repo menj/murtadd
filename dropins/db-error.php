@@ -16,6 +16,7 @@ if ( ! headers_sent() ) {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
 <title>We cannot reach our database | {{SITE_NAME}}</title>
+<link rel="icon" href="{{ICON_URL}}" type="image/png" sizes="32x32">
 <link rel="stylesheet" href="{{TOKENS_URL}}">
 <link rel="stylesheet" href="{{CSS_URL}}">
 </head>

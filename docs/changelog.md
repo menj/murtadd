@@ -1,5 +1,16 @@
 # Murtadd changelog
 
+## 1.55.10 (2026-11-05)
+
+The browser icon set is complete. No feature removed and no public identifier renamed.
+
+### Added
+- `assets/icons/apple-touch-icon.png` (180px, on solid green), `site-icon-maskable-512.png` (the mark at 80% on solid green) and `site.webmanifest`, composited from `site-icon-512.png`, so the letter keeps the brand serif.
+- `murtadd_fallback_site_icon()` prints the manifest link, and its touch icon is the new solid one. `site-icon-180.png` stays, with transparent corners.
+- `murtadd_serve_favicon()` answers `/favicon.ico` with `assets/icons/favicon.ico`: a day's cache and an ETag, with a 304 while it is unchanged, and HEAD gets the headers alone. With a Site Icon, core redirects to it.
+- `theme-color` on the login screen too.
+- The drop-ins and static error pages link the 32px icon, by the same path rule as their stylesheets: `{{ICON_URL}}` in `dropins/`, and the `/wp-content/themes/murtadd/assets/icons/` prefix rewritten to the theme's real path in the copies, so a subfolder install gets a working icon.
+
 ## 1.55.9 (2026-11-05)
 
 A Journal post gets the parts a long article needs, in reading order, and the theme moves to the GNU GPL, version 3 or later. No feature removed and no public identifier renamed. Doubts, rebuttals, guides and letters look as they did.

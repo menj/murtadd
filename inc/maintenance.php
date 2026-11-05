@@ -77,6 +77,7 @@ function murtadd_dropin_tokens( $css_url ) {
 		'{{HOME_URL}}'   => esc_attr( '' !== $home ? $home : '/' ),
 		'{{TOKENS_URL}}' => esc_attr( $theme . '/assets/css/tokens.min.css?ver=' . MURTADD_VERSION ),
 		'{{CSS_URL}}'    => esc_attr( $css_url ),
+		'{{ICON_URL}}'   => esc_attr( $theme . '/assets/icons/site-icon-32.png?ver=' . MURTADD_VERSION ),
 	);
 }
 
@@ -144,6 +145,7 @@ function murtadd_dropin_text( $name ) {
 			$text,
 			array(
 				'href="/wp-content/themes/murtadd/assets/css/' => 'href="' . esc_attr( $theme ) . '/assets/css/',
+				'href="/wp-content/themes/murtadd/assets/icons/' => 'href="' . esc_attr( $theme ) . '/assets/icons/',
 				'href="/"'                                     => 'href="' . $tokens['{{HOME_URL}}'] . '"',
 			)
 		);

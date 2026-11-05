@@ -1,6 +1,6 @@
 # Murtadd: single source of truth
 
-Version 1.55.9 · Child theme of Twenty Twenty-Five · murtadd.org
+Version 1.55.10 · Child theme of Twenty Twenty-Five · murtadd.org
 
 ## What this theme is
 
@@ -266,7 +266,7 @@ Defined once in `css/main.css` `:root`. Accent `#0f6e56` (green), tint `#eefaf7`
 
 ## Branding assets
 
-`screenshot.png` (1200×900) is the Appearance → Themes preview. `assets/icons/` holds the site-icon mark: `site-icon.svg` is the source, with 512/192/180/32/16 PNGs and `favicon.ico` derived from it. `inc/site-icon.php` serves them only while no core Site Icon is configured; `has_site_icon()` short-circuits the whole module the moment one is set. Fonts are self-hosted in `assets/fonts/`: Source Serif 4 and Public Sans under the OFL, and the Qur'an face below under its own licence.
+`screenshot.png` (1200×900) is the Appearance → Themes preview. `assets/icons/` holds the site-icon mark: `site-icon.svg` is the source, with 512/192/180/32/16 PNGs and `favicon.ico` derived from it; `apple-touch-icon.png` and `site-icon-maskable-512.png` are composited from the 512 PNG onto solid #0f6e56, and `site.webmanifest` lists the 192, 512 and maskable files. `inc/site-icon.php` serves them, and answers `/favicon.ico`, only while no core Site Icon is configured; `has_site_icon()` short-circuits the whole module the moment one is set. The owner asked for the complete set on 2026-11-05: "make sure you have favicon too." Fonts are self-hosted in `assets/fonts/`: Source Serif 4 and Public Sans under the OFL, and the Qur'an face below under its own licence.
 
 ## Arabic and the Qur'an face
 
