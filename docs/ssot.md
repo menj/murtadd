@@ -280,9 +280,11 @@ Themes have no uninstall hook. The `murtadd_*` options and the two user meta key
 
 ## Public wording
 
-`readme.txt` is served by the web server, and the pages are public. Neither says that the site is related to other sites or belongs to a group of them. Links to other sites are ordinary links, and the readme calls them links to other sites. The Theme Options screen, which only administrators see, still labels them sister sites.
+`readme.txt` is served by the web server, and the pages are public. Neither says that the site is related to other sites or belongs to a group of them. Links to other sites are ordinary links, and the readme calls them links to other sites.
 
-The `docs/` files are refused by the web server and read only on the Docs tab.
+The Theme Options screen, which only administrators see, still labels them sister sites.
+
+On Apache the theme's `.htaccess` refuses the `docs/` files, and the Docs tab reads them from disk. Nginx reads no `.htaccess`, so there they stay reachable until the host adds the rules in `readme.md`.
 
 ## Release checklist
 

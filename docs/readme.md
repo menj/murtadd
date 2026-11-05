@@ -165,7 +165,7 @@ The tab keys are load-bearing: never rename one. [settings.md](settings.md) has 
 
 ### The upload guard
 
-While a theme file is missing or half written, visitors get the 503 "Back shortly" page with `Retry-After: 300`, and the error log one line per problem every ten minutes. The login screen, AJAX, cron and the command line never get it (`murtadd_incomplete_serves()`), and a missing file leaves the admin alone.
+While one of the files `murtadd_theme_files()` lists, or `inc/seed-data.php`, is missing or half written, visitors get the 503 "Back shortly" page with `Retry-After: 300`, and the error log one line per problem every ten minutes. The login screen, AJAX, cron and the command line never get it (`murtadd_incomplete_serves()`), and a missing file leaves the admin alone.
 
 ### Accounts and XML-RPC
 
@@ -228,10 +228,10 @@ Nginx reads no `.htaccess`. Put these in the server block above every other rege
 
 ```nginx
 location ~ /\.(git|claude) { return 403; }
-location ~ ^/wp-content/themes/murtadd/(.+/)?\.(?!well-known(/|$)) { return 403; }
-location ~ ^/wp-content/themes/murtadd/(tests|tools|bin|docs|config|vendor)(/|$) { return 403; }
-location ~* ^/wp-content/themes/murtadd/.+\.md$ { return 403; }
-location ~ ^/wp-content/themes/murtadd/(composer\.(json|lock)|phpunit\.xml(\.dist)?)$ { return 403; }
+location ~ ^/wp-content/themes/murtadd[^/]*/(.+/)?\.(?!well-known(/|$)) { return 403; }
+location ~ ^/wp-content/themes/murtadd[^/]*/(tests|tools|bin|docs|config|vendor)(/|$) { return 403; }
+location ~* ^/wp-content/themes/murtadd[^/]*/.+\.md$ { return 403; }
+location ~ ^/wp-content/themes/murtadd[^/]*/(composer\.(json|lock)|phpunit\.xml(\.dist)?)$ { return 403; }
 location ~ ^/wp-includes/(?!js/tinymce/|ms-files\.php$).+\.php$ { return 403; }
 location ~ ^/(wp-settings\.php|wp-config-sample\.php|readme\.html|wp-admin/install\.php)$ { return 403; }
 location ~* ^/(?!(index|wp-activate|wp-blog-header|wp-comments-post|wp-cron|wp-links-opml|wp-load|wp-login|wp-mail|wp-signup|wp-trackback|xmlrpc)\.php$)[^/]+\.php$ { return 403; }
@@ -240,9 +240,11 @@ location = /xmlrpc.php { return 403; }
 
 The first line goes further than the Apache rules, which refuse dot entries only inside the theme folder: it refuses `.git` and `.claude` anywhere on the site. The second matches the theme folder's own `.htaccess`, `.well-known` left open.
 
+The `murtadd[^/]*` in the theme rules also covers the `murtadd-new` and `murtadd-old` folders of an FTP update, which Nginx would otherwise serve while both sit on the server.
+
 Leave out the last line while XML-RPC is on. For a site in a subfolder, put its path in front of every rule but the first (the `.git` and `.claude` rule stays global), as in `^/blog/wp-includes/`, and the theme-folder rules with it (`^/blog/wp-content/themes/murtadd/`).
 
-With WordPress in its own folder below the site (`/wp/`), the Apache blocks carry that folder, so add the same rules with it in front: `location ~ ^/wp/wp-includes/(?!js/tinymce/|ms-files\.php$).+\.php$ { return 403; }` and `location ~ ^/wp/(wp-settings\.php|wp-config-sample\.php|readme\.html|wp-admin/install\.php)$ { return 403; }`. Repeat the root-PHP rule for that folder too: `location ~* ^/wp/(?!(index|wp-activate|wp-blog-header|wp-comments-post|wp-cron|wp-links-opml|wp-load|wp-login|wp-mail|wp-signup|wp-trackback|xmlrpc)\.php$)[^/]+\.php$ { return 403; }`.
+With WordPress in its own folder below the site (`/wp/`), the Apache blocks carry that folder, so add the same rules with it in front: `location ~ ^/wp/wp-includes/(?!js/tinymce/|ms-files\.php$).+\.php$ { return 403; }` and `location ~ ^/wp/(wp-settings\.php|wp-config-sample\.php|readme\.html|wp-admin/install\.php)$ { return 403; }`. While XML-RPC is off, add `location = /wp/xmlrpc.php { return 403; }` as well. Repeat the root-PHP rule for that folder too: `location ~* ^/wp/(?!(index|wp-activate|wp-blog-header|wp-comments-post|wp-cron|wp-links-opml|wp-load|wp-login|wp-mail|wp-signup|wp-trackback|xmlrpc)\.php$)[^/]+\.php$ { return 403; }`.
 
 ### The installer
 
@@ -268,7 +270,7 @@ ErrorDocument 503 /wp-content/murtadd-errors/503.html
 ErrorDocument 504 /wp-content/murtadd-errors/504.html
 ```
 
-On Nginx the same pages go in with `error_page 403 /wp-content/murtadd-errors/403.html;` and so on for each code.
+On Nginx the same pages go in with `error_page 403 /wp-content/murtadd-errors/403.html;` and so on for each code. Where `wp-content` sits below a subfolder, use its real address, as in `/blog/wp-content/murtadd-errors/403.html`; the tab's lines show it.
 
 On a network every site shares `wp-content`. The main site writes the files; while it runs another theme, the subsite with the lowest ID that runs Murtadd writes them (`murtadd_dropins_writer()`). The last site to leave the theme removes them.
 
