@@ -58,8 +58,10 @@ function murtadd_dev_entries( $dir = '' ) {
 			$list[] = $dir . '/' . $name;
 		}
 	}
-	// vendor/ ships with Parsedown alone; its deny file stays too.
-	foreach ( (array) @scandir( $dir . '/vendor' ) as $name ) { // phpcs:ignore WordPress.PHP.NoSilencedErrors
+	// vendor/ ships with Parsedown alone; its deny file stays too. A vendor/
+	// that is a link points outside the theme, and is never walked.
+	$vendor = is_link( $dir . '/vendor' ) ? array() : (array) @scandir( $dir . '/vendor' ); // phpcs:ignore WordPress.PHP.NoSilencedErrors
+	foreach ( $vendor as $name ) {
 		if ( is_string( $name ) && ! in_array( $name, array( '.', '..', '.htaccess', 'parsedown' ), true ) ) {
 			$list[] = $dir . '/vendor/' . $name;
 		}

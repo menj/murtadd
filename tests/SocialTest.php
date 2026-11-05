@@ -11,8 +11,8 @@
  * @package Murtadd\Tests
  */
 
-// Run from the command line only: on a web server this file does nothing.
-if ( 'cli' !== PHP_SAPI ) {
+// Run from the command line only (phpdbg included): on a web server this file does nothing.
+if ( ! in_array( PHP_SAPI, array( 'cli', 'phpdbg' ), true ) ) {
 	exit;
 }
 

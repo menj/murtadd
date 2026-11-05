@@ -20,9 +20,9 @@
  * of them 200 with the home page, since it ignores a query or a path it
  * cannot read, so these are answered 410 on the home page as well as on a
  * 404 (murtadd_send_gone_spam()), and before the canonical redirect. A
- * pattern with a query string from the owner's list does the same. An
- * address WordPress resolves to a real post, page or archive is never
- * answered 410.
+ * pattern with a query string from the owner's list does the same. The home
+ * page answers 410 only for an address that carries such a query string or
+ * path; a post, page or archive WordPress resolves is never answered 410.
  *
  * Order matters, and two rules keep this from ever eating a real page:
  *  - It runs only on a 404. A pattern that matches a live post, page or
@@ -107,7 +107,8 @@ function murtadd_gone_clean( $raw ) {
 		}
 		$query = strpos( $line, '?' );
 		if ( false !== $query ) {
-			$key = (string) preg_split( '#[=&/]#', substr( $line, $query + 1 ) )[0];
+			// Read the key as the matcher will, decoded: "utm%5fsource" is utm_source.
+			$key = (string) preg_split( '#[=&/]#', rawurldecode( substr( $line, $query + 1 ) ) )[0];
 			if ( '' === trim( $key, '*' ) || '*' === $key[0] || preg_grep( murtadd_gone_glob( $key ), $reserved ) ) {
 				continue;
 			}
@@ -215,8 +216,9 @@ function murtadd_gone_respond() {
  * The spam presets and the owner's query-string patterns, on a 404 and on
  * the home page WordPress serves for an address it cannot read. Runs before
  * the legacy redirects and the canonical redirect, which would otherwise
- * send /index.php/sitemap5.xml and the like on with a 301. A request
- * WordPress resolved to a real post, page or archive is left alone.
+ * send /index.php/sitemap5.xml and the like on with a 301. The home page is
+ * answered 410 only when the address matches a pattern; a request WordPress
+ * resolved to a post, page or archive is left alone.
  */
 function murtadd_send_gone_spam() {
 	if ( ! is_404() && ! is_front_page() && ! is_home() ) {

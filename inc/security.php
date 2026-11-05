@@ -230,20 +230,37 @@ function murtadd_sec_server_blocks( $prefix ) {
 
 /**
  * Root PHP files on disk that the root block refuses: names other than
- * WordPress's own, such as the ox-*.php files the compromise left. Shown on
- * the Security tab, so the owner can delete them by FTP.
+ * WordPress's own, such as the ox-*.php files the compromise left, hidden
+ * ones (".x.php") included. Shown on the Security tab, so the owner can
+ * delete them by FTP. With WordPress in its own subfolder both folders are
+ * read, the one that holds .htaccess and WordPress's, and a file in the
+ * second is named with its folder ("wp/ox-1.php").
  *
- * @param string $dir The folder to read; ABSPATH when empty.
+ * @param string $dir The one folder to read; the site's folders when empty.
  * @return string[] File names.
  */
 function murtadd_sec_unknown_root_php( $dir = '' ) {
-	$dir   = '' === $dir ? ABSPATH : trailingslashit( $dir );
+	$dirs = array( '' => $dir );
+	if ( '' === $dir ) {
+		$home   = function_exists( 'get_home_path' ) ? (string) get_home_path() : ABSPATH;
+		$prefix = murtadd_sec_core_prefix( $home, ABSPATH );
+		$dirs   = array( '' => $home );
+		if ( null !== $prefix && '' !== $prefix ) {
+			$dirs[ $prefix ] = ABSPATH;
+		}
+	}
 	$known = array_merge( murtadd_sec_root_php_names(), array( 'wp-config', 'wp-settings', 'wp-config-sample' ) );
 	$found = array();
-	foreach ( (array) glob( $dir . '*.[pP][hH][pP]' ) as $file ) {
-		$name = basename( (string) $file );
-		if ( ! in_array( strtolower( substr( $name, 0, -4 ) ), $known, true ) ) {
-			$found[] = $name;
+	foreach ( $dirs as $label => $folder ) {
+		$folder = trailingslashit( $folder );
+		foreach ( (array) @scandir( $folder ) as $name ) { // phpcs:ignore WordPress.PHP.NoSilencedErrors
+			$name = (string) $name;
+			if ( ! preg_match( '/\.php$/i', $name ) || ! is_file( $folder . $name ) ) {
+				continue;
+			}
+			if ( ! in_array( strtolower( substr( $name, 0, -4 ) ), $known, true ) ) {
+				$found[] = $label . $name;
+			}
 		}
 	}
 	sort( $found );
@@ -305,8 +322,13 @@ function murtadd_sec_sync_htaccess( $force = false ) {
 	// The core-file and root PHP blocks are kept while the theme runs,
 	// whatever the XML-RPC switch.
 	foreach ( murtadd_sec_server_blocks( murtadd_sec_core_prefix( get_home_path(), ABSPATH ) ) as $marker => $lines ) {
-		if ( ( function_exists( 'extract_from_markers' ) ? extract_from_markers( $file, $marker ) : array() ) !== $lines ) {
-			insert_with_markers( $file, $marker, $lines );
+		if ( ( function_exists( 'extract_from_markers' ) ? extract_from_markers( $file, $marker ) : array() ) !== $lines
+			&& true !== insert_with_markers( $file, $marker, $lines ) ) {
+			// A block that did not go in is tried again on the next admin
+			// page, not an hour later, and the tab says the file could not
+			// be written.
+			$state = 'unavailable';
+			delete_transient( 'murtadd_sec_htaccess_checked' );
 		}
 	}
 	update_option( 'murtadd_security_htaccess', $state, false );

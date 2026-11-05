@@ -12,8 +12,8 @@
  * @package Murtadd\Tests
  */
 
-// Run from the command line only: on a web server this file does nothing.
-if ( 'cli' !== PHP_SAPI ) {
+// Run from the command line only (phpdbg included): on a web server this file does nothing.
+if ( ! in_array( PHP_SAPI, array( 'cli', 'phpdbg' ), true ) ) {
 	exit;
 }
 
@@ -32,6 +32,11 @@ if ( ! function_exists( 'wp_rand' ) ) {
 if ( ! function_exists( 'wp_cache_delete' ) ) {
 	function wp_cache_delete( $key, $group = '' ) {
 		return true;
+	}
+}
+if ( ! function_exists( 'get_home_path' ) ) {
+	function get_home_path() {
+		return $GLOBALS['murtadd_test_home'] ?? ABSPATH;
 	}
 }
 if ( ! function_exists( 'do_action' ) ) {
@@ -226,12 +231,54 @@ final class LiveLogsTest extends TestCase {
 	public function test_unknown_root_php_is_listed() {
 		$dir = sys_get_temp_dir() . '/murtadd-root-' . uniqid();
 		mkdir( $dir );
-		foreach ( array( 'index.php', 'wp-login.php', 'wp-config.php', 'wp-settings.php', 'ox-9f3.php', 'Shell.PHP', 'readme.html' ) as $f ) {
+		foreach ( array( 'index.php', 'wp-login.php', 'wp-config.php', 'wp-settings.php', 'ox-9f3.php', 'Shell.PHP', '.hidden.php', 'readme.html' ) as $f ) {
 			file_put_contents( "$dir/$f", 'x' );
 		}
-		$this->assertSame( array( 'Shell.PHP', 'ox-9f3.php' ), murtadd_sec_unknown_root_php( $dir ) );
-		array_map( 'unlink', glob( "$dir/*" ) );
+		mkdir( "$dir/folder.php" );
+		$this->assertSame( array( '.hidden.php', 'Shell.PHP', 'ox-9f3.php' ), murtadd_sec_unknown_root_php( $dir ), 'Hidden files are listed; folders are not.' );
+		rmdir( "$dir/folder.php" );
+		array_map( 'unlink', array_filter( glob( "$dir/{,.}*", GLOB_BRACE ), 'is_file' ) );
 		rmdir( $dir );
+	}
+
+	public function test_unknown_root_php_reads_both_folders_with_wordpress_in_a_subfolder() {
+		// ABSPATH is the theme folder in the tests; the .htaccess folder is its parent.
+		$GLOBALS['murtadd_test_home'] = dirname( ABSPATH ) . '/';
+		$parent = dirname( ABSPATH );
+		$stray  = $parent . '/murtadd-stray-' . uniqid() . '.php';
+		if ( ! @file_put_contents( $stray, 'x' ) ) { // phpcs:ignore WordPress.PHP.NoSilencedErrors
+			unset( $GLOBALS['murtadd_test_home'] );
+			$this->markTestSkipped( 'The folder above the theme is not writable.' );
+		}
+		$found = murtadd_sec_unknown_root_php();
+		unlink( $stray );
+		unset( $GLOBALS['murtadd_test_home'] );
+		$this->assertContains( basename( $stray ), $found, 'A file in the .htaccess folder is listed by its name.' );
+		$this->assertContains( basename( ABSPATH ) . '/functions.php', $found, 'A file in WordPress\'s folder is listed with that folder.' );
+	}
+
+	public function test_encoded_reserved_keys_are_refused() {
+		$this->assertSame( '', murtadd_gone_clean( "/?utm%5fsource=x\n/?%70=1\n/?S%3dx" ) );
+	}
+
+	public function test_a_linked_vendor_folder_is_never_walked() {
+		$dir    = sys_get_temp_dir() . '/murtadd-link-' . uniqid();
+		$target = sys_get_temp_dir() . '/murtadd-target-' . uniqid();
+		mkdir( "$target/package", 0755, true );
+		mkdir( $dir );
+		symlink( $target, "$dir/vendor" );
+		$this->assertSame( array(), murtadd_dev_entries( $dir ) );
+		unlink( "$dir/vendor" );
+		rmdir( $dir );
+		$this->assertDirectoryExists( "$target/package" );
+		rmdir( "$target/package" );
+		rmdir( $target );
+	}
+
+	public function test_a_failed_block_write_is_reported_and_retried() {
+		$src = (string) file_get_contents( dirname( __DIR__ ) . '/inc/security.php' );
+		$this->assertStringContainsString( "&& true !== insert_with_markers( \$file, \$marker, \$lines ) ) {\n\t\t\t// A block that did not go in", $src );
+		$this->assertStringContainsString( "\t\t\t\$state = 'unavailable';\n\t\t\tdelete_transient( 'murtadd_sec_htaccess_checked' );", $src );
 	}
 
 	/* ---------- Development files ---------- */
@@ -339,7 +386,7 @@ final class LiveLogsTest extends TestCase {
 		$theme = sys_get_temp_dir() . '/murtadd-theme-' . uniqid();
 		mkdir( "$theme/.stuck", 0755, true );
 		file_put_contents( "$theme/.stuck/f", 'x' );
-		$root  = 0 === posix_geteuid();
+		$root  = function_exists( 'posix_geteuid' ) && 0 === posix_geteuid();
 		$stuck = $root ? ( false !== exec( 'chattr +i ' . escapeshellarg( "$theme/.stuck/f" ) . ' 2>/dev/null', $out, $rc ) && 0 === $rc ) : chmod( "$theme/.stuck", 0555 );
 		$free  = static function () use ( $root, $theme ) {
 			$root ? exec( 'chattr -i ' . escapeshellarg( "$theme/.stuck/f" ) . ' 2>/dev/null' ) : chmod( "$theme/.stuck", 0755 );
@@ -350,6 +397,7 @@ final class LiveLogsTest extends TestCase {
 		}
 		$GLOBALS['wpdb']                   = new MurtaddTestLeaseDb();
 		$GLOBALS['murtadd_test_theme_dir'] = $theme;
+		$log                               = ini_set( 'error_log', '/dev/null' );
 		try {
 			murtadd_cleanup_on_version_change();
 			$lock = (string) ( $GLOBALS['murtadd_options']['murtadd_dev_files_lock'] ?? '' );
@@ -366,6 +414,7 @@ final class LiveLogsTest extends TestCase {
 			$this->assertArrayNotHasKey( 'murtadd_dev_files_lock', $GLOBALS['murtadd_options'] );
 		} finally {
 			$free();
+			ini_set( 'error_log', (string) $log );
 			unset( $GLOBALS['murtadd_test_theme_dir'] );
 			murtadd_remove_tree( $theme );
 		}
@@ -376,7 +425,7 @@ final class LiveLogsTest extends TestCase {
 	public function test_every_script_has_the_cli_guard() {
 		foreach ( array_merge( glob( __DIR__ . '/*.php' ), glob( dirname( __DIR__ ) . '/bin/*.php' ) ) as $file ) {
 			$head = (string) file_get_contents( $file, false, null, 0, 2000 );
-			$this->assertStringContainsString( "if ( 'cli' !== PHP_SAPI ) {", $head, basename( $file ) );
+			$this->assertStringContainsString( "if ( ! in_array( PHP_SAPI, array( 'cli', 'phpdbg' ), true ) ) {", $head, basename( $file ) );
 		}
 	}
 }
