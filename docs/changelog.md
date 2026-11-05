@@ -6,7 +6,7 @@ Documentation only. Nothing on the site changes, and no public identifier is ren
 
 ### Changed
 - `readme.txt` covers installing and updating over FTP: hidden files shown, a temporary folder renamed into place, and never WordPress core without `wp-config.php`. It gains an Updating section, two FAQ answers (Back shortly, Nginx) and upgrade notices for 1.55.7 and 1.55.8.
-- `readme.txt` is served by the web server, so it no longer counts the other sites it links to as sister sites. Two old changelog lines about another theme's error pages say "another theme".
+- `readme.txt` is served by the web server, so it no longer describes the sites it links to as related. Two old changelog lines about another theme's error pages say "another theme".
 - `docs/readme.md` gains the technical reference: the boot sequence and the build, test and release commands. It also has the tabs and their options, the filters and constants, and the upload guard. The security part covers the private login address, the theme `.htaccess`, the development-file clean-up, the exact `.htaccess` blocks with their Nginx equivalents and the installer, and the error pages add their Retry-After values, Nginx and multisite. A performance list closes it.
 - `docs/upgrading.md` gains the general update steps and a roadmap.
 - `docs/ssot.md` gains the public wording rule and a release checklist.

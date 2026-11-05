@@ -85,9 +85,9 @@ Colour overrides inject through `wp_add_inline_style()` only. Every source file 
 
 **Loading is conditional.** Per-template CSS enqueues only on its own views. Admin JS enqueues only on the theme's own screens.
 
-**JavaScript is an enhancement.** Every page reads, and its menus and forms work, with JS disabled. The fatwa filters are a plain GET form; the script only auto-submits on change. The reading progress bar is the one feature that needs it.
+**JavaScript is an enhancement.** Every page reads, and its menus and forms work, with JS disabled. The fatwa filters are a plain GET form; the script only auto-submits on change. The reading progress bar, the glossary's tap and Escape handling and that auto-submit are the parts that need it.
 
-**Settings use the Settings API.** One option array per tab, in a tabbed screen at Appearance → Theme Options. The tabs run Setup, Content, Topics & schools, Linked sites, Contextual links, Colours (with a live WCAG contrast check), Profiles, Security, Upkeep and Docs. `inc/settings-page.php` registers them; [settings.md](settings.md) describes every field.
+**Settings use the Settings API.** Settings are grouped by tab, each tab saving its own options, in a tabbed screen at Appearance → Theme Options. The tabs run Setup, Content, Topics & schools, Linked sites, Contextual links, Colours (with a live WCAG contrast check), Profiles, Security, Upkeep and Docs. `inc/settings-page.php` registers them; [settings.md](settings.md) describes every field.
 
 ## Boot sequence
 
@@ -96,7 +96,7 @@ Colour overrides inject through `wp_add_inline_style()` only. Every source file 
 3. `init` runs `murtadd_cleanup_on_version_change()` once per version, which removes development files from a live site (below).
 4. Activation (`after_switch_theme`) only raises the `murtadd_needs_setup` flag. `murtadd_activate()` then runs on `init` at priority 90, after the post types and taxonomies exist: it scaffolds the pages and the footer menu, sets the Reading options and rewrite rules, and inserts the starter content (`inc/activation.php`). It never overwrites and never deletes.
 5. `admin_init` registers the settings, writes or repairs the error pages for an administrator, and keeps the `.htaccess` blocks in step at most once an hour.
-6. Front-end views are the PHP templates at the theme root. Per-template CSS loads only on its own views.
+6. Front-end views are the PHP templates at the theme root, and the Start Here page template in `templates/`. Per-template CSS loads only on its own views.
 
 ## Build, test and release
 
@@ -220,13 +220,15 @@ RewriteRule ^(?!(?:index|wp\-activate|wp\-blog\-header|wp\-comments\-post|wp\-cr
 # END Murtadd: only WordPress root PHP
 ```
 
-"Block xmlrpc.php" is there while XML-RPC is off; other themes the owner runs use the same marker.
+"Block xmlrpc.php" is there while XML-RPC is off; the marker name is a common one, so a switch between themes that use it never writes it twice.
 
 With WordPress in its own subfolder, the core rules carry that folder in front, and the root rule is written for both folders. With WordPress outside the `.htaccess` folder no block is written. The Security tab lists the root PHP files the root block refuses, so leftovers can be deleted by FTP.
 
 ### Nginx
 
-Nginx reads no `.htaccess`. Put these in the server block above every other regex `location`, the `location ~ \.php$` block that hands PHP to PHP-FPM and any static-file block among them: Nginx takes the first regex location that matches, so a rule further down never runs. Where the host keeps such blocks in an include, merge the denials into them instead.
+Nginx reads no `.htaccess`. Put these in the server block above every other regex `location`, the `location ~ \.php$` block that hands PHP to PHP-FPM and any static-file block among them: Nginx takes the first regex location that matches, so a rule further down never runs.
+
+Where the host keeps such blocks in an include, merge the denials into them instead. Check for a matching `location ^~` or exact `location =` block too (for `/wp-content/` or the themes folder, say): Nginx skips every regex location after one of those matches, so put the denials inside it.
 
 ```nginx
 location ~ /\.(git|claude) { return 403; }

@@ -117,7 +117,7 @@ Additive, with one narrow content step. Upload the whole theme folder: new files
 Additive. No content, template-structure or existing-option changes.
 
 1. Replace the theme directory with the 1.40.0 build. Include `inc/contextual-links.php` and `inc/data/network-links.json`.
-2. Contextual links are on by default: up to four links to this site and three to sister sites in the text of each entry. To change that, go to **Theme Options → Contextual links**.
+2. Contextual links are on by default: up to four links to this site and three to other sites in the text of each entry. To change that, go to **Theme Options → Contextual links**.
 3. `inc/data/network-links.json` is shared with the six sister themes and must stay identical in all seven. Update it everywhere or nowhere.
 
 ## 1.38.0 → 1.39.0
@@ -486,15 +486,15 @@ Everything below is a plan, open to change. Each item says why it is here. An it
 
 - Keep the `.htaccess` blocks on a network. `murtadd_sec_remove_htaccess()` takes them out on any theme switch, while another site may still run Murtadd; the error pages already stay.
 - Refuse `wp-admin/includes/*.php` and `wp-config.php` by address as well. "Murtadd: deny direct core files" leaves both out, and the error log shows bots calling `wp-admin/includes/admin.php` directly on 2 November.
-- Refuse the core files on a server without mod_rewrite. Both Murtadd blocks sit inside `<IfModule mod_rewrite.c>`, where another of the owner's themes adds an Apache 2.4 `<If>` for that case.
+- Refuse the core files on a server without mod_rewrite. Both Murtadd blocks sit inside `<IfModule mod_rewrite.c>`; an Apache 2.4 `<If>` would cover that case.
 
 ### Later
 
-- Test on WordPress 7.1 and raise "Tested up to" in `readme.txt`, which still reads 6.8. The owner's other themes are tested on 7.1.
+- Test on WordPress 7.1 and raise "Tested up to" in `readme.txt`, which still reads 6.8. WordPress 7.0 and 7.1 have come out since 6.8.
 - A lock for the installer. The error log shows 3,907 fatal errors on 4 November, between 16:01 and 19:41, while `wp-includes/version.php` was missing during a core upload. The theme cannot run then; a lock rule for `wp-admin/install.php` and `setup-config.php` would close the worst case.
 
 ### Ideas
 
-- A digest of the PHP error log on the dashboard, as another of the owner's themes shows, so a run of fatal errors like the one above is seen the same day.
+- A digest of the PHP error log on the dashboard, so a run of fatal errors like the one above is seen the same day.
 - Check that the Rank Math warning about the author's `url` (4 times between 25 and 27 October) has not come back since 1.47.0 gave the author a url.
 
