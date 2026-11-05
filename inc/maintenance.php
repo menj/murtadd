@@ -254,7 +254,41 @@ function murtadd_dropins_writer() {
 	}
 	$slug = basename( dirname( __DIR__ ) );
 	$main = get_main_site_id();
-	return ! in_array( $slug, array( get_blog_option( $main, 'stylesheet' ), get_blog_option( $main, 'template' ) ), true );
+	if ( in_array( $slug, array( get_blog_option( $main, 'stylesheet' ), get_blog_option( $main, 'template' ) ), true ) ) {
+		return false;
+	}
+	// One writer only: the site with the lowest ID that runs the theme, so
+	// the shared files never flip between subsites' addresses.
+	return get_current_blog_id() === murtadd_dropins_first_theme_site();
+}
+
+/**
+ * The site with the lowest ID that runs this theme, as its stylesheet or
+ * its template; 0 when none does. Sites are read 500 at a time.
+ *
+ * @return int
+ */
+function murtadd_dropins_first_theme_site() {
+	$slug   = basename( dirname( __DIR__ ) );
+	$offset = 0;
+	do {
+		$ids = get_sites(
+			array(
+				'fields'  => 'ids',
+				'number'  => 500,
+				'offset'  => $offset,
+				'orderby' => 'id',
+				'order'   => 'ASC',
+			)
+		);
+		foreach ( $ids as $id ) {
+			if ( in_array( $slug, array( get_blog_option( $id, 'stylesheet' ), get_blog_option( $id, 'template' ) ), true ) ) {
+				return (int) $id;
+			}
+		}
+		$offset += 500;
+	} while ( 500 === count( $ids ) );
+	return 0;
 }
 
 /**

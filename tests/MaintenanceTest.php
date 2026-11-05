@@ -201,6 +201,9 @@ final class MaintenanceTest extends TestCase {
 		$this->assertFalse( murtadd_dropins_writer() );
 		$GLOBALS['murtadd_test_main_theme'] = 'twentytwentyfive';
 		$this->assertTrue( murtadd_dropins_writer() );
+		$GLOBALS['murtadd_test_blog_id'] = 3;
+		$this->assertFalse( murtadd_dropins_writer(), 'A second subsite leaves the writing to the first.' );
+		unset( $GLOBALS['murtadd_test_blog_id'] );
 		unset( $GLOBALS['murtadd_test_subsite'], $GLOBALS['murtadd_test_main_theme'] );
 		$this->assertTrue( murtadd_dropins_writer() );
 	}
