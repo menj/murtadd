@@ -1,5 +1,14 @@
 # Changelog — Murtadd
 
+## 1.55.3 (2026-11-05)
+
+### Fixed
+- `dropins/php-error.php` answered a real fatal as an update in progress (503, "Back shortly", Retry-After 120). It looked for `wp-includes/` in the file and the whole message, and the message carries the stack trace, which names `wp-includes/class-wp-hook.php` for any "Call to undefined function" raised through a hook. The check now reads the file and the first line of the message only, with its own " in /path:line" cut off. A fatal on `template_redirect` gets the 500 page. A missing core or theme file ("Failed opening required '.../wp-includes/...'") still gets the 503.
+- A drop-in left in wp-content by a sister theme, marked "Written by the ... theme; safe to delete", blocked the install as someone else's file. `murtadd_dropin_is_replaceable()` lets the installer write over it. A file without such a mark is still left alone, and a theme switch still removes only the theme's own files.
+
+### Added
+- `errors/504.html` for a gateway timeout, in the same design as the 502 page, and an `ErrorDocument 504` line on the Upkeep tab and in `docs/readme.md`.
+
 ## 1.55.2 (2026-11-04)
 
 ### Changed
