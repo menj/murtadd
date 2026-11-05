@@ -13,7 +13,7 @@ A classic-template child theme of Twenty Twenty-Five for **murtadd.org**.
 | Requires WP | 6.4+ |
 | Requires PHP | 8.1+ |
 | Web server | Apache gets its rules written by the theme; Nginx needs the rules under Security below |
-| Multisite | Works; see Error pages and Security for what the main site does |
+| Multisite | Works, with one limit: the `.htaccess` blocks are shared by the network, and any site's theme switch takes them out while other sites may still run Murtadd (see the roadmap). The error pages stay |
 
 ## What it is
 
@@ -102,7 +102,8 @@ Colour overrides inject through `wp_add_inline_style()` only. Every source file 
 
 ```bash
 composer install          # PHPUnit and its packages, development only
-composer lint             # php -l over every theme PHP file
+composer lint             # php -l over the root templates, inc/, template-parts/, dropins/, bin/ and tests/ (not templates/)
+php -l templates/page-start-here.php
 composer test             # vendor/bin/phpunit; runs without WordPress
 php tests/security-detector-test.php
 php bin/build-error-pages.php          # rebuild errors/ after a text change
@@ -112,7 +113,7 @@ php bin/build-error-pages.php --check  # fails when a page is stale
 GitHub Actions runs `composer lint` and `composer test`. A release zip comes from `git archive`, which leaves out `.github`, `.claude`, `tests`, `config`, Composer's and PHPUnit's files and the git files (`.gitattributes`). `vendor/parsedown` ships, since the Docs tab loads it.
 
 ```bash
-git archive --format=zip --prefix=murtadd/ -o murtadd-$(sed -n 's/^Version:\s*//p' style.css).zip HEAD
+git archive --format=zip --prefix=murtadd/ -o murtadd-$(sed -n 's/^Version:[[:space:]]*//p' style.css).zip HEAD
 ```
 
 Six files state the version: `style.css`, `functions.php`, `readme.txt`, this file, `ssot.md` and the top entry of `changelog.md`. Bump all six, and every edited source asset's `.min` twin with it.
@@ -149,7 +150,8 @@ The tab keys are load-bearing: never rename one. [settings.md](settings.md) has 
 | `murtadd_sec_rest_allow`, `murtadd_sec_types` | REST routes exempt from the write lock, and the post types the spam gate watches |
 | `murtadd_security_headers` | The response headers the Security tab sends |
 | `murtadd_short_titles` | Short page parts for long title tags |
-| `murtadd_share_image`, `murtadd_contact_limits`, `murtadd_unlist_enabled` | The share image, the contact form's limits, and unlisting |
+| `murtadd_share_image`, `murtadd_contact_limits` | The share image and the contact form's limits |
+| `murtadd_unlist_enabled`, `unlist_posts_enabled` | Unlisting; the second is the Unlist Posts & Pages plugin's own name, honoured too |
 
 | Constant | Set in | Effect |
 |---|---|---|
@@ -179,7 +181,7 @@ The private login address is a port of WPS Hide Login. It is off until an addres
 
 ### The theme folder's rules
 
-`.htaccess` in the theme folder refuses every dot entry (`.well-known` open), the `tests`, `tools`, `bin`, `docs`, `config` and `vendor` folders, Markdown, `composer.*` and `phpunit.xml*`. `tests/`, `bin/`, `docs/`, `config/` and `vendor/` each carry a deny file of its own; `tools/` has none, since the theme has no such folder, and is covered by the rule alone. The Docs tab reads `docs/*.md` from disk, never by address.
+`.htaccess` in the theme folder refuses every dot entry (`.well-known` open), the `tests`, `tools`, `bin`, `docs`, `config` and `vendor` folders, Markdown, and `composer.json`, `composer.lock`, `phpunit.xml` and `phpunit.xml.dist`. `tests/`, `bin/`, `docs/`, `config/` and `vendor/` each carry a deny file of its own; `tools/` has none, since the theme has no such folder, and is covered by the rule alone. The Docs tab reads `docs/*.md` from disk, never by address.
 
 ### Development files on a live site
 
