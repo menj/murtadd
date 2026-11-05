@@ -1184,7 +1184,7 @@ function murtadd_render_dropins_status() {
 			<?php submit_button( __( 'Write the error pages now', 'murtadd' ), 'secondary', 'submit', false ); ?>
 		</form>
 	<?php endif; ?>
-	<p class="description"><?php esc_html_e( 'For the errors the web server answers before WordPress starts, static pages are in the errors folder of the theme. Add these lines to .htaccess to use them:', 'murtadd' ); ?></p>
+	<p class="description"><?php esc_html_e( 'For the errors the web server answers before WordPress starts, the theme writes static pages into wp-content/murtadd-errors, with this site\'s addresses. Add these lines to .htaccess to use them:', 'murtadd' ); ?></p>
 	<textarea readonly rows="6" class="large-text code" aria-label="<?php esc_attr_e( '.htaccess lines', 'murtadd' ); ?>"><?php echo esc_textarea( murtadd_error_htaccess_snippet() ); ?></textarea>
 	<?php
 	murtadd_admin_card_close();

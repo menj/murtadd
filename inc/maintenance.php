@@ -23,6 +23,12 @@
  * did not write is never overwritten. Switching the theme off, or the Upkeep
  * switch off, removes the theme's copies.
  *
+ * The static pages in errors/ assume a site at the domain root with the
+ * theme in /wp-content/themes/murtadd/. The theme writes a copy of each into
+ * wp-content/murtadd-errors/ with this site's home address and theme folder,
+ * so a site installed in a subfolder gets links that work; the .htaccess
+ * lines on the Upkeep tab point there.
+ *
  * The pages link the theme's tokens.min.css for the brand colours and fonts;
  * error-page.css falls back to the same values when it cannot load.
  *
@@ -34,18 +40,26 @@ defined( 'ABSPATH' ) || exit;
 /** The marker every file the theme writes carries in its first lines. */
 const MURTADD_DROPIN_MARKER = 'Murtadd error page drop-in';
 
+/** The folder in wp-content that holds this site's copies of the static pages. */
+const MURTADD_STATIC_ERRORS = 'murtadd-errors';
+
 /**
- * The files the theme writes into wp-content, and their sources in the theme.
+ * The files the theme writes into wp-content, and their sources in the theme:
+ * the drop-ins, their stylesheet and a copy of each static page in errors/.
  *
- * @return array<string,string> Target name => source path relative to the theme.
+ * @return array<string,string> Target name, relative to wp-content => source path relative to the theme.
  */
 function murtadd_dropin_files() {
-	return array(
+	$files = array(
 		'maintenance.php'           => 'dropins/maintenance.php',
 		'db-error.php'              => 'dropins/db-error.php',
 		'php-error.php'             => 'dropins/php-error.php',
 		'murtadd-error-page.css'    => 'assets/css/error-page.min.css',
 	);
+	foreach ( array( '403', '500', '502', '503', '504' ) as $code ) {
+		$files[ MURTADD_STATIC_ERRORS . '/' . $code . '.html' ] = 'errors/' . $code . '.html';
+	}
+	return $files;
 }
 
 /**
@@ -121,6 +135,19 @@ function murtadd_dropin_text( $name ) {
 		return null;
 	}
 	$text = (string) file_get_contents( $source ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+	if ( '.html' === substr( $name, -5 ) ) {
+		// errors/ is built for a site at the root with the theme in
+		// /wp-content/themes/murtadd/; the copy carries this site's addresses.
+		$tokens = murtadd_dropin_tokens( '' );
+		$theme  = untrailingslashit( (string) wp_parse_url( get_stylesheet_directory_uri(), PHP_URL_PATH ) );
+		return '<!-- ' . MURTADD_DROPIN_MARKER . ' ' . MURTADD_VERSION . ". Written by the Murtadd theme; safe to delete. -->\n" . strtr(
+			$text,
+			array(
+				'href="/wp-content/themes/murtadd/assets/css/' => 'href="' . esc_attr( $theme ) . '/assets/css/',
+				'href="/"'                                     => 'href="' . $tokens['{{HOME_URL}}'] . '"',
+			)
+		);
+	}
 	if ( '.css' === substr( $name, -4 ) ) {
 		return '/* ' . MURTADD_DROPIN_MARKER . ' ' . MURTADD_VERSION . '. Written by the Murtadd theme; safe to delete. */' . "\n" . $text;
 	}
@@ -161,6 +188,9 @@ function murtadd_install_dropins( $dir ) {
 	$result = array();
 	foreach ( array_keys( murtadd_dropin_files() ) as $name ) {
 		$target = rtrim( $dir, '/' ) . '/' . $name;
+		if ( ! is_dir( dirname( $target ) ) ) {
+			@mkdir( dirname( $target ), 0755, true ); // phpcs:ignore WordPress.WP.AlternativeFunctions, WordPress.PHP.NoSilencedErrors
+		}
 		if ( file_exists( $target ) && ! murtadd_dropin_is_replaceable( $target ) ) {
 			$result[ $name ] = 'kept';
 			continue;
@@ -196,6 +226,8 @@ function murtadd_remove_dropins( $dir ) {
 			@unlink( $target ); // phpcs:ignore WordPress.WP.AlternativeFunctions, WordPress.PHP.NoSilencedErrors
 		}
 	}
+	// The folder of static copies goes too, but only when it is empty.
+	@rmdir( rtrim( $dir, '/' ) . '/' . MURTADD_STATIC_ERRORS ); // phpcs:ignore WordPress.WP.AlternativeFunctions, WordPress.PHP.NoSilencedErrors
 }
 
 /**
@@ -335,13 +367,13 @@ function murtadd_dropins_on_switch() {
 add_action( 'switch_theme', 'murtadd_dropins_on_switch' );
 
 /**
- * The lines for .htaccess that point the web server at the static pages in
- * errors/ (built by bin/build-error-pages.php).
+ * The lines for .htaccess that point the web server at this site's copies
+ * of the static pages, in wp-content/murtadd-errors/.
  *
  * @return string
  */
 function murtadd_error_htaccess_snippet() {
-	$base  = untrailingslashit( (string) wp_parse_url( get_stylesheet_directory_uri(), PHP_URL_PATH ) ) . '/errors/';
+	$base  = untrailingslashit( (string) wp_parse_url( content_url( '/' ), PHP_URL_PATH ) ) . '/' . MURTADD_STATIC_ERRORS . '/';
 	$lines = array( '# Murtadd: pages for the errors the web server answers before WordPress runs' );
 	foreach ( array( 403, 500, 502, 503, 504 ) as $code ) {
 		$lines[] = 'ErrorDocument ' . $code . ' ' . $base . $code . '.html';

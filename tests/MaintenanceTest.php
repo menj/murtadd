@@ -24,17 +24,18 @@ final class MaintenanceTest extends TestCase {
 		if ( ! is_dir( $this->dir ) ) {
 			mkdir( $this->dir, 0777, true );
 		}
-		foreach ( glob( $this->dir . '/*' ) as $file ) {
-			unlink( $file );
+		foreach ( array_merge( glob( $this->dir . '/' . MURTADD_STATIC_ERRORS . '/*' ), glob( $this->dir . '/*' ) ) as $file ) {
+			is_dir( $file ) ? rmdir( $file ) : unlink( $file );
 		}
 	}
 
 	protected function tearDown(): void {
 		$GLOBALS['murtadd_test_is_admin'] = false;
 		$GLOBALS['murtadd_test_subsite']  = false;
+		unset( $GLOBALS['murtadd_test_subfolder'] );
 		unset( $_GET['murtadd_dropins'] );
-		foreach ( glob( $this->dir . '/*' ) as $file ) {
-			unlink( $file );
+		foreach ( array_merge( glob( $this->dir . '/' . MURTADD_STATIC_ERRORS . '/*' ), glob( $this->dir . '/*' ) ) as $file ) {
+			is_dir( $file ) ? rmdir( $file ) : unlink( $file );
 		}
 		rmdir( $this->dir );
 	}
@@ -172,7 +173,27 @@ final class MaintenanceTest extends TestCase {
 			$this->assertStringNotContainsString( '<script', $html );
 			$this->assertMatchesRegularExpression( '~<title>[^<|]+ \| Murtadd</title>~', $html );
 		}
-		$this->assertStringContainsString( 'ErrorDocument 503 /wp-content/themes/murtadd/errors/503.html', murtadd_error_htaccess_snippet() );
+		$this->assertStringContainsString( 'ErrorDocument 503 /wp-content/murtadd-errors/503.html', murtadd_error_htaccess_snippet() );
+	}
+
+	public function test_the_static_copies_carry_the_addresses_of_a_subfolder_install() {
+		murtadd_install_dropins( $this->dir );
+		$root = file_get_contents( $this->dir . '/murtadd-errors/403.html' );
+		$this->assertTrue( murtadd_dropin_is_ours( $this->dir . '/murtadd-errors/403.html' ) );
+		$this->assertSame( file_get_contents( dirname( __DIR__ ) . '/errors/403.html' ), substr( $root, strpos( $root, "\n" ) + 1 ), 'A root install copies errors/ as it is.' );
+
+		$GLOBALS['murtadd_test_subfolder'] = '/blog';
+		$this->assertSame( 'outdated', murtadd_dropin_state( 'murtadd-errors/403.html', $this->dir ) );
+		murtadd_install_dropins( $this->dir );
+		$sub = file_get_contents( $this->dir . '/murtadd-errors/403.html' );
+		$this->assertStringContainsString( 'href="/blog/"', $sub );
+		$this->assertStringContainsString( 'href="/blog/wp-content/themes/murtadd/assets/css/tokens.min.css"', $sub );
+		$this->assertStringNotContainsString( 'href="/"', $sub );
+		$this->assertStringNotContainsString( 'href="/wp-content/', $sub );
+		$this->assertStringContainsString( 'ErrorDocument 403 /blog/wp-content/murtadd-errors/403.html', murtadd_error_htaccess_snippet() );
+
+		murtadd_remove_dropins( $this->dir );
+		$this->assertDirectoryDoesNotExist( $this->dir . '/murtadd-errors' );
 	}
 
 	public function test_a_subsite_writes_only_while_the_main_site_runs_another_theme() {

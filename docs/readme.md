@@ -65,14 +65,16 @@ Only files WordPress requires at the theme root stay there: `style.css`, `theme.
 
 The Upkeep tab writes `wp-content/maintenance.php` (503, Retry-After), `php-error.php` (500, or 503 for an upload in progress) and `db-error.php` (503, Retry-After) from `dropins/`, with `murtadd-error-page.css`, and never over a file without the marker `Murtadd error page drop-in`, unless a sister theme marked it "Written by the ... theme; safe to delete". Its table reads each file as written, outdated, missing or kept.
 
-Static pages for the errors the web server answers before WordPress runs are in `errors/` (`php bin/build-error-pages.php`). Add to `.htaccess`, with the folder name of the theme:
+Static pages for the errors the web server answers before WordPress runs are in `errors/` (`php bin/build-error-pages.php`). They assume a site at the domain root, with the theme in `/wp-content/themes/murtadd/`.
+
+The Upkeep tab also writes a copy of each into `wp-content/murtadd-errors/`, with the site's own home address and theme folder, under the same rules as the drop-ins. A site installed in a subfolder, such as `example.com/blog/`, gets links that work. Switching theme, or the Error pages switch off, removes the copies. The Upkeep tab shows the `.htaccess` lines with this site's addresses. For a site at the root they read:
 
 ```
-ErrorDocument 403 /wp-content/themes/murtadd/errors/403.html
-ErrorDocument 500 /wp-content/themes/murtadd/errors/500.html
-ErrorDocument 502 /wp-content/themes/murtadd/errors/502.html
-ErrorDocument 503 /wp-content/themes/murtadd/errors/503.html
-ErrorDocument 504 /wp-content/themes/murtadd/errors/504.html
+ErrorDocument 403 /wp-content/murtadd-errors/403.html
+ErrorDocument 500 /wp-content/murtadd-errors/500.html
+ErrorDocument 502 /wp-content/murtadd-errors/502.html
+ErrorDocument 503 /wp-content/murtadd-errors/503.html
+ErrorDocument 504 /wp-content/murtadd-errors/504.html
 ```
 
 ## Setup

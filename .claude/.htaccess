@@ -1,0 +1,10 @@
+# Contributor notes for Claude Code. Never served: the folder is left out of
+# every release zip, and this file shuts it to the web server if a working
+# copy is uploaded.
+<IfModule mod_authz_core.c>
+	Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+	Order allow,deny
+	Deny from all
+</IfModule>
