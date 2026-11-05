@@ -266,11 +266,38 @@ function murtadd_handle_write_dropins() {
 add_action( 'admin_post_murtadd_write_dropins', 'murtadd_handle_write_dropins' );
 
 /**
+ * Whether another site of the network still runs this theme, as its
+ * stylesheet or its template. The drop-ins in the shared wp-content then
+ * stay. At most 500 sites are checked.
+ *
+ * @return bool
+ */
+function murtadd_dropins_in_use_elsewhere() {
+	if ( ! is_multisite() ) {
+		return false;
+	}
+	$slug = basename( dirname( __DIR__ ) );
+	$ids  = get_sites(
+		array(
+			'fields'       => 'ids',
+			'number'       => 500,
+			'site__not_in' => array( get_current_blog_id() ),
+		)
+	);
+	foreach ( $ids as $id ) {
+		if ( in_array( $slug, array( get_blog_option( $id, 'stylesheet' ), get_blog_option( $id, 'template' ) ), true ) ) {
+			return true;
+		}
+	}
+	return false;
+}
+
+/**
  * The theme's copies go when the theme is switched off: their stylesheet
  * link points into a theme that may no longer be there.
  */
 function murtadd_dropins_on_switch() {
-	if ( is_multisite() && ! is_main_site() ) {
+	if ( ( is_multisite() && ! is_main_site() ) || murtadd_dropins_in_use_elsewhere() ) {
 		delete_option( 'murtadd_dropins_stamp' );
 		return;
 	}

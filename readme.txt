@@ -3,7 +3,7 @@ Contributors: murtadd.org
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.1
-Stable tag: 1.55.3
+Stable tag: 1.55.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,6 +83,10 @@ Bundled resources:
 * The site icon, the pixel book and envelope images, the calligraphy in assets/images and screenshot.png were made for this theme and are GPL v2 or later with it.
 
 == Changelog ==
+= 1.55.4 =
+* On a network, a theme switch on the main site leaves the error pages in place while another site still runs Murtadd.
+* The Upkeep tab shows a failed write over a sister theme's error page as failed.
+
 = 1.55.3 =
 * A real PHP error gets the 500 page again. A fault raised through a hook was shown as "Back shortly" with a 503.
 * Error pages left by a sister theme are replaced. Any other file is left alone.

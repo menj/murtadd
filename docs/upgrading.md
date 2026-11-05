@@ -1,5 +1,9 @@
 # Upgrading — Murtadd
 
+## 1.55.3 → 1.55.4
+
+Drop-in. Upload the whole theme folder. No new files and no settings to change.
+
 ## 1.55.2 → 1.55.3
 
 Drop-in. Upload the whole theme folder: the new file is `errors/504.html`. The first admin page rewrites the drop-ins in wp-content. To use the 504 page, add its `ErrorDocument` line from the Upkeep tab to `.htaccess`.

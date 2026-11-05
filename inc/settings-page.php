@@ -1162,7 +1162,9 @@ function murtadd_render_dropins_status() {
 				<?php
 				$murtadd_state = murtadd_dropin_state( $murtadd_name );
 				// A failed write leaves the old state on disk; the saved result says why.
-				if ( 'written' !== $murtadd_state && 'kept' !== $murtadd_state && 'failed' === ( $murtadd_saved[ $murtadd_name ] ?? '' ) ) {
+				// A sibling theme's file the theme may replace is not left alone.
+				$murtadd_left = 'kept' === $murtadd_state && ! murtadd_dropin_is_replaceable( WP_CONTENT_DIR . '/' . $murtadd_name );
+				if ( 'written' !== $murtadd_state && ! $murtadd_left && 'failed' === ( $murtadd_saved[ $murtadd_name ] ?? '' ) ) {
 					$murtadd_state = 'failed';
 				}
 				?>
