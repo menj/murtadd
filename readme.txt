@@ -222,7 +222,7 @@ WordPress does not execute an uninstall routine for themes. If the theme is remo
 
 The theme also keeps unlist_posts, the Unlist Posts & Pages plugin's own option, in step with its unlisted entries. Delete it too unless that plugin stays in use.
 
-Also delete the daily security tallies, one row a day per counter, named murtadd_security_tally_<counter>_<date> (WP-CLI: wp option list --search='murtadd_security_tally_*' --field=option_name | xargs -n1 wp option delete).
+Also delete the daily security tallies, one row a day per counter, named murtadd_security_tally_<counter>_<date> (WP-CLI, whose --search takes * as its wildcard: wp option list --search='murtadd_security_tally_*' --field=option_name | xargs -n1 wp option delete).
 
 Then delete two kinds of user meta, which are stored per user: murtadd_setup_notice_dismissed, and _murtadd_last_login, which holds each account's last login time and IP address (WP-CLI: wp user meta delete <user> <key>, for each user).
 

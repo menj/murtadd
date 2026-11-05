@@ -284,7 +284,7 @@ Themes have no uninstall hook. The `murtadd_*` options and the two user meta key
 
 The Theme Options screen, which only administrators see, still uses an older label for them.
 
-On Apache the theme's `.htaccess` refuses the `docs/` files, and the Docs tab reads them from disk. Nginx reads no `.htaccess`, so there they stay reachable until the host adds the rules in `readme.md`.
+On Apache the theme's `.htaccess` refuses the `docs/` files, and the Docs tab reads them from disk. Nginx reads no `.htaccess`, so there they stay reachable until the host adds the Nginx rules in `docs/readme.md`, under Security.
 
 ## Release checklist
 
