@@ -175,6 +175,10 @@ function murtadd_sanitize_content_display( $input ) {
 		'scripture_text'           => sanitize_text_field( $input['scripture_text'] ?? '' ),
 		'scripture_ref'            => sanitize_text_field( $input['scripture_ref'] ?? '' ),
 		'contact_recipient'        => murtadd_contact_clean_recipient( $input['contact_recipient'] ?? '' ),
+		'journal_answer_box'       => empty( $input['journal_answer_box'] ) ? 0 : 1,
+		'journal_contents'         => empty( $input['journal_contents'] ) ? 0 : 1,
+		'journal_mid_next'         => empty( $input['journal_mid_next'] ) ? 0 : 1,
+		'journal_related'          => empty( $input['journal_related'] ) ? 0 : 1,
 	);
 }
 
@@ -765,6 +769,41 @@ function murtadd_render_content_tab() {
 	</p>
 	<?php
 	murtadd_admin_row_close();
+	murtadd_admin_card_close();
+
+	murtadd_admin_card_open( __( 'Journal posts', 'murtadd' ), __( 'The parts around the text of a Journal post. The excerpt shows under the title and the sources under the text whenever a post has them.', 'murtadd' ), 'media-text' );
+	murtadd_admin_toggle_row(
+		__( '"In short" box', 'murtadd' ),
+		'murtadd_journal_answer_box',
+		'murtadd_content_display[journal_answer_box]',
+		! isset( $o['journal_answer_box'] ) || $o['journal_answer_box'],
+		__( 'Show the key points under the title', 'murtadd' ),
+		__( 'Written in the Journal fields box on the post screen, one a line. A post without key points shows no box.', 'murtadd' )
+	);
+	murtadd_admin_toggle_row(
+		__( 'Contents', 'murtadd' ),
+		'murtadd_journal_contents',
+		'murtadd_content_display[journal_contents]',
+		! isset( $o['journal_contents'] ) || $o['journal_contents'],
+		__( 'List the sections before the text', 'murtadd' ),
+		__( 'Built from the level-two headings, on posts with three or more.', 'murtadd' )
+	);
+	murtadd_admin_toggle_row(
+		__( 'Next step in the text', 'murtadd' ),
+		'murtadd_journal_mid_next',
+		'murtadd_content_display[journal_mid_next]',
+		! empty( $o['journal_mid_next'] ),
+		__( 'Add one line before the third heading', 'murtadd' ),
+		__( 'It invites a question through the Contact page, or points to the sources. The next step after the text always shows.', 'murtadd' )
+	);
+	murtadd_admin_toggle_row(
+		__( 'Related posts', 'murtadd' ),
+		'murtadd_journal_related',
+		'murtadd_content_display[journal_related]',
+		! isset( $o['journal_related'] ) || $o['journal_related'],
+		__( 'Show three more posts from the Journal', 'murtadd' ),
+		__( 'Posts that share a topic, a tag or a category come first, then the newest.', 'murtadd' )
+	);
 	murtadd_admin_card_close();
 
 	murtadd_render_progress_card();

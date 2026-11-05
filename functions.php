@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'MURTADD_VERSION', '1.55.8' );
+define( 'MURTADD_VERSION', '1.55.9' );
 
 /**
  * Asset suffix. Sources are served when SCRIPT_DEBUG is on, minified otherwise.
@@ -28,7 +28,7 @@ function murtadd_theme_files() {
 		'site-icon', 'activation', 'schema', 'schema-graph', 'rank-math', 'seo-title', 'seed-content',
 		'seed-guides', 'seed-journal', 'slug-renames', 'search', 'search-permalinks', 'unlist', 'reading-progress',
 		'meta-tags', 'feeds', 'analytics', 'share', 'social-card', 'dashboard', 'relations', 'contextual-links',
-		'glossary', 'lanah', 'contact', 'quran-text', 'template-tags',
+		'glossary', 'lanah', 'contact', 'quran-text', 'article', 'template-tags',
 	);
 }
 
@@ -214,13 +214,15 @@ function murtadd_enqueue_assets() {
 	}
 
 	/*
-	 * Long-form furniture is for rebuttals only. Doubts are capped at a few
-	 * hundred words by design; giving them a table of contents and a progress
-	 * bar would advertise a length they do not have and must never have. The
-	 * progress bar itself is inc/reading-progress.php, which never runs on
-	 * doubts either.
+	 * Long-form furniture is for rebuttals and Journal posts. Doubts are
+	 * capped at a few hundred words by design; giving them a table of
+	 * contents and a progress bar would advertise a length they do not have
+	 * and must never have. The progress bar itself is inc/reading-progress.php,
+	 * which never runs on doubts either. On a Journal post the contents is
+	 * printed by the server (inc/article.php); the script only marks the
+	 * section being read and adds the back-to-top button.
 	 */
-	if ( is_singular( 'murtadd_rebuttal' ) ) {
+	if ( is_singular( array( 'murtadd_rebuttal', 'post' ) ) ) {
 		wp_enqueue_style( 'murtadd-longform', get_stylesheet_directory_uri() . '/assets/css/longform' . MURTADD_ASSET_SUFFIX . '.css', array( 'murtadd-main' ), MURTADD_VERSION );
 		wp_enqueue_script( 'murtadd-longform', get_stylesheet_directory_uri() . '/assets/js/longform' . MURTADD_ASSET_SUFFIX . '.js', array(), MURTADD_VERSION, true );
 		wp_localize_script(
@@ -245,6 +247,10 @@ function murtadd_enqueue_assets() {
 
 	if ( ( is_home() && ! is_front_page() ) || is_singular( 'post' ) ) {
 		wp_enqueue_style( 'murtadd-journal', get_stylesheet_directory_uri() . '/assets/css/journal' . MURTADD_ASSET_SUFFIX . '.css', array( 'murtadd-main' ), MURTADD_VERSION );
+	}
+	// The Journal post page: answer box, sources, next step, related, tables, FAQ (inc/article.php).
+	if ( is_singular( 'post' ) ) {
+		wp_enqueue_style( 'murtadd-article', get_stylesheet_directory_uri() . '/assets/css/article' . MURTADD_ASSET_SUFFIX . '.css', array( 'murtadd-journal' ), MURTADD_VERSION );
 	}
 
 	if ( is_singular( 'murtadd_letter' ) || is_post_type_archive( 'murtadd_letter' ) ) {
@@ -341,7 +347,7 @@ function murtadd_admin_assets( $hook ) {
 	}
 	if ( in_array( $hook, array( 'post.php', 'post-new.php' ), true ) ) {
 		$screen = get_current_screen();
-		if ( $screen && in_array( $screen->post_type, array( 'murtadd_doubt', 'murtadd_rebuttal', 'murtadd_fatwa' ), true ) ) {
+		if ( $screen && in_array( $screen->post_type, array( 'murtadd_doubt', 'murtadd_rebuttal', 'murtadd_fatwa', 'post' ), true ) ) {
 			wp_enqueue_script( 'murtadd-meta-boxes', get_stylesheet_directory_uri() . '/assets/js/meta-boxes' . MURTADD_ASSET_SUFFIX . '.js', array(), MURTADD_VERSION, true );
 			wp_localize_script(
 				'murtadd-meta-boxes',

@@ -1,6 +1,6 @@
 # Murtadd: single source of truth
 
-Version 1.55.8 · Child theme of Twenty Twenty-Five · murtadd.org
+Version 1.55.9 · Child theme of Twenty Twenty-Five · murtadd.org
 
 ## What this theme is
 
@@ -8,7 +8,9 @@ A classic-template (PHP) child theme of the block theme Twenty Twenty-Five. Beca
 
 ## Documentation
 
-All Markdown lives in `docs/`, lowercase: `readme.md`, `changelog.md`, `upgrading.md`, `ssot.md`, `setup.md`, `settings.md`, `content-model.md`. `readme.txt` and `license.txt` stay at the theme root because WordPress and the licence convention require them there.
+All Markdown lives in `docs/`, lowercase: `readme.md`, `changelog.md`, `upgrading.md`, `ssot.md`, `setup.md`, `settings.md`, `content-model.md`. `readme.txt`, `LICENSE` and `license.txt` stay at the theme root because WordPress and the licence convention require them there.
+
+**Licence.** The theme is licensed under the GNU General Public License, version 3 or later (owner decision, 2026-11-05). `LICENSE` holds the full, unmodified text; `style.css` and `readme.txt` name it; the fonts keep their own licences, listed in `license.txt`.
 
 Six files state the version: `style.css`, `functions.php`, `readme.txt`, `docs/readme.md`, `docs/ssot.md`, and the top entry of `docs/changelog.md`. Bump them with an assertion, never a bare string replace. A replace that matches nothing fails silently, which is how this file sat at 1.10.0 for six releases while claiming to be the single source of truth.
 
@@ -73,6 +75,8 @@ The copy is `inc/data/seed/journal.json`, inserted by `murtadd_seed_journal_post
 
 Before 1.51.0 the posts page was a seeded `blog` page. `murtadd_journal_page_once()` renames that page to `journal` in place and moves the posts page with it only when the posts page was unset or still that page; an editor's own Blog page is kept. Where a Journal page already exists beside the seeded Blog page, the Blog page goes back to draft and the posts page moves to the Journal. `/blog/` 301s to the posts page wherever it is set (legacy map kind `posts`).
 
+**The post page** (`inc/article.php`, `assets/css/article.css`). A Journal post shows, in this order: the breadcrumb, the date with "Last reviewed" once edited more than a day later and the reading time, the title, the excerpt as the dek, "In short" with the key points (`_murtadd_takeaways`), the contents from three level-two headings, the text, the sources (`_murtadd_sources`, the rebuttal repeater), the next step and three related posts. The date stays above the title, as everywhere in the Journal. **No byline**: the author is named in the structured data only. **No next step sells**: it is the next post, the sources or a question through the Contact page. The FAQPage is built only from Details blocks in the FAQ style that the post shows. Guides share `single.php` and do not get these parts. Pinned in `tests/ArticleTest.php`.
+
 The seeder runs under a lock (`murtadd_journal_seeding`, taken with `add_option()`, released in a `finally`, taken over after ten minutes), and stores the list hash only when every post was created or found, so a failed insert is tried again. With Rank Math, its Article becomes a BlogPosting and gains the Journal in `isPartOf`; nothing else is overwritten. `single.php` links a post back to the Journal and a guide back to Guides.
 
 ## Letters, and why they are separate
@@ -91,8 +95,9 @@ Where an archived position needs framing for a present-day reader, that is what 
 | `murtadd_rebuttal` | /rebuttals/ | claim, claim_source_type, sources (repeater), related_fatwa, related_doubt | topic |
 | `murtadd_fatwa` | /fatwa/ | scholar_or_body, era, position_summary, citation_link | topic, school |
 | `murtadd_guide` | /guides/ | sources | topic |
+| `post` (Journal) | /{slug}/ | takeaways, sources (repeater) | topic, category, post_tag |
 
-Taxonomies: `murtadd_topic` (shared, flat, seeded 6 terms, `/topic/`), `murtadd_school` (fatwa, seeded 5 terms, `/school/`), `murtadd_doubt_category` (fixed 4 terms, locked, `/doubts/kind/`).
+Taxonomies: `murtadd_topic` (shared with Journal posts and guides, flat, seeded 6 terms, `/topic/`), `murtadd_school` (fatwa, seeded 5 terms, `/school/`), `murtadd_doubt_category` (fixed 4 terms, locked, `/doubts/kind/`).
 
 **URL note.** Doubt categories sit at `/doubts/{slug}/` with no interior segment: `/doubts/intellectual/`. This works only because the taxonomy is four locked terms, so the four URLs are explicit `top` rewrite rules ahead of the CPT rules; a wildcard there would shadow single doubts. The generated rewrite is off and the `term_link` filter is the single source of the public shape. The four category slugs are reserved against doubt posts in code (`wp_unique_post_slug`). Retired shapes 301 on `template_redirect`, 404s only: `/doubt-category/{slug}/` (pre-1.7.0) and `/doubts/kind/{slug}/` (1.7.0 to 1.17.0), both landing on the clean URL in one hop. If a fifth category is ever unlocked, the rule set must be extended with it: the URLs do not follow the terms automatically.
 
@@ -105,7 +110,7 @@ Taxonomies: `murtadd_topic` (shared, flat, seeded 6 terms, `/topic/`), `murtadd_
 | murtadd_contextual_links | own_enabled, sister_enabled, own_max, sister_max, extra, excluded | 1, 1, 4, 3, empty, empty |
 | murtadd_security | hide_authors, xmlrpc_off, app_passwords_off, rest_lock, spam_gate, spam_gone, headers, login_slug, login_design, login_message, login_tagline, login_privacy | 1, 1, 1, 1, 1, 1, 1, empty (private login off), 1, empty, empty, 1 |
 | murtadd_upkeep | gone_paths, gone_presets, maintenance, error_pages | empty, 1, 0, 1 |
-| murtadd_content_display | short_response_word_cap, show_struggling_notice, fatwa_index_default_sort, footer_heritage_note, contact_recipient | 400, 1, scholar_az, "online since 2004", empty (administration email) |
+| murtadd_content_display | short_response_word_cap, show_struggling_notice, fatwa_index_default_sort, footer_heritage_note, contact_recipient, journal_answer_box, journal_contents, journal_mid_next, journal_related | 400, 1, scholar_az, "online since 2004", empty (administration email), 1, 1, 0, 1 |
 | murtadd_topics_seeded / murtadd_schools_seeded / murtadd_doubt_categories_seeded | flag | 1 after first init |
 
 ## Template map
@@ -245,6 +250,7 @@ Three features rebuilt from plugins in 1.54.0. Each stands down while its plugin
 - 2026-10-26: serve the Qur'an face as WOFF2 (see Arabic and the Qur'an face).
 - 2026-11-03: keep every schema.org type, and give addresses no verse number, count or year.
 - 2026-11-03: the site has a Journal. Guides stay as they are, a post type of their own at fixed addresses, and the Journal at `/journal/` holds dated standard posts beside them (see Journal).
+- 2026-11-05: every theme is licensed under the GNU General Public License, version 3 or later. This came in the owner's brief for the session and is not yet in `.claude/CLAUDE.md`; when the owner adds it there, this line is its copy.
 
 ## Exclusions (binding)
 

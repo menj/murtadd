@@ -12,6 +12,8 @@ Fields: scholar or body, era (classical/modern), position summary (own words, ne
 ## Journal post (`post`, /journal/)
 A standard post, dated. The posts page is the `journal` page; `home.php` lists the posts and `single.php` shows one. Seeded posts come from `inc/data/seed/journal.json` with `slug`, `title`, `date` (site time, `Y-m-d H:i:s`), `excerpt`, `body` and an optional `focus_keyword`. Guides stay separate: see `docs/ssot.md`.
 
+The Journal fields box on the post screen holds the key points, one a line, shown as "In short" under the title, and a sources repeater like the rebuttal's (citation text required, URL optional), shown under the text and given to search engines as the post's citations. A Details block in the FAQ style makes a question and answer that feeds the FAQPage.
+
 ## Letter (`murtadd_letter`, /letters/)
 
 Editorial correspondence and opinion pieces published in other outlets, archived in their original form.

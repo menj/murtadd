@@ -196,6 +196,11 @@ function murtadd_structured_data_primary_node() {
 		if ( '' !== trim( $excerpt ) ) {
 			$node['description'] = murtadd_schema_text( $excerpt );
 		}
+		// The sources panel under the post (inc/article.php), each entry a work.
+		$citations = function_exists( 'murtadd_article_citations' ) ? murtadd_article_citations( (int) $post_id ) : array();
+		if ( $citations ) {
+			$node['citation'] = $citations;
+		}
 		return $node;
 	}
 
@@ -438,7 +443,8 @@ function murtadd_faq_pairs_from_html( $html ) {
 /**
  * The FAQPage for a view written as questions and answers, or null.
  *
- * The FAQ page: its h2 questions and the answers under them. A doubt
+ * The FAQ page: its h2 questions and the answers under them. A Journal
+ * post: its Details blocks in the FAQ style, shown on the page. A doubt
  * category archive: each listed doubt's statement, answered by the same
  * excerpt of its short response the archive shows, so the data says nothing
  * the page does not. The Emotional and Identity categories get none: their
@@ -454,6 +460,19 @@ function murtadd_faq_node() {
 	if ( is_page( 'faq' ) ) {
 		$page  = get_queried_object();
 		$pairs = murtadd_faq_pairs_from_html( isset( $page->post_content ) ? $page->post_content : '' );
+	} elseif ( is_singular( 'post' ) && function_exists( 'murtadd_article_faq_pairs' ) ) {
+		// A Journal post: only the Details blocks in the FAQ style, which show
+		// on the page as questions. A post without them gets no FAQPage.
+		$pairs = murtadd_article_faq_pairs( (string) get_post_field( 'post_content', get_queried_object_id() ) );
+		if ( $pairs ) {
+			return array(
+				'@type'      => 'FAQPage',
+				'@id'        => murtadd_current_url() . '#faq',
+				'url'        => murtadd_current_url(),
+				'isPartOf'   => array( '@id' => murtadd_current_url() . '#webpage' ),
+				'mainEntity' => $pairs,
+			);
+		}
 	} elseif ( is_tax( 'murtadd_doubt_category' ) ) {
 		$term = get_queried_object();
 		if ( ! $term || in_array( $term->slug, array( 'emotional', 'identity' ), true ) ) {

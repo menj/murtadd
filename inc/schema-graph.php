@@ -389,9 +389,10 @@ function murtadd_webpage_frame( $has_breadcrumb, $has_image ) {
 	if ( $has_image ) {
 		$frame['primaryImageOfPage'] = array( '@id' => $here . '#primaryimage' );
 	}
-	// "Last reviewed" shows on doubts, rebuttals and letters once an entry is
-	// edited a day or more after it went up (murtadd_the_reviewed_date()).
-	if ( is_singular( array( 'murtadd_doubt', 'murtadd_rebuttal', 'murtadd_letter' ) ) ) {
+	// "Last reviewed" shows on doubts, rebuttals, letters and Journal posts
+	// once an entry is edited more than a day after it went up
+	// (murtadd_the_reviewed_date()).
+	if ( is_singular( array( 'murtadd_doubt', 'murtadd_rebuttal', 'murtadd_letter', 'post' ) ) ) {
 		$published = strtotime( (string) get_the_date( 'c' ) );
 		$modified  = strtotime( (string) get_the_modified_date( 'c' ) );
 		if ( $published && $modified && $modified > $published + DAY_IN_SECONDS ) {
@@ -415,6 +416,9 @@ function murtadd_speakable_selectors() {
 	}
 	if ( is_singular( 'murtadd_fatwa' ) ) {
 		return array( '.murtadd-entry-header h1', '.murtadd-position-summary' );
+	}
+	if ( is_singular( 'post' ) && function_exists( 'murtadd_article_speakable' ) ) {
+		return murtadd_article_speakable( (int) get_queried_object_id() );
 	}
 	if ( is_tax() || is_post_type_archive() ) {
 		return array( '.murtadd-archive-header h1', '.murtadd-subtitle' );

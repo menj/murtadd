@@ -1,15 +1,22 @@
 /**
- * Long-form furniture: mini table of contents, back to top. Rebuttals only.
- * Nothing here is required to read the page. The reading progress bar moved
- * to progress.js (inc/reading-progress.php), which Theme Options sets.
+ * Long-form furniture: mini table of contents, back to top. Rebuttals and
+ * Journal posts. Nothing here is required to read the page. The reading
+ * progress bar moved to progress.js (inc/reading-progress.php), which Theme
+ * Options sets.
+ *
+ * On a rebuttal the script builds the contents in the rail from the h3
+ * headings. On a Journal post the server has already printed it
+ * (inc/article.php) from the h2 headings; the script only marks the
+ * section being read.
  */
 ( function () {
 	'use strict';
 
-	var article = document.querySelector( '.murtadd-rebuttal' );
+	var article = document.querySelector( '.murtadd-rebuttal, .murtadd-blog-post' );
 	if ( ! article ) {
 		return;
 	}
+	var journal = article.classList.contains( 'murtadd-blog-post' );
 
 	var l10n = window.murtaddLongform || {};
 	var text = {
@@ -21,10 +28,10 @@
 	var reduced = window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches;
 
 	/* ---------- Mini TOC ---------- */
-	var headings = article.querySelectorAll( '.murtadd-rebuttal-body h3' );
-	var toc = null;
+	var headings = article.querySelectorAll( journal ? '.murtadd-blog-body h2[id]' : '.murtadd-rebuttal-body h3' );
+	var toc = journal ? article.querySelector( '.murtadd-toc' ) : null;
 
-	if ( headings.length >= 2 ) {
+	if ( ! journal && headings.length >= 2 ) {
 		toc = document.createElement( 'nav' );
 		toc.className = 'murtadd-toc';
 		toc.setAttribute( 'aria-label', text.toc );

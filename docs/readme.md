@@ -7,9 +7,9 @@ A classic-template child theme of Twenty Twenty-Five for **murtadd.org**.
 | Theme slug | `murtadd` |
 | Text domain | `murtadd` |
 | Parent | `twentytwentyfive` |
-| Version | 1.55.8 |
+| Version | 1.55.9 |
 | Author | Langgam Fikir Enterprise |
-| Licence | GPLv2 or later |
+| Licence | GNU General Public License v3 or later; the full text is in `LICENSE` |
 | Requires WP | 6.4+ |
 | Requires PHP | 8.1+ |
 | Web server | Apache gets its rules written by the theme; Nginx needs the rules under Security below |
@@ -69,7 +69,8 @@ murtadd/
 ├── theme.json         Editor palette, typography, layout (v3)
 ├── style.css          Theme header only; never enqueued
 ├── readme.txt         WordPress-format readme (must stay at the root)
-├── license.txt        GPLv2 and OFL attributions
+├── LICENSE            The GNU General Public License, version 3, in full
+├── license.txt        The licence notice and the bundled fonts' attributions
 └── *.php              Classic template hierarchy
 ```
 
@@ -118,6 +119,17 @@ git archive --format=zip --prefix=murtadd/ -o murtadd-$(sed -n 's/^Version:[[:sp
 
 Six files state the version: `style.css`, `functions.php`, `readme.txt`, this file, `ssot.md` and the top entry of `changelog.md`. Bump all six, and every edited source asset's `.min` twin with it.
 
+## The Journal post page
+
+`single.php` shows a Journal post with the pieces in `inc/article.php`, in reading order: the breadcrumb, the meta row (`murtadd_article_meta_row()`: the date, "Last reviewed" from `murtadd_the_reviewed_date()` once the post is edited more than a day later, and the reading time), the title, the dek (the excerpt), "In short" (`murtadd_article_answer_box()`), the contents (`murtadd_article_contents()`), the text, the sources panel, the next step and related posts. Guides share `single.php` and keep their own page.
+
+- The contents is built on the server from the level-two headings, on a post with three or more. `murtadd_article_filter_content()` (`the_content`, priority 12, after the contextual links) gives each heading the id the list links to, keeps an id the author set, and makes each table a labelled scroll region. `longform.js`, now loaded on Journal posts too, marks the section being read and adds the back-to-top button.
+- "In short" shows the post's key points, one a line, from the meta key `_murtadd_takeaways`. The sources are `_murtadd_sources`, the rebuttal repeater, saved by `murtadd_save_meta()`. Both are in the Journal fields box on the post screen.
+- The next step offers the next post in the Journal (the one before it on the newest post), "Check the sources" when the post has any, and "Ask a question" when the Contact page is published. The one-line version before the third heading is off by default.
+- Related posts are three cards, chosen from every post that shares a topic, a tag or a category, and the three newest, and scored by `murtadd_article_rank()`: 3 for each shared topic, 2 for each shared tag, 1 for each shared category (the default category is left out), newest first on a tie. The post in the next step is never repeated.
+- The FAQ is a Details block in the FAQ style (`is-style-faq`), with the pattern `murtadd/faq`. Only those blocks feed the FAQPage, so it appears only on a post that shows questions.
+- Styles are `assets/css/article.css`, loaded on Journal posts after `journal.css`. No byline shows: the author is in the structured data only.
+
 ## Settings and options
 
 Appearance → Theme Options, capability `manage_options`. Each tab keeps its own option, registered in `inc/settings-page.php`:
@@ -125,7 +137,7 @@ Appearance → Theme Options, capability `manage_options`. Each tab keeps its ow
 | Tab | Option |
 |---|---|
 | Setup | none; reports what exists and creates what is missing |
-| Content | `murtadd_content_display`, `murtadd_search` |
+| Content | `murtadd_content_display` (with the Journal posts switches `journal_answer_box`, `journal_contents`, `journal_mid_next` and `journal_related`), `murtadd_search` |
 | Topics & schools | none; links to the term screens |
 | Linked sites | `murtadd_cross_links` |
 | Contextual links | `murtadd_contextual_links` |
@@ -292,7 +304,7 @@ Full detail in [setup.md](setup.md).
 
 ## Structured data
 
-`inc/schema.php` emits JSON-LD: Doubts as `QAPage`, Rebuttals as `Article` with the claim under `about` and their sources under `citation`, Fatwa entries as `Article`, `WebSite` with a `SearchAction` plus `Organization` on the front page, an `FAQPage` on the FAQ page and the doubt category archives (Emotional and Identity excepted), and a `BreadcrumbList` on inner views. Rebuttal and fatwa Articles carry an image, and the author a url. The owner keeps all schema.org markup, Google-supported or not, for GEO, AEO and AIO (decided 2026-11-03). `inc/seo-title.php` builds the title tag (`<page title> | <site name>`, under 60 characters, page parts for long or shared titles in `inc/data/seo-titles.json`), prints the canonical link on archives and serves the image sitemap at `/murtadd-image-sitemap.xml`.
+`inc/schema.php` emits JSON-LD: Journal posts as `BlogPosting` with their sources under `citation`, `lastReviewed` on the page once "Last reviewed" shows, speakable parts (the title, the dek and "In short") and an `FAQPage` only when the post shows FAQ-style Details blocks; Doubts as `QAPage`, Rebuttals as `Article` with the claim under `about` and their sources under `citation`, Fatwa entries as `Article`, `WebSite` with a `SearchAction` plus `Organization` on the front page, an `FAQPage` on the FAQ page and the doubt category archives (Emotional and Identity excepted), and a `BreadcrumbList` on inner views. Rebuttal and fatwa Articles carry an image, and the author a url. The owner keeps all schema.org markup, Google-supported or not, for GEO, AEO and AIO (decided 2026-11-03). `inc/seo-title.php` builds the title tag (`<page title> | <site name>`, under 60 characters, page parts for long or shared titles in `inc/data/seo-titles.json`), prints the canonical link on archives and serves the image sitemap at `/murtadd-image-sitemap.xml`.
 
 ## Performance
 

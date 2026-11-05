@@ -1,5 +1,25 @@
 # Murtadd changelog
 
+## 1.55.9 (2026-11-05)
+
+A Journal post gets the parts a long article needs, in reading order, and the theme moves to the GNU GPL, version 3 or later. No feature removed and no public identifier renamed. Doubts, rebuttals, guides and letters look as they did.
+
+### Added
+- Under the title of a Journal post, the excerpt as a dek. The date line above the title adds "Last reviewed" once a post is edited more than a day after it went up, as doubts and rebuttals do.
+- "In short": the post's key points, one a line, in a tinted box under the title. They are written in a new Journal fields box on the post screen; a post without any shows no box.
+- "On this page": the sections of a post with three or more level-two headings, built on the server so it shows without JavaScript. The script that marks the section being read and the back-to-top button now run on Journal posts too.
+- The sources panel the rebuttals have, under the text. The same Journal fields box holds the rows, and they become the post's `citation` in the structured data.
+- A next step after the text: the next post in the Journal, "Check the sources" and "Ask a question" (the Contact page). A one-line version can go before the third heading; it is off by default.
+- Three related posts as cards, ranked by shared topics, tags and categories, then by date.
+- Tables in a post scroll on a phone, can be scrolled from the keyboard and carry their caption. A FAQ style for the Details block, with the pattern "Questions and answers". Only those questions feed an FAQPage, and only on a post that shows them.
+- Journal posts take topics. The post screen has the Topics box, the topic pages list Journal posts with the rest, and a post's topics show under its text and rank its related posts first.
+- A "Journal posts" card on the Content tab switches "In short", the contents, the one-line next step and related posts.
+- Structured data: the speakable parts of a post are its title, the dek and "In short", and the page carries `lastReviewed` when "Last reviewed" shows.
+
+### Changed
+- The theme is licensed under the GNU General Public License, version 3 or later, as the owner decided on 5 November 2026. `style.css`, `readme.txt` and `composer.json` name it, `LICENSE` holds the full, unmodified text, and `license.txt` points to it. The fonts keep their own licences.
+- `.claude/skills/theme-docs/SKILL.md` gains its Licence section.
+
 ## 1.55.8 (2026-11-05)
 
 Documentation only. Nothing on the site changes, and no public identifier is renamed.

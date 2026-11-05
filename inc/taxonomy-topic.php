@@ -1,6 +1,8 @@
 <?php
 /**
- * Taxonomy: Topic (murtadd_topic) — shared across all three CPTs.
+ * Taxonomy: Topic (murtadd_topic) — shared across all three CPTs and
+ * Journal posts, whose page shows its topics and ranks related posts by
+ * them (inc/article.php). Guides join it through their own post type.
  * Terms admin-managed via native term screens.
  *
  * @package murtadd
@@ -11,7 +13,7 @@ defined( 'ABSPATH' ) || exit;
 function murtadd_register_taxonomy_topic() {
 	register_taxonomy(
 		'murtadd_topic',
-		array( 'murtadd_doubt', 'murtadd_rebuttal', 'murtadd_fatwa' ),
+		array( 'murtadd_doubt', 'murtadd_rebuttal', 'murtadd_fatwa', 'post' ),
 		array(
 			'labels'            => array(
 				'name'          => __( 'Topics', 'murtadd' ),
