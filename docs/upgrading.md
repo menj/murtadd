@@ -5,7 +5,7 @@
 1. Turn on hidden files in the FTP program (in FileZilla: Server, Force showing hidden files). The theme carries `.htaccess` files in its own folder and in `tests/`, `bin/`, `docs/`, `config/` and `vendor/`.
 2. Upload the new `murtadd` folder into `wp-content/themes/` as `murtadd-new`.
 3. Rename the live folder to `murtadd-old` and at once `murtadd-new` to `murtadd`, at a quiet hour and with Appearance, Themes closed. A page asked for between the two renames finds no theme, and that screen switches the site to another theme if it finds the folder missing. If WordPress did switch to another theme, activate the theme again under Appearance, Themes. Delete the old one once the site looks right.
-4. Open any admin page as an administrator. The error pages are brought up to date, and the first request after the version change removes the development files. The `.htaccess` blocks are checked at most once an hour, so they follow on the next check; saving the Security tab runs it at once.
+4. Open any admin page as an administrator. The error pages are brought up to date, and the first request after the version change removes the development files. The `.htaccess` blocks are checked at most once an hour, so they follow on the next check. Changing a Security setting and saving runs the check at once; a save that changes nothing does not.
 5. Read the note below for every version you pass.
 
 Upgrading in place does not run the activation steps. If something is missing, use Appearance, Theme Options, Setup, Create anything missing.
@@ -118,7 +118,7 @@ Additive. No content, template-structure or existing-option changes.
 
 1. Replace the theme directory with the 1.40.0 build. Include `inc/contextual-links.php` and `inc/data/network-links.json`.
 2. Contextual links are on by default: up to four links to this site and three to other sites in the text of each entry. To change that, go to **Theme Options → Contextual links**.
-3. `inc/data/network-links.json` is shared with the six sister themes and must stay identical in all seven. Update it everywhere or nowhere.
+3. `inc/data/network-links.json` must stay byte for byte the same wherever it is carried. Update it everywhere or nowhere.
 
 ## 1.38.0 → 1.39.0
 
@@ -485,7 +485,7 @@ Everything below is a plan, open to change. Each item says why it is here. An it
 ### Next
 
 - Keep the `.htaccess` blocks on a network. `murtadd_sec_remove_htaccess()` takes them out on any theme switch, while another site may still run Murtadd; the error pages already stay.
-- Refuse `wp-admin/includes/*.php` and `wp-config.php` by address as well. "Murtadd: deny direct core files" leaves both out, and the error log shows bots calling `wp-admin/includes/admin.php` directly on 2 November.
+- Refuse `wp-admin/includes/*.php` by address as well. "Murtadd: deny direct core files" leaves it out, and the error log shows bots calling `wp-admin/includes/admin.php` directly on 2 November. (`wp-config.php` at the top of the site or of WordPress's folder is already refused by the root-PHP block, which allows only WordPress's entry points.)
 - Refuse the core files on a server without mod_rewrite. Both Murtadd blocks sit inside `<IfModule mod_rewrite.c>`; an Apache 2.4 `<If>` would cover that case.
 
 ### Later

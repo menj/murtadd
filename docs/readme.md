@@ -189,7 +189,7 @@ On the first request of any kind after the version changes, `murtadd_cleanup_on_
 
 ### The blocks in the site's .htaccess
 
-On Apache with a writable `.htaccess`, `murtadd_sec_sync_htaccess()` keeps three marked blocks, at most once an hour and at once when the Security tab is saved, and `murtadd_sec_remove_htaccess()` takes them out on a theme switch. For WordPress at the root of the `.htaccess` folder they read:
+On Apache with a writable `.htaccess`, `murtadd_sec_sync_htaccess()` keeps three marked blocks, at most once an hour, and at once when a Security setting is changed and saved (WordPress fires no update hook for a save that changes nothing), and `murtadd_sec_remove_htaccess()` takes them out on a theme switch. For WordPress at the root of the `.htaccess` folder they read:
 
 ```apache
 # BEGIN Block xmlrpc.php
@@ -258,7 +258,7 @@ The theme cannot protect a site whose WordPress core sits on the server without 
 
 ## Error pages
 
-The Upkeep tab writes `wp-content/maintenance.php` (503, `Retry-After: 600`), `php-error.php` (500, or 503 with `Retry-After: 120` for an upload in progress) and `db-error.php` (503, `Retry-After: 300`) from `dropins/`, with `murtadd-error-page.css`, and never over a file without the marker `Murtadd error page drop-in`, unless a sister theme marked it "Written by the ... theme; safe to delete". Its table reads each file as written, outdated, missing or kept.
+The Upkeep tab writes `wp-content/maintenance.php` (503, `Retry-After: 600`), `php-error.php` (500, or 503 with `Retry-After: 120` for an upload in progress) and `db-error.php` (503, `Retry-After: 300`) from `dropins/`, with `murtadd-error-page.css`, and never over a file without the marker `Murtadd error page drop-in`, unless another theme marked it "Written by the ... theme; safe to delete". Its table reads each file as written, outdated, missing or kept.
 
 Static pages for the errors the web server answers before WordPress runs are in `errors/` (`php bin/build-error-pages.php`). They assume a site at the domain root, with the theme in `/wp-content/themes/murtadd/`.
 

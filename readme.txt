@@ -48,7 +48,9 @@ On activation the theme creates the pages it needs, a footer menu, and the start
 Set the Site Icon at Settings, General (assets/icons/site-icon-512.png is ready to upload).
 
 == Updating ==
-Upload the new version the same way, then open any admin page as an administrator. The theme writes its error pages again if they changed and removes the development files a working copy carries. It checks its server rules at most once an hour; saving the Security tab checks them at once.
+Upload the new version the same way, then open any admin page as an administrator. The theme writes its error pages again if they changed and removes the development files a working copy carries.
+
+It checks its server rules at most once an hour. Changing a Security setting and saving checks them at once; saving without a change does not.
 
 Entries you have edited keep your text. Upgrading does not re-run the activation steps: if something is missing, use Appearance, Theme Options, Setup, Create anything missing.
 
