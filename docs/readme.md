@@ -222,7 +222,7 @@ RewriteRule ^(?!(?:index|wp\-activate|wp\-blog\-header|wp\-comments\-post|wp\-cr
 
 "Block xmlrpc.php" is there while XML-RPC is off; the marker name is a common one, so a switch between themes that use it never writes it twice.
 
-With WordPress in its own subfolder, the core rules carry that folder in front, and the root rule is written for both folders. With WordPress outside the `.htaccess` folder no block is written. The Security tab lists the root PHP files the root block refuses, so leftovers can be deleted by FTP.
+With WordPress in its own subfolder, the core rules carry that folder in front, and the root rule is written for both folders. With WordPress outside the `.htaccess` folder neither Murtadd block (core files, root PHP) is written; "Block xmlrpc.php" still is while XML-RPC is off. The Security tab lists the root PHP files the root block refuses, so leftovers can be deleted by FTP.
 
 ### Nginx
 
