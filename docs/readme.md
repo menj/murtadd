@@ -227,16 +227,20 @@ With WordPress in its own subfolder, the core rules carry that folder in front, 
 Nginx reads no `.htaccess`. Put these in the server block, above the `location ~ \.php$` block:
 
 ```nginx
-location ~ /\.(?!well-known(/|$)) { return 403; }
+location ~ /\.(git|claude) { return 403; }
+location ~ ^/wp-content/themes/murtadd/(.+/)?\.(?!well-known(/|$)) { return 403; }
 location ~ ^/wp-content/themes/murtadd/(tests|tools|bin|docs|config|vendor)(/|$) { return 403; }
 location ~* ^/wp-content/themes/murtadd/.+\.md$ { return 403; }
+location ~ ^/wp-content/themes/murtadd/(composer\.(json|lock)|phpunit\.xml(\.dist)?)$ { return 403; }
 location ~ ^/wp-includes/(?!js/tinymce/|ms-files\.php$).+\.php$ { return 403; }
 location ~ ^/(wp-settings\.php|wp-config-sample\.php|readme\.html|wp-admin/install\.php)$ { return 403; }
 location ~* ^/(?!(index|wp-activate|wp-blog-header|wp-comments-post|wp-cron|wp-links-opml|wp-load|wp-login|wp-mail|wp-signup|wp-trackback|xmlrpc)\.php$)[^/]+\.php$ { return 403; }
 location = /xmlrpc.php { return 403; }
 ```
 
-Leave out the last line while XML-RPC is on. For a site in a subfolder, put its path in front of every rule, as in `^/blog/wp-includes/`. With WordPress in its own folder below the site (`/wp/`), repeat the root-PHP rule for that folder too, as the Apache block does: `location ~* ^/wp/(?!(index|wp-activate|wp-blog-header|wp-comments-post|wp-cron|wp-links-opml|wp-load|wp-login|wp-mail|wp-signup|wp-trackback|xmlrpc)\.php$)[^/]+\.php$ { return 403; }`.
+The first line goes further than the Apache rules, which refuse dot entries only inside the theme folder: it refuses `.git` and `.claude` anywhere on the site. The second matches the theme folder's own `.htaccess`, `.well-known` left open.
+
+Leave out the last line while XML-RPC is on. For a site in a subfolder, put its path in front of every rule, as in `^/blog/wp-includes/`. With WordPress in its own folder below the site (`/wp/`), the Apache blocks carry that folder, so add the same rules with it in front: `location ~ ^/wp/wp-includes/(?!js/tinymce/|ms-files\.php$).+\.php$ { return 403; }` and `location ~ ^/wp/(wp-settings\.php|wp-config-sample\.php|readme\.html|wp-admin/install\.php)$ { return 403; }`. Repeat the root-PHP rule for that folder too: `location ~* ^/wp/(?!(index|wp-activate|wp-blog-header|wp-comments-post|wp-cron|wp-links-opml|wp-load|wp-login|wp-mail|wp-signup|wp-trackback|xmlrpc)\.php$)[^/]+\.php$ { return 403; }`.
 
 ### The installer
 
