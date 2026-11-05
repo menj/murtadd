@@ -248,7 +248,9 @@ The `murtadd[^/]*` in the theme rules also covers the `murtadd-new` and `murtadd
 
 Leave out the last line while XML-RPC is on. For a site in a subfolder, put its path in front of every rule but the first (the `.git` and `.claude` rule stays global), as in `^/blog/wp-includes/`, and the theme-folder rules with it (`^/blog/wp-content/themes/murtadd/`).
 
-With WordPress in its own folder below the site (`/wp/`), the Apache blocks carry that folder, so add the same rules with it in front: `location ~ ^/wp/wp-includes/(?!js/tinymce/|ms-files\.php$).+\.php$ { return 403; }` and `location ~ ^/wp/(wp-settings\.php|wp-config-sample\.php|readme\.html|wp-admin/install\.php)$ { return 403; }`. While XML-RPC is off, add `location = /wp/xmlrpc.php { return 403; }` as well. Repeat the root-PHP rule for that folder too: `location ~* ^/wp/(?!(index|wp-activate|wp-blog-header|wp-comments-post|wp-cron|wp-links-opml|wp-load|wp-login|wp-mail|wp-signup|wp-trackback|xmlrpc)\.php$)[^/]+\.php$ { return 403; }`.
+With WordPress in its own folder below the site (`/wp/`), the Apache blocks carry that folder, so add the same rules with it in front: `location ~ ^/wp/wp-includes/(?!js/tinymce/|ms-files\.php$).+\.php$ { return 403; }` and `location ~ ^/wp/(wp-settings\.php|wp-config-sample\.php|readme\.html|wp-admin/install\.php)$ { return 403; }`. While XML-RPC is off, add `location = /wp/xmlrpc.php { return 403; }` as well.
+
+With `wp-content` under that folder as well, the theme-folder rules take the prefix too (`^/wp/wp-content/themes/murtadd[^/]*/`). Repeat the root-PHP rule for that folder too: `location ~* ^/wp/(?!(index|wp-activate|wp-blog-header|wp-comments-post|wp-cron|wp-links-opml|wp-load|wp-login|wp-mail|wp-signup|wp-trackback|xmlrpc)\.php$)[^/]+\.php$ { return 403; }`.
 
 ### The installer
 
