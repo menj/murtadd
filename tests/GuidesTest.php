@@ -8,6 +8,11 @@
  * @package Murtadd\Tests
  */
 
+// Run from the command line only: on a web server this file does nothing.
+if ( 'cli' !== PHP_SAPI ) {
+	exit;
+}
+
 use PHPUnit\Framework\TestCase;
 
 require_once __DIR__ . '/../inc/seed-guides.php';
@@ -87,9 +92,8 @@ final class GuidesTest extends TestCase {
 		$src = file_get_contents( __DIR__ . '/../inc/cpt-guide.php' );
 		$this->assertMatchesRegularExpression( "/'slug'\s*=>\s*'guides'/", $src );
 		$this->assertMatchesRegularExpression( "/'with_front'\s*=>\s*false/", $src );
-		$fn = file_get_contents( __DIR__ . '/../functions.php' );
-		$this->assertStringContainsString( "/inc/cpt-guide.php'", $fn );
-		$this->assertStringContainsString( "/inc/seed-guides.php'", $fn );
+		$this->assertContains( 'cpt-guide', murtadd_theme_files() );
+		$this->assertContains( 'seed-guides', murtadd_theme_files() );
 	}
 
 	/** The new rules reach sites already stamped with this version. */

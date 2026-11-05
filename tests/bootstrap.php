@@ -16,6 +16,11 @@
  * @package Murtadd\Tests
  */
 
+// Run from the command line only: on a web server this file does nothing.
+if ( 'cli' !== PHP_SAPI ) {
+	exit;
+}
+
 define( 'ABSPATH', dirname( __DIR__ ) . '/' );
 define( 'MINUTE_IN_SECONDS', 60 );
 define( 'DAY_IN_SECONDS', 86400 );
@@ -42,7 +47,7 @@ function apply_filters( $hook, $value ) {
 	return $value;
 }
 function get_stylesheet_directory() {
-	return dirname( __DIR__ );
+	return $GLOBALS['murtadd_test_theme_dir'] ?? dirname( __DIR__ );
 }
 function get_stylesheet_directory_uri() {
 	return 'https://murtadd.org' . ( $GLOBALS['murtadd_test_subfolder'] ?? '' ) . '/wp-content/themes/murtadd';
@@ -678,3 +683,22 @@ class MurtaddTestWpdb {
 require_once __DIR__ . '/../inc/unlist.php';
 require_once __DIR__ . '/../inc/search-permalinks.php';
 require_once __DIR__ . '/../inc/reading-progress.php';
+
+if ( ! function_exists( 'wp_normalize_path' ) ) {
+	function wp_normalize_path( $path ) {
+		return str_replace( '\\', '/', (string) $path );
+	}
+}
+/*
+ * The loader's two functions, read from functions.php without the rest of
+ * it (the rest loads every module, which the tests do one by one).
+ */
+( static function () {
+	$src = (string) file_get_contents( dirname( __DIR__ ) . '/functions.php' );
+	foreach ( array( 'murtadd_theme_files', 'murtadd_incomplete_theme', 'murtadd_incomplete_serves' ) as $name ) {
+		if ( preg_match( '/^function ' . $name . '\(.*?^}\n/ms', $src, $m ) ) {
+			eval( $m[0] ); // phpcs:ignore Squiz.PHP.Eval
+		}
+	}
+} )();
+require_once __DIR__ . '/../inc/dev-files.php';

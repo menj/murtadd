@@ -11,6 +11,11 @@
  * @package Murtadd\Tests
  */
 
+// Run from the command line only: on a web server this file does nothing.
+if ( 'cli' !== PHP_SAPI ) {
+	exit;
+}
+
 use PHPUnit\Framework\TestCase;
 
 final class HardeningTest extends TestCase {

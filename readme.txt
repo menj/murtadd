@@ -3,7 +3,7 @@ Contributors: murtadd.org
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.1
-Stable tag: 1.55.6
+Stable tag: 1.55.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,6 +83,11 @@ Bundled resources:
 * The site icon, the pixel book and envelope images, the calligraphy in assets/images and screenshot.png were made for this theme and are GPL v2 or later with it.
 
 == Changelog ==
+= 1.55.7 =
+* Fixes from the live logs. The spam addresses the logs show (/?items/….sthml, /index.php/sitemap…, /sitemapimages…, /contents/… and /goods.php) answer 410 Gone, and the Upkeep list takes query strings and wildcards.
+* On Apache the web server runs only WordPress's own PHP files at the top of the site, and refuses WordPress's internal files. The Security tab lists any other PHP file it finds there.
+* A theme caught half uploaded shows the maintenance page with a 503 status instead of a fatal error. Development files a working copy carries (.git, tests, Composer's packages) are refused and removed from a live site.
+
 = 1.55.6 =
 * The home page reads as one story, from the claim to the reader's question, the help for a reader who cannot name it, and the questions underneath, with headings that read as steps.
 * The sidebar and the starting-point card are named for screen readers, and the reading progress bar sits inside the main content.

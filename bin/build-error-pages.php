@@ -9,6 +9,11 @@
  * @package murtadd
  */
 
+// Run from the command line only: on a web server this file does nothing.
+if ( 'cli' !== PHP_SAPI ) {
+	exit;
+}
+
 $murtadd_root  = dirname( __DIR__ );
 $murtadd_check = in_array( '--check', $argv, true );
 $murtadd_css   = '/wp-content/themes/murtadd/assets/css/';

@@ -1,0 +1,52 @@
+# Murtadd theme folder: files a working copy carries that the web server must
+# never serve. The theme removes them from a live site on the first request
+# after an update (inc/dev-files.php); these lines cover the time before that,
+# and a site that keeps them. Nothing here is linked from the site: the Docs
+# tab reads docs/*.md from disk.
+
+# Every file and folder whose name begins with a dot: .git, .github, .claude,
+# .phpunit.cache, .env, .htaccess (this file) and the like. .well-known stays
+# open.
+<IfModule mod_alias.c>
+	RedirectMatch 403 /\.(?!well-known(/|$))[^/]+(/|$)
+</IfModule>
+<FilesMatch "^\.">
+	<IfModule mod_authz_core.c>
+		Require all denied
+	</IfModule>
+	<IfModule !mod_authz_core.c>
+		Order allow,deny
+		Deny from all
+	</IfModule>
+</FilesMatch>
+
+# The tests, tools, documentation, command-line scripts, build settings and
+# Composer's packages, at the top of the theme folder. RedirectMatch reads the
+# whole request path, so this matches /wp-content/themes/murtadd/tests/ with
+# or without a site subfolder in front. Each of these folders also carries its
+# own .htaccess, which refuses it wherever the theme folder sits. Parsedown in
+# vendor/ is loaded from disk, never by address.
+<IfModule mod_alias.c>
+	RedirectMatch 403 /themes/[^/]+/(tests|tools|bin|docs|config|vendor)(/|$)
+</IfModule>
+
+# Where mod_alias is missing, mod_rewrite refuses the same paths. Only then:
+# a rewrite engine in this folder replaces the site's own rules for it.
+<IfModule !mod_alias.c>
+	<IfModule mod_rewrite.c>
+		RewriteEngine On
+		RewriteRule (^|/)\.(?!well-known(/|$)) - [F]
+		RewriteRule ^(tests|tools|bin|docs|config|vendor)(/|$) - [F]
+	</IfModule>
+</IfModule>
+
+# Markdown, and Composer's and PHPUnit's files.
+<FilesMatch "(\.md|^composer\.(json|lock)|^phpunit\.xml(\.dist)?)$">
+	<IfModule mod_authz_core.c>
+		Require all denied
+	</IfModule>
+	<IfModule !mod_authz_core.c>
+		Order allow,deny
+		Deny from all
+	</IfModule>
+</FilesMatch>

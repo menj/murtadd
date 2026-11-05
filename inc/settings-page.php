@@ -139,9 +139,10 @@ function murtadd_sanitize_security( $input ) {
 function murtadd_sanitize_upkeep( $input ) {
 	$input = is_array( $input ) ? $input : array();
 	return array(
-		'gone_paths'  => murtadd_gone_clean( (string) ( $input['gone_paths'] ?? '' ) ),
-		'maintenance' => empty( $input['maintenance'] ) ? 0 : 1,
-		'error_pages' => empty( $input['error_pages'] ) ? 0 : 1,
+		'gone_paths'   => murtadd_gone_clean( (string) ( $input['gone_paths'] ?? '' ) ),
+		'gone_presets' => empty( $input['gone_presets'] ) ? 0 : 1,
+		'maintenance'  => empty( $input['maintenance'] ) ? 0 : 1,
+		'error_pages'  => empty( $input['error_pages'] ) ? 0 : 1,
 	);
 }
 
@@ -1116,10 +1117,18 @@ function murtadd_render_upkeep_tab() {
 	murtadd_admin_card_close();
 
 	murtadd_admin_card_open( __( 'Removed for good (410)', 'murtadd' ), '', 'no' );
+	murtadd_admin_toggle_row(
+		__( 'Spam presets', 'murtadd' ),
+		'murtadd_upkeep_gone_presets',
+		'murtadd_upkeep[gone_presets]',
+		(bool) murtadd_upkeep( 'gone_presets' ),
+		__( 'Answer 410 for the spam addresses found in the November 2026 logs', 'murtadd' ),
+		__( 'Covers /?items/*.sthml, /index.php/sitemap*, /sitemapimages*, /contents/* and /goods.php. WordPress answered most of them with the home page, so these answer 410 on the home page too. An address that leads to a real post, page or archive is never touched.', 'murtadd' )
+	);
 	murtadd_admin_row_open( __( 'Addresses', 'murtadd' ), 'murtadd_gone_paths' );
 	?>
 	<textarea id="murtadd_gone_paths" name="murtadd_upkeep[gone_paths]" rows="8" class="large-text code" placeholder="<?php echo esc_attr( "/cheap-pills/\n/shop/*" ); ?>" aria-describedby="murtadd_gone_paths-desc"><?php echo esc_textarea( (string) murtadd_upkeep( 'gone_paths' ) ); ?></textarea>
-	<p class="description" id="murtadd_gone_paths-desc"><?php esc_html_e( 'Addresses that never belonged to this site, such as spam pages left by the 2024 compromise, answered 410 Gone so search engines drop them. One per line: an exact path (/cheap-pills/), or a prefix ending in * (/shop/* covers /shop/ and everything under it). Applies only where the site has no page: a live page, and any old address the legacy redirects recover, are never touched. "/" and "/*" alone are refused.', 'murtadd' ); ?></p>
+	<p class="description" id="murtadd_gone_paths-desc"><?php esc_html_e( 'Addresses that never belonged to this site, such as spam pages left by the 2024 compromise, answered 410 Gone so search engines drop them. One per line: an exact path (/cheap-pills/), a prefix ending in * (/shop/* covers /shop/ and everything under it), a * in the middle (/feed-*.xml), or a path with a query string (/?items/*.sthml). A path applies only where the site has no page: a live page, and any old address the legacy redirects recover, are never touched. A query string also applies on the home page, and may not start with a key WordPress or a tracking link uses (p, s, page_id, utm_source and the like). "/", "/*" and "/?*" alone are refused.', 'murtadd' ); ?></p>
 	<?php
 	murtadd_admin_row_close();
 	murtadd_admin_card_close();

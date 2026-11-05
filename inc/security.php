@@ -112,6 +112,144 @@ function murtadd_sec_htaccess_lines() {
 	);
 }
 
+/** The .htaccess marker of the block that denies WordPress's own files. */
+defined( 'MURTADD_SEC_CORE_MARKER' ) || define( 'MURTADD_SEC_CORE_MARKER', 'Murtadd: deny direct core files' );
+
+/** The .htaccess marker of the block that allows only WordPress's own root PHP files. */
+defined( 'MURTADD_SEC_ROOT_MARKER' ) || define( 'MURTADD_SEC_ROOT_MARKER', 'Murtadd: only WordPress root PHP' );
+
+/**
+ * Lines that deny WordPress's own files that are never meant to be asked for
+ * by address: the PHP files in wp-includes (bots ask for blocks/rss.php and
+ * the like, which then fail with a fatal error and fill the error log),
+ * wp-settings.php, wp-config-sample.php, readme.html (which names the
+ * version) and wp-admin/install.php. The editor's TinyMCE loader
+ * (wp-includes/js/tinymce/) and ms-files.php, which a network's rewrite
+ * rules hand uploads to, stay reachable. The paths are relative to the
+ * folder that holds .htaccess, with WordPress's folder in front when it is
+ * installed in its own subfolder.
+ *
+ * @param string $prefix WordPress's folder relative to the .htaccess folder, '' or "wp/".
+ * @return string[]
+ */
+function murtadd_sec_core_lines( $prefix = '' ) {
+	$p = str_replace( ' ', '\\ ', preg_quote( $prefix, '#' ) );
+	return array(
+		'<IfModule mod_rewrite.c>',
+		'RewriteEngine On',
+		'RewriteRule ^' . $p . 'wp-includes/(?!js/tinymce/|ms-files\\.php$).+\\.php$ - [F,L]',
+		'RewriteRule ^' . $p . '(wp-settings|wp-config-sample)\\.php$ - [F,L]',
+		'RewriteRule ^' . $p . 'readme\\.html$ - [F,L]',
+		'RewriteRule ^' . $p . 'wp-admin/install\\.php$ - [F,L]',
+		'</IfModule>',
+	);
+}
+
+/**
+ * The PHP files WordPress keeps at the top of its folder that are asked for
+ * by address, without ".php". wp-config.php, wp-settings.php and
+ * wp-config-sample.php are not among them: nothing outside WordPress loads
+ * them by address. A plugin that puts its own file there by design adds its
+ * name with the murtadd_root_php_allow filter.
+ *
+ * @return string[]
+ */
+function murtadd_sec_root_php_names() {
+	$names = array( 'index', 'wp-activate', 'wp-blog-header', 'wp-comments-post', 'wp-cron', 'wp-links-opml', 'wp-load', 'wp-login', 'wp-mail', 'wp-signup', 'wp-trackback', 'xmlrpc' );
+	/**
+	 * Root PHP files the web server may run, without ".php".
+	 *
+	 * @param string[] $names File names.
+	 */
+	$names = (array) apply_filters( 'murtadd_root_php_allow', $names );
+	$names = array_filter( array_map( static fn( $n ) => strtolower( (string) $n ), $names ), static fn( $n ) => (bool) preg_match( '/^[a-z0-9][a-z0-9._-]*$/', $n ) );
+	// index.php is always allowed: without it no page of the site would load.
+	return array_values( array_unique( array_merge( array( 'index' ), $names ) ) );
+}
+
+/**
+ * Lines that let the web server run only WordPress's own PHP files at the
+ * top of the site: murtadd.org was compromised, and random files such as
+ * ox-*.php were left at the root and were live. Any other name answers 403,
+ * whether or not the file exists, so a file dropped there later cannot run
+ * either. A request for a root PHP file that does not exist still reaches
+ * WordPress first (its own block hands it to index.php), so /goods.php and
+ * the like get the theme's 410. With WordPress in its own subfolder, its
+ * folder gets the same rule.
+ *
+ * @param string $prefix WordPress's folder relative to the .htaccess folder, '' or "wp/".
+ * @return string[]
+ */
+function murtadd_sec_root_lines( $prefix = '' ) {
+	$names = implode( '|', array_map( static fn( $n ) => preg_quote( $n, '#' ), murtadd_sec_root_php_names() ) );
+	$lines = array(
+		'<IfModule mod_rewrite.c>',
+		'RewriteEngine On',
+		'RewriteRule ^(?!(?:' . $names . ')\\.php$)[^/]+\\.php$ - [F,L,NC]',
+	);
+	if ( '' !== (string) $prefix ) {
+		$lines[] = 'RewriteRule ^' . str_replace( ' ', '\\ ', preg_quote( $prefix, '#' ) ) . '(?!(?:' . $names . ')\\.php$)[^/]+\\.php$ - [F,L,NC]';
+	}
+	$lines[] = '</IfModule>';
+	return $lines;
+}
+
+/**
+ * WordPress's folder relative to the folder that holds .htaccess: '' when
+ * they are the same, "wp/" when WordPress sits in its own subfolder, null
+ * when WordPress is outside it (the blocks are then not written).
+ *
+ * @param string $home The folder that holds .htaccess.
+ * @param string $abs  ABSPATH.
+ * @return string|null
+ */
+function murtadd_sec_core_prefix( $home, $abs ) {
+	$home = wp_normalize_path( trailingslashit( $home ) );
+	$abs  = wp_normalize_path( trailingslashit( $abs ) );
+	return 0 === strpos( $abs, $home ) ? (string) substr( $abs, strlen( $home ) ) : null;
+}
+
+/**
+ * The blocks this site should carry, by marker. Each is empty when
+ * WordPress sits outside the .htaccess folder, or when its constant in
+ * wp-config.php turns it off: MURTADD_ALLOW_CORE_FILES for a plugin or host
+ * that needs one of the core files by address, MURTADD_ALLOW_ROOT_PHP for a
+ * site that runs other PHP files at its root.
+ *
+ * @param string|null $prefix WordPress's folder relative to the .htaccess folder.
+ * @return array<string,string[]>
+ */
+function murtadd_sec_server_blocks( $prefix ) {
+	$core = null !== $prefix && ! ( defined( 'MURTADD_ALLOW_CORE_FILES' ) && MURTADD_ALLOW_CORE_FILES );
+	$root = null !== $prefix && ! ( defined( 'MURTADD_ALLOW_ROOT_PHP' ) && MURTADD_ALLOW_ROOT_PHP );
+	return array(
+		MURTADD_SEC_CORE_MARKER => $core ? murtadd_sec_core_lines( $prefix ) : array(),
+		MURTADD_SEC_ROOT_MARKER => $root ? murtadd_sec_root_lines( $prefix ) : array(),
+	);
+}
+
+/**
+ * Root PHP files on disk that the root block refuses: names other than
+ * WordPress's own, such as the ox-*.php files the compromise left. Shown on
+ * the Security tab, so the owner can delete them by FTP.
+ *
+ * @param string $dir The folder to read; ABSPATH when empty.
+ * @return string[] File names.
+ */
+function murtadd_sec_unknown_root_php( $dir = '' ) {
+	$dir   = '' === $dir ? ABSPATH : trailingslashit( $dir );
+	$known = array_merge( murtadd_sec_root_php_names(), array( 'wp-config', 'wp-settings', 'wp-config-sample' ) );
+	$found = array();
+	foreach ( (array) glob( $dir . '*.[pP][hH][pP]' ) as $file ) {
+		$name = basename( (string) $file );
+		if ( ! in_array( strtolower( substr( $name, 0, -4 ) ), $known, true ) ) {
+			$found[] = $name;
+		}
+	}
+	sort( $found );
+	return $found;
+}
+
 /**
  * Path of the site's .htaccess, or '' when the server is not Apache or the
  * file cannot be written.
@@ -164,6 +302,13 @@ function murtadd_sec_sync_htaccess( $force = false ) {
 	} elseif ( ! $want && $current ) {
 		insert_with_markers( $file, 'Block xmlrpc.php', array() );
 	}
+	// The core-file and root PHP blocks are kept while the theme runs,
+	// whatever the XML-RPC switch.
+	foreach ( murtadd_sec_server_blocks( murtadd_sec_core_prefix( get_home_path(), ABSPATH ) ) as $marker => $lines ) {
+		if ( ( function_exists( 'extract_from_markers' ) ? extract_from_markers( $file, $marker ) : array() ) !== $lines ) {
+			insert_with_markers( $file, $marker, $lines );
+		}
+	}
 	update_option( 'murtadd_security_htaccess', $state, false );
 }
 add_action( 'admin_init', 'murtadd_sec_sync_htaccess' );
@@ -186,6 +331,8 @@ function murtadd_sec_remove_htaccess() {
 	$file = murtadd_sec_htaccess_file();
 	if ( '' !== $file ) {
 		insert_with_markers( $file, 'Block xmlrpc.php', array() );
+		insert_with_markers( $file, MURTADD_SEC_CORE_MARKER, array() );
+		insert_with_markers( $file, MURTADD_SEC_ROOT_MARKER, array() );
 	}
 	delete_transient( 'murtadd_sec_htaccess_checked' );
 }
@@ -1204,6 +1351,22 @@ function murtadd_sec_render_tools() {
 	?>
 	<div class="murtadd-sec" id="murtadd-security-tools">
 		<?php murtadd_sec_notice(); ?>
+
+		<?php $murtadd_unknown_php = murtadd_sec_unknown_root_php(); ?>
+		<section class="murtadd-sec-card">
+			<h2><?php esc_html_e( 'Files at the top of the site', 'murtadd' ); ?></h2>
+			<p class="description"><?php esc_html_e( 'On Apache the theme keeps two sections in .htaccess. "Murtadd: only WordPress root PHP" lets the web server run only WordPress\'s own PHP files at the top of the site (index.php, wp-login.php, wp-cron.php and the like), so a file someone left there, such as ox-*.php, answers 403. "Murtadd: deny direct core files" answers 403 for the PHP files in wp-includes (the editor\'s TinyMCE loader and ms-files.php excepted), wp-settings.php, wp-config-sample.php, readme.html and wp-admin/install.php. A site that runs other PHP files at its root adds define( \'MURTADD_ALLOW_ROOT_PHP\', true ); to wp-config.php; define( \'MURTADD_ALLOW_CORE_FILES\', true ); takes the second section out.', 'murtadd' ); ?></p>
+			<?php if ( $murtadd_unknown_php ) : ?>
+				<p><strong><?php esc_html_e( 'These PHP files at the top of the site are not part of WordPress. Check each one and delete it by FTP unless you put it there:', 'murtadd' ); ?></strong></p>
+				<ul class="ul-disc">
+					<?php foreach ( $murtadd_unknown_php as $murtadd_name ) : ?>
+						<li><code><?php echo esc_html( $murtadd_name ); ?></code></li>
+					<?php endforeach; ?>
+				</ul>
+			<?php else : ?>
+				<p><?php esc_html_e( 'No PHP file at the top of the site is foreign to WordPress.', 'murtadd' ); ?></p>
+			<?php endif; ?>
+		</section>
 
 		<section class="murtadd-sec-card">
 			<h2><?php esc_html_e( 'Clean up spam', 'murtadd' ); ?></h2>

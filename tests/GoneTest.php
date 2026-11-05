@@ -10,6 +10,11 @@
  * @package Murtadd\Tests
  */
 
+// Run from the command line only: on a web server this file does nothing.
+if ( 'cli' !== PHP_SAPI ) {
+	exit;
+}
+
 use PHPUnit\Framework\TestCase;
 
 final class GoneTest extends TestCase {
@@ -24,8 +29,8 @@ final class GoneTest extends TestCase {
 	}
 
 	public function test_cleaner_refuses_whole_site_and_junk() {
-		$clean = murtadd_gone_clean( "/\n/*\n*\nno-slash\n/ok-path/\n/Shop/*\n/a b/\n/x*y\n/ok-path/\n javascript:alert(1)" );
-		$this->assertSame( "/ok-path/\n/shop/*", $clean );
+		$clean = murtadd_gone_clean( "/\n/*\n/?*\n/?\n*\nno-slash\n/ok-path/\n/Shop/*\n/a b/\n/x*y\n/ok-path/\n javascript:alert(1)" );
+		$this->assertSame( "/ok-path/\n/shop/*\n/x*y", $clean );
 	}
 
 	public function test_cleaner_caps_the_list() {
