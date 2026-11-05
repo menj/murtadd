@@ -85,11 +85,20 @@ add_action( 'do_faviconico', 'murtadd_serve_favicon', 5 );
 
 /**
  * Core ends a HEAD request before do_favicon, with an empty HTML answer.
- * template_redirect runs first, so a HEAD request gets the icon's headers too.
+ * template_redirect runs first, so a HEAD request gets the icon's headers,
+ * or the redirect to the Site Icon, too.
  */
 function murtadd_favicon_head_request() {
-	if ( is_favicon() ) {
-		murtadd_serve_favicon();
+	if ( ! is_favicon() ) {
+		return;
 	}
+	if ( has_site_icon() ) {
+		// Core's do_favicon redirect never runs for HEAD; send it from here for every method.
+		wp_redirect( get_site_icon_url( 32 ) ); // phpcs:ignore WordPress.Security.SafeRedirect -- core's own redirect; the icon may sit on a CDN.
+		exit;
+	}
+	murtadd_serve_favicon();
 }
-add_action( 'template_redirect', 'murtadd_favicon_head_request', 0 );
+// Before murtadd_maintenance_mode() (also priority 0, and loaded first), so a browser gets its icon during
+// maintenance as well.
+add_action( 'template_redirect', 'murtadd_favicon_head_request', -1 );
