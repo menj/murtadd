@@ -1,4 +1,22 @@
-# Upgrading — Murtadd
+# Upgrading Murtadd
+
+## Updating an existing site
+
+1. Turn on hidden files in the FTP program (in FileZilla: Server, Force showing hidden files). The theme carries `.htaccess` files in its own folder and in `tests/`, `bin/`, `docs/`, `config/` and `vendor/`.
+2. Upload the new `murtadd` folder into `wp-content/themes/` as `murtadd-new`.
+3. Rename the live folder to `murtadd-old` and at once `murtadd-new` to `murtadd`, with Appearance, Themes closed: that screen switches the site to another theme if it finds the folder missing. Delete the old one once the site looks right.
+4. Open any admin page as an administrator. The error pages and the `.htaccess` blocks are brought up to date, and the first request after the version change removes the development files.
+5. Read the note below for every version you pass.
+
+Upgrading in place does not run the activation steps. If something is missing, use Appearance, Theme Options, Setup, Create anything missing.
+
+An upload straight into the live folder also works for most files: while one is missing, visitors see the 503 "Back shortly" page. `functions.php` is the exception, since it holds that guard.
+
+Never upload WordPress core to a live folder without `wp-config.php` in place. The installer answers anyone in that state.
+
+## 1.55.7 → 1.55.8
+
+Drop-in. Nothing to run. The release changes documents only.
 
 ## 1.55.6 → 1.55.7
 
@@ -180,7 +198,7 @@ Content only.
 Additive. No content, setting, or template changes.
 
 1. Replace the theme directory with the 1.29.0 build.
-2. The redirects depend on two things setup creates: the **Irtidad** page and the **Apostasy Law** topic term. If either is missing, its redirects are skipped and those URLs keep 404ing — run **Create anything missing** on the Setup tab to be sure.
+2. The redirects depend on two things setup creates: the **Irtidad** page and the **Apostasy Law** topic term. If either is missing, its redirects are skipped and those URLs keep 404ing: run **Create anything missing** on the Setup tab to be sure.
 3. Verify with any old URL, e.g. `/definition/` should land on `/irtidad/`.
 4. If you later rename the Irtidad page slug, the map follows the descriptor rather than a stored URL, so nothing breaks. Renaming the `apostasy-law` term slug does break it; add a filter on `murtadd_legacy_redirect_map` if you do.
 
@@ -196,7 +214,7 @@ Additive. No content, setting, or template changes.
 Seeder behaviour only. No content, template, or asset changes beyond 1.26.1.
 
 1. Replace the theme directory with the 1.27.0 build.
-2. On the live site the safe order is now genuinely order-independent, but the intended sequence is: delete the two placeholder letters (they are visible to readers at /letters/), then press **Create anything missing** on the Setup tab. The run creates the six new entries, adopts the 31 existing posts into the seeded-slug record, and does not resurrect the letters — before this build, it would have.
+2. On the live site the safe order is now genuinely order-independent, but the intended sequence is: delete the two placeholder letters (they are visible to readers at /letters/), then press **Create anything missing** on the Setup tab. The run creates the six new entries, adopts the 31 existing posts into the seeded-slug record, and does not resurrect the letters: before this build, it would have.
 3. If you deleted seeded content in the past and it kept coming back, that is this bug; it will not recur. To deliberately re-create a seeded post after deletion, remove its slug from the `murtadd_seeded_slugs` option (WP-CLI: `wp option get murtadd_seeded_slugs`) and press the button again.
 4. The expanded `is-islam-a-cult` body still requires the manual paste described in the 1.25.0 → 1.26.0 notes; the seeder never overwrites.
 
@@ -236,7 +254,7 @@ Admin styling only. No front-end, database, option, or URL changes. Replace the 
 
 1. Replace the theme directory with the 1.23.0 build. Rewrite rules flush automatically (the card endpoint needs it).
 2. Verify a card renders: `/murtadd-card/{id}.svg` for any published doubt.
-3. Featured images are now available on the content types. Use them for documentary images only — a folio, a court document, a screenshot of a claim as it circulates. Where none is set, the generated card carries the doubt.
+3. Featured images are now available on the content types. Use them for documentary images only: a folio, a court document, a screenshot of a claim as it circulates. Where none is set, the generated card carries the doubt.
 4. Run the tests: `phpunit` (config in `phpunit.xml.dist`).
 
 ## 1.21.1 → 1.22.0
@@ -257,7 +275,7 @@ Adds the Letters post type. No existing content, option, or URL is touched.
 
 1. Replace the theme directory with the 1.21.0 build. Rewrite rules flush automatically, so `/letters/` works on the first request.
 2. **Letters** appears in the admin menu. The date of original publication is required: it drives the dateline that appears on every surface.
-3. Letters are deliberately absent from site search, the main feed, and the homepage triage grid. This is by design, not an oversight — see the changelog.
+3. Letters are deliberately absent from site search, the main feed, and the homepage triage grid. This is by design, not an oversight: see the changelog.
 
 ## 1.19.1 → 1.20.0
 
@@ -273,7 +291,7 @@ Content only. Replace the theme directory, then **Appearance → Theme Options �
 2. Appearance → Theme Options → Setup → **Create anything missing** publishes the three new entries ("The fear itself", "The broken ummah", "The state of the Muslims"). Everything already present is skipped.
 3. Search behaviour changes: site search now matches doubt statements, responses, claims, and fatwa summaries. Expect more results, correctly.
 4. The main RSS feed now carries doubts, rebuttals, and fatwa entries alongside posts. Subscribers will see the starter content appear as new items once.
-5. If any SEO plugin is later installed that emits its own description/OG tags, disable `inc/meta-tags.php`'s output first — two sets of tags is worse than either alone.
+5. If any SEO plugin is later installed that emits its own description/OG tags, disable `inc/meta-tags.php`'s output first: two sets of tags is worse than either alone.
 
 ## 1.17.0 → 1.18.0
 
@@ -363,13 +381,13 @@ Adds the relation resolver needed by the content import. No database or option c
 Templates and CSS only. No database, option, or URL changes.
 
 1. Replace the theme directory with the 1.10.0 build.
-2. The sidebar no longer carries About / FAQ / Contact / Privacy. Those links are in the footer: a column on the front page, a row in the slim bar everywhere else. The `footer_site` menu location is unchanged — assign a menu there and both placements pick it up.
+2. The sidebar no longer carries About / FAQ / Contact / Privacy. Those links are in the footer: a column on the front page, a row in the slim bar everywhere else. The `footer_site` menu location is unchanged: assign a menu there and both placements pick it up.
 3. If custom CSS targeted `.murtadd-sidebar-secondary`, it is retired. `.murtadd-secondary-list` still exists but is now styled for the light ground.
 
 ## 1.9.0 → 1.9.1
 
 1. Replace the theme directory with the 1.9.1 build.
-2. Go to **Appearance → Theme Options → Setup** and press **Create anything missing**. This creates the pages, the footer menu, and the Reading settings that the templates depend on — including `start-here`, without which the sidebar's "Start here" button cannot render.
+2. Go to **Appearance → Theme Options → Setup** and press **Create anything missing**. This creates the pages, the footer menu, and the Reading settings that the templates depend on: including `start-here`, without which the sidebar's "Start here" button cannot render.
 3. The button never overwrites: existing pages, an assigned menu, and Reading options you have already chosen are left untouched.
 4. Replace the placeholder copy on the new pages.
 
@@ -378,7 +396,7 @@ Templates and CSS only. No database, option, or URL changes.
 Adds activation scaffolding. Safe on a configured site.
 
 1. Replace the theme directory with the 1.9.0 build.
-2. Upgrading in place does **not** trigger the routine — it runs on `after_switch_theme`, not on file replacement. To scaffold an existing site, switch to another theme and back, or create the pages by hand.
+2. Upgrading in place does **not** trigger the routine: it runs on `after_switch_theme`, not on file replacement. To scaffold an existing site, switch to another theme and back, or create the pages by hand.
 3. If you do re-activate: nothing you have already set is overwritten. Existing pages are skipped, an assigned footer menu is left alone, and a front page or posts page you have already chosen is not reassigned.
 4. Any page created carries placeholder text and is public immediately. Replace the copy.
 
@@ -401,7 +419,7 @@ Layout fixes. No database changes; no option changes; no URL changes.
 
 1. Replace the theme directory with the 1.7.1 build.
 2. `css/main.css` and two fatwa templates changed. Asset version strings bumped, so caches invalidate automatically.
-3. If you add a new top-level block to any template, it now inherits the view's column width automatically — do not add a per-element `max-width`. To change a view's width, set `--murtadd-measure` on `.murtadd-main` for that body class.
+3. If you add a new top-level block to any template, it now inherits the view's column width automatically: do not add a per-element `max-width`. To change a view's width, set `--murtadd-measure` on `.murtadd-main` for that body class.
 
 ## 1.6.0 → 1.7.0
 
@@ -411,7 +429,7 @@ A public URL change. No database migration; no term or content data is altered.
 2. Rewrite rules flush automatically on the first request after the update.
 3. Verify: `/doubts/kind/emotional/` should load, and `/doubt-category/emotional/` should 301 to it.
 4. Update any external links or sitemap submissions still pointing at `/doubt-category/`. The redirect covers them, but a 301 is a courtesy, not a permanent plan.
-5. Do not create a doubt post with the slug `kind` — it is now reserved by the taxonomy path.
+5. Do not create a doubt post with the slug `kind`: it is now reserved by the taxonomy path.
 6. New option written: `murtadd_rewrite_version`. Add it to the manual-removal list in readme.txt if the theme is ever retired.
 
 ## 1.5.0 → 1.6.0
@@ -419,7 +437,7 @@ A public URL change. No database migration; no term or content data is altered.
 Assets only. No database changes; no option changes.
 
 1. Replace the theme directory with the 1.6.0 build.
-2. The fonts are now bundled — no manual upload step. Expect a visible change: the site finally renders in Source Serif 4 and Public Sans rather than the Georgia / system-ui fallback.
+2. The fonts are now bundled: no manual upload step. Expect a visible change: the site finally renders in Source Serif 4 and Public Sans rather than the Georgia / system-ui fallback.
 3. Set the real favicon at **Settings → General → Site Icon**. That is the correct route: an icon set there also drives the admin bar, the login screen, and the mobile apps. `icons/site-icon-512.png` is ready to upload. Until you do, the theme's fallback mark is served automatically.
 4. Asset version strings bumped to 1.6.0.
 
@@ -431,7 +449,7 @@ Comments support. No database changes; no option changes.
 2. New files: `comments.php`, `css/comments.css`.
 3. Settings → Discussion governs everything: enable "Comment must be manually approved" (recommended), set threading depth, and decide on the cookies-consent checkbox. The theme styles whatever core emits.
 4. Comments are off for the three custom post types by design. To enable them on rebuttals, add `'comments'` to the `supports` array in `inc/cpt-rebuttal.php`; the same template handles it with no further work.
-5. Asset version strings bumped to 1.5.0 — caches invalidate automatically.
+5. Asset version strings bumped to 1.5.0: caches invalidate automatically.
 
 ## 1.3.1 → 1.4.0
 
@@ -440,7 +458,7 @@ New templates only. No database changes, no option changes, no renamed functions
 1. Replace the theme directory with the 1.4.0 build.
 2. Six new files: `search.php`, `searchform.php`, `404.php`, `archive.php`, `taxonomy-murtadd_school.php`, `template-parts/row-list-entry.php`.
 3. Any custom code that duplicated the post-type label map can now call `murtadd_type_label( $post_type )`.
-4. Asset version strings bumped to 1.4.0 — caches invalidate automatically.
+4. Asset version strings bumped to 1.4.0: caches invalidate automatically.
 
 ## 1.3.0 → 1.3.1
 
@@ -448,14 +466,35 @@ Layout fixes only, all in `css/main.css` plus one new template tag. No database 
 
 1. Replace the theme directory with the 1.3.1 build.
 2. `murtadd_doubt_categories_ordered()` is new in `inc/template-tags.php`; `front-page.php` and `taxonomy-murtadd_doubt_category.php` now call it instead of raw `get_terms()`.
-3. Asset version strings bumped to 1.3.1 — caches invalidate automatically.
+3. Asset version strings bumped to 1.3.1: caches invalidate automatically.
 
 ## 1.2.0 → 1.3.0
 
 No database changes. No option keys renamed. No template signature changes.
 
 1. Replace the theme directory with the 1.3.0 build.
-2. `uninstall.php` no longer exists — nothing to do; it never ran.
+2. `uninstall.php` no longer exists: nothing to do; it never ran.
 3. If any custom code called `murtadd_secondary_fallback()`, it still works: the function now loads from `inc/template-tags.php` on every request instead of only after `sidebar.php` was included.
 4. Add the two woff2 files to the new `/fonts/` directory if not already present on the server (see `fonts/docs/readme.md`).
 5. Hard-refresh: asset version strings bumped from 1.2.0 to 1.3.0, so caches invalidate automatically.
+
+## Roadmap
+
+Everything below is a plan, open to change. Each item says why it is here. An item leaves this list when it ships, and goes into `changelog.md`.
+
+### Next
+
+- Keep the `.htaccess` blocks on a network. `murtadd_sec_remove_htaccess()` takes them out on any theme switch, while another site may still run Murtadd; the error pages already stay.
+- Refuse `wp-admin/includes/*.php` and `wp-config.php` by address as well. "Murtadd: deny direct core files" leaves both out, and the error log shows bots calling `wp-admin/includes/admin.php` directly on 2 November.
+- Refuse the core files on a server without mod_rewrite. Both Murtadd blocks sit inside `<IfModule mod_rewrite.c>`, where another of the owner's themes adds an Apache 2.4 `<If>` for that case.
+
+### Later
+
+- Test on WordPress 7.1 and raise "Tested up to" in `readme.txt`, which still reads 6.8. The owner's other themes are tested on 7.1.
+- A lock for the installer. The error log shows 3,907 fatal errors on 4 November, between 16:01 and 19:41, while `wp-includes/version.php` was missing during a core upload. The theme cannot run then; a lock rule for `wp-admin/install.php` and `setup-config.php` would close the worst case.
+
+### Ideas
+
+- A digest of the PHP error log on the dashboard, as another of the owner's themes shows, so a run of fatal errors like the one above is seen the same day.
+- Check that the Rank Math warning about the author's `url` (4 times between 25 and 27 October) has not come back since 1.47.0 gave the author a url.
+

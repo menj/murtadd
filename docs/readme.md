@@ -7,21 +7,25 @@ A classic-template child theme of Twenty Twenty-Five for **murtadd.org**.
 | Theme slug | `murtadd` |
 | Text domain | `murtadd` |
 | Parent | `twentytwentyfive` |
-| Version | 1.55.7 |
+| Version | 1.55.8 |
 | Author | Langgam Fikir Enterprise |
 | Licence | GPLv2 or later |
 | Requires WP | 6.4+ |
 | Requires PHP | 8.1+ |
+| Web server | Apache gets its rules written by the theme; Nginx needs the rules under Security below |
+| Multisite | Works; see Error pages and Security for what the main site does |
 
 ## What it is
 
-Three custom post types answer three different needs. **Doubts** give a short, sourced answer to a question a reader is actually carrying. **Rebuttals** state a circulated claim fairly and answer it at length with citations. **Fatwa** entries summarise scholarly positions in the site's own words, each linked to its primary source.
+Three custom post types answer three different needs.
+
+**Doubts** give a short, sourced answer to a question a reader is actually carrying. **Rebuttals** state a circulated claim fairly and answer it at length with citations. **Fatwa** entries summarise scholarly positions in the site's own words, each linked to its primary source.
 
 A shared **Topic** taxonomy spans all three. A locked four-term **Doubt Category** taxonomy (intellectual, scriptural, emotional, identity) drives the homepage triage grid. A **School** taxonomy filters the fatwa index.
 
-The theme ships its own content: 12 Doubts and 17 Rebuttals, published on activation with their claims, sources, topics, categories, and cross-links already wired.
+The theme ships its own content: 38 Doubts and 47 Rebuttals, published on activation with their claims and sources, their topics and categories, and their cross-links already wired.
 
-Long-form **Guides** (`/guides/`) are a post type of their own. The **Journal** (`/journal/`) holds dated standard posts, seeded from `inc/data/seed/journal.json` by `inc/seed-journal.php` with fixed dates: a past date is published and a future one is scheduled.
+Long-form **Guides** (`/guides/`, 12 of them) are a post type of their own. The **Journal** (`/journal/`) holds dated standard posts (8 ship), seeded from `inc/data/seed/journal.json` by `inc/seed-journal.php` with fixed dates: a past date is published and a future one is scheduled.
 
 ## The home page as a story
 
@@ -46,13 +50,21 @@ murtadd/
 │   ├── fonts/         Source Serif 4 and Public Sans (OFL), self-hosted
 │   ├── icons/         Site-icon mark: SVG source, PNG sizes, favicon.ico
 │   └── js/            Scripts, each with a .min counterpart
+├── bin/               build-error-pages.php (ships; exits outside the command line)
+├── config/            Lighthouse settings (development only)
 ├── docs/              All documentation, including this file
+├── dropins/           Sources of the wp-content error pages
+├── errors/            Static 403, 500, 502, 503 and 504 pages for a site at the root
 ├── inc/               Feature modules (CPTs, taxonomies, meta, settings, schema, seeding)
 ├── languages/         murtadd.pot
+├── tests/             PHPUnit suite (development only)
+├── vendor/            Parsedown for the Docs tab; Composer's development packages in a working copy
 ├── template-parts/
-│   ├── cards/         card-cross-link, card-doubt-category
+│   ├── cards/         card-cross-link, card-doubt-category, card-quiz
 │   ├── notices/       notice-struggling
-│   └── rows/          row-fatwa-entry, row-list-entry
+│   ├── rail/          rail-single
+│   ├── rows/          row-fatwa-entry, row-list-entry
+│   └── counterpart.php
 ├── templates/         Page templates (page-start-here.php)
 ├── theme.json         Editor palette, typography, layout (v3)
 ├── style.css          Theme header only; never enqueued
@@ -65,23 +77,182 @@ Only files WordPress requires at the theme root stay there: `style.css`, `theme.
 
 ## Architecture
 
-**Classic, not block.** The child ships `index.php` and no `templates/index.html`, so WordPress treats it as a classic theme: the parent's block templates and the Site Editor are bypassed, while the parent still satisfies the `Template:` header and supplies block-library CSS for editor-authored content. `theme.json` is present so the editor renders content the way the front end does.
+**A classic theme.** The child ships `index.php` and no `templates/index.html`, so WordPress treats it as a classic theme: the parent's block templates and the Site Editor are bypassed, while the parent still satisfies the `Template:` header and supplies block-library CSS for editor-authored content. `theme.json` is present so the editor renders content the way the front end does.
 
-**Assets are separated.** All CSS under `assets/css`, all JS under `assets/js`. No template contains a `<style>` or `<script>` block. Colour overrides inject through `wp_add_inline_style()` only. Every source file ships with a `.min` counterpart, and `MURTADD_ASSET_SUFFIX` serves sources under `SCRIPT_DEBUG` and minified files otherwise. **Editing a source without regenerating its `.min` pair changes nothing on a live site.**
+**Assets are separated.** All CSS under `assets/css`, all JS under `assets/js`. No template contains a `<style>` or `<script>` block.
+
+Colour overrides inject through `wp_add_inline_style()` only. Every source file ships with a `.min` counterpart, and `MURTADD_ASSET_SUFFIX` serves sources under `SCRIPT_DEBUG` and minified files otherwise. **Editing a source without regenerating its `.min` pair changes nothing on a live site.**
 
 **Loading is conditional.** Per-template CSS enqueues only on its own views. Admin JS enqueues only on the theme's own screens.
 
 **JavaScript is an enhancement.** Every front-end behaviour works with JS disabled. The fatwa filters are a plain GET form; the script only auto-submits on change.
 
-**Settings use the Settings API.** One option array per tab, in a tabbed screen at Appearance → Theme Options: Colours (with a live WCAG contrast check), Cross-links, Content display, Taxonomies, Setup.
+**Settings use the Settings API.** One option array per tab, in a tabbed screen at Appearance → Theme Options. The tabs run Setup, Content, Topics & schools, Linked sites, Contextual links, Colours (with a live WCAG contrast check), Profiles, Security, Upkeep and Docs. `inc/settings-page.php` registers them; [settings.md](settings.md) describes every field.
+
+## Boot sequence
+
+1. `functions.php` defines `MURTADD_VERSION` and `MURTADD_ASSET_SUFFIX`.
+2. `murtadd_theme_files()` lists every file in `inc/` in load order. Each is checked before any loads, and each loads inside a `try`. A missing or half-written file gives `murtadd_incomplete_theme()`, the upload guard below.
+3. `init` runs `murtadd_cleanup_on_version_change()` once per version, which removes development files from a live site (below).
+4. Activation (`after_switch_theme`) scaffolds the pages and the footer menu, sets the Reading options and rewrite rules, and inserts the starter content (`inc/activation.php`). It never overwrites and never deletes.
+5. `admin_init` registers the settings, writes or repairs the error pages for an administrator, and keeps the `.htaccess` blocks in step at most once an hour.
+6. Front-end views are the PHP templates at the theme root. Per-template CSS loads only on its own views.
+
+## Build, test and release
+
+```bash
+composer install          # PHPUnit and its packages, development only
+composer lint             # php -l over every theme PHP file
+composer test             # vendor/bin/phpunit; runs without WordPress
+php tests/security-detector-test.php
+php bin/build-error-pages.php          # rebuild errors/ after a text change
+php bin/build-error-pages.php --check  # fails when a page is stale
+```
+
+GitHub Actions runs `composer lint` and `composer test`. A release zip comes from `git archive`, which leaves out `.github`, `.claude`, `tests`, `config`, Composer's and PHPUnit's files and the git files (`.gitattributes`). `vendor/parsedown` ships, since the Docs tab loads it.
+
+```bash
+git archive --format=zip --prefix=murtadd/ -o murtadd-$(sed -n 's/^Version:\s*//p' style.css).zip HEAD
+```
+
+Six files state the version: `style.css`, `functions.php`, `readme.txt`, this file, `ssot.md` and the top entry of `changelog.md`. Bump all six, and every edited source asset's `.min` twin with it.
+
+## Settings and options
+
+Appearance → Theme Options, capability `manage_options`. Each tab keeps its own option, registered in `inc/settings-page.php`:
+
+| Tab | Option |
+|---|---|
+| Setup | none; reports what exists and creates what is missing |
+| Content | `murtadd_content_display`, `murtadd_search` |
+| Topics & schools | none; links to the term screens |
+| Linked sites | `murtadd_cross_links` |
+| Contextual links | `murtadd_contextual_links` |
+| Colours | `murtadd_colours` |
+| Profiles | `murtadd_profiles`, `murtadd_author_name` |
+| Security | `murtadd_security` (`inc/security.php`, `inc/hardening.php`, `inc/hide-login.php`) |
+| Upkeep | `murtadd_upkeep` (`inc/maintenance.php`, `inc/gone.php`) |
+| Docs | none; renders `docs/*.md` through `inc/docs.php` |
+
+The tab keys are load-bearing: never rename one. [settings.md](settings.md) has every field.
+
+## Hooks, filters and constants
+
+| Filter | Effect |
+|---|---|
+| `murtadd_contextual_links_map`, `murtadd_contextual_links_enabled` | The phrase map, and the links on a post |
+| `murtadd_glossary_terms`, `murtadd_glossary_enabled` | The glossary, and its tooltips on a post |
+| `murtadd_legacy_redirect_map` | The pre-2024 addresses and their targets |
+| `murtadd_slug_renames` | Renamed slugs and their 301s |
+| `murtadd_gone_match` | Whether a path answers 410 Gone |
+| `murtadd_root_php_allow` | Root PHP files the web server may run |
+| `murtadd_sec_rest_allow`, `murtadd_sec_types` | REST routes exempt from the write lock, and the post types the spam gate watches |
+| `murtadd_security_headers` | The response headers the Security tab sends |
+| `murtadd_short_titles` | Short page parts for long title tags |
+| `murtadd_share_image`, `murtadd_contact_limits`, `murtadd_unlist_enabled` | The share image, the contact form's limits, and unlisting |
+
+| Constant | Set in | Effect |
+|---|---|---|
+| `MURTADD_VERSION`, `MURTADD_ASSET_SUFFIX` | `functions.php` | Version; `.min` unless `SCRIPT_DEBUG` |
+| `MURTADD_HIDE_LOGIN` | `wp-config.php` | False turns the private login address off, whatever is saved |
+| `MURTADD_SECURITY_LOCK` | `wp-config.php` | False turns off the remote-publishing locks |
+| `MURTADD_SPAM_THRESHOLD` | `wp-config.php` | The score at which the spam gate holds a post |
+| `MURTADD_KEEP_DOTFILES` | `wp-config.php` | True keeps the development files on a live site |
+| `MURTADD_ALLOW_ROOT_PHP` | `wp-config.php` | True leaves out "Murtadd: only WordPress root PHP" |
+| `MURTADD_ALLOW_CORE_FILES` | `wp-config.php` | True leaves out "Murtadd: deny direct core files" |
+
+## Security
+
+### The upload guard
+
+While a theme file is missing or half written, visitors get the 503 "Back shortly" page with `Retry-After: 300`, and the error log one line per problem every ten minutes. The login screen, AJAX, cron and the command line never get it (`murtadd_incomplete_serves()`), and a missing file leaves the admin alone.
+
+### Accounts and XML-RPC
+
+Visitors get no REST user routes, and author archives and `?author=` answer with a 301 to the home page. Account names leave the feeds, oEmbed and the users sitemap. XML-RPC is off, with its pingback header and RSD link.
+
+Every switch is on the Security tab and reads through `murtadd_security( $key )`.
+
+### The private login address
+
+The private login address is a port of WPS Hide Login. It is off until an address is saved, and stands down while that plugin is active. `define( 'MURTADD_HIDE_LOGIN', false );` is the way back in.
+
+### The theme folder's rules
+
+`.htaccess` in the theme folder refuses every dot entry (`.well-known` open), the `tests`, `tools`, `bin`, `docs`, `config` and `vendor` folders, Markdown, `composer.*` and `phpunit.xml*`. Each of those folders carries a deny file of its own. The Docs tab reads `docs/*.md` from disk, never by address.
+
+### Development files on a live site
+
+On the first request of any kind after the version changes, `murtadd_cleanup_on_version_change()` removes the dot entries, `tests`, `config`, Composer's and PHPUnit's files and everything in `vendor/` but Parsedown, under a lease so only one request does it. A `local` or `development` site and `MURTADD_KEEP_DOTFILES` keep everything. `bin/` and `docs/` ship and stay.
+
+### The blocks in the site's .htaccess
+
+On Apache with a writable `.htaccess`, `murtadd_sec_sync_htaccess()` keeps three marked blocks, at most once an hour and at once when the Security tab is saved, and `murtadd_sec_remove_htaccess()` takes them out on a theme switch. For WordPress at the root of the `.htaccess` folder they read:
+
+```apache
+# BEGIN Block xmlrpc.php
+<Files xmlrpc.php>
+<IfModule mod_authz_core.c>
+Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+Order Deny,Allow
+Deny from all
+</IfModule>
+</Files>
+# END Block xmlrpc.php
+# BEGIN Murtadd: deny direct core files
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteRule ^wp-includes/(?!js/tinymce/|ms-files\.php$).+\.php$ - [F,L]
+RewriteRule ^(wp-settings|wp-config-sample)\.php$ - [F,L]
+RewriteRule ^readme\.html$ - [F,L]
+RewriteRule ^wp-admin/install\.php$ - [F,L]
+</IfModule>
+# END Murtadd: deny direct core files
+# BEGIN Murtadd: only WordPress root PHP
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteRule ^(?!(?:index|wp\-activate|wp\-blog\-header|wp\-comments\-post|wp\-cron|wp\-links\-opml|wp\-load|wp\-login|wp\-mail|wp\-signup|wp\-trackback|xmlrpc)\.php$)[^/]+\.php$ - [F,L,NC]
+</IfModule>
+# END Murtadd: only WordPress root PHP
+```
+
+"Block xmlrpc.php" is there while XML-RPC is off; other themes the owner runs use the same marker.
+
+With WordPress in its own subfolder, the core rules carry that folder in front, and the root rule is written for both folders. With WordPress outside the `.htaccess` folder no block is written. The Security tab lists the root PHP files the root block refuses, so leftovers can be deleted by FTP.
+
+### Nginx
+
+Nginx reads no `.htaccess`. Put these in the server block, above the `location ~ \.php$` block:
+
+```nginx
+location ~ /\.(?!well-known(/|$)) { return 403; }
+location ~ ^/wp-content/themes/murtadd/(tests|tools|bin|docs|config|vendor)(/|$) { return 403; }
+location ~* ^/wp-content/themes/murtadd/.+\.md$ { return 403; }
+location ~ ^/wp-includes/(?!js/tinymce/|ms-files\.php$).+\.php$ { return 403; }
+location ~ ^/(wp-settings\.php|wp-config-sample\.php|readme\.html|wp-admin/install\.php)$ { return 403; }
+location ~* ^/(?!(index|wp-activate|wp-blog-header|wp-comments-post|wp-cron|wp-links-opml|wp-load|wp-login|wp-mail|wp-signup|wp-trackback|xmlrpc)\.php$)[^/]+\.php$ { return 403; }
+location = /xmlrpc.php { return 403; }
+```
+
+Leave out the last line while XML-RPC is on. For a site in a subfolder, put its path in front, as in `^/blog/wp-includes/`.
+
+### The installer
+
+The theme cannot protect a site whose WordPress core sits on the server without `wp-config.php`. Upload `wp-config.php` first, or upload core to a folder the web server does not serve and rename it into place.
 
 ## Error pages
 
-The Upkeep tab writes `wp-content/maintenance.php` (503, Retry-After), `php-error.php` (500, or 503 for an upload in progress) and `db-error.php` (503, Retry-After) from `dropins/`, with `murtadd-error-page.css`, and never over a file without the marker `Murtadd error page drop-in`, unless a sister theme marked it "Written by the ... theme; safe to delete". Its table reads each file as written, outdated, missing or kept.
+The Upkeep tab writes `wp-content/maintenance.php` (503, `Retry-After: 600`), `php-error.php` (500, or 503 with `Retry-After: 120` for an upload in progress) and `db-error.php` (503, `Retry-After: 300`) from `dropins/`, with `murtadd-error-page.css`, and never over a file without the marker `Murtadd error page drop-in`, unless a sister theme marked it "Written by the ... theme; safe to delete". Its table reads each file as written, outdated, missing or kept.
 
 Static pages for the errors the web server answers before WordPress runs are in `errors/` (`php bin/build-error-pages.php`). They assume a site at the domain root, with the theme in `/wp-content/themes/murtadd/`.
 
-The Upkeep tab also writes a copy of each into `wp-content/murtadd-errors/`, with the site's own home address and theme folder, under the same rules as the drop-ins. A site installed in a subfolder, such as `example.com/blog/`, gets links that work. Switching theme, or the Error pages switch off, removes the copies. The Upkeep tab shows the `.htaccess` lines with this site's addresses. For a site at the root they read:
+The Upkeep tab also writes a copy of each into `wp-content/murtadd-errors/`, with the site's own home address and theme folder, under the same rules as the drop-ins.
+
+A site installed in a subfolder, such as `example.com/blog/`, gets links that work. Switching theme, or the Error pages switch off, removes the copies.
+
+The Upkeep tab shows the `.htaccess` lines with this site's addresses. For a site at the root they read:
 
 ```
 ErrorDocument 403 /wp-content/murtadd-errors/403.html
@@ -91,9 +262,13 @@ ErrorDocument 503 /wp-content/murtadd-errors/503.html
 ErrorDocument 504 /wp-content/murtadd-errors/504.html
 ```
 
+On Nginx the same pages go in with `error_page 403 /wp-content/murtadd-errors/403.html;` and so on for each code.
+
+On a network every site shares `wp-content`. The main site writes the files; while it runs another theme, the subsite with the lowest ID that runs Murtadd writes them (`murtadd_dropins_writer()`). The last site to leave the theme removes them.
+
 ## Setup
 
-Activate the theme. It scaffolds itself: pages, footer menu, Reading options, rewrite rules, and the starter content. Nothing is ever overwritten and nothing is deleted, so re-activation is safe.
+Activate the theme. It scaffolds itself: the pages and the footer menu, the Reading options and rewrite rules, and the starter content. Nothing is ever overwritten and nothing is deleted, so re-activation is safe.
 
 Upgrading in place does **not** fire the activation hook. On a site already running the theme, use **Appearance → Theme Options → Setup → Create anything missing**, which reports what is present and creates only what is absent.
 
@@ -103,13 +278,21 @@ Full detail in [setup.md](setup.md).
 
 `inc/schema.php` emits JSON-LD: Doubts as `QAPage`, Rebuttals as `Article` with the claim under `about` and their sources under `citation`, Fatwa entries as `Article`, `WebSite` with a `SearchAction` plus `Organization` on the front page, an `FAQPage` on the FAQ page and the doubt category archives (Emotional and Identity excepted), and a `BreadcrumbList` on inner views. Rebuttal and fatwa Articles carry an image, and the author a url. The owner keeps all schema.org markup, Google-supported or not, for GEO, AEO and AIO (decided 2026-11-03). `inc/seo-title.php` builds the title tag (`<page title> | <site name>`, under 60 characters, page parts for long or shared titles in `inc/data/seo-titles.json`), prints the canonical link on archives and serves the image sitemap at `/murtadd-image-sitemap.xml`.
 
+## Performance
+
+- Every stylesheet and script ships with a `.min` twin, and per-template CSS loads only on its own views.
+- Fonts are self-hosted WOFF2 files; the Qur'an face is fetched only on a page that shows a verse.
+- The glossary's CSS and JS load only on an entry that mentions a term.
+- Theme Options builds only the open tab, and fills the others over admin-ajax when chosen.
+- No script is needed for any front-end feature.
+
 ## Documentation
 
 | File | Contents |
 |---|---|
 | [ssot.md](ssot.md) | Architecture and the binding rules. Read before changing anything. |
 | [changelog.md](changelog.md) | Every release. |
-| [upgrading.md](upgrading.md) | Migration steps, version to version. |
+| [upgrading.md](upgrading.md) | Migration steps, version to version, and the roadmap. |
 | [setup.md](setup.md) | Installation and what activation does. |
 | [settings.md](settings.md) | Appearance → Theme Options, tab by tab. |
 | [content-model.md](content-model.md) | The three post types and their fields. |

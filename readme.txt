@@ -3,7 +3,7 @@ Contributors: murtadd.org
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.1
-Stable tag: 1.55.7
+Stable tag: 1.55.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -21,18 +21,38 @@ The parent supplies the block library styles. Every front-end view is a PHP temp
 * Guides at /guides/ and a Journal of dated posts at /journal/.
 * Letters: an archive of past correspondence, kept outside search and the home page.
 * JSON-LD for every view (QAPage, FAQPage, Article, BlogPosting, BreadcrumbList and more), handed to Rank Math's graph when Rank Math is active.
-* Contextual links to this site and its 6 sister sites, and a glossary of Arabic and Malay terms.
+* Contextual links from the first mention of a subject to the page that treats it, here or on another site, and a glossary of Arabic and Malay terms.
 * A contact form shortcode, [murtadd_contact], which mails messages and stores nothing.
 * Security switches, a private login address, a spam scan, maintenance mode, branded error pages and 410 answers for removed spam.
-* Starter content: pages, 19 doubts, 37 rebuttals, guides and Journal posts, inserted once and never overwritten.
+* Starter content: the pages, 38 doubts, 47 rebuttals, 12 guides and 8 Journal posts, inserted once and never overwritten.
 
 == Installation ==
-1. Install and keep Twenty Twenty-Five, the parent theme.
-2. Upload the murtadd folder to wp-content/themes and activate Murtadd under Appearance, Themes.
+Install Twenty Twenty-Five first and keep it installed. It is the parent theme and need not be active.
+
+With the WordPress uploader: go to Appearance, Themes, Add New, Upload Theme, choose the murtadd zip, install it and activate it.
+
+With FTP:
+1. Turn on hidden files in your FTP program first. In FileZilla it is Server, Force showing hidden files. The theme has files whose names start with a dot (.htaccess), and they must go up too.
+2. Upload the murtadd folder into wp-content/themes under a temporary name, such as murtadd-new.
+3. When every file is up, rename the old folder (if there is one) to murtadd-old, then at once rename murtadd-new to murtadd. Do the two renames one straight after the other, with Appearance, Themes closed: if WordPress opens that screen while the folder is missing, it switches the site to another theme.
+4. Activate Murtadd under Appearance, Themes if it is not active yet. Delete murtadd-old once the site looks right.
+
+The folder must be called murtadd, all lower case.
+
+Uploading into the live folder file by file also works for most files. While one of them is missing or half written, visitors see the "Back shortly" page instead of an error. The one file that page cannot cover is functions.php, since it is the file that shows it; the temporary folder and the rename avoid that.
+
+Never upload WordPress itself (wp-admin, wp-includes and the files beside them) to a live folder that has no wp-config.php. In that state the WordPress installer answers anyone who finds it. Put wp-config.php in place first, or upload WordPress to a temporary folder and rename it.
 
 On activation the theme creates the pages it needs, a footer menu, and the starter content, and points Settings, Reading at the Home and Journal pages if the site still shows its latest posts. Nothing you have already set is overwritten, so activating again is safe. Upgrading in place does not re-run this; use Appearance, Theme Options, Setup.
 
 Set the Site Icon at Settings, General (assets/icons/site-icon-512.png is ready to upload).
+
+== Updating ==
+Upload the new version the same way, then open any admin page as an administrator. The theme writes its error pages and server rules again if they changed, and removes the development files a working copy carries.
+
+Entries you have edited keep your text. Upgrading does not re-run the activation steps: if something is missing, use Appearance, Theme Options, Setup, Create anything missing.
+
+docs/upgrading.md has a note for each version and says what is planned next. It is also on the Docs tab.
 
 == Usage ==
 Everything is at Appearance, Theme Options. Pick a tab, or use the arrow keys on the tab row; each tab saves on its own.
@@ -41,7 +61,7 @@ Everything is at Appearance, Theme Options. Pick a tab, or use the arrow keys on
 * Content: the soft word cap for a doubt's short answer, the "If you are struggling" notice, breadcrumbs, the glossary, the scripture box in the rail, the fatwa index's default order (three cards), the contact form's recipient, the footer note, the reading progress bar and readable search addresses.
 * Topics & schools: links to the WordPress screens for topics and schools. The 4 doubt categories are locked.
 * Linked sites: the Compelling Evidence address, the counterpart link, the "Not sure where to start?" card, and the polemics address.
-* Contextual links: switches for links to this site and to sister sites, sliders for how many a page gets, extra phrases and pages to skip.
+* Contextual links: switches for links to this site and to other sites, sliders for how many a page gets, extra phrases and pages to skip.
 * Colours: the accent and its tint, with WordPress's colour picker and a live contrast check against white.
 * Profiles: the author's name and a URL for each of 42 platforms. Each one shows as a footer icon and as sameAs in the structured data.
 * Security: author privacy, XML-RPC, application passwords, REST changes, headers, the spam gate, the private login address and the login screen design. Below them: the spam scan, sessions, attack counts and the security log.
@@ -55,6 +75,12 @@ Add define( 'MURTADD_HIDE_LOGIN', false ); to wp-config.php, log in at wp-login.
 = My front page shows the latest posts instead of the home page. =
 That is what Settings, Reading asks for. Choose "A static page" there and pick Home. The theme follows whichever you choose.
 
+= I see "Back shortly" on the site. =
+The theme is incomplete on the server, usually because an upload is still running or stopped part-way. Upload the missing files, or the whole folder again. The login screen keeps working.
+
+= My host runs Nginx. =
+The theme writes its server rules only on Apache. On Nginx, give your host the rules in docs/readme.md (the Overview on the Docs tab) to add to the server settings.
+
 = Does the theme work with Rank Math? =
 Yes. The theme's meta tags stand down and its schema nodes go into Rank Math's graph without overwriting anything there.
 
@@ -67,7 +93,7 @@ The theme loads nothing from another server. Fonts, icons and scripts ship insid
 * The contact form sends each message by email and keeps no copy. To limit abuse it stores a keyed hash of the sender's IP address for 1 hour; the address itself is never written.
 * The security module records failed logins for a day by account name, with the IP addresses they came from, counts attacks per day for 30 days, and keeps each account's last login time and IP address. Only administrators see these, on the Security tab.
 * Comment avatars come from Gravatar when Settings, Discussion, Show Avatars is on, which is WordPress's own setting. Turn it off to stop those requests.
-* Links to the sister sites and the Compelling Evidence quiz are plain links. Nothing is fetched from them.
+* Links to other sites and the Compelling Evidence quiz are plain links. Nothing is fetched from them.
 
 == Copyright ==
 Murtadd WordPress Theme, Copyright (C) 2026 Langgam Fikir Enterprise.
@@ -83,6 +109,9 @@ Bundled resources:
 * The site icon, the pixel book and envelope images, the calligraphy in assets/images and screenshot.png were made for this theme and are GPL v2 or later with it.
 
 == Changelog ==
+= 1.55.8 =
+* Documentation only. The readme covers updating over FTP, the overview gains the technical reference (boot, commands, options, filters, constants, server rules with their Nginx form), and the upgrade notes gain a roadmap. The counts of shipped entries are corrected.
+
 = 1.55.7 =
 * Fixes from the live logs. The spam addresses the logs show (/?items/….sthml, /index.php/sitemap…, /sitemapimages…, /contents/… and /goods.php) answer 410 Gone, and the Upkeep list takes query strings and wildcards.
 * On Apache the web server runs only WordPress's own PHP files at the top of the site, and refuses WordPress's internal files. The Security tab lists any other PHP file it finds there.
@@ -97,12 +126,12 @@ Bundled resources:
 * On a site installed in a subfolder, the static error pages linked the home page and their stylesheets at the domain root. The theme now writes a copy of each into wp-content/murtadd-errors/ with the site's own addresses, and the .htaccess lines on the Upkeep tab point there.
 
 = 1.55.4 =
-* On a network, a theme switch on the main site leaves the error pages in place while another site still runs Murtadd.
-* The Upkeep tab shows a failed write over a sister theme's error page as failed.
+* On a multisite install, a theme switch on the main site leaves the error pages in place while another site still runs Murtadd.
+* The Upkeep tab shows a failed write over another theme's error page as failed.
 
 = 1.55.3 =
 * A real PHP error gets the 500 page again. A fault raised through a hook was shown as "Back shortly" with a 503.
-* Error pages left by a sister theme are replaced. Any other file is left alone.
+* Error pages another theme marked as safe to delete are replaced. Any other file is left alone.
 * A static 504 page in the errors folder, with its .htaccess line.
 
 = 1.55.2 =
@@ -173,6 +202,12 @@ Bundled resources:
 See docs/changelog.md for earlier releases.
 
 == Upgrade Notice ==
+= 1.55.8 =
+Documentation only. Nothing needs doing.
+
+= 1.55.7 =
+Upload with hidden files shown, so the new .htaccess files go up. Then check the Security tab for PHP files at the top of the site that are not WordPress's own.
+
 = 1.54.0 =
 Readable search addresses and the reading progress bar are on by default. Check both on the Content tab.
 
@@ -183,4 +218,4 @@ Structured data fix. Nothing needs doing.
 Theme Options has a new layout. Settings keep their values; nothing needs doing.
 
 == Data removal ==
-WordPress does not execute an uninstall routine for themes. If the theme is removed permanently, delete these options manually (WP-CLI: wp option delete <name>): murtadd_colours, murtadd_cross_links, murtadd_contextual_links, murtadd_content_display, murtadd_security, murtadd_upkeep, murtadd_dropins_stamp, murtadd_dropins_status, murtadd_placeholder_copy_retired, murtadd_topics_seeded, murtadd_schools_seeded, murtadd_doubt_categories_seeded, murtadd_rewrite_version, murtadd_needs_setup, murtadd_template_paths_migrated, murtadd_content_seeded, murtadd_seeded_slugs, murtadd_profiles, murtadd_author_name. Then delete the user meta murtadd_setup_notice_dismissed, which is stored per user, not as an option (WP-CLI: wp user meta delete <user> murtadd_setup_notice_dismissed, for each administrator). All CPT posts and taxonomy terms persist by design.
+WordPress does not execute an uninstall routine for themes. If the theme is removed permanently, delete these options manually (WP-CLI: wp option delete <name>): murtadd_colours, murtadd_cross_links, murtadd_contextual_links, murtadd_content_display, murtadd_security, murtadd_upkeep, murtadd_dropins_stamp, murtadd_dropins_status, murtadd_placeholder_copy_retired, murtadd_topics_seeded, murtadd_schools_seeded, murtadd_doubt_categories_seeded, murtadd_rewrite_version, murtadd_needs_setup, murtadd_template_paths_migrated, murtadd_content_seeded, murtadd_seeded_slugs, murtadd_profiles, murtadd_author_name. Then delete the user meta murtadd_setup_notice_dismissed, which is user meta, stored per user (WP-CLI: wp user meta delete <user> murtadd_setup_notice_dismissed, for each administrator). All CPT posts and taxonomy terms persist by design.
