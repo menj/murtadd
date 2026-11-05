@@ -175,6 +175,15 @@ final class MaintenanceTest extends TestCase {
 		$this->assertStringContainsString( 'ErrorDocument 503 /wp-content/themes/murtadd/errors/503.html', murtadd_error_htaccess_snippet() );
 	}
 
+	public function test_a_subsite_writes_only_while_the_main_site_runs_another_theme() {
+		$GLOBALS['murtadd_test_subsite'] = true;
+		$this->assertFalse( murtadd_dropins_writer() );
+		$GLOBALS['murtadd_test_main_theme'] = 'twentytwentyfive';
+		$this->assertTrue( murtadd_dropins_writer() );
+		unset( $GLOBALS['murtadd_test_subsite'], $GLOBALS['murtadd_test_main_theme'] );
+		$this->assertTrue( murtadd_dropins_writer() );
+	}
+
 	public function test_a_subsite_shows_the_network_note_in_place_of_the_button() {
 		$GLOBALS['murtadd_options']['murtadd_upkeep'] = array( 'error_pages' => 1 );
 		$_GET['murtadd_dropins']                     = 1;

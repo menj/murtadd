@@ -510,6 +510,13 @@ function is_multisite() {
 function is_main_site() {
 	return empty( $GLOBALS['murtadd_test_subsite'] );
 }
+function get_main_site_id() {
+	return 1;
+}
+function get_blog_option( $id, $name ) {
+	// The main site runs this theme unless a test names another one.
+	return $GLOBALS['murtadd_test_main_theme'] ?? basename( dirname( __DIR__ ) );
+}
 function delete_option( $name ) {
 	unset( $GLOBALS['murtadd_options'][ $name ] );
 	return true;

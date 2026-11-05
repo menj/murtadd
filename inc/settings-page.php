@@ -1142,7 +1142,7 @@ function murtadd_render_dropins_status() {
 	$murtadd_saved = (array) get_option( 'murtadd_dropins_status', array() );
 	$murtadd_fail  = in_array( 'failed', $murtadd_saved, true );
 	?>
-	<?php $murtadd_subsite = is_multisite() && ! is_main_site(); ?>
+	<?php $murtadd_subsite = ! murtadd_dropins_writer(); ?>
 	<?php if ( ! $murtadd_subsite && isset( $_GET['murtadd_dropins'] ) ) : // phpcs:ignore WordPress.Security.NonceVerification.Recommended ?>
 		<?php if ( $murtadd_fail ) : ?>
 			<div class="notice notice-error is-dismissible inline"><p><?php esc_html_e( 'Some error pages could not be written: wp-content is not writable, or the source file is unreadable.', 'murtadd' ); ?></p></div>
@@ -1162,7 +1162,9 @@ function murtadd_render_dropins_status() {
 				<?php
 				$murtadd_state = murtadd_dropin_state( $murtadd_name );
 				// A failed write leaves the old state on disk; the saved result says why.
-				if ( 'written' !== $murtadd_state && 'kept' !== $murtadd_state && 'failed' === ( $murtadd_saved[ $murtadd_name ] ?? '' ) ) {
+				// A sibling theme's file the theme may replace is not left alone.
+				$murtadd_left = 'kept' === $murtadd_state && ! murtadd_dropin_is_replaceable( WP_CONTENT_DIR . '/' . $murtadd_name );
+				if ( 'written' !== $murtadd_state && ! $murtadd_left && 'failed' === ( $murtadd_saved[ $murtadd_name ] ?? '' ) ) {
 					$murtadd_state = 'failed';
 				}
 				?>
