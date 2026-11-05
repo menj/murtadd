@@ -1176,7 +1176,7 @@ function murtadd_render_dropins_status() {
 		</tbody>
 	</table>
 	<?php if ( $murtadd_subsite ) : ?>
-		<p class="description"><?php esc_html_e( 'The whole network shares wp-content, so the error pages are installed from the main site.', 'murtadd' ); ?></p>
+		<p class="description"><?php esc_html_e( 'The whole network shares wp-content, so one site writes the error pages for all: the main site, or the first site that runs Murtadd when the main site runs another theme. Its Error pages switch applies to the whole network.', 'murtadd' ); ?></p>
 	<?php elseif ( murtadd_upkeep( 'error_pages' ) ) : ?>
 		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="murtadd-admin-inline-form">
 			<input type="hidden" name="action" value="murtadd_write_dropins">
@@ -1184,8 +1184,12 @@ function murtadd_render_dropins_status() {
 			<?php submit_button( __( 'Write the error pages now', 'murtadd' ), 'secondary', 'submit', false ); ?>
 		</form>
 	<?php endif; ?>
-	<p class="description"><?php esc_html_e( 'For the errors the web server answers before WordPress starts, static pages are in the errors folder of the theme. Add these lines to .htaccess to use them:', 'murtadd' ); ?></p>
+	<?php if ( murtadd_upkeep( 'error_pages' ) ) : ?>
+	<p class="description"><?php esc_html_e( 'For the errors the web server answers before WordPress starts, the theme writes static pages into wp-content/murtadd-errors, with this site\'s addresses. Add these lines to .htaccess to use them:', 'murtadd' ); ?></p>
 	<textarea readonly rows="6" class="large-text code" aria-label="<?php esc_attr_e( '.htaccess lines', 'murtadd' ); ?>"><?php echo esc_textarea( murtadd_error_htaccess_snippet() ); ?></textarea>
+	<?php else : ?>
+	<p class="description"><?php esc_html_e( 'With Error pages off, the theme writes no static pages for the web server. Remove any ErrorDocument lines that point at wp-content/murtadd-errors from .htaccess.', 'murtadd' ); ?></p>
+	<?php endif; ?>
 	<?php
 	murtadd_admin_card_close();
 }

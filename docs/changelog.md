@@ -1,5 +1,16 @@
 # Changelog — Murtadd
 
+## 1.55.5 (2026-11-05)
+
+### Changed
+- `CLAUDE.md` and `FARUQI.md` move from the theme folder to `.claude/`, where Claude Code reads them. `.gitattributes` leaves out `/.claude` in place of the two old root entries, so neither file reaches a `git archive` zip. `.claude/.htaccess` denies the folder to the web server, in case a working copy is uploaded.
+
+### Fixed
+- The static error pages in `errors/` link the home page at `/` and their stylesheets under `/wp-content/themes/murtadd/`, so on a site installed in a subfolder they lost their style and their button led out of the site. `murtadd_dropin_files()` now lists a copy of each, written to `wp-content/murtadd-errors/` with the site's home address and theme folder. The copies follow the drop-ins' rules: marker, stamp, the Upkeep switch, the network writer and removal on a theme switch, with the folder. `murtadd_error_htaccess_snippet()` points at them. `errors/` stays as the copy for a site at the root.
+- With the main site on another theme, every subsite that ran Murtadd passed `murtadd_dropins_writer()`, so each wrote the shared files with its own addresses in turn. Only the subsite with the lowest ID that runs the theme writes now (`murtadd_dropins_first_theme_site()`), and its Error pages switch rules the network.
+- With Error pages off, the Upkeep tab still offered the `.htaccess` lines for copies the theme had removed. It now says to remove those lines instead.
+- `docs/ssot.md` still said only the main site of a network writes the drop-ins. It now names `murtadd_dropins_writer()` and the last-site removal.
+
 ## 1.55.4 (2026-11-05)
 
 ### Fixed

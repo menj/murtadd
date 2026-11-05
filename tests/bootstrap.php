@@ -45,13 +45,13 @@ function get_stylesheet_directory() {
 	return dirname( __DIR__ );
 }
 function get_stylesheet_directory_uri() {
-	return 'https://murtadd.org/wp-content/themes/murtadd';
+	return 'https://murtadd.org' . ( $GLOBALS['murtadd_test_subfolder'] ?? '' ) . '/wp-content/themes/murtadd';
 }
 function get_template_directory() {
 	return dirname( __DIR__ );
 }
 function home_url( $path = '/' ) {
-	return 'https://murtadd.org' . $path;
+	return 'https://murtadd.org' . ( $GLOBALS['murtadd_test_subfolder'] ?? '' ) . $path;
 }
 function get_option( $name, $default = false ) {
 	return $GLOBALS['murtadd_options'][ $name ] ?? $default;
@@ -489,7 +489,7 @@ if ( ! defined( 'MURTADD_ASSET_SUFFIX' ) ) {
 	define( 'MURTADD_ASSET_SUFFIX', '.min' );
 }
 function content_url( $path = '' ) {
-	return 'https://murtadd.org/wp-content' . $path;
+	return 'https://murtadd.org' . ( $GLOBALS['murtadd_test_subfolder'] ?? '' ) . '/wp-content' . $path;
 }
 function wp_specialchars_decode( $s, $q = ENT_NOQUOTES ) {
 	return htmlspecialchars_decode( (string) $s, $q );
@@ -510,12 +510,18 @@ function is_multisite() {
 function is_main_site() {
 	return empty( $GLOBALS['murtadd_test_subsite'] );
 }
+function get_current_blog_id() {
+	return $GLOBALS['murtadd_test_blog_id'] ?? 2;
+}
+function get_sites( $args = array() ) {
+	return empty( $args['offset'] ) ? array( 1, 2, 3 ) : array();
+}
 function get_main_site_id() {
 	return 1;
 }
 function get_blog_option( $id, $name ) {
 	// The main site runs this theme unless a test names another one.
-	return $GLOBALS['murtadd_test_main_theme'] ?? basename( dirname( __DIR__ ) );
+	return 1 === $id ? ( $GLOBALS['murtadd_test_main_theme'] ?? basename( dirname( __DIR__ ) ) ) : basename( dirname( __DIR__ ) );
 }
 function delete_option( $name ) {
 	unset( $GLOBALS['murtadd_options'][ $name ] );
