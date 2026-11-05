@@ -3,7 +3,7 @@ Contributors: murtadd.org
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.1
-Stable tag: 1.55.5
+Stable tag: 1.55.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,6 +83,9 @@ Bundled resources:
 * The site icon, the pixel book and envelope images, the calligraphy in assets/images and screenshot.png were made for this theme and are GPL v2 or later with it.
 
 == Changelog ==
+= 1.55.6 =
+* The home page reads as one story, from the claim to the reader's question, the help for a reader who cannot name it, and the questions underneath, with headings that read as steps.
+
 = 1.55.5 =
 * CLAUDE.md and FARUQI.md move into the .claude folder, which the release zip leaves out and the web server never serves.
 * On a site installed in a subfolder, the static error pages linked the home page and their stylesheets at the domain root. The theme now writes a copy of each into wp-content/murtadd-errors/ with the site's own addresses, and the .htaccess lines on the Upkeep tab point there.

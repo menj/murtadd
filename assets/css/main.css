@@ -278,6 +278,7 @@ h1, h2, h3 { font-family: var(--murtadd-font-serif); line-height: 1.25; }
 
 .murtadd-section-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 20px; }
 .murtadd-section-head--center { flex-direction: column; align-items: center; text-align: center; }
+.murtadd-section-lede { margin: -8px 0 20px; max-width: 60ch; font-size: 15px; color: var(--murtadd-text-muted); }
 .murtadd-more { font: 600 13px var(--murtadd-font-sans); text-decoration: none; }
 
 .murtadd-category-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }

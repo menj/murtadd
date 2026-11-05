@@ -241,28 +241,32 @@ msgstr ""
 msgid "Author profiles"
 msgstr ""
 
-#: front-page.php:14
+#: front-page.php:17
 msgid "Doubts, taken seriously."
 msgstr ""
 
-#: front-page.php:15
-msgid "Honest, sourced answers to the questions that shake faith — stated fairly, answered without dismissal, and linked to the scholarship behind them."
+#: front-page.php:18
+msgid "Honest, sourced answers to the questions that shake faith. Each doubt is stated fairly and answered without dismissal, with the scholarship behind the answer linked."
 msgstr ""
 
-#: front-page.php:20
+#: front-page.php:23
 msgid "Where does your doubt start?"
 msgstr ""
 
-#: front-page.php:21
+#: front-page.php:24
 msgid "All doubts →"
 msgstr ""
 
-#: front-page.php:44
-msgid "This site gives the short answer"
+#: front-page.php:26
+msgid "Pick the door nearest your doubt. Each one opens on the doubts filed there, with a short answer to each."
 msgstr ""
 
-#: front-page.php:46
-msgid "This site answers what is said against Islam. These two carry the arguments it sits on top of."
+#: front-page.php:48
+msgid "When the doubt runs deeper"
+msgstr ""
+
+#: front-page.php:50
+msgid "Some doubts rest on older questions, such as whether God exists at all. These two sites take them up at length."
 msgstr ""
 
 #: front-page.php:50
