@@ -39,7 +39,7 @@ With FTP:
 
 The folder must be called murtadd, all lower case.
 
-Uploading into the live folder file by file also works for most files. While one of them is missing or half written, visitors see the "Back shortly" page instead of an error. The one file that page cannot cover is functions.php, since it is the file that shows it; the temporary folder and the rename avoid that.
+Uploading into the live folder file by file is riskier. While one of the theme's PHP files in inc/ is missing or half written, visitors see the "Back shortly" page instead of an error. That page covers only those files: functions.php, the templates, the stylesheets and the scripts are not checked, so the temporary folder and the rename stay the safe way.
 
 Never upload WordPress itself (wp-admin, wp-includes and the files beside them) to a live folder that has no wp-config.php. In that state the WordPress installer answers anyone who finds it. Put wp-config.php in place first, or upload WordPress to a temporary folder and rename it.
 

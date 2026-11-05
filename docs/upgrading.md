@@ -10,7 +10,7 @@
 
 Upgrading in place does not run the activation steps. If something is missing, use Appearance, Theme Options, Setup, Create anything missing.
 
-An upload straight into the live folder also works for most files: while one is missing, visitors see the 503 "Back shortly" page. `functions.php` is the exception, since it holds that guard.
+An upload straight into the live folder is riskier. While one of the files in `inc/` is missing, visitors see the 503 "Back shortly" page, but nothing checks `functions.php`, the templates, the stylesheets or the scripts, so the temporary folder and the rename stay the safe way.
 
 Never upload WordPress core to a live folder without `wp-config.php` in place. The installer answers anyone in that state.
 

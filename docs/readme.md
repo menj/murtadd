@@ -92,7 +92,7 @@ Colour overrides inject through `wp_add_inline_style()` only. Every source file 
 ## Boot sequence
 
 1. `functions.php` defines `MURTADD_VERSION` and `MURTADD_ASSET_SUFFIX`.
-2. `murtadd_theme_files()` lists the files in `inc/` that `functions.php` loads, in order. Each, and `inc/seed-data.php`, is checked before any loads, and the listed files load inside a `try`. `inc/seed-data.php` is loaded later by `inc/seed-content.php`, outside that `try`, so a half-written copy of it can still give a PHP error. A missing or half-written file gives `murtadd_incomplete_theme()`, the upload guard below.
+2. `murtadd_theme_files()` lists the files in `inc/` that `functions.php` loads, in order. Each, and `inc/seed-data.php`, is checked before any loads, and the listed files load inside a `try`. `inc/seed-data.php` comes in through `inc/seed-content.php`, whose `require_once` runs inside that same `try`, so a half-written copy of it is caught too. A missing or half-written file gives `murtadd_incomplete_theme()`, the upload guard below.
 3. `init` runs `murtadd_cleanup_on_version_change()` once per version, which removes development files from a live site (below).
 4. Activation (`after_switch_theme`) only raises the `murtadd_needs_setup` flag. `murtadd_activate()` then runs on `init` at priority 90, after the post types and taxonomies exist: it scaffolds the pages and the footer menu, sets the Reading options and rewrite rules, and inserts the starter content (`inc/activation.php`). It never overwrites and never deletes.
 5. `admin_init` registers the settings, writes or repairs the error pages for an administrator, and keeps the `.htaccess` blocks in step at most once an hour.
@@ -240,7 +240,7 @@ location = /xmlrpc.php { return 403; }
 
 The first line goes further than the Apache rules, which refuse dot entries only inside the theme folder: it refuses `.git` and `.claude` anywhere on the site. The second matches the theme folder's own `.htaccess`, `.well-known` left open.
 
-Leave out the last line while XML-RPC is on. For a site in a subfolder, put its path in front of every rule, as in `^/blog/wp-includes/`, and the theme-folder rules with it (`^/blog/wp-content/themes/murtadd/`).
+Leave out the last line while XML-RPC is on. For a site in a subfolder, put its path in front of every rule but the first (the `.git` and `.claude` rule stays global), as in `^/blog/wp-includes/`, and the theme-folder rules with it (`^/blog/wp-content/themes/murtadd/`).
 
 With WordPress in its own folder below the site (`/wp/`), the Apache blocks carry that folder, so add the same rules with it in front: `location ~ ^/wp/wp-includes/(?!js/tinymce/|ms-files\.php$).+\.php$ { return 403; }` and `location ~ ^/wp/(wp-settings\.php|wp-config-sample\.php|readme\.html|wp-admin/install\.php)$ { return 403; }`. Repeat the root-PHP rule for that folder too: `location ~* ^/wp/(?!(index|wp-activate|wp-blog-header|wp-comments-post|wp-cron|wp-links-opml|wp-load|wp-login|wp-mail|wp-signup|wp-trackback|xmlrpc)\.php$)[^/]+\.php$ { return 403; }`.
 

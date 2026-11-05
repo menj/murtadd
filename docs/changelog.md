@@ -14,7 +14,7 @@ Documentation only. Nothing on the site changes, and no public identifier is ren
 
 ### Fixed
 - The readme's data-removal list named 19 options and one user meta key. It now names every option the theme writes, the security log, the failed-login records and the daily security tallies among them, and `_murtadd_last_login`, which holds each account's last login IP address. `ssot.md` no longer calls them six.
-- The overview said every `inc/` file loads inside the upload guard's `try` and that activation scaffolds the site on `after_switch_theme`. `inc/seed-data.php` loads later, outside it, and activation only raises a flag that `init` acts on.
+- The overview said activation scaffolds the site on `after_switch_theme`. Activation only raises a flag that `init` acts on at priority 90. It now also says how `inc/seed-data.php`, which `murtadd_theme_files()` does not list, comes under the upload guard.
 - The overview listed the settings tabs of an old release (Colours, Cross-links, Content display, Taxonomies, Setup). It now lists the ten tabs in their order, Setup to Docs.
 - The overview counted 12 doubts and 17 rebuttals, and the readme 19 and 37. The theme ships 38 doubts, 47 rebuttals, 12 guides and 8 Journal posts.
 - The directory map and `ssot.md`'s template list left out `template-parts/rail/`, the quiz card, `counterpart.php`, `dropins/`, `errors/`, `bin/`, `config/`, `tests/` and `vendor/`.
