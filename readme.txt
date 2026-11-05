@@ -76,7 +76,7 @@ Add define( 'MURTADD_HIDE_LOGIN', false ); to wp-config.php, log in at wp-login.
 That is what Settings, Reading asks for. Choose "A static page" there and pick Home. The theme follows whichever you choose.
 
 = I see "Back shortly" on the site. =
-The theme is incomplete on the server, usually because an upload is still running or stopped part-way. Upload the missing files, or the whole folder again. The login screen keeps working.
+The theme is incomplete on the server, usually because an upload is still running or stopped part-way. Upload the missing files, or the whole folder again. The login screen keeps working, unless the file missing or broken is functions.php itself.
 
 = My host runs Nginx. =
 The theme writes its server rules only on Apache. On Nginx, give your host the rules in docs/readme.md (the Overview on the Docs tab) to add to the server settings.
@@ -219,6 +219,8 @@ Theme Options has a new layout. Settings keep their values; nothing needs doing.
 
 == Data removal ==
 WordPress does not execute an uninstall routine for themes. If the theme is removed permanently, delete these options manually (WP-CLI: wp option delete <name>): murtadd_search, murtadd_unlisted, murtadd_security_log, murtadd_security_gone, murtadd_security_counts, murtadd_security_failed, murtadd_security_htaccess, murtadd_sec_seed_marked, murtadd_ce_slug_backfill, murtadd_dev_files_lock, murtadd_dev_files_version, murtadd_guide_rules, murtadd_guide_wording, murtadd_guides_seeded, murtadd_journal_seeded, murtadd_journal_seeding, murtadd_open_letters_retired, murtadd_slug_renames_done, murtadd_unlisted_synced, murtadd_colours, murtadd_cross_links, murtadd_contextual_links, murtadd_content_display, murtadd_security, murtadd_upkeep, murtadd_dropins_stamp, murtadd_dropins_status, murtadd_placeholder_copy_retired, murtadd_topics_seeded, murtadd_schools_seeded, murtadd_doubt_categories_seeded, murtadd_rewrite_version, murtadd_needs_setup, murtadd_template_paths_migrated, murtadd_content_seeded, murtadd_seeded_slugs, murtadd_profiles, murtadd_author_name.
+
+The theme also keeps unlist_posts, the Unlist Posts & Pages plugin's own option, in step with its unlisted entries. Delete it too unless that plugin stays in use.
 
 Also delete the daily security tallies, one row a day per counter, named murtadd_security_tally_<counter>_<date> (WP-CLI: wp option list --search='murtadd_security_tally_*' --field=option_name | xargs -n1 wp option delete).
 
