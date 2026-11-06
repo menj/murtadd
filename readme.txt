@@ -3,7 +3,7 @@ Contributors: murtadd.org
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.1
-Stable tag: 1.55.11
+Stable tag: 1.55.12
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -118,6 +118,9 @@ Bundled resources:
 * The site icon, the pixel book and envelope images, the calligraphy in assets/images and screenshot.png were made for this theme and are GPL v3 or later with it.
 
 == Changelog ==
+= 1.55.12 =
+* Two doubts, "I cannot bear to disappoint my parents" and "The community let me down as a convert", now point to the matching article on the companion site, on honour, free will and fear at home.
+
 = 1.55.11 =
 * The settings and the readme speak of the other sites in plain words. Links to them stay.
 * The readme says where the browser icon goes on a site in a subfolder: a copy of favicon.ico in the domain root.
@@ -223,6 +226,9 @@ Bundled resources:
 See docs/changelog.md for earlier releases.
 
 == Upgrade Notice ==
+= 1.55.12 =
+Replace the theme files. Nothing else to do: the first admin page fills in the two new links on the pages the theme created.
+
 = 1.55.11 =
 Replace the theme files. On a site in a subfolder, also put a copy of assets/icons/favicon.ico in the domain root folder (or, with a Site Icon set, that icon converted to an ICO file named favicon.ico); otherwise nothing to do.
 

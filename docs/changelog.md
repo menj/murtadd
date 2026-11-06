@@ -1,5 +1,12 @@
 # Murtadd changelog
 
+## 1.55.12 (2026-11-06)
+
+Two doubts gain a counterpart on the companion site. No feature removed and no public identifier renamed.
+
+### Changed
+- `inc/data/seed/doubts.json`: `i-cannot-bear-to-disappoint-my-parents` and `the-community-let-me-down-as-a-convert` carry `ce_slug` `why-people-leave-honour-fate-home`, a new article on the companion site (honour, free will and fear at home). Both had no counterpart before. `murtadd_backfill_ce_slugs()` fills the value on sites seeded earlier, only where it is empty, so an editor's own value stays. The counterpart count rises from 72 pages to 74.
+
 ## 1.55.11 (2026-11-05)
 
 The settings and readme speak of the other sites in plain words, and readme.txt names the subfolder favicon step. No feature removed and no public identifier renamed.
