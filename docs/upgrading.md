@@ -14,6 +14,14 @@ An upload straight into the live folder is riskier. While one of the files in `i
 
 Never upload WordPress core to a live folder without `wp-config.php` in place. The installer answers anyone in that state.
 
+## 1.55.11 → 1.56.0
+
+Replace the theme files. The new entries are in `inc/data/seed/doubts.json` and `inc/data/seed/rebuttals.json`.
+
+An existing site does not gain them by itself. Open Appearance, Theme Options, Setup and choose Create anything missing. The Setup tab should report 14 entries missing before you do. Existing posts are left as they are.
+
+Before the new entries go live, check every hadith number in them against the printed collection, and the gradings marked for checking. The numbers were written without access to shamela.ws.
+
 ## 1.55.10 → 1.55.11
 
 Replace the theme files. Nothing else changes. On a site in a subfolder, put a copy of `assets/icons/favicon.ico` in the domain root (or, with a Site Icon set, that icon converted to an ICO file named `favicon.ico`), since browsers ask for `/favicon.ico` there.

@@ -3,7 +3,7 @@ Contributors: murtadd.org
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.1
-Stable tag: 1.55.11
+Stable tag: 1.56.0
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -24,7 +24,7 @@ The parent supplies the block library styles. Every front-end view is a PHP temp
 * Contextual links from the first mention of a subject to the page that treats it, here or on another site, and a glossary of Arabic and Malay terms.
 * A contact form shortcode, [murtadd_contact], which mails messages and stores nothing.
 * Security switches, a private login address, a spam scan, maintenance mode, branded error pages and 410 answers for removed spam.
-* Starter content: the pages, 38 doubts, 47 rebuttals, 12 guides and 8 Journal posts, inserted once and never overwritten.
+* Starter content: the pages, 45 doubts, 54 rebuttals, 12 guides and 8 Journal posts, inserted once and never overwritten.
 
 == Installation ==
 Install Twenty Twenty-Five first and keep it installed. It is the parent theme and need not be active.
@@ -118,6 +118,9 @@ Bundled resources:
 * The site icon, the pixel book and envelope images, the calligraphy in assets/images and screenshot.png were made for this theme and are GPL v3 or later with it.
 
 == Changelog ==
+= 1.56.0 =
+* Seven new doubts, each with a rebuttal: violence in a religious home, family honour, being told a Muslim cannot feel empty, shaping the eyebrows, hatred and denial taught at home, the women's room at the mosque, and a wife's right to end a marriage. There are now 45 doubts and 54 rebuttals.
+
 = 1.55.11 =
 * The settings and the readme speak of the other sites in plain words. Links to them stay.
 * The readme says where the browser icon goes on a site in a subfolder: a copy of favicon.ico in the domain root.
@@ -223,6 +226,9 @@ Bundled resources:
 See docs/changelog.md for earlier releases.
 
 == Upgrade Notice ==
+= 1.56.0 =
+Replace the theme files, then open Appearance, Theme Options, Setup and choose Create anything missing to add the 14 new posts. Check the hadith numbers in the new entries before they go live.
+
 = 1.55.11 =
 Replace the theme files. On a site in a subfolder, also put a copy of assets/icons/favicon.ico in the domain root folder (or, with a Site Icon set, that icon converted to an ICO file named favicon.ico); otherwise nothing to do.
 
