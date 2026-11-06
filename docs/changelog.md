@@ -1,5 +1,14 @@
 # Murtadd changelog
 
+## 1.56.2 (2026-11-06)
+
+The 14 entries added in 1.56.0 are rewritten as patterns that recur in accounts of leaving Islam, not as the scenes of one life. The scriptural answers, the slugs and the counterpart links do not change. No feature removed and no public identifier renamed.
+
+### Changed
+- `inc/data/seed/doubts.json` and `inc/data/seed/rebuttals.json`: the seven doubts and seven rebuttals lose the distinctive incidents (weapons and thrown objects, a particular written piece, a motive attributed to grooming, a named conspiracy claim, a particular kind of mosque room, public shaming of a teenager). Statements and titles say what recurs, and the sources answer it as before.
+- `docs/changelog.md` no longer says where the 1.56.0 entries came from.
+- Sites that already created the 14 posts keep them: the seeder never rewrites existing posts. Edit those in the post editor, or delete them and run Create anything missing.
+
 ## 1.56.1 (2026-11-06)
 
 One more spam address answers 410 Gone. No feature removed and no public identifier renamed.
@@ -12,14 +21,14 @@ One more spam address answers 410 Gone. No feature removed and no public identif
 
 ## 1.56.0 (2026-11-06)
 
-Seven new doubts and seven new rebuttals, written from the points a published memoir of leaving Islam raises. No feature removed and no public identifier renamed. The theme now ships 45 doubts and 54 rebuttals.
+Seven new doubts and seven new rebuttals, written from points that recur in accounts of leaving Islam. No feature removed and no public identifier renamed. The theme now ships 45 doubts and 54 rebuttals.
 
 ### Added
-- `father-beat-mother-in-gods-name` (Emotional) with `religion-as-licence-for-abuse`: violence in a religious home, "for her own good", obedience and its limit, and the routes out. It carries a safety line and names no helpline.
+- `father-beat-mother-in-gods-name` (Emotional) with `religion-as-licence-for-abuse`: violence in a religious home excused as being for someone's own good, obedience and its limit, and the routes out. It carries a safety line and names no helpline.
 - `family-honour-came-before-me` (Identity) with `honour-culture-and-the-sources`: family honour set against what the sources protect and what they condemn.
 - `told-muslims-do-not-feel-empty` (Emotional) with `grief-despair-and-the-prophets-tears`: grief and emptiness in the Qur'an and the Prophet's example, despair as the forbidden thing, and a plain line to a doctor or crisis service.
 - `eyebrows-a-sin-god-loves-beauty` (Scriptural) with `eyebrows-and-the-love-of-beauty`: the two reports, the majority position and the narrower one, and the motive the text never states.
-- `what-i-was-taught-about-jews-was-false` (Intellectual) with `inherited-hatred-and-the-record`: Holocaust denial and the Protocols named as false, the Qur'an's rule of justice, and the hard texts met.
+- `what-i-was-taught-about-jews-was-false` (Intellectual) with `inherited-hatred-and-the-record`: falsehoods about history, among them Holocaust denial and the Protocols, named as false, the Qur'an's rule of justice, and the hard texts met.
 - `womens-room-at-the-mosque` (Identity) with `women-and-the-mosque`: the rows of the Prophet's mosque, the prohibition on barring women, and the report that their homes are better for them.
 - `a-wife-cannot-leave` (Scriptural) with `a-wifes-right-to-end-a-marriage`: khul', judicial dissolution and delegated divorce, with the practical limits stated.
 - Emotional, Identity and Scriptural gain two doubts each, and Intellectual gains one.
@@ -27,7 +36,7 @@ Seven new doubts and seven new rebuttals, written from the points a published me
 ### Changed
 - Nothing in an existing entry. The seeder does not rewrite existing posts.
 - The hadith numbers and al-Albani's gradings in the new entries were checked on shamela.ws, and the Qur'an references on api.quran.com. Two references changed: the Jewish funeral report is Muslim 960, and the report on tribal partisanship at Abu Dawud 5121, which al-Albani grades weak, gave way to al-Bukhari 3518 and Muslim 1848.
-- The entries name no person and quote no book, as the content model requires. Titles fit the 45-character page part, so `inc/data/seo-titles.json` is unchanged.
+- The entries name no person and quote no book, as the content model requires. They are written as patterns, not as one person's account (see 1.56.2). Titles fit the 45-character page part, so `inc/data/seo-titles.json` is unchanged.
 
 ## 1.55.12 (2026-11-06)
 

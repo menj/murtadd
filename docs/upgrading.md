@@ -14,6 +14,10 @@ An upload straight into the live folder is riskier. While one of the files in `i
 
 Never upload WordPress core to a live folder without `wp-config.php` in place. The installer answers anyone in that state.
 
+## 1.56.1 → 1.56.2
+
+Replace the theme files. Nothing else changes. The 14 entries from 1.56.0 are reworded in `inc/data/seed/doubts.json` and `inc/data/seed/rebuttals.json`, with the same slugs. A site that already created them keeps the old text, because the seeder never rewrites existing posts. To take the new text, edit each post in the editor, or move the 14 posts to the trash, empty the trash and choose Appearance, Theme Options, Setup, Create anything missing. Do the second only if nobody has edited them and no other page links to the old text.
+
 ## 1.56.0 → 1.56.1
 
 Replace the theme files. Nothing else changes. The new preset needs no setting: the Spam presets switch on the Upkeep tab covers it.
