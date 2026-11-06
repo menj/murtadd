@@ -3,7 +3,7 @@ Contributors: murtadd.org
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.1
-Stable tag: 1.57.0
+Stable tag: 1.57.1
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -118,6 +118,9 @@ Bundled resources:
 * The site icon, the pixel book and envelope images, the calligraphy in assets/images and screenshot.png were made for this theme and are GPL v3 or later with it.
 
 == Changelog ==
+= 1.57.1 =
+* Two of the 1.57.0 entries are reworded, and the entries on three divorces now say that the report about them is read in more than one way.
+
 = 1.57.0 =
 * Three new doubts, each with a rebuttal: being told a Muslim cannot befriend non-Muslims, the reports that call women deficient and fill the Fire with them, and the paid one-night husband after three divorces. There are now 48 doubts and 57 rebuttals.
 
@@ -239,6 +242,9 @@ Bundled resources:
 See docs/changelog.md for earlier releases.
 
 == Upgrade Notice ==
+= 1.57.1 =
+Replace the theme files. Nothing else to do. Entries already created from 1.57.0 keep their wording; edit them in the post editor to take the new text.
+
 = 1.57.0 =
 Replace the theme files, then open Appearance, Theme Options, Setup and choose Create anything missing to add the six new posts.
 
