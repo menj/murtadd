@@ -237,7 +237,7 @@ See docs/changelog.md for earlier releases.
 Replace the theme files. Nothing else to do. To clear the spam from Google, see the steps in docs/upgrading.md.
 
 = 1.56.0 =
-Replace the theme files, then open Appearance, Theme Options, Setup and choose Create anything missing to add the 14 new posts. Check the Egypt law citation in the entry on a wife's right to end a marriage before it goes live.
+Replace the theme files, then open Appearance, Theme Options, Setup and choose Create anything missing to add the 14 new posts.
 
 = 1.55.12 =
 Replace the theme files. Nothing else to do: the first admin page fills in the two new links on the pages the theme created.
