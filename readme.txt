@@ -3,7 +3,7 @@ Contributors: murtadd.org
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.1
-Stable tag: 1.56.1
+Stable tag: 1.56.2
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -118,6 +118,9 @@ Bundled resources:
 * The site icon, the pixel book and envelope images, the calligraphy in assets/images and screenshot.png were made for this theme and are GPL v3 or later with it.
 
 == Changelog ==
+= 1.56.2 =
+* The 14 entries added in 1.56.0 are reworded as patterns that recur in accounts of leaving Islam. The answers and addresses stay the same.
+
 = 1.56.1 =
 * The spam addresses that begin /?cateitems/ now answer 410 Gone too, like the other spam addresses, so search engines drop them.
 
@@ -233,6 +236,9 @@ Bundled resources:
 See docs/changelog.md for earlier releases.
 
 == Upgrade Notice ==
+= 1.56.2 =
+Replace the theme files. Nothing else to do. Sites that already created the 14 entries from 1.56.0 keep them as they are; edit them in the post editor or delete them and choose Create anything missing.
+
 = 1.56.1 =
 Replace the theme files. Nothing else to do. To clear the spam from Google, see the steps in docs/upgrading.md.
 
