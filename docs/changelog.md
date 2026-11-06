@@ -19,6 +19,14 @@ Seven new doubts and seven new rebuttals, written from the points a published me
 - The hadith numbers and al-Albani's gradings in the new entries were checked on shamela.ws, and the Qur'an references on api.quran.com. Two references changed: the Jewish funeral report is Muslim 960, and the report on tribal partisanship at Abu Dawud 5121, which al-Albani grades weak, gave way to al-Bukhari 3518 and Muslim 1848.
 - The entries name no person and quote no book, as the content model requires. Titles fit the 45-character page part, so `inc/data/seo-titles.json` is unchanged.
 
+## 1.55.12 (2026-11-06)
+
+Two doubts gain a counterpart on the companion site. No feature removed and no public identifier renamed.
+
+### Changed
+- `inc/data/seed/doubts.json`: `i-cannot-bear-to-disappoint-my-parents` and `the-community-let-me-down-as-a-convert` carry `ce_slug` `why-people-leave-honour-fate-home`, a new article on the companion site (honour, free will and fear at home). Both had no counterpart before. `murtadd_backfill_ce_slugs()` fills the value on sites seeded earlier, only where it is empty, so an editor's own value stays. The counterpart count rises from 72 pages to 74.
+
+
 ## 1.55.11 (2026-11-05)
 
 The settings and readme speak of the other sites in plain words, and readme.txt names the subfolder favicon step. No feature removed and no public identifier renamed.

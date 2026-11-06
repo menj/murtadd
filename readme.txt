@@ -121,6 +121,10 @@ Bundled resources:
 = 1.56.0 =
 * Seven new doubts, each with a rebuttal: violence in a religious home, family honour, being told a Muslim cannot feel empty, shaping the eyebrows, hatred and denial taught at home, the women's room at the mosque, and a wife's right to end a marriage. There are now 45 doubts and 54 rebuttals.
 
+= 1.55.12 =
+* Two doubts, "I cannot bear to disappoint my parents" and "The community let me down as a convert", now point to the matching article on the companion site, on honour, free will and fear at home.
+
+
 = 1.55.11 =
 * The settings and the readme speak of the other sites in plain words. Links to them stay.
 * The readme says where the browser icon goes on a site in a subfolder: a copy of favicon.ico in the domain root.
@@ -228,6 +232,10 @@ See docs/changelog.md for earlier releases.
 == Upgrade Notice ==
 = 1.56.0 =
 Replace the theme files, then open Appearance, Theme Options, Setup and choose Create anything missing to add the 14 new posts. Check the Egypt law citation in the entry on a wife's right to end a marriage before it goes live.
+
+= 1.55.12 =
+Replace the theme files. Nothing else to do: the first admin page fills in the two new links on the pages the theme created.
+
 
 = 1.55.11 =
 Replace the theme files. On a site in a subfolder, also put a copy of assets/icons/favicon.ico in the domain root folder (or, with a Site Icon set, that icon converted to an ICO file named favicon.ico); otherwise nothing to do.
