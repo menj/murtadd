@@ -99,7 +99,7 @@ final class LiveLogsTest extends TestCase {
 			'items, other ending'      => array( '/', 'items/617.html', false ),
 			'items on an inner page'   => array( '/doubts/', 'items/617.sthml', false ),
 			'cateitems'                => array( '/', 'cateitems/mfqqudda', true ),
-			'cateitems on an inner page' => array( '/doubts/', 'cateitems/mfqqudda', false ),
+			'cateitems on inner page'  => array( '/doubts/', 'cateitems/mfqqudda', false ),
 			'index.php sitemap'        => array( '/index.php/sitemap298.xml', '', true ),
 			'index.php image sitemap'  => array( '/index.php/sitemapimages52.xml', '', true ),
 			'image sitemap'            => array( '/sitemapimages4336.xml', '', true ),
