@@ -3,7 +3,7 @@ Contributors: murtadd.org
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.1
-Stable tag: 1.56.2
+Stable tag: 1.57.0
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -24,7 +24,7 @@ The parent supplies the block library styles. Every front-end view is a PHP temp
 * Contextual links from the first mention of a subject to the page that treats it, here or on another site, and a glossary of Arabic and Malay terms.
 * A contact form shortcode, [murtadd_contact], which mails messages and stores nothing.
 * Security switches, a private login address, a spam scan, maintenance mode, branded error pages and 410 answers for removed spam.
-* Starter content: the pages, 45 doubts, 54 rebuttals, 12 guides and 8 Journal posts, inserted once and never overwritten.
+* Starter content: the pages, 48 doubts, 57 rebuttals, 12 guides and 8 Journal posts, inserted once and never overwritten.
 
 == Installation ==
 Install Twenty Twenty-Five first and keep it installed. It is the parent theme and need not be active.
@@ -118,6 +118,9 @@ Bundled resources:
 * The site icon, the pixel book and envelope images, the calligraphy in assets/images and screenshot.png were made for this theme and are GPL v3 or later with it.
 
 == Changelog ==
+= 1.57.0 =
+* Three new doubts, each with a rebuttal: being told a Muslim cannot befriend non-Muslims, the reports that call women deficient and fill the Fire with them, and the paid one-night husband after three divorces. There are now 48 doubts and 57 rebuttals.
+
 = 1.56.2 =
 * The 14 entries added in 1.56.0 are reworded as patterns that recur in accounts of leaving Islam. The answers and addresses stay the same.
 
@@ -236,6 +239,9 @@ Bundled resources:
 See docs/changelog.md for earlier releases.
 
 == Upgrade Notice ==
+= 1.57.0 =
+Replace the theme files, then open Appearance, Theme Options, Setup and choose Create anything missing to add the six new posts.
+
 = 1.56.2 =
 Replace the theme files. Nothing else to do. Sites that already created the 14 entries from 1.56.0 keep them as they are; edit them in the post editor or delete them and choose Create anything missing.
 
