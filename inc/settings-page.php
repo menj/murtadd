@@ -1162,7 +1162,7 @@ function murtadd_render_upkeep_tab() {
 		'murtadd_upkeep[gone_presets]',
 		(bool) murtadd_upkeep( 'gone_presets' ),
 		__( 'Answer 410 for the spam addresses found in the November 2026 logs', 'murtadd' ),
-		__( 'Covers /?items/*.sthml, /index.php/sitemap*, /sitemapimages*, /contents/* and /goods.php. WordPress answered most of them with the home page, so these answer 410 on the home page too. The home page itself, and any address that leads to a post, page or archive, is never touched.', 'murtadd' )
+		__( 'Covers /?items/*.sthml, /?cateitems/*, /index.php/sitemap*, /sitemapimages*, /contents/* and /goods.php. WordPress answered most of them with the home page, so these answer 410 on the home page too. The home page itself, and any address that leads to a post, page or archive, is never touched.', 'murtadd' )
 	);
 	murtadd_admin_row_open( __( 'Addresses', 'murtadd' ), 'murtadd_gone_paths' );
 	?>

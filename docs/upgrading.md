@@ -14,6 +14,18 @@ An upload straight into the live folder is riskier. While one of the files in `i
 
 Never upload WordPress core to a live folder without `wp-config.php` in place. The installer answers anyone in that state.
 
+## 1.56.0 → 1.56.1
+
+Replace the theme files. Nothing else changes. The new preset needs no setting: the Spam presets switch on the Upkeep tab covers it.
+
+Clearing the spam from Search Console is a separate job, done outside the theme:
+
+1. Replace the `robots.txt` file in the site root. The live file lists 19 `sitemap-N.xml` files that do not exist. Delete it so WordPress and Rank Math answer for `/robots.txt`, or save it with only `User-agent: *`, `Allow: /` and `Sitemap: https://murtadd.org/sitemap_index.xml`.
+2. In Search Console, open Sitemaps, remove each `sitemap-N.xml` and submit `sitemap_index.xml`.
+3. Do not block `/?items/` or `/?cateitems/` in `robots.txt`. Google has to fetch an address to see its 410.
+4. Open Indexing, Removals, New request, Remove all URLs with this prefix, and enter `https://murtadd.org/?items/`, then `https://murtadd.org/?cateitems/`. Each hides the addresses from results for about six months while the 410s are recrawled.
+5. Watch Indexing, Pages. The Valid count falls as Google recrawls, which takes weeks for hundreds of thousands of addresses.
+
 ## 1.55.12 → 1.56.0
 
 Replace the theme files. The new entries are in `inc/data/seed/doubts.json` and `inc/data/seed/rebuttals.json`.
