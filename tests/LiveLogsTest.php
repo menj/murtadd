@@ -98,6 +98,8 @@ final class LiveLogsTest extends TestCase {
 			'items, sthml'             => array( '/', 'items/61787410522324875176.sthml', true ),
 			'items, other ending'      => array( '/', 'items/617.html', false ),
 			'items on an inner page'   => array( '/doubts/', 'items/617.sthml', false ),
+			'cateitems'                => array( '/', 'cateitems/mfqqudda', true ),
+			'cateitems on inner page'  => array( '/doubts/', 'cateitems/mfqqudda', false ),
 			'index.php sitemap'        => array( '/index.php/sitemap298.xml', '', true ),
 			'index.php image sitemap'  => array( '/index.php/sitemapimages52.xml', '', true ),
 			'image sitemap'            => array( '/sitemapimages4336.xml', '', true ),
@@ -117,7 +119,7 @@ final class LiveLogsTest extends TestCase {
 	}
 
 	public function test_presets_are_on_by_default_and_follow_the_switch() {
-		$this->assertCount( 5, murtadd_gone_presets() );
+		$this->assertCount( 6, murtadd_gone_presets() );
 		$GLOBALS['murtadd_options']['murtadd_upkeep'] = array( 'gone_presets' => 0 );
 		$this->assertSame( array(), murtadd_gone_presets() );
 		$this->assertSame( 0, murtadd_sanitize_upkeep( array() )['gone_presets'] );

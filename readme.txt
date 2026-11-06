@@ -3,7 +3,7 @@ Contributors: murtadd.org
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.1
-Stable tag: 1.56.0
+Stable tag: 1.56.1
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -118,6 +118,9 @@ Bundled resources:
 * The site icon, the pixel book and envelope images, the calligraphy in assets/images and screenshot.png were made for this theme and are GPL v3 or later with it.
 
 == Changelog ==
+= 1.56.1 =
+* The spam addresses that begin /?cateitems/ now answer 410 Gone too, like the other spam addresses, so search engines drop them.
+
 = 1.56.0 =
 * Seven new doubts, each with a rebuttal: violence in a religious home, family honour, being told a Muslim cannot feel empty, shaping the eyebrows, hatred and denial taught at home, the women's room at the mosque, and a wife's right to end a marriage. There are now 45 doubts and 54 rebuttals.
 
@@ -230,8 +233,11 @@ Bundled resources:
 See docs/changelog.md for earlier releases.
 
 == Upgrade Notice ==
+= 1.56.1 =
+Replace the theme files. Nothing else to do. To clear the spam from Google, see the steps in docs/upgrading.md.
+
 = 1.56.0 =
-Replace the theme files, then open Appearance, Theme Options, Setup and choose Create anything missing to add the 14 new posts. Check the Egypt law citation in the entry on a wife's right to end a marriage before it goes live.
+Replace the theme files, then open Appearance, Theme Options, Setup and choose Create anything missing to add the 14 new posts.
 
 = 1.55.12 =
 Replace the theme files. Nothing else to do: the first admin page fills in the two new links on the pages the theme created.

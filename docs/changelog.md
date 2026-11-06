@@ -1,5 +1,15 @@
 # Murtadd changelog
 
+## 1.56.1 (2026-11-06)
+
+One more spam address answers 410 Gone. No feature removed and no public identifier renamed.
+
+### Changed
+- The Egypt citation in `a-wifes-right-to-end-a-marriage` (Law No. 1 of 2000, article 20) is checked against secondary sources. Notes in `docs/upgrading.md` and `readme.txt` no longer ask for it.
+
+### Added
+- `/?cateitems/*` joins the Spam presets in `murtadd_gone_presets()`. The Search Console coverage export of 2026-11-06 lists it beside the 721,260 `/?items/<number>.sthml` addresses, and WordPress answered it 301 to the home page. It now answers 410 on the home page, like the others, and stays off inner pages. Pinned in `tests/LiveLogsTest.php`.
+
 ## 1.56.0 (2026-11-06)
 
 Seven new doubts and seven new rebuttals, written from the points a published memoir of leaving Islam raises. No feature removed and no public identifier renamed. The theme now ships 45 doubts and 54 rebuttals.

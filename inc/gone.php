@@ -15,8 +15,8 @@
  * survives in the record.
  *
  * The spam the November 2026 logs show is shipped as presets, on by default
- * (murtadd_gone_presets()): /?items/<number>.sthml, /index.php/sitemap<n>.xml,
- * /sitemapimages<n>.xml, /contents/… and /goods.php. WordPress answered most
+ * (murtadd_gone_presets()): /?items/<number>.sthml, /?cateitems/<word>,
+ * /index.php/sitemap<n>.xml, /sitemapimages<n>.xml, /contents/… and /goods.php. WordPress answered most
  * of them 200 with the home page, since it ignores a query or a path it
  * cannot read, so these are answered 410 on the home page as well as on a
  * 404 (murtadd_send_gone_spam()), and before the canonical redirect. A
@@ -178,7 +178,7 @@ function murtadd_gone_presets() {
 	if ( ! murtadd_upkeep( 'gone_presets' ) ) {
 		return array();
 	}
-	$presets = array( '/?items/*.sthml', '/index.php/sitemap*', '/sitemapimages*', '/contents/*', '/goods.php' );
+	$presets = array( '/?items/*.sthml', '/?cateitems/*', '/index.php/sitemap*', '/sitemapimages*', '/contents/*', '/goods.php' );
 	if ( 0 === strpos( (string) get_option( 'permalink_structure', '' ), '/index.php' ) ) {
 		$presets = array_values( array_diff( $presets, array( '/index.php/sitemap*' ) ) );
 	}

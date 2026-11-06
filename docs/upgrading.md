@@ -14,13 +14,25 @@ An upload straight into the live folder is riskier. While one of the files in `i
 
 Never upload WordPress core to a live folder without `wp-config.php` in place. The installer answers anyone in that state.
 
+## 1.56.0 → 1.56.1
+
+Replace the theme files. Nothing else changes. The new preset needs no setting: the Spam presets switch on the Upkeep tab covers it.
+
+Clearing the spam from Search Console is a separate job, done outside the theme:
+
+1. Replace the `robots.txt` file in the site root. The live file lists 19 `sitemap-N.xml` files that do not exist. Delete it so WordPress and Rank Math answer for `/robots.txt`, or save it with only `User-agent: *`, `Allow: /` and `Sitemap: https://murtadd.org/sitemap_index.xml`.
+2. In Search Console, open Sitemaps, remove each `sitemap-N.xml` and submit `sitemap_index.xml`.
+3. Do not block `/?items/` or `/?cateitems/` in `robots.txt`. Google has to fetch an address to see its 410.
+4. Open Indexing, Removals, New request, Remove all URLs with this prefix, and enter `https://murtadd.org/?items/`, then `https://murtadd.org/?cateitems/`. Each hides the addresses from results for about six months while the 410s are recrawled.
+5. Watch Indexing, Pages. The Valid count falls as Google recrawls, which takes weeks for hundreds of thousands of addresses.
+
 ## 1.55.12 → 1.56.0
 
 Replace the theme files. The new entries are in `inc/data/seed/doubts.json` and `inc/data/seed/rebuttals.json`.
 
 An existing site does not gain them by itself. Open Appearance, Theme Options, Setup and choose Create anything missing. The Setup tab should report 14 entries missing before you do. Existing posts are left as they are.
 
-The hadith numbers and gradings in the new entries were checked on shamela.ws, and the Qur'an references on api.quran.com, on 2026-11-06. One thing is left for the owner: the Egypt citation (Law No. 1 of 2000) in the entry on a wife's right to end a marriage.
+The hadith numbers and gradings in the new entries were checked on shamela.ws, and the Qur'an references on api.quran.com, on 2026-11-06. The Egypt citation (Law No. 1 of 2000, article 20, on khul') in the entry on a wife's right to end a marriage was checked on 2026-11-06 against legal commentary and a fatwa from Dar al-Ifta. The official gazette text was not consulted.
 
 ## 1.55.11 → 1.55.12
 
