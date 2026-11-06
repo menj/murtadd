@@ -1,5 +1,19 @@
 # Murtadd changelog
 
+## 1.57.0 (2026-11-06)
+
+Three new doubts and three new rebuttals, on claims that recur in accounts of leaving Islam. No feature removed and no public identifier renamed. The theme now ships 48 doubts and 57 rebuttals.
+
+### Added
+- `told-not-to-befriend-non-muslims` (Identity) with `awliya-and-friendship-with-non-muslims`: what *awliya'* means in 5:51 and 3:28, the verses that draw the line (60:8-9, 5:5, 4:36), and the Prophet's own practice. The stricter reading is named as a common sermon that goes past the text.
+- `women-deficient-and-fill-hell` (Scriptural) with `women-deficiency-and-the-fire-reports`: the two reports in al-Bukhari 304 and 29, the Prophet's own explanation of "deficient in reason and religion", and the same reward for the same deeds in the Qur'an.
+- `three-divorces-and-a-stranger` (Scriptural) with `muhallil-marriage-and-triple-talaq`: the rule of 2:229-230, the requirement of a real marriage, the curse on the *muhallil*, and three divorces counted as one in the earliest period.
+- Emotional and Intellectual gain no doubts; Identity gains one and Scriptural two.
+
+### Changed
+- Every hadith number and al-Albani grading in the new entries was read on shamela.ws, and the Qur'an references were checked on api.quran.com. sunnah.com and dorar.net answer automated requests with a Cloudflare block, so they were not used; the numbers can be cross-checked there by hand.
+- The entries name no person and quote no book, as the content model requires.
+
 ## 1.56.2 (2026-11-06)
 
 The 14 entries added in 1.56.0 are rewritten as patterns that recur in accounts of leaving Islam, not as the scenes of one life. The scriptural answers, the slugs and the counterpart links do not change. No feature removed and no public identifier renamed.
