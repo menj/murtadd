@@ -227,7 +227,7 @@ See docs/changelog.md for earlier releases.
 
 == Upgrade Notice ==
 = 1.56.0 =
-Replace the theme files, then open Appearance, Theme Options, Setup and choose Create anything missing to add the 14 new posts. Check the hadith numbers in the new entries before they go live.
+Replace the theme files, then open Appearance, Theme Options, Setup and choose Create anything missing to add the 14 new posts. Check the Egypt law citation in the entry on a wife's right to end a marriage before it goes live.
 
 = 1.55.11 =
 Replace the theme files. On a site in a subfolder, also put a copy of assets/icons/favicon.ico in the domain root folder (or, with a Site Icon set, that icon converted to an ICO file named favicon.ico); otherwise nothing to do.

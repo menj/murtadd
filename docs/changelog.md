@@ -16,6 +16,7 @@ Seven new doubts and seven new rebuttals, written from the points a published me
 
 ### Changed
 - Nothing in an existing entry. The seeder does not rewrite existing posts.
+- The hadith numbers and al-Albani's gradings in the new entries were checked on shamela.ws, and the Qur'an references on api.quran.com. Two references changed: the Jewish funeral report is Muslim 960, and the report on tribal partisanship at Abu Dawud 5121, which al-Albani grades weak, gave way to al-Bukhari 3518 and Muslim 1848.
 - The entries name no person and quote no book, as the content model requires. Titles fit the 45-character page part, so `inc/data/seo-titles.json` is unchanged.
 
 ## 1.55.11 (2026-11-05)
