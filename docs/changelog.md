@@ -1,11 +1,31 @@
 # Murtadd changelog
 
+## 1.56.0 (2026-11-06)
+
+Seven new doubts and seven new rebuttals, written from the points a published memoir of leaving Islam raises. No feature removed and no public identifier renamed. The theme now ships 45 doubts and 54 rebuttals.
+
+### Added
+- `father-beat-mother-in-gods-name` (Emotional) with `religion-as-licence-for-abuse`: violence in a religious home, "for her own good", obedience and its limit, and the routes out. It carries a safety line and names no helpline.
+- `family-honour-came-before-me` (Identity) with `honour-culture-and-the-sources`: family honour set against what the sources protect and what they condemn.
+- `told-muslims-do-not-feel-empty` (Emotional) with `grief-despair-and-the-prophets-tears`: grief and emptiness in the Qur'an and the Prophet's example, despair as the forbidden thing, and a plain line to a doctor or crisis service.
+- `eyebrows-a-sin-god-loves-beauty` (Scriptural) with `eyebrows-and-the-love-of-beauty`: the two reports, the majority position and the narrower one, and the motive the text never states.
+- `what-i-was-taught-about-jews-was-false` (Intellectual) with `inherited-hatred-and-the-record`: Holocaust denial and the Protocols named as false, the Qur'an's rule of justice, and the hard texts met.
+- `womens-room-at-the-mosque` (Identity) with `women-and-the-mosque`: the rows of the Prophet's mosque, the prohibition on barring women, and the report that their homes are better for them.
+- `a-wife-cannot-leave` (Scriptural) with `a-wifes-right-to-end-a-marriage`: khul', judicial dissolution and delegated divorce, with the practical limits stated.
+- Emotional, Identity and Scriptural gain two doubts each, and Intellectual gains one.
+
+### Changed
+- Nothing in an existing entry. The seeder does not rewrite existing posts.
+- The hadith numbers and al-Albani's gradings in the new entries were checked on shamela.ws, and the Qur'an references on api.quran.com. Two references changed: the Jewish funeral report is Muslim 960, and the report on tribal partisanship at Abu Dawud 5121, which al-Albani grades weak, gave way to al-Bukhari 3518 and Muslim 1848.
+- The entries name no person and quote no book, as the content model requires. Titles fit the 45-character page part, so `inc/data/seo-titles.json` is unchanged.
+
 ## 1.55.12 (2026-11-06)
 
 Two doubts gain a counterpart on the companion site. No feature removed and no public identifier renamed.
 
 ### Changed
 - `inc/data/seed/doubts.json`: `i-cannot-bear-to-disappoint-my-parents` and `the-community-let-me-down-as-a-convert` carry `ce_slug` `why-people-leave-honour-fate-home`, a new article on the companion site (honour, free will and fear at home). Both had no counterpart before. `murtadd_backfill_ce_slugs()` fills the value on sites seeded earlier, only where it is empty, so an editor's own value stays. The counterpart count rises from 72 pages to 74.
+
 
 ## 1.55.11 (2026-11-05)
 

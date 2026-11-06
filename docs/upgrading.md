@@ -14,9 +14,18 @@ An upload straight into the live folder is riskier. While one of the files in `i
 
 Never upload WordPress core to a live folder without `wp-config.php` in place. The installer answers anyone in that state.
 
+## 1.55.12 → 1.56.0
+
+Replace the theme files. The new entries are in `inc/data/seed/doubts.json` and `inc/data/seed/rebuttals.json`.
+
+An existing site does not gain them by itself. Open Appearance, Theme Options, Setup and choose Create anything missing. The Setup tab should report 14 entries missing before you do. Existing posts are left as they are.
+
+The hadith numbers and gradings in the new entries were checked on shamela.ws, and the Qur'an references on api.quran.com, on 2026-11-06. One thing is left for the owner: the Egypt citation (Law No. 1 of 2000) in the entry on a wife's right to end a marriage.
+
 ## 1.55.11 → 1.55.12
 
 Replace the theme files. Nothing else changes. The first admin page fills the two new counterpart links on pages the theme created; a page you edited keeps its own value.
+
 
 ## 1.55.10 → 1.55.11
 
