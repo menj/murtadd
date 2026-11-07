@@ -14,6 +14,10 @@ An upload straight into the live folder is riskier. While one of the files in `i
 
 Never upload WordPress core to a live folder without `wp-config.php` in place. The installer answers anyone in that state.
 
+## 1.57.0 → 1.57.1
+
+Replace the theme files. Nothing else changes. A site that already created the 1.57.0 entries keeps their wording; edit the three affected posts in the editor to take the new text.
+
 ## 1.56.2 → 1.57.0
 
 Replace the theme files. The new entries are in `inc/data/seed/doubts.json` and `inc/data/seed/rebuttals.json`.

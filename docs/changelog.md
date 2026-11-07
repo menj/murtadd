@@ -1,5 +1,15 @@
 # Murtadd changelog
 
+## 1.57.1 (2026-11-06)
+
+Two of the 1.57.0 entries are reworded, and the triple-talaq answers label a disputed report as disputed. No feature removed and no public identifier renamed.
+
+### Changed
+- `told-not-to-befriend-non-muslims`: the statement no longer sets a trusted friend against a stranger, a contrast taken almost word for word from one account. It says the Qur'an is taught to forbid friendship across faiths, which is the claim that recurs.
+- `three-divorces-and-a-stranger` (now titled "Three divorces and a husband for one night") and `muhallil-marriage-and-triple-talaq`: the statement and the rebuttal no longer carry the anger-and-regret detail of one account. The slugs do not change.
+- The same two answers no longer state as settled that three divorces at once counted as one. They give the report (Muslim 1472) and say that scholars read it differently: some count three at once as one, and most of the schools followed Umar and count three. No scholar is named, because no source in the entry supports a named attribution.
+- Entries already created from 1.57.0 keep their wording: the seeder never rewrites existing posts.
+
 ## 1.57.0 (2026-11-06)
 
 Three new doubts and three new rebuttals, on claims that recur in accounts of leaving Islam. No feature removed and no public identifier renamed. The theme now ships 48 doubts and 57 rebuttals.
