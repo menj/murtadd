@@ -218,8 +218,7 @@ function murtadd_seed_resolve_urls( $html ) {
 	return preg_replace_callback(
 		'/\{\{(url|theme):([^{}"\s]*)\}\}/',
 		static function ( $m ) {
-			$base = 'theme' === $m[1] ? get_stylesheet_directory_uri() : home_url();
-			return esc_url( $base . $m[2] );
+			return esc_url( 'theme' === $m[1] ? get_stylesheet_directory_uri() . $m[2] : home_url( $m[2] ) );
 		},
 		$html
 	);
