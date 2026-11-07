@@ -1,4 +1,6 @@
-import html
+import html, os, sys
+# Output: the path given as the first argument, else the theme figure two levels up from .claude/research/hadithgraph/.
+OUT = sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', 'assets', 'images', 'isnad-leaving-islam.svg')
 W = 1180
 BH = 50
 Y0 = 70           # tree starts below the headings
@@ -86,5 +88,5 @@ for kind, label in [('full', 'praised in the dictionaries'), ('half', 'praised, 
 out.append(f'<text class="lg" x="30" y="{H - 34}">The strip under the left tree is the second route for the saying, through Qatāda. Every chain is listed in the tables below.</text>')
 out.append(f'<text class="lg" x="30" y="{H - 14}">Marks record what the biographical dictionaries say. They are not a ruling on either report.</text>')
 out.append('</svg>')
-open('/home/user/murtadd/assets/images/isnad-leaving-islam.svg', 'w', encoding='utf-8').write('\n'.join(out))
+open(OUT, 'w', encoding='utf-8').write('\n'.join(out))
 print('ok', H)
