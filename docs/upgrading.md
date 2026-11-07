@@ -14,6 +14,10 @@ An upload straight into the live folder is riskier. While one of the files in `i
 
 Never upload WordPress core to a live folder without `wp-config.php` in place. The installer answers anyone in that state.
 
+## 1.58.0 → 1.58.1
+
+Replace the theme files. Nothing else changes: the figure is a file in the theme folder, so it updates with the upload. The guide's text for the figure (its description and caption) is in the post body and keeps the 1.58.0 wording unless you paste the guide again.
+
 ## 1.57.1 → 1.58.0
 
 Replace the theme files. The new section is in `inc/data/seed/guides.json`, in the guide `the-apostasy-penalty`.
