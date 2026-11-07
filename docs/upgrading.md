@@ -18,7 +18,7 @@ Never upload WordPress core to a live folder without `wp-config.php` in place. T
 
 Replace the theme files. The new section is in `inc/data/seed/guides.json`, in the guide `the-apostasy-penalty`.
 
-A site that already created that guide keeps the old text, because the seeder never rewrites a post. To take the new section, open the guide in the editor, switch to the code editor and replace the body with the guide's `body` from `guides.json`, with each `{{url:...}}` token replaced by the site address and `{{theme:/assets/images/isnad-leaving-islam.svg}}` by the full address of that file in the theme folder. Nothing else changes.
+A site that already created that guide keeps the old text, because the seeder never rewrites a post. To take the new section, open the guide in the editor, switch to the code editor and replace the body with the guide's `body` from `guides.json` followed by its Sources list (an ordered list of the entries in `sources`, which the theme appends on a fresh guide, four of them new in 1.58.0), with each `{{url:...}}` token replaced by the site address and `{{theme:/assets/images/isnad-leaving-islam.svg}}` by the full address of that file in the theme folder. Nothing else changes.
 
 ## 1.57.0 → 1.57.1
 
