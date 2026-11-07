@@ -58,3 +58,16 @@ Two points to carry into any entry:
 ## How these were made
 
 The page is a browser tool, so the diagrams were captured with the pre-installed headless Chromium, cropped to `#diagramOuterContainer`. The encyclopedia was read through its public search and per-person pages, spaced out, because it answers with a 503 "high traffic" page when asked quickly.
+
+## The clean figure
+
+`chains-leaving-islam.svg` is drawn from the verified chains and the dictionary lines above, and not from the tool's output. `make_figure.py` regenerates it (`python3 make_figure.py` writes the SVG beside it); `chains-leaving-islam-preview.png` is a 2x render.
+
+- Each narrator carries a shape marker, so the meaning does not depend on colour: filled circle for praised, half circle for praised with a point noted, diamond for disputed, ring for not checked in this figure.
+- It uses CSS variables with a dark-mode rule, so it can take the theme's colour tokens when placed.
+- Three narrators are marked "not checked here" (Masruq, al-A'mash, Umar ibn Hafs) because their verdicts were not collected cleanly. Fill them in before any public use, or keep the marker.
+- The figure carries its own caption line. It says it is a document of two chains and not a ruling.
+
+Draft caption for the page that would hold it: "The chains by which two reports on leaving Islam reach the collections named. The marks record what the biographical dictionaries say of each narrator, as quoted in the Hadith Transmitters Encyclopedia. The figure is a document, not a ruling on either report."
+
+Placing it in the theme is a separate change: an image under `assets/images/`, a rule in a stylesheet that loads on that view, a version bump, and the docs. The seeder never rewrites a post that already exists, so a live site would need the new text pasted into the existing entry by hand.
