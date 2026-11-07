@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'MURTADD_VERSION', '1.57.1' );
+define( 'MURTADD_VERSION', '1.58.0' );
 
 /**
  * Asset suffix. Sources are served when SCRIPT_DEBUG is on, minified otherwise.
@@ -251,6 +251,11 @@ function murtadd_enqueue_assets() {
 	// The Journal post page: answer box, sources, next step, related, tables, FAQ (inc/article.php).
 	if ( is_singular( 'post' ) ) {
 		wp_enqueue_style( 'murtadd-article', get_stylesheet_directory_uri() . '/assets/css/article' . MURTADD_ASSET_SUFFIX . '.css', array( 'murtadd-journal' ), MURTADD_VERSION );
+	}
+
+	// A guide that prints chains of narration: the figure and the chain tables (assets/css/isnad.css).
+	if ( is_singular( 'murtadd_guide' ) ) {
+		wp_enqueue_style( 'murtadd-isnad', get_stylesheet_directory_uri() . '/assets/css/isnad' . MURTADD_ASSET_SUFFIX . '.css', array( 'murtadd-main' ), MURTADD_VERSION );
 	}
 
 	if ( is_singular( 'murtadd_letter' ) || is_post_type_archive( 'murtadd_letter' ) ) {

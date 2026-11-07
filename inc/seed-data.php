@@ -216,9 +216,10 @@ function murtadd_seed_doubts() {
  */
 function murtadd_seed_resolve_urls( $html ) {
 	return preg_replace_callback(
-		'/\{\{url:([^{}"\s]*)\}\}/',
+		'/\{\{(url|theme):([^{}"\s]*)\}\}/',
 		static function ( $m ) {
-			return esc_url( home_url( $m[1] ) );
+			$base = 'theme' === $m[1] ? get_stylesheet_directory_uri() : home_url();
+			return esc_url( $base . $m[2] );
 		},
 		$html
 	);

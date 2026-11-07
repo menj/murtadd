@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 978" role="img" aria-labelledby="t d" font-family="system-ui, -apple-system, Segoe UI, sans-serif">
+<title id="t">Two chains of narration for the reports on leaving Islam</title>
+<desc id="d">Left: the route Ibn ʿAbbās, ʿIkrima, Ayyūb, to al-Bukhārī 3017 and 6922 and Abū Dāwūd 4351. Right: the route Ibn Masʿūd, Masrūq, ʿAbd Allāh ibn Murra, al-Aʿmash, to al-Bukhārī 6878 and Muslim 1676. Each narrator is marked with what the biographical dictionaries record.</desc>
+<style>:root{--fg:#1f2933;--muted:#5b6770;--line:#9aa5ad;--bg:#fff;--accent:#0f6e56}.bg{fill:var(--bg)}.ln{stroke:var(--line);stroke-width:1.4;fill:none}.bx{fill:var(--bg);stroke:var(--fg);stroke-width:1.3}.bk{fill:var(--bg);stroke:var(--accent);stroke-width:1.6}.rt{fill:var(--bg);stroke:var(--line);stroke-width:1.3;stroke-dasharray:4 3}.nm{fill:var(--fg);font-size:13.5px;font-weight:600;text-anchor:middle}.st{fill:var(--muted);font-size:11.5px}.hd{fill:var(--accent);font-size:15px;font-weight:700;text-anchor:middle}.lg{fill:var(--muted);font-size:12px}.mk{fill:var(--fg);stroke:var(--fg);stroke-width:1.2}.mo{fill:none;stroke:var(--fg);stroke-width:1.2}</style>
+<rect class="bg" width="1180" height="978"/>
+<path class="ln" d="M300 110 C300 135.0 300 135.0 300 160"/>
+<path class="ln" d="M300 210 C300 235.0 300 235.0 300 260"/>
+<path class="ln" d="M300 310 C300 335.0 300 335.0 300 360"/>
+<path class="ln" d="M300 410 C300 435.0 110 435.0 110 460"/>
+<path class="ln" d="M110 510 C110 535.0 110 535.0 110 560"/>
+<path class="ln" d="M110 610 C110 635.0 110 635.0 110 660"/>
+<path class="ln" d="M300 410 C300 435.0 300 435.0 300 460"/>
+<path class="ln" d="M300 510 C300 535.0 300 535.0 300 560"/>
+<path class="ln" d="M300 610 C300 635.0 300 635.0 300 660"/>
+<path class="ln" d="M300 410 C300 435.0 490 435.0 490 460"/>
+<path class="ln" d="M490 510 C490 535.0 490 535.0 490 560"/>
+<path class="ln" d="M490 610 C490 635.0 490 635.0 490 660"/>
+<path class="ln" d="M880 110 C880 135.0 880 135.0 880 160"/>
+<path class="ln" d="M880 210 C880 235.0 880 235.0 880 260"/>
+<path class="ln" d="M880 310 C880 335.0 880 335.0 880 360"/>
+<path class="ln" d="M880 410 C880 435.0 880 435.0 880 460"/>
+<path class="ln" d="M880 510 C880 535.0 772 535.0 772 560"/>
+<path class="ln" d="M772 610 C772 635.0 772 635.0 772 660"/>
+<path class="ln" d="M772 710 C772 735.0 772 735.0 772 760"/>
+<path class="ln" d="M880 510 C880 535.0 990 535.0 990 560"/>
+<path class="ln" d="M990 610 C990 635.0 990 635.0 990 660"/>
+<path class="ln" d="M990 710 C990 735.0 990 735.0 990 760"/>
+<path class="ln" d="M990 810 C990 835.0 990 835.0 990 860"/>
+<rect class="rt" x="217" y="70" width="166" height="40" rx="7"/><text class="nm" x="300" y="95">The Prophet</text>
+<rect class="rt" x="217" y="160" width="166" height="50" rx="7"/><text class="nm" x="300" y="180">Ibn ʿAbbās</text><text class="st" x="273.0" y="198">Companion</text>
+<rect class="bx" x="217" y="260" width="166" height="50" rx="7"/><text class="nm" x="300" y="280">ʿIkrima</text><path class="mk" d="M274.0 288.4 L279.6 294 L274.0 299.6 L268.4 294 Z"/><text class="st" x="287.0" y="298">disputed</text>
+<rect class="bx" x="217" y="360" width="166" height="50" rx="7"/><text class="nm" x="300" y="380">Ayyūb al-Sakhtiyānī</text><circle class="mk" cx="277.0" cy="394" r="4.6"/><text class="st" x="290.0" y="398">praised</text>
+<rect class="bx" x="27" y="460" width="166" height="50" rx="7"/><text class="nm" x="110" y="480">Sufyān ibn ʿUyayna</text><circle class="mk" cx="87.0" cy="494" r="4.6"/><text class="st" x="100.0" y="498">praised</text>
+<rect class="bx" x="27" y="560" width="166" height="50" rx="7"/><text class="nm" x="110" y="580">ʿAlī ibn al-Madīnī</text><circle class="mk" cx="87.0" cy="594" r="4.6"/><text class="st" x="100.0" y="598">praised</text>
+<rect class="bk" x="27" y="660" width="166" height="40" rx="7"/><text class="nm" x="110" y="685">al-Bukhārī 3017</text>
+<rect class="bx" x="217" y="460" width="166" height="50" rx="7"/><text class="nm" x="300" y="480">Ḥammād ibn Zayd</text><circle class="mk" cx="277.0" cy="494" r="4.6"/><text class="st" x="290.0" y="498">praised</text>
+<rect class="bx" x="212" y="560" width="176" height="50" rx="7"/><text class="nm" x="300" y="580">Abū al-Nuʿmān ʿĀrim</text><circle class="mo" cx="232.0" cy="594" r="4.6"/><path class="mk" d="M232.0 589.4 A4.6 4.6 0 0 0 232.0 598.6 Z"/><text class="st" x="245.0" y="598">truthful; changed late</text>
+<rect class="bk" x="217" y="660" width="166" height="40" rx="7"/><text class="nm" x="300" y="685">al-Bukhārī 6922</text>
+<rect class="bx" x="407" y="460" width="166" height="50" rx="7"/><text class="nm" x="490" y="480">Ismāʿīl ibn Ibrāhīm</text><circle class="mk" cx="467.0" cy="494" r="4.6"/><text class="st" x="480.0" y="498">praised</text>
+<rect class="bx" x="407" y="560" width="166" height="50" rx="7"/><text class="nm" x="490" y="580">Aḥmad ibn Ḥanbal</text><circle class="mk" cx="467.0" cy="594" r="4.6"/><text class="st" x="480.0" y="598">praised</text>
+<rect class="bk" x="407" y="660" width="166" height="40" rx="7"/><text class="nm" x="490" y="685">Abū Dāwūd 4351</text>
+<rect class="rt" x="797" y="70" width="166" height="40" rx="7"/><text class="nm" x="880" y="95">The Prophet</text>
+<rect class="rt" x="797" y="160" width="166" height="50" rx="7"/><text class="nm" x="880" y="180">Ibn Masʿūd</text><text class="st" x="853.0" y="198">Companion</text>
+<rect class="bx" x="797" y="260" width="166" height="50" rx="7"/><text class="nm" x="880" y="280">Masrūq</text><circle class="mo" cx="830.0" cy="294" r="4.3"/><text class="st" x="843.0" y="298">not checked here</text>
+<rect class="bx" x="797" y="360" width="166" height="50" rx="7"/><text class="nm" x="880" y="380">ʿAbd Allāh ibn Murra</text><circle class="mk" cx="857.0" cy="394" r="4.6"/><text class="st" x="870.0" y="398">praised</text>
+<rect class="bx" x="797" y="460" width="166" height="50" rx="7"/><text class="nm" x="880" y="480">al-Aʿmash</text><circle class="mo" cx="830.0" cy="494" r="4.3"/><text class="st" x="843.0" y="498">not checked here</text>
+<rect class="bx" x="683" y="560" width="178" height="50" rx="7"/><text class="nm" x="772" y="580">Ḥafṣ ibn Ghiyāth</text><circle class="mo" cx="701.0" cy="594" r="4.6"/><path class="mk" d="M701.0 589.4 A4.6 4.6 0 0 0 701.0 598.6 Z"/><text class="st" x="714.0" y="598">praised; memory shifted</text>
+<rect class="bx" x="689" y="660" width="166" height="50" rx="7"/><text class="nm" x="772" y="680">ʿUmar ibn Ḥafṣ</text><circle class="mo" cx="722.0" cy="694" r="4.3"/><text class="st" x="735.0" y="698">not checked here</text>
+<rect class="bk" x="689" y="760" width="166" height="40" rx="7"/><text class="nm" x="772" y="785">al-Bukhārī 6878</text>
+<rect class="bx" x="901" y="560" width="178" height="50" rx="7"/><text class="nm" x="990" y="580">Sufyān al-Thawrī</text><circle class="mo" cx="952.0" cy="594" r="4.6"/><path class="mk" d="M952.0 589.4 A4.6 4.6 0 0 0 952.0 598.6 Z"/><text class="st" x="965.0" y="598">tadlīs noted</text>
+<rect class="bx" x="895" y="660" width="190" height="50" rx="7"/><text class="nm" x="990" y="680">ʿAbd al-Raḥmān ibn Mahdī</text><circle class="mk" cx="931.0" cy="694" r="4.6"/><text class="st" x="944.0" y="698">precise (al-Qaṭṭān)</text>
+<rect class="bx" x="907" y="760" width="166" height="50" rx="7"/><text class="nm" x="990" y="780">Aḥmad ibn Ḥanbal</text><circle class="mk" cx="967.0" cy="794" r="4.6"/><text class="st" x="980.0" y="798">praised</text>
+<rect class="bk" x="907" y="860" width="166" height="40" rx="7"/><text class="nm" x="990" y="885">Muslim 1676</text>
+<text class="hd" x="300" y="30">The wording "whoever changes his religion, kill him"</text>
+<text class="hd" x="880" y="30">The report of the three grounds (Ibn Masʿūd)</text>
+<circle class="mk" cx="36.0" cy="922" r="4.6"/>
+<text class="lg" x="48" y="926">praised in the dictionaries</text>
+<circle class="mo" cx="252.8" cy="922" r="4.6"/><path class="mk" d="M252.8 917.4 A4.6 4.6 0 0 0 252.8 926.6 Z"/>
+<text class="lg" x="264.8" y="926">praised, with a point noted</text>
+<path class="mk" d="M469.6 916.4 L475.2 922 L469.6 927.6 L464.0 922 Z"/>
+<text class="lg" x="481.6" y="926">disputed: praise and criticism both recorded</text>
+<circle class="mo" cx="795.2" cy="922" r="4.3"/>
+<text class="lg" x="807.2" y="926">not checked in this figure</text>
+<text class="lg" x="30" y="944">Two of the routes are drawn. The collections also print a second route for the saying through Qatada, listed in the tables below.</text>
+<text class="lg" x="30" y="964">Marks record what the biographical dictionaries say. They are not a ruling on either report.</text>
+</svg>

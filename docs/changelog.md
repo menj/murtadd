@@ -1,5 +1,19 @@
 # Murtadd changelog
 
+## 1.58.0 (2026-11-07)
+
+The apostasy-penalty guide now prints every chain of narration for the reports on leaving Islam, with a figure and a table of what the classical dictionaries say about the narrators. No feature removed and no public identifier renamed.
+
+### Added
+- Guide `the-apostasy-penalty`: a section "The chains of narration" with all 62 chains the standard index of the ten collections lists: 20 for "whoever changes his religion, kill him", 21 for Ibn Mas'ud's three grounds, 12 for 'Uthman and 9 for 'A'isha. Each row gives the collection and number as printed, the chain in Arabic and the grade printed. A table gives the dictionary verdicts the Hadith Transmitters Encyclopedia returned, and names the narrators it returned none for.
+- `assets/images/isnad-leaving-islam.svg`: the figure, drawn for a light ground with no dark-mode rule. `assets/css/isnad.css` and `isnad.min.css` style it and the tables, and load on single guide views only (`murtadd-isnad`).
+- The `{{theme:/path}}` seed token resolves to the theme folder, next to `{{url:/path/}}` for the site.
+- Sources for the chains: the printed index (shamela.ws book 13285, pages 8144, 38 and 8282) and the encyclopedia.
+
+### Changed
+- The guide's paragraph on the report in al-Bukhari 3017 and 6922 points to the full chains, and the doubt `the-hadith-about-leaving` and the rebuttal `apostasy-and-the-classical-law` each carry a sentence pointing to the guide.
+- Existing guides keep their text: the seeder never rewrites a post. See `docs/upgrading.md`.
+
 ## 1.57.1 (2026-11-06)
 
 Two of the 1.57.0 entries are reworded, and the triple-talaq answers label a disputed report as disputed. No feature removed and no public identifier renamed.

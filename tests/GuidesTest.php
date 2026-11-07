@@ -145,6 +145,7 @@ final class GuidesTest extends TestCase {
 			$this->assertStringNotContainsString( 'prefers-color-scheme', $g['body'] );
 			$content = murtadd_guide_content( $g );
 			$this->assertStringNotContainsString( '{{url:', $content, $g['slug'] );
+			$this->assertStringNotContainsString( '{{theme:', $content, $g['slug'] );
 		}
 	}
 
@@ -221,5 +222,29 @@ final class GuidesTest extends TestCase {
 		delete_option( 'murtadd_guide_wording' );
 		$GLOBALS['murtadd_posts']['murtadd_guide']['islamic-dilemma']->post_content = str_replace( '<h2>Sources</h2>', '<h2>Sumber</h2>', $old( murtadd_guide_content( $dilemma ) ) );
 		$this->assertSame( array( 'islamic-dilemma' ), murtadd_update_guide_wording(), 'A translated Sources heading still counts as unedited.' );
+	}
+
+	/** The apostasy guide prints all 62 chains, and the figure it points to ships with the theme. */
+	public function test_apostasy_guide_prints_every_chain() {
+		$g = null;
+		foreach ( murtadd_seed_guides() as $guide ) {
+			if ( 'the-apostasy-penalty' === $guide['slug'] ) {
+				$g = $guide;
+			}
+		}
+		$this->assertNotNull( $g );
+		$this->assertSame( 62, substr_count( $g['body'], '<tr><td>' ) - 6, 'Chain rows (the verdict table adds six).' );
+		$this->assertStringContainsString( '{{theme:/assets/images/isnad-leaving-islam.svg}}', $g['body'] );
+		$this->assertFileExists( dirname( __DIR__ ) . '/assets/images/isnad-leaving-islam.svg' );
+		$svg = (string) file_get_contents( dirname( __DIR__ ) . '/assets/images/isnad-leaving-islam.svg' );
+		$this->assertStringNotContainsString( 'prefers-color-scheme', $svg );
+		foreach ( array( 'assets/css/isnad.css', 'assets/css/isnad.min.css' ) as $f ) {
+			$css = (string) file_get_contents( dirname( __DIR__ ) . '/' . $f );
+			foreach ( array( 'murtadd-isnad-figure', 'murtadd-isnad-table' ) as $class ) {
+				$this->assertStringContainsString( '.' . $class, $css, $f );
+			}
+		}
+		$content = murtadd_guide_content( $g );
+		$this->assertStringContainsString( '/assets/images/isnad-leaving-islam.svg', $content );
 	}
 }
