@@ -66,4 +66,12 @@ final class SeedDataTest extends TestCase {
 		$this->assertFalse( murtadd_seed_entry_valid( array( 'sources' => array( 'text' ), 'topics' => array( 'x' ) ), $src ) );
 		$this->assertFalse( murtadd_seed_entry_valid( array( 'sources' => array(), 'topics' => array( 1 ) ), $src ) );
 	}
+
+	/** The {{theme:}} token resolves against the theme folder, the {{url:}} token against the site. */
+	public function test_theme_token_resolves_to_the_theme_folder() {
+		$out = murtadd_seed_resolve_urls( '{{theme:/assets/images/x.svg}} {{url:/irtidad/}}' );
+		$this->assertStringContainsString( get_stylesheet_directory_uri() . '/assets/images/x.svg', $out );
+		$this->assertStringContainsString( home_url( '/irtidad/' ), $out );
+		$this->assertStringNotContainsString( '{{', $out );
+	}
 }

@@ -1,6 +1,6 @@
 # Murtadd: single source of truth
 
-Version 1.57.1 · Child theme of Twenty Twenty-Five · murtadd.org
+Version 1.58.0 · Child theme of Twenty Twenty-Five · murtadd.org
 
 ## What this theme is
 
@@ -75,7 +75,7 @@ The copy is `inc/data/seed/journal.json`, inserted by `murtadd_seed_journal_post
 
 Before 1.51.0 the posts page was a seeded `blog` page. `murtadd_journal_page_once()` renames that page to `journal` in place and moves the posts page with it only when the posts page was unset or still that page; an editor's own Blog page is kept. Where a Journal page already exists beside the seeded Blog page, the Blog page goes back to draft and the posts page moves to the Journal. `/blog/` 301s to the posts page wherever it is set (legacy map kind `posts`).
 
-**The post page** (`inc/article.php`, `assets/css/article.css`). A Journal post shows, in this order: the breadcrumb, the date with "Last reviewed" once edited more than a day later and the reading time, the title, the excerpt as the dek, "In short" with the key points (`_murtadd_takeaways`), the contents from three level-two headings, the text, the sources (`_murtadd_sources`, the rebuttal repeater), the next step and three related posts. The date stays above the title, as everywhere in the Journal. **No byline**: the author is named in the structured data only. **No next step sells**: it is the next post, the sources or a question through the Contact page. The FAQPage is built only from Details blocks in the FAQ style that the post shows. Guides share `single.php` and do not get these parts. Pinned in `tests/ArticleTest.php`.
+**The post page** (`inc/article.php`, `assets/css/article.css`). A Journal post shows, in this order: the breadcrumb, the date with "Last reviewed" once edited more than a day later and the reading time, the title, the excerpt as the dek, "In short" with the key points (`_murtadd_takeaways`), the contents from three level-two headings, the text, the sources (`_murtadd_sources`, the rebuttal repeater), the next step and three related posts. The date stays above the title, as everywhere in the Journal. **No byline**: the author is named in the structured data only. **No next step sells**: it is the next post, the sources or a question through the Contact page. The FAQPage is built only from Details blocks in the FAQ style that the post shows. Guides share `single.php` and do not get these parts. A guide that prints chains of narration (the apostasy-penalty guide) also loads `assets/css/isnad.css` (`murtadd-isnad`, single guide views only) and uses the `{{theme:/path}}` seed token for `assets/images/isnad-leaving-islam.svg`, a light-ground figure with no dark-mode rule. Pinned in `tests/ArticleTest.php`.
 
 The seeder runs under a lock (`murtadd_journal_seeding`, taken with `add_option()`, released in a `finally`, taken over after ten minutes), and stores the list hash only when every post was created or found, so a failed insert is tried again. With Rank Math, its Article becomes a BlogPosting and gains the Journal in `isPartOf`; nothing else is overwritten. `single.php` links a post back to the Journal and a guide back to Guides.
 
