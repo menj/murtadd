@@ -1,5 +1,13 @@
 # Murtadd changelog
 
+## 1.58.1 (2026-11-07)
+
+The chains figure now draws the Qatada route, and the research notes behind the 1.58.0 guide are corrected. No feature removed and no public identifier renamed.
+
+### Changed
+- `assets/images/isnad-leaving-islam.svg`: a strip under the left tree draws the second route for "whoever changes his religion, kill him", Ibn 'Abbas, then 'Ikrima or Anas, then Qatada, to al-Nasa'i, Ahmad and Ibn Hibban. The figure keeps its light ground and has no dark-mode rule.
+- The research notes in `.claude/research/hadithgraph/` no longer say the saying reaches the collections by one route. They give the counts from the full corpus (14 chains through Ayyub, 6 through Qatada), and the curated chain data and the generators are kept beside them. `.claude/` is export-ignored.
+
 ## 1.58.0 (2026-11-07)
 
 The apostasy-penalty guide now prints every chain of narration for the reports on leaving Islam, with a figure and a table of what the classical dictionaries say about the narrators. No feature removed and no public identifier renamed.

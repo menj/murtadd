@@ -51,6 +51,14 @@
 <rect class="bx" x="895" y="660" width="190" height="50" rx="7"/><text class="nm" x="990" y="680">ʿAbd al-Raḥmān ibn Mahdī</text><circle class="mk" cx="931.0" cy="694" r="4.6"/><text class="st" x="944.0" y="698">precise (al-Qaṭṭān)</text>
 <rect class="bx" x="907" y="760" width="166" height="50" rx="7"/><text class="nm" x="990" y="780">Aḥmad ibn Ḥanbal</text><circle class="mk" cx="967.0" cy="794" r="4.6"/><text class="st" x="980.0" y="798">praised</text>
 <rect class="bk" x="907" y="860" width="166" height="40" rx="7"/><text class="nm" x="990" y="885">Muslim 1676</text>
+<rect class="rt" x="25" y="760" width="150" height="50" rx="7"/><text class="nm" x="100" y="780">Ibn ʿAbbās</text><text class="st" x="73.0" y="798">Companion</text>
+<rect class="bx" x="225" y="760" width="150" height="50" rx="7"/><text class="nm" x="300" y="780">ʿIkrima or Anas</text><circle class="mo" cx="268.0" cy="794" r="4.3"/><text class="st" x="281.0" y="798">two routes</text>
+<rect class="bx" x="415" y="760" width="170" height="50" rx="7"/><text class="nm" x="500" y="780">Qatāda ibn Diʿāma</text><circle class="mk" cx="450.0" cy="794" r="4.6"/><text class="st" x="463.0" y="798">called the hāfiẓ</text>
+<rect class="bk" x="385" y="840" width="230" height="40" rx="7"/><text class="nm" x="500" y="865">al-Nasāʾī, Aḥmad, Ibn Ḥibbān</text>
+<path class="ln" d="M175.0 785.0 L225.0 785.0"/>
+<path class="ln" d="M375.0 785.0 L415.0 785.0"/>
+<path class="ln" d="M500 810 L500 840"/>
+<text class="lg" x="30" y="750">Second route for the same saying</text>
 <text class="hd" x="300" y="30">The wording "whoever changes his religion, kill him"</text>
 <text class="hd" x="880" y="30">The report of the three grounds (Ibn Masʿūd)</text>
 <circle class="mk" cx="36.0" cy="922" r="4.6"/>
@@ -61,6 +69,6 @@
 <text class="lg" x="481.6" y="926">disputed: praise and criticism both recorded</text>
 <circle class="mo" cx="795.2" cy="922" r="4.3"/>
 <text class="lg" x="807.2" y="926">not checked in this figure</text>
-<text class="lg" x="30" y="944">Two of the routes are drawn. The collections also print a second route for the saying through Qatada, listed in the tables below.</text>
+<text class="lg" x="30" y="944">The strip under the left tree is the second route for the saying, through Qatāda. Every chain is listed in the tables below.</text>
 <text class="lg" x="30" y="964">Marks record what the biographical dictionaries say. They are not a ruling on either report.</text>
 </svg>

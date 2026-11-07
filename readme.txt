@@ -3,7 +3,7 @@ Contributors: murtadd.org
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.1
-Stable tag: 1.58.0
+Stable tag: 1.58.1
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -118,6 +118,9 @@ Bundled resources:
 * The site icon, the pixel book and envelope images, the calligraphy in assets/images and screenshot.png were made for this theme and are GPL v3 or later with it.
 
 == Changelog ==
+= 1.58.1 =
+* The chains figure in the apostasy-penalty guide now draws the Qatada route.
+
 = 1.58.0 =
 * The apostasy-penalty guide prints every chain of narration for the reports on leaving Islam, with a figure and a table of what the dictionaries say about the narrators.
 
@@ -245,6 +248,9 @@ Bundled resources:
 See docs/changelog.md for earlier releases.
 
 == Upgrade Notice ==
+= 1.58.1 =
+Replace the theme files. Nothing else to do.
+
 = 1.58.0 =
 Replace the theme files. A site that already created the apostasy-penalty guide keeps its old text; see docs/upgrading.md to paste the new section.
 
