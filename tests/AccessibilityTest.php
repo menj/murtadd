@@ -59,6 +59,7 @@ final class AccessibilityTest extends TestCase {
 		$this->assertSame( '<pre tabindex="0"><code>x</code></pre>', murtadd_docs_focusable_pre( '<pre><code>x</code></pre>' ) );
 		$this->assertSame( '<pre tabindex="0" class="language-tabindex"><code>x</code></pre>', murtadd_docs_focusable_pre( '<pre class="language-tabindex"><code>x</code></pre>' ) );
 		$this->assertSame( '<pre class="a" tabindex="-1">x</pre>', murtadd_docs_focusable_pre( '<pre class="a" tabindex="-1">x</pre>' ) );
+		$this->assertSame( '<pre tabindex="0" data-tabindex="1">x</pre>', murtadd_docs_focusable_pre( '<pre data-tabindex="1">x</pre>' ) );
 		$this->assertSame( '<p>tabindex</p>', murtadd_docs_focusable_pre( '<p>tabindex</p>' ) );
 	}
 

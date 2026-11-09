@@ -175,7 +175,7 @@ function murtadd_docs_focusable_pre( $html ) {
 		static function ( $m ) {
 			// Strip quoted values first, so a class such as "language-tabindex" is not read as the attribute.
 			$bare = preg_replace( '/"[^"]*"|\'[^\']*\'/', '""', $m[1] );
-			if ( preg_match( '/\btabindex\s*=/i', (string) $bare ) ) {
+			if ( preg_match( '/(?:^|\s)tabindex\s*=/i', (string) $bare ) ) {
 				return $m[0];
 			}
 			return '<pre tabindex="0"' . $m[1] . '>';
