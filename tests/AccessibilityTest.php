@@ -52,7 +52,15 @@ final class AccessibilityTest extends TestCase {
 	public function test_docs_scroll_box_is_reachable_by_keyboard() {
 		$this->assertMatchesRegularExpression( '/<article class="murtadd-docs-body" tabindex="0" role="region" aria-label=/', $this->read( 'inc/docs.php' ) );
 		$this->assertStringContainsString( '.murtadd-docs-body:focus-visible', $this->read( 'assets/css/docs.css' ) );
-		$this->assertStringContainsString( '<pre tabindex="0"', $this->read( 'inc/docs.php' ) );
+		$this->assertStringContainsString( 'murtadd_docs_focusable_pre', $this->read( 'inc/docs.php' ) );
+	}
+
+	public function test_code_blocks_get_a_tabindex_unless_they_have_one() {
+		$this->assertSame( '<pre tabindex="0"><code>x</code></pre>', murtadd_docs_focusable_pre( '<pre><code>x</code></pre>' ) );
+		$this->assertSame( '<pre tabindex="0" class="language-tabindex"><code>x</code></pre>', murtadd_docs_focusable_pre( '<pre class="language-tabindex"><code>x</code></pre>' ) );
+		$this->assertSame( '<pre class="a" tabindex="-1">x</pre>', murtadd_docs_focusable_pre( '<pre class="a" tabindex="-1">x</pre>' ) );
+		$this->assertSame( '<pre tabindex="0" data-tabindex="1">x</pre>', murtadd_docs_focusable_pre( '<pre data-tabindex="1">x</pre>' ) );
+		$this->assertSame( '<p>tabindex</p>', murtadd_docs_focusable_pre( '<p>tabindex</p>' ) );
 	}
 
 	public function test_no_outline_is_removed_without_a_replacement() {
