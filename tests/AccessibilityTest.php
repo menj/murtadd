@@ -46,6 +46,7 @@ final class AccessibilityTest extends TestCase {
 
 	public function test_docs_grid_cannot_widen_the_page() {
 		$this->assertStringContainsString( 'grid-template-columns: minmax(0, 1fr);', $this->read( 'assets/css/docs.css' ) );
+		$this->assertMatchesRegularExpression( '/\.murtadd-docs-body \{[^}]*overflow-x: auto/', $this->read( 'assets/css/docs.css' ) );
 	}
 
 	public function test_no_outline_is_removed_without_a_replacement() {
