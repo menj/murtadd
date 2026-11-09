@@ -7,7 +7,7 @@ A classic-template child theme of Twenty Twenty-Five for **murtadd.org**.
 | Theme slug | `murtadd` |
 | Text domain | `murtadd` |
 | Parent | `twentytwentyfive` |
-| Version | 1.58.2 |
+| Version | 1.58.3 |
 | Author | Langgam Fikir Enterprise |
 | Licence | GNU General Public License v3 or later; the full text is in `LICENSE` |
 | Requires WP | 6.4+ |

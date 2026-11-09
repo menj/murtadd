@@ -877,3 +877,46 @@ function murtadd_article_speakable( $post_id ) {
 	}
 	return $out;
 }
+
+/* ---------------------------------------------------------------------
+ * Scroll regions in every main text (mobile-first audit, 1.58.3)
+ * ------------------------------------------------------------------ */
+
+/**
+ * Give a table or a code block in any main text a way to scroll on its own on
+ * a narrow screen, and a way for a keyboard to reach it. Article bodies already
+ * pass through murtadd_article_tables(), which marks each table it wraps, so this
+ * filter leaves those texts alone. Pages, rebuttals,
+ * letters and guides now get the same wrapper. A code block takes tabindex 0,
+ * unless it has one.
+ *
+ * @param string $html Rendered text.
+ * @return string
+ */
+function murtadd_content_scroll_regions( $html ) {
+	if ( is_admin() || ! in_the_loop() || ! is_main_query() ) {
+		return $html;
+	}
+	$html = (string) $html;
+	if ( false !== stripos( $html, '<table' ) ) {
+		// Set aside the tables the article filter already wrapped, wrap the rest, put the first back.
+		$kept = array();
+		$html = (string) preg_replace_callback(
+			'#<(figure|div)\b[^>]*\bmurtadd-table\b[^>]*>(?:(?!</\1>).)*?<table\b.*?</table>.*?</\1>#is',
+			static function ( $m ) use ( &$kept ) {
+				$kept[] = $m[0];
+				return '<!--murtadd-kept-' . ( count( $kept ) - 1 ) . '-->';
+			},
+			$html
+		);
+		$html = murtadd_article_tables( $html );
+		foreach ( $kept as $i => $chunk ) {
+			$html = str_replace( '<!--murtadd-kept-' . $i . '-->', $chunk, $html );
+		}
+	}
+	if ( false !== stripos( $html, '<pre' ) ) {
+		$html = (string) preg_replace( '#<pre\b(?![^>]*\btabindex\s*=)#i', '<pre tabindex="0"', $html );
+	}
+	return $html;
+}
+add_filter( 'the_content', 'murtadd_content_scroll_regions', 25 );

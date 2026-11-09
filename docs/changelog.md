@@ -1,5 +1,16 @@
 # Murtadd changelog
 
+## 1.58.3 (2026-11-09)
+
+Mobile-first audit and fixes. No feature removed and no public identifier renamed.
+
+### Fixed
+- Pages, rebuttals, letters and guides let a wide table push the page sideways (up to 851 px on a 320 px screen), and a fixed-width embed did the same on posts. `inc/article.php` adds `murtadd_content_scroll_regions()` on `the_content` (priority 25, main query only). It wraps tables in the scroll region article bodies already use, and gives code blocks `tabindex="0"`, which clears the axe `scrollable-region-focusable` finding.
+- `assets/css/mobile-first.css` and `mobile-first.min.css` (new, loaded last, handle `murtadd-mobile-first`): scoped scroll boxes for tables and `pre`, `max-width` for embeds with a 16:9 ratio for YouTube and Vimeo frames, long-word wrapping in cards, 24 px minimum targets for chips, the back and more links, breadcrumbs and footer links (36 px on coarse pointers), and 16 px for four body-copy classes that sat at 14 to 15 px.
+
+### Audit record
+Findings table, remaining risks and follow-ups are in `docs/upgrading.md` under 1.58.2 to 1.58.3.
+
 ## 1.58.2 (2026-11-09)
 
 WCAG 2.2 AA audit and fixes. No feature removed and no public identifier renamed.

@@ -14,6 +14,23 @@ An upload straight into the live folder is riskier. While one of the files in `i
 
 Never upload WordPress core to a live folder without `wp-config.php` in place. The installer answers anyone in that state.
 
+## 1.58.2 → 1.58.3
+
+Drop-in update, no settings change. Mobile-first audit: scratch WordPress with seeded content (long article, long titles and URLs, wide table, code, embed, gallery, comments, archives), Playwright at 320, 360, 375, 390, 414, 480, 768, 1024 and 1280 px over 15 page types, axe-core 4 (wcag2a to wcag22aa and best-practice).
+
+| Id | Severity | Risk of fix | Finding | Status |
+|---|---|---|---|---|
+| MF-01 | High | Medium | Bare tables overflowed pages, rebuttals, letters and guides (scrollWidth 830 to 1131). Overflow at 5 page types up to 480 px, 4 at 768 and 1024, none at 1280 | Fixed (PHP filter and CSS) |
+| MF-02 | High | Low | Fixed-width embed overflowed a post (580 px) | Fixed (CSS) |
+| MF-03 | Medium | Medium | `scrollable-region-focusable` on code blocks | Fixed (`tabindex="0"`) |
+| MF-04 | Medium | Low | 66 targets under 24 px at 375 px (chips, back and more links, breadcrumbs, footer links) | Fixed, 7 left (core markup: skip link, comment checkbox, login) |
+| MF-05 | Low | Low | Body copy under 16 px (17 at 375 px) | Four classes fixed; labels and notes of 11.5 to 14 px left |
+| MF-06 | Low | Medium | wp-login.php: layout shift 0.04, no `main` landmark (core markup) | Manual review |
+
+Overflow count per width before and after: 320 to 480 px 5 to 0, 768 and 1024 px 4 to 0, 1280 px 0 to 0. No axe rule fails on the front end afterwards except core's login markup. Desktop (1024, 1280) pages grow by 8 to 60 px in height because chips take a 24 px minimum and four paragraphs take 16 px.
+
+Remaining risks: the filter changes markup of every main text (a table gets a labelled, focusable region); a theme or plugin that relies on bare tables inside `the_content` could see an extra wrapper. Follow-ups: pin the image width and height attributes in the seeded galleries, reserve space on the login page, review microcopy under 14 px.
+
 ## 1.58.1 → 1.58.2
 
 Drop-in update, no settings change. The WCAG 2.2 AA register (scratch WordPress, axe-core 4 with the wcag2a, wcag2aa, wcag21a, wcag21aa, wcag22aa and best-practice tags, at 1280 and 375 px; keyboard walk, 320 px reflow, text-spacing override):

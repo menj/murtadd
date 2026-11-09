@@ -3,7 +3,7 @@ Contributors: murtadd.org
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.1
-Stable tag: 1.58.2
+Stable tag: 1.58.3
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -118,6 +118,9 @@ Bundled resources:
 * The site icon, the pixel book and envelope images, the calligraphy in assets/images and screenshot.png were made for this theme and are GPL v3 or later with it.
 
 == Changelog ==
+= 1.58.3 =
+* Phone layout pass: tables and code blocks in pages, rebuttals, letters and guides scroll inside their own box, video embeds scale with the column, and small links are easier to tap.
+
 = 1.58.2 =
 * Accessibility pass (WCAG 2.2 AA): the search box label is tied to its field, the fatwa filters no longer reload the page on every change, the doubts list uses valid table markup, and focus is never hidden behind the back-to-top button. Nothing removed, nothing renamed.
 
@@ -251,6 +254,9 @@ Bundled resources:
 See docs/changelog.md for earlier releases.
 
 == Upgrade Notice ==
+= 1.58.3 =
+Phone layout fixes. A drop-in update.
+
 = 1.58.2 =
 Accessibility fixes. On the fatwa index, press the Filter button to apply the choices.
 
