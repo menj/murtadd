@@ -3,7 +3,7 @@ Contributors: murtadd.org
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.1
-Stable tag: 1.58.3
+Stable tag: 1.58.4
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -118,6 +118,9 @@ Bundled resources:
 * The site icon, the pixel book and envelope images, the calligraphy in assets/images and screenshot.png were made for this theme and are GPL v3 or later with it.
 
 == Changelog ==
+= 1.58.4 =
+* Theme Options, Docs tab: a wide table or code block no longer pushes the page sideways on a phone. The accessibility scan script reports a failed page as a failure. Nothing removed, nothing renamed.
+
 = 1.58.3 =
 * Phone layout pass: tables and code blocks in pages, rebuttals, letters and guides scroll inside their own box, video embeds scale with the column, and small links are easier to tap.
 
@@ -254,6 +257,9 @@ Bundled resources:
 See docs/changelog.md for earlier releases.
 
 == Upgrade Notice ==
+= 1.58.4 =
+Replace the theme files. Nothing else to do.
+
 = 1.58.3 =
 Phone layout fixes. A drop-in update.
 

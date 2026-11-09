@@ -1,5 +1,16 @@
 # Murtadd changelog
 
+## 1.58.4 (2026-11-09)
+
+Theme Options audit. No feature removed and no public identifier renamed.
+
+### Fixed
+- `assets/css/docs.css` and `docs.min.css`: below 783 px the Docs tab grid used `1fr`, which lets a wide table or code block widen the whole page (scrollWidth 595 at 375 px). It now uses `minmax(0, 1fr)`, so the document body scrolls inside its own box.
+- `bin/axe-audit.js`: a page that fails to load or scan now sets the exit status to 1 (a CodeAnt finding on the 1.58.2 script).
+
+### Audit record
+The settings page already met the settings-UI criteria: header with version badge, tabs with arrow keys, cards, switches, live range value, selector cards, labelled fields, footer. At 1280, 782 and 375 px no tab had an unlabelled field, and only the Docs tab overflowed at 375 px. The tables on the Setup, Security, Upkeep and Docs tabs are data tables.
+
 ## 1.58.3 (2026-11-09)
 
 Mobile-first audit and fixes. No feature removed and no public identifier renamed.
