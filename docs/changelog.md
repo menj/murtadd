@@ -1,5 +1,15 @@
 # Murtadd changelog
 
+## 1.59.1 (2026-11-09)
+
+Follow-up to 1.59.0, from CodeAnt's review of it. No feature removed and no public identifier renamed. The fatwa filters are untouched.
+
+### Fixed
+- The "Starter content and the bundle" card was drawn inside the Upkeep settings form, and forms cannot nest, so its buttons submitted the settings form instead. `murtadd_render_settings_panel()` now draws the card after the form closes. A browser check on the scratch site confirmed: no nested form, the grouped notice and the diff show, and "Keep mine" records the choice and clears the notice.
+- `MURTADD_DISABLE_CONTENT_SYNC` is checked before any choice is processed in both handlers, and the card offers no buttons while it is on. Before, "Take the bundled text" could write and the Trash choice could trash despite the switch.
+- The automatic sync's fingerprint now includes the guard state, so a sync that removals blocked (a stale checksum, say) runs again once the block clears.
+- `tests/ContentSyncTest.php` pins all three.
+
 ## 1.59.0 (2026-11-09)
 
 Starter content follows the bundle, safely. No setting key renamed, no feature removed, and the fatwa filters are untouched.

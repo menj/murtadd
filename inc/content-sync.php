@@ -535,7 +535,8 @@ function murtadd_sync_maybe_run() {
 	foreach ( murtadd_sync_bundle() as $key => $item ) {
 		$fps[ $key ] = $item['fp'];
 	}
-	$fp = md5( MURTADD_VERSION . wp_json_encode( $fps ) . wp_json_encode( murtadd_supersedes() ) );
+	// The guard state is part of the fingerprint, so a sync that removals blocked runs again once the block clears.
+	$fp = md5( MURTADD_VERSION . wp_json_encode( $fps ) . wp_json_encode( murtadd_supersedes() ) . murtadd_sync_removal_block() );
 	if ( get_option( 'murtadd_sync_fp' ) === $fp ) {
 		return;
 	}
@@ -561,6 +562,10 @@ function murtadd_sync_handle_item() {
 		wp_die( esc_html__( 'You do not have permission to do that.', 'murtadd' ), 403 );
 	}
 	check_admin_referer( 'murtadd_sync_item' );
+	if ( murtadd_sync_disabled() ) {
+		wp_safe_redirect( murtadd_sync_screen_url() ); // The switch comes before any choice: nothing is written or trashed.
+		exit;
+	}
 	$key    = isset( $_POST['item'] ) ? sanitize_text_field( wp_unslash( $_POST['item'] ) ) : '';
 	$choice = isset( $_POST['choice'] ) && 'take' === $_POST['choice'] ? 'take' : 'keep';
 	$parts  = explode( ':', $key, 2 );
@@ -602,6 +607,10 @@ function murtadd_sync_handle_now() {
 		wp_die( esc_html__( 'You do not have permission to do that.', 'murtadd' ), 403 );
 	}
 	check_admin_referer( 'murtadd_sync_now' );
+	if ( murtadd_sync_disabled() ) {
+		wp_safe_redirect( murtadd_sync_screen_url() );
+		exit;
+	}
 	murtadd_sync_apply();
 	wp_safe_redirect( murtadd_sync_screen_url() );
 	exit;
@@ -683,7 +692,7 @@ function murtadd_render_content_sync() {
 				}
 			}
 			echo '</td><td>' . esc_html( $labels[ $row['action'] ] ?? $row['action'] ) . '</td><td>';
-			if ( in_array( $row['action'], array( 'newer', 'removed', 'superseded', 'kept' ), true ) ) {
+			if ( ! murtadd_sync_disabled() && in_array( $row['action'], array( 'newer', 'removed', 'superseded', 'kept' ), true ) ) {
 				$take = isset( $bundle[ $row['key'] ] ) ? __( 'Take the bundled text', 'murtadd' ) : __( 'Move to the Trash', 'murtadd' );
 				foreach ( array( 'take' => $take, 'keep' => __( 'Keep mine', 'murtadd' ) ) as $choice => $text ) {
 					printf(
@@ -699,12 +708,14 @@ function murtadd_render_content_sync() {
 			echo '</td></tr>';
 		}
 		echo '</tbody></table>';
-		printf(
+		if ( ! murtadd_sync_disabled() ) {
+			printf(
 			'<form method="post" action="%s" class="murtadd-inline-form"><input type="hidden" name="action" value="murtadd_sync_now">%s<button type="submit" class="button">%s</button></form>',
 			esc_url( admin_url( 'admin-post.php' ) ),
 			wp_nonce_field( 'murtadd_sync_now', '_wpnonce', true, false ), // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- core's nonce field.
 			esc_html__( 'Run the sync now', 'murtadd' )
-		);
+			);
+		}
 	}
 	$log = array_reverse( (array) get_option( 'murtadd_sync_log', array() ) );
 	echo '<h3>' . esc_html__( 'What changed', 'murtadd' ) . '</h3>';
