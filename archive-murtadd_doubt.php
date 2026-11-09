@@ -47,9 +47,9 @@ $murtadd_total = (int) wp_count_posts( 'murtadd_doubt' )->publish;
 			the_post();
 			$murtadd_cats = get_the_terms( get_the_ID(), 'murtadd_doubt_category' );
 			?>
-			<a class="murtadd-doubts-row" role="row" href="<?php the_permalink(); ?>">
+			<div class="murtadd-doubts-row" role="row">
 				<span class="murtadd-doubt-cell" role="cell">
-					&ldquo;<?php murtadd_the_doubt_statement(); ?>&rdquo;
+					<a class="murtadd-doubts-link" href="<?php the_permalink(); ?>">&ldquo;<?php murtadd_the_doubt_statement(); ?>&rdquo;</a>
 				</span>
 				<span class="murtadd-doubt-cat" role="cell">
 					<?php if ( $murtadd_cats && ! is_wp_error( $murtadd_cats ) ) : ?>
@@ -60,7 +60,7 @@ $murtadd_total = (int) wp_count_posts( 'murtadd_doubt' )->publish;
 					<?php murtadd_the_reading_time(); ?>
 				</span>
 				<span class="murtadd-doubt-arrow" role="cell" aria-hidden="true">&rarr;</span>
-			</a>
+			</div>
 			<?php
 		endwhile;
 		?>
