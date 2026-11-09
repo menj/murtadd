@@ -82,6 +82,7 @@
 
 .murtadd-docs-body {
 	max-width: 72ch;
+	overflow-x: auto; /* a table wider than the body scrolls inside it */
 	padding: 28px 32px;
 	border: 1px solid var(--ma-line, #e4e9e7);
 	border-radius: 10px;

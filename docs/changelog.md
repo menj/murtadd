@@ -1,5 +1,12 @@
 # Murtadd changelog
 
+## 1.58.5 (2026-11-09)
+
+Follow-up to 1.58.4. No feature removed and no public identifier renamed.
+
+### Fixed
+- `assets/css/docs.css` and `docs.min.css`: `.murtadd-docs-body` now has `overflow-x: auto`. The `minmax(0, 1fr)` track of 1.58.4 let the body shrink, but a table wider than the body still spilled out of it. Checked at 375 px with a table of twelve nowrap cells: the page stays 375 px wide and the body scrolls.
+
 ## 1.58.4 (2026-11-09)
 
 Theme Options audit. No feature removed and no public identifier renamed.

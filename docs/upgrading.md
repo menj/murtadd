@@ -14,6 +14,10 @@ An upload straight into the live folder is riskier. While one of the files in `i
 
 Never upload WordPress core to a live folder without `wp-config.php` in place. The installer answers anyone in that state.
 
+## 1.58.4 → 1.58.5
+
+Replace the theme files. Nothing else to do. Presentation only. The fatwa filters are untouched and the owner decision on them stays open.
+
 ## 1.58.3 → 1.58.4
 
 Replace the theme files. Nothing else to do. Presentation only. The fatwa filters stay as 1.58.2 left them; whether a change in a filter should submit the form is an owner decision still open, and this release does not touch it.
