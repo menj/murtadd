@@ -157,8 +157,31 @@ function murtadd_docs_render( $slug ) {
 
 	$html = wp_kses( $parser->text( $markdown ), $allowed );
 
-	// A code block can scroll sideways, so the keyboard must be able to reach it (WCAG 2.1.1).
-	return (string) preg_replace( '/<pre(?![^>]*\btabindex)/', '<pre tabindex="0"', $html );
+	return murtadd_docs_focusable_pre( $html );
+}
+
+/**
+ * Give every code block a tabindex, so the keyboard can reach one that scrolls sideways (WCAG 2.1.1).
+ *
+ * A block that already carries a real tabindex attribute is left alone. The word inside a class or
+ * another value does not count.
+ *
+ * @param string $html Rendered, filtered HTML.
+ * @return string
+ */
+function murtadd_docs_focusable_pre( $html ) {
+	return (string) preg_replace_callback(
+		'/<pre\b([^>]*)>/i',
+		static function ( $m ) {
+			// Strip quoted values first, so a class such as "language-tabindex" is not read as the attribute.
+			$bare = preg_replace( '/"[^"]*"|\'[^\']*\'/', '""', $m[1] );
+			if ( preg_match( '/\btabindex\s*=/i', (string) $bare ) ) {
+				return $m[0];
+			}
+			return '<pre tabindex="0"' . $m[1] . '>';
+		},
+		(string) $html
+	);
 }
 
 /**

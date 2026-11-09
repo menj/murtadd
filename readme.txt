@@ -3,7 +3,7 @@ Contributors: murtadd.org
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.1
-Stable tag: 1.58.6
+Stable tag: 1.58.7
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -118,6 +118,9 @@ Bundled resources:
 * The site icon, the pixel book and envelope images, the calligraphy in assets/images and screenshot.png were made for this theme and are GPL v3 or later with it.
 
 == Changelog ==
+= 1.58.7 =
+* Theme Options, Docs tab: every code block can be reached by keyboard, including one whose class name contains the word tabindex. Nothing removed, nothing renamed.
+
 = 1.58.6 =
 * Theme Options, Docs tab: the document text takes keyboard focus, so a wide table can be scrolled without a mouse. Nothing removed, nothing renamed.
 
@@ -263,6 +266,9 @@ Bundled resources:
 See docs/changelog.md for earlier releases.
 
 == Upgrade Notice ==
+= 1.58.7 =
+Replace the theme files. Nothing else to do.
+
 = 1.58.6 =
 Replace the theme files. Nothing else to do.
 

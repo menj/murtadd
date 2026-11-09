@@ -1,5 +1,12 @@
 # Murtadd changelog
 
+## 1.58.7 (2026-11-09)
+
+Follow-up to 1.58.6. No feature removed and no public identifier renamed.
+
+### Fixed
+- `inc/docs.php`: the code-block rule skipped any `<pre>` whose attributes held the word `tabindex`, so a class such as `language-tabindex` left a scrollable block out of keyboard reach. New `murtadd_docs_focusable_pre()` removes quoted values and then looks for a real `tabindex=` attribute (a CodeAnt finding on 1.58.6). `tests/AccessibilityTest.php` renders four cases, including the class case.
+
 ## 1.58.6 (2026-11-09)
 
 Follow-up to 1.58.5. No feature removed and no public identifier renamed.
