@@ -580,6 +580,10 @@ function murtadd_render_settings_panel( $slug, $doc = '' ) {
 		murtadd_sec_render_tools();
 	}
 	if ( 'upkeep' === $slug ) {
+		// Outside the settings form: the sync card carries forms of its own, and forms cannot nest.
+		if ( function_exists( 'murtadd_render_content_sync' ) ) {
+			murtadd_render_content_sync();
+		}
 		murtadd_render_dropins_status();
 	}
 }
@@ -1136,9 +1140,6 @@ function murtadd_render_security_tab() {
  * The Upkeep tab's fields (inside the tab's settings form).
  */
 function murtadd_render_upkeep_tab() {
-	if ( function_exists( 'murtadd_render_content_sync' ) ) {
-		murtadd_render_content_sync();
-	}
 	murtadd_admin_card_open( __( 'Outages', 'murtadd' ), '', 'hammer' );
 	murtadd_admin_toggle_row(
 		__( 'Maintenance mode', 'murtadd' ),

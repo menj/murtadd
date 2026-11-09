@@ -110,6 +110,23 @@ final class ContentSyncTest extends TestCase {
 		$this->assertGreaterThanOrEqual( 2, substr_count( $src, "current_user_can( 'manage_options' )" ) );
 	}
 
+	public function test_the_kill_switch_comes_before_any_choice() {
+		$src = $this->read( 'inc/content-sync.php' );
+		$this->assertMatchesRegularExpression( "/check_admin_referer\\( 'murtadd_sync_item' \\);\\s+if \\( murtadd_sync_disabled\\(\\) \\)/", $src );
+		$this->assertMatchesRegularExpression( "/check_admin_referer\\( 'murtadd_sync_now' \\);\\s+if \\( murtadd_sync_disabled\\(\\) \\)/", $src );
+		$this->assertStringContainsString( "! murtadd_sync_disabled() && in_array( \$row['action']", $src );
+	}
+
+	public function test_the_sync_forms_are_not_inside_the_settings_form() {
+		$src = $this->read( 'inc/settings-page.php' );
+		$this->assertStringNotContainsString( "function murtadd_render_upkeep_tab() {\n\tif ( function_exists( 'murtadd_render_content_sync' ) )", $src );
+		$this->assertMatchesRegularExpression( "/echo '<\\/form>';\\s+if \\( 'security' === \\\$slug.*?if \\( 'upkeep' === \\\$slug \\) \\{[^}]*murtadd_render_content_sync/s", $src );
+	}
+
+	public function test_the_fingerprint_of_a_sync_includes_the_guard_state() {
+		$this->assertStringContainsString( 'murtadd_sync_removal_block() );', $this->read( 'inc/content-sync.php' ) );
+	}
+
 	public function test_the_redirect_runs_first() {
 		$this->assertStringContainsString( "'template_redirect', 'murtadd_superseded_redirect', 1", $this->read( 'inc/content-sync.php' ) );
 	}
