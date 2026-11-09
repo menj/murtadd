@@ -639,3 +639,7 @@ p.description.murtadd-admin-note { margin-top: 12px; }
 	.murtadd-admin .button:not(.wp-color-result):not(.wp-picker-clear):not(.wp-picker-default) { min-height: 44px; }
 	.widefat.murtadd-admin-table { max-width: none; }
 }
+
+/* Starter content card (inc/content-sync.php): the "show the differences" summary meets the 24 px target size. */
+.murtadd-card details > summary { display: inline-block; min-height: 24px; padding-block: 2px; cursor: pointer; }
+.murtadd-card .murtadd-inline-form { display: inline; margin: 0 4px 4px 0; }

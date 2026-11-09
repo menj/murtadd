@@ -1,6 +1,6 @@
 # Murtadd: single source of truth
 
-Version 1.58.7 · Child theme of Twenty Twenty-Five · murtadd.org
+Version 1.59.0 · Child theme of Twenty Twenty-Five · murtadd.org
 
 ## What this theme is
 
@@ -60,6 +60,22 @@ The content is JSON in `inc/data/seed/` (`topics.json`, `rebuttals.json`, `doubt
 Links in `pages.json` are written as `{{url:/path/}}` tokens; `murtadd_seed_page_bodies()` resolves each with `esc_url( home_url() )` when the copy is loaded, so a site in a subdirectory links correctly. A seed file that is missing, not valid JSON or not the expected shape loads as an empty array, and the seeder then creates nothing from it.
 
 Two constraints on the data. Every Doubt's `related` slug must name a Rebuttal that exists, and all four doubt categories must be populated, because the homepage grid renders a count for each of the four and an empty one reads as a dead door.
+
+### The content sync
+
+`inc/content-sync.php` keeps the items the seeders created in step with the bundle, and the rules do not bend. The seeders still create each item once and never resurrect a removed one. The sync touches only posts marked `_murtadd_seeded`.
+
+| When a bundled item | The theme does |
+|---|---|
+| changes, and the owner never edited the item | takes the new text and records the new fingerprint |
+| changes, and the owner edited it, or no fingerprint is recorded | leaves it; one notice lists it; Upkeep shows a diff and offers "Take the bundled text" or "Keep mine" |
+| is renamed (`inc/slug-renames.php`) | renames the post in place; ID, text, edits and record carry over; the old address answers 301 |
+| is dropped, and untouched | moves it to the Trash, never deletes |
+| is dropped, and edited | leaves it and lists it |
+| is replaced (`supersedes`), and untouched | 301 to the new item, hidden from lists, search, feeds and sitemaps, noindex, then the Trash |
+| is replaced, and edited | leaves it and lists it |
+
+Edited means the stored text differs from the fingerprint recorded in `_murtadd_sync_fp` when the theme wrote it, or no fingerprint exists. Removals stop on a failed checksum (`checksums.json`), a drop of more than 10 percent in the item count, or `MURTADD_DISABLE_CONTENT_SYNC`. The `supersedes` map ships empty.
 
 ## Guides
 

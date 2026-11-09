@@ -139,6 +139,9 @@ function murtadd_seed_journal_posts_run( $now = null, &$complete = null ) {
 		}
 
 		murtadd_mark_slug_seeded( 'post', $p['slug'] );
+		if ( function_exists( 'murtadd_sync_record' ) ) {
+			murtadd_sync_record( $post_id, 'post' );
+		}
 		if ( ! empty( $p['focus_keyword'] ) ) {
 			update_post_meta( $post_id, 'rank_math_focus_keyword', $p['focus_keyword'] );
 		}

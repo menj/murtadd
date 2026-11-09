@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'MURTADD_VERSION', '1.58.7' );
+define( 'MURTADD_VERSION', '1.59.0' );
 
 /**
  * Asset suffix. Sources are served when SCRIPT_DEBUG is on, minified otherwise.
@@ -26,7 +26,7 @@ function murtadd_theme_files() {
 		'taxonomy-doubt-category', 'meta-boxes', 'settings-page', 'hardening', 'security-detector', 'security',
 		'dev-files', 'hide-login', 'login', 'docs', 'legacy-redirects', 'gone', 'maintenance', 'social',
 		'site-icon', 'activation', 'schema', 'schema-graph', 'rank-math', 'seo-title', 'seed-content',
-		'seed-guides', 'seed-journal', 'slug-renames', 'search', 'search-permalinks', 'unlist', 'reading-progress',
+		'seed-guides', 'seed-journal', 'slug-renames', 'content-sync', 'search', 'search-permalinks', 'unlist', 'reading-progress',
 		'meta-tags', 'feeds', 'analytics', 'share', 'social-card', 'dashboard', 'relations', 'contextual-links',
 		'glossary', 'lanah', 'contact', 'quran-text', 'article', 'template-tags',
 	);

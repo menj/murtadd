@@ -1136,6 +1136,9 @@ function murtadd_render_security_tab() {
  * The Upkeep tab's fields (inside the tab's settings form).
  */
 function murtadd_render_upkeep_tab() {
+	if ( function_exists( 'murtadd_render_content_sync' ) ) {
+		murtadd_render_content_sync();
+	}
 	murtadd_admin_card_open( __( 'Outages', 'murtadd' ), '', 'hammer' );
 	murtadd_admin_toggle_row(
 		__( 'Maintenance mode', 'murtadd' ),

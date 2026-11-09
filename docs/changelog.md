@@ -1,5 +1,22 @@
 # Murtadd changelog
 
+## 1.59.0 (2026-11-09)
+
+Starter content follows the bundle, safely. No setting key renamed, no feature removed, and the fatwa filters are untouched.
+
+### Added
+- `inc/content-sync.php`. For each doubt, rebuttal, guide and Journal post the theme created (marked `_murtadd_seeded`), the stored text is fingerprinted and the fingerprint is recorded in post meta `_murtadd_sync_fp` whenever the theme writes it (the seeders now record it on creation). An item is edited when its stored text no longer matches the record, and also when no record exists.
+- Untouched items take a changed bundled text. Items dropped from the bundle go to the Trash if untouched, never deleted. Edited items are never overwritten or trashed: one grouped admin notice lists "Newer version available" and "Removed from the bundle or replaced", with a link to Appearance, Murtadd, Upkeep.
+- Upkeep tab, card "Starter content and the bundle": a dry run of the next sync, a `wp_text_diff()` of your text against the bundled text for each "newer" item, "Take the bundled text" or "Keep mine" for each item (stored as `_murtadd_sync_ack` for that version of the bundle, so a newer one asks again), "Run the sync now", and a log of the last 100 changes (`murtadd_sync_log`).
+- The `supersedes` map, `inc/data/seed/supersedes.json` (`{ post type: { old slug: new slug } }`, and the `murtadd_supersedes` filter), shipped empty. While the new item is published and the old one is untouched, the old one answers with a 301 (`template_redirect`, priority 1, and still after it is in the Trash), is hidden through the unlist module (`murtadd_unlisted_ids()` includes it; the stored list is not changed), carries noindex, and is moved to the Trash. When the unlist module stands down, the same hiding runs from `content-sync.php`, covering `post__in` queries, the WordPress and Rank Math sitemaps and robots.
+- Guards: removals stop when a seed file fails its checksum (`inc/data/seed/checksums.json`, written by `bin/seed-checksums.php`; `tests/ContentSyncTest.php` fails while it is stale), when the number of bundled items fell more than 10 percent since the last good sync (`murtadd_sync_count`), or when `MURTADD_DISABLE_CONTENT_SYNC` is true in `wp-config.php`, which also switches off updates, the redirect and the hiding.
+- `tests/ContentSyncTest.php`.
+
+### Notes
+- The sync only touches items marked `_murtadd_seeded`. Posts the owner created, and posts the seeder only adopted, are never read or changed.
+- The slug rename map in `inc/slug-renames.php` is unchanged: a renamed item keeps its post, its text and its record.
+- Pages made on activation are outside this release.
+
 ## 1.58.7 (2026-11-09)
 
 Follow-up to 1.58.6. No feature removed and no public identifier renamed.
