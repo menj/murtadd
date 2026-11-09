@@ -44,6 +44,10 @@ final class AccessibilityTest extends TestCase {
 		$this->assertStringContainsString( 'scroll-padding-block', $css );
 	}
 
+	public function test_docs_grid_cannot_widen_the_page() {
+		$this->assertStringContainsString( 'grid-template-columns: minmax(0, 1fr);', $this->read( 'assets/css/docs.css' ) );
+	}
+
 	public function test_no_outline_is_removed_without_a_replacement() {
 		// The skip-link target (<main tabindex="-1">) and the tab panel (tabindex="-1") are the allowed exceptions.
 		foreach ( glob( dirname( __DIR__ ) . '/assets/css/*.css' ) as $file ) {

@@ -14,6 +14,10 @@ An upload straight into the live folder is riskier. While one of the files in `i
 
 Never upload WordPress core to a live folder without `wp-config.php` in place. The installer answers anyone in that state.
 
+## 1.58.3 → 1.58.4
+
+Replace the theme files. Nothing else to do. Presentation only. The fatwa filters stay as 1.58.2 left them; whether a change in a filter should submit the form is an owner decision still open, and this release does not touch it.
+
 ## 1.58.2 → 1.58.3
 
 Drop-in update, no settings change. Mobile-first audit: scratch WordPress with seeded content (long article, long titles and URLs, wide table, code, embed, gallery, comments, archives), Playwright at 320, 360, 375, 390, 414, 480, 768, 1024 and 1280 px over 15 page types, axe-core 4 (wcag2a to wcag22aa and best-practice).
