@@ -86,7 +86,7 @@ Colour overrides inject through `wp_add_inline_style()` only. Every source file 
 
 **Loading is conditional.** Per-template CSS enqueues only on its own views. Admin JS enqueues only on the theme's own screens.
 
-**JavaScript is an enhancement.** Every page reads, and its menus and forms work, with JS disabled. The fatwa filters are a plain GET form; the script only auto-submits on change. The reading progress bar, the glossary's tap and Escape handling and that auto-submit are the parts that need it.
+**JavaScript is an enhancement.** Every page reads, and its menus and forms work, with JS disabled. The fatwa filters are a plain GET form; the script only marks the form as changed (it never submits on change, WCAG 3.2.2). The reading progress bar and the glossary's tap and Escape handling are the parts that need it.
 
 **Settings use the Settings API.** Settings are grouped by tab, each tab saving its own options, in a tabbed screen at Appearance → Theme Options. The tabs run Setup, Content, Topics & schools, Linked sites, Contextual links, Colours (with a live WCAG contrast check), Profiles, Security, Upkeep and Docs. `inc/settings-page.php` registers them; [settings.md](settings.md) describes every field.
 
