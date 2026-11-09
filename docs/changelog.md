@@ -1,5 +1,12 @@
 # Murtadd changelog
 
+## 1.58.6 (2026-11-09)
+
+Follow-up to 1.58.5. No feature removed and no public identifier renamed.
+
+### Fixed
+- `inc/docs.php`: the Docs article is a labelled region with `tabindex="0"`, because it now scrolls sideways (1.58.5) and a scroll box must be reachable by keyboard (WCAG 2.1.1). `assets/css/docs.css` and `docs.min.css` give it a visible focus ring (a CodeAnt finding on 1.58.5). `murtadd_docs_render()` also gives each code block `tabindex="0"` after the allow-list filter, because axe reported six scrollable code blocks on the tab (`scrollable-region-focusable`), with a focus ring in `docs.css`.
+
 ## 1.58.5 (2026-11-09)
 
 Follow-up to 1.58.4. No feature removed and no public identifier renamed.

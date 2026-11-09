@@ -82,7 +82,7 @@
 
 .murtadd-docs-body {
 	max-width: 72ch;
-	overflow-x: auto; /* a table wider than the body scrolls inside it */
+	overflow-x: auto; /* a table wider than the body scrolls inside it; the article takes focus (tabindex 0) so the keyboard can scroll it */
 	padding: 28px 32px;
 	border: 1px solid var(--ma-line, #e4e9e7);
 	border-radius: 10px;
@@ -91,6 +91,16 @@
 	font-size: 15px;
 	line-height: 1.65;
 	color: var(--ma-ink, #14201c);
+}
+
+.murtadd-docs-body:focus-visible {
+	outline: 2px solid var(--ma-accent, #0f6b53);
+	outline-offset: 2px;
+}
+
+.murtadd-docs-body pre:focus-visible {
+	outline: 2px solid var(--ma-accent, #0f6b53);
+	outline-offset: 2px;
 }
 
 .murtadd-docs-body > :first-child {

@@ -49,6 +49,12 @@ final class AccessibilityTest extends TestCase {
 		$this->assertMatchesRegularExpression( '/\.murtadd-docs-body \{[^}]*overflow-x: auto/', $this->read( 'assets/css/docs.css' ) );
 	}
 
+	public function test_docs_scroll_box_is_reachable_by_keyboard() {
+		$this->assertMatchesRegularExpression( '/<article class="murtadd-docs-body" tabindex="0" role="region" aria-label=/', $this->read( 'inc/docs.php' ) );
+		$this->assertStringContainsString( '.murtadd-docs-body:focus-visible', $this->read( 'assets/css/docs.css' ) );
+		$this->assertStringContainsString( '<pre tabindex="0"', $this->read( 'inc/docs.php' ) );
+	}
+
 	public function test_no_outline_is_removed_without_a_replacement() {
 		// The skip-link target (<main tabindex="-1">) and the tab panel (tabindex="-1") are the allowed exceptions.
 		foreach ( glob( dirname( __DIR__ ) . '/assets/css/*.css' ) as $file ) {
