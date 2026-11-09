@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'MURTADD_VERSION', '1.58.2' );
+define( 'MURTADD_VERSION', '1.58.3' );
 
 /**
  * Asset suffix. Sources are served when SCRIPT_DEBUG is on, minified otherwise.
@@ -288,6 +288,14 @@ function murtadd_enqueue_assets() {
 	}
 }
 add_action( 'wp_enqueue_scripts', 'murtadd_enqueue_assets' );
+
+/**
+ * Mobile-first patches, loaded after every other front-end sheet.
+ */
+function murtadd_enqueue_mobile_first() {
+	wp_enqueue_style( 'murtadd-mobile-first', get_stylesheet_directory_uri() . '/assets/css/mobile-first' . MURTADD_ASSET_SUFFIX . '.css', array( 'murtadd-main' ), MURTADD_VERSION );
+}
+add_action( 'wp_enqueue_scripts', 'murtadd_enqueue_mobile_first', 99 );
 
 /**
  * Preload the two variable fonts.
