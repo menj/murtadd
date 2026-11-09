@@ -7,7 +7,7 @@ A classic-template child theme of Twenty Twenty-Five for **murtadd.org**.
 | Theme slug | `murtadd` |
 | Text domain | `murtadd` |
 | Parent | `twentytwentyfive` |
-| Version | 1.58.7 |
+| Version | 1.59.0 |
 | Author | Langgam Fikir Enterprise |
 | Licence | GNU General Public License v3 or later; the full text is in `LICENSE` |
 | Requires WP | 6.4+ |
@@ -171,6 +171,7 @@ The tab keys are load-bearing: never rename one. [settings.md](settings.md) has 
 | `MURTADD_HIDE_LOGIN` | `wp-config.php` | False turns the private login address off, whatever is saved |
 | `MURTADD_SECURITY_LOCK` | `wp-config.php` | False turns off the remote-publishing locks |
 | `MURTADD_SPAM_THRESHOLD` | `wp-config.php` | The score at which the spam gate holds a post |
+| `MURTADD_DISABLE_CONTENT_SYNC` | `wp-config.php` | True switches off the content sync: no updates to untouched seeded items, no moves to the Trash, no redirect or hiding of superseded items |
 | `MURTADD_KEEP_DOTFILES` | `wp-config.php` | True keeps the development files on a live site |
 | `MURTADD_ALLOW_ROOT_PHP` | `wp-config.php` | True leaves out "Murtadd: only WordPress root PHP" |
 | `MURTADD_ALLOW_CORE_FILES` | `wp-config.php` | True leaves out "Murtadd: deny direct core files" |

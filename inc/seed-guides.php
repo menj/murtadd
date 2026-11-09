@@ -114,6 +114,9 @@ function murtadd_seed_guide_posts_run() {
 
 		murtadd_mark_slug_seeded( 'murtadd_guide', $g['slug'] );
 		update_post_meta( $post_id, '_murtadd_sources', $g['sources'] );
+		if ( function_exists( 'murtadd_sync_record' ) ) {
+			murtadd_sync_record( $post_id, 'murtadd_guide' );
+		}
 		if ( ! empty( $g['focus_keyword'] ) ) {
 			update_post_meta( $post_id, 'rank_math_focus_keyword', $g['focus_keyword'] );
 		}

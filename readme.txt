@@ -3,7 +3,7 @@ Contributors: murtadd.org
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.1
-Stable tag: 1.58.7
+Stable tag: 1.59.0
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -118,6 +118,9 @@ Bundled resources:
 * The site icon, the pixel book and envelope images, the calligraphy in assets/images and screenshot.png were made for this theme and are GPL v3 or later with it.
 
 == Changelog ==
+= 1.59.0 =
+* Starter content now follows the theme safely. A doubt, rebuttal, guide or Journal post you never edited takes a corrected text when the theme ships one, and moves to the Trash if the theme drops it. One you edited is never overwritten or trashed: a notice lists it, and under Upkeep you can see the differences and take the bundled text or keep yours. Upkeep also shows what the next update would do and keeps a short log. A replaced old item can redirect to its new one, drop out of lists and search, and move to the Trash. Nothing removed, nothing renamed.
+
 = 1.58.7 =
 * Theme Options, Docs tab: every code block can be reached by keyboard, including one whose class name contains the word tabindex. Nothing removed, nothing renamed.
 
@@ -266,6 +269,9 @@ Bundled resources:
 See docs/changelog.md for earlier releases.
 
 == Upgrade Notice ==
+= 1.59.0 =
+Items created by earlier versions have no record of their original text, so the theme treats any that differ from the bundle as edited and lists them under Upkeep for you to decide. Nothing is overwritten or trashed without your choice.
+
 = 1.58.7 =
 Replace the theme files. Nothing else to do.
 

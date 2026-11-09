@@ -14,6 +14,10 @@ An upload straight into the live folder is riskier. While one of the files in `i
 
 Never upload WordPress core to a live folder without `wp-config.php` in place. The installer answers anyone in that state.
 
+## 1.58.7 → 1.59.0
+
+Replace the theme files. Nothing to do by hand, but expect one notice. The doubts, rebuttals, guides and Journal posts created by earlier versions have no recorded fingerprint, so the theme cannot prove you never edited them. Any whose text differs from the bundle is listed under Appearance, Murtadd, Upkeep as "newer version available". Choose "Take the bundled text" for the ones you never edited, or "Keep mine". An item identical to the bundle is recorded at once and updates by itself from then on. Nothing is overwritten or trashed without your choice, and a dropped item goes to the Trash, never deleted. After a change to any file in `inc/data/seed/` that the sync reads, run `php bin/seed-checksums.php`. To switch the whole behaviour off, add `define( 'MURTADD_DISABLE_CONTENT_SYNC', true );` to `wp-config.php`. The fatwa filters are untouched and the owner decision on them stays open.
+
 ## 1.58.6 → 1.58.7
 
 Replace the theme files. Nothing else to do. The fatwa filters are untouched and the owner decision on them stays open.

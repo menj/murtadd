@@ -68,7 +68,13 @@ const MURTADD_UNLISTED_META = '_murtadd_unlisted';
 function murtadd_unlisted_ids() {
 	murtadd_unlist_sync_from_plugin();
 
-	return array_values( array_filter( array_map( 'intval', (array) get_option( MURTADD_UNLISTED_OPTION, array() ) ), static fn( $id ) => $id > 0 ) );
+	$ids = array_values( array_filter( array_map( 'intval', (array) get_option( MURTADD_UNLISTED_OPTION, array() ) ), static fn( $id ) => $id > 0 ) );
+	// Items a newer bundled text replaced (inc/content-sync.php) are hidden the same way. They are never written
+	// into the stored list, so the owner's own list stays the owner's.
+	if ( function_exists( 'murtadd_superseded_ids' ) ) {
+		$ids = array_values( array_unique( array_merge( $ids, murtadd_superseded_ids() ) ) );
+	}
+	return $ids;
 }
 
 /**

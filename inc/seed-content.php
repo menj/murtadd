@@ -10,7 +10,9 @@
  *
  *   1. Never overwrite. A post already present at a given slug is skipped
  *      entirely, whatever state it is in. Editing a seeded Doubt and then
- *      re-running the seeder does not undo the edit.
+ *      re-running the seeder does not undo the edit. A corrected bundled text
+ *      reaches an item the owner never edited through inc/content-sync.php,
+ *      which never touches an edited one.
  *   2. Never destroy. Nothing here deletes, trashes, or unpublishes anything.
  *   3. Never resurrect. Every slug this file has ever created is recorded in
  *      the murtadd_seeded_slugs option, and a recorded slug is never seeded
@@ -142,6 +144,9 @@ function murtadd_seed_rebuttal_posts_run() {
 		}
 		update_post_meta( $post_id, '_murtadd_claim_source_type', $r['source_type'] );
 		update_post_meta( $post_id, '_murtadd_sources', $r['sources'] );
+		if ( function_exists( 'murtadd_sync_record' ) ) {
+			murtadd_sync_record( $post_id, 'murtadd_rebuttal' ); // The theme's own text, on record from the start.
+		}
 		wp_set_object_terms( $post_id, $r['topics'], 'murtadd_topic' );
 
 		++$created;
@@ -206,6 +211,9 @@ function murtadd_seed_doubt_posts_run() {
 			update_post_meta( $post_id, '_murtadd_ce_slug', sanitize_title( $d['ce_slug'] ) );
 		}
 		update_post_meta( $post_id, '_murtadd_short_response', $d['response'] );
+		if ( function_exists( 'murtadd_sync_record' ) ) {
+			murtadd_sync_record( $post_id, 'murtadd_doubt' );
+		}
 
 		wp_set_object_terms( $post_id, $d['topics'], 'murtadd_topic' );
 		wp_set_object_terms( $post_id, array( $d['category'] ), 'murtadd_doubt_category' );
