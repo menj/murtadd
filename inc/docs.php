@@ -155,7 +155,10 @@ function murtadd_docs_render( $slug ) {
 		),
 	);
 
-	return wp_kses( $parser->text( $markdown ), $allowed );
+	$html = wp_kses( $parser->text( $markdown ), $allowed );
+
+	// A code block can scroll sideways, so the keyboard must be able to reach it (WCAG 2.1.1).
+	return (string) preg_replace( '/<pre(?![^>]*\btabindex)/', '<pre tabindex="0"', $html );
 }
 
 /**
@@ -191,7 +194,7 @@ function murtadd_docs_render_tab( $active_doc ) {
 			</ul>
 		</nav>
 
-		<article class="murtadd-docs-body">
+		<article class="murtadd-docs-body" tabindex="0" role="region" aria-label="<?php esc_attr_e( 'Document text', 'murtadd' ); ?>">
 			<?php if ( $html ) : ?>
 				<?php echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Parsedown safe mode + wp_kses in murtadd_docs_render(). ?>
 			<?php else : ?>
