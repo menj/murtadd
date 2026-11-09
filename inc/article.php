@@ -898,9 +898,21 @@ function murtadd_content_scroll_regions( $html ) {
 		return $html;
 	}
 	$html = (string) $html;
-	if ( false === strpos( $html, 'murtadd-table' ) ) {
-		// The article filter marks every table it wraps with this class; skip those texts.
+	if ( false !== stripos( $html, '<table' ) ) {
+		// Set aside the tables the article filter already wrapped, wrap the rest, put the first back.
+		$kept = array();
+		$html = (string) preg_replace_callback(
+			'#<(figure|div)\b[^>]*\bmurtadd-table\b[^>]*>(?:(?!</\1>).)*?<table\b.*?</table>.*?</\1>#is',
+			static function ( $m ) use ( &$kept ) {
+				$kept[] = $m[0];
+				return '<!--murtadd-kept-' . ( count( $kept ) - 1 ) . '-->';
+			},
+			$html
+		);
 		$html = murtadd_article_tables( $html );
+		foreach ( $kept as $i => $chunk ) {
+			$html = str_replace( '<!--murtadd-kept-' . $i . '-->', $chunk, $html );
+		}
 	}
 	if ( false !== stripos( $html, '<pre' ) ) {
 		$html = (string) preg_replace( '#<pre\b(?![^>]*\btabindex\s*=)#i', '<pre tabindex="0"', $html );
