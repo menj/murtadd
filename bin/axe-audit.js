@@ -8,7 +8,7 @@ if(theme)await c.addCookies([{name:'t',value:theme,url:base}]);
 const p=await c.newPage();
 if(admin){await p.goto(base+'/wp-login.php?t='+theme);await p.fill('#user_login','a');await p.fill('#user_pass','verify-pass-123');await Promise.all([p.waitForNavigation(),p.click('#wp-submit')]);}
 await p.route(u=>!/^(http:\/\/127\.0\.0\.1|data:)/.test(u.href),r=>r.abort());
-const axe=fs.readFileSync(__dirname+'/axe.min.js','utf8');
+const axe=fs.readFileSync(process.env.AXE_CORE||__dirname+'/axe.min.js','utf8');
 for(const u of urls){try{await p.goto(base+u,{waitUntil:'load'});await p.addScriptTag({content:axe});
 const v=await p.evaluate(async()=>(await axe.run(document,{runOnly:['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22aa','best-practice']})).violations.map(v=>({id:v.id,impact:v.impact,n:v.nodes.length,ex:v.nodes.slice(0,2).map(n=>n.target.join(' ')+' :: '+(n.any[0]&&n.any[0].message||n.failureSummary||'').slice(0,140))})));
 console.log('## '+u+' @'+width+' -> '+v.length+' rules');v.forEach(x=>{if(/serious|critical/.test(x.impact))fail=1;console.log(' - '+x.impact+' '+x.id+' x'+x.n+' | '+x.ex.join(' || '))});}catch(e){console.log('## '+u+' ERR '+e.message.slice(0,100))}}
