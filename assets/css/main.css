@@ -16,6 +16,8 @@ body {
 a { color: var(--murtadd-accent); }
 a:hover { color: #0a4f3e; }
 img { max-width: 100%; height: auto; }
+/* WCAG 2.4.11: the fixed back-to-top button (44px, 28px from the corner) must never cover a focused control. */
+html { scroll-padding-block: 16px 96px; }
 :focus-visible { outline: 2px solid var(--murtadd-accent); outline-offset: 2px; }
 /* On the green panel the accent outline disappears into the background. */
 .murtadd-sidebar :focus-visible { outline-color: #fff; }
@@ -561,7 +563,13 @@ h1, h2, h3 { font-family: var(--murtadd-font-serif); line-height: 1.25; }
 	text-decoration: none;
 	color: var(--murtadd-text);
 	transition: background 0.15s ease;
+	position: relative;
 }
+/* The row is a div (an anchor may not carry the row role); the statement link covers the whole row. */
+.murtadd-doubts-link { color: inherit; text-decoration: none; }
+.murtadd-doubts-link::after { content: ""; position: absolute; inset: 0; }
+.murtadd-doubts-link:focus-visible { outline: none; }
+.murtadd-doubts-link:focus-visible::after { outline: 2px solid var(--murtadd-accent); outline-offset: -2px; }
 .murtadd-doubts-row:nth-child(odd) { background: var(--murtadd-accent-tint); }
 .murtadd-doubts-row:hover { background: #e2f5ef; color: var(--murtadd-text); }
 

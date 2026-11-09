@@ -14,6 +14,20 @@ An upload straight into the live folder is riskier. While one of the files in `i
 
 Never upload WordPress core to a live folder without `wp-config.php` in place. The installer answers anyone in that state.
 
+## 1.58.1 → 1.58.2
+
+Drop-in update, no settings change. The WCAG 2.2 AA register (scratch WordPress, axe-core 4 with the wcag2a, wcag2aa, wcag21a, wcag21aa, wcag22aa and best-practice tags, at 1280 and 375 px; keyboard walk, 320 px reflow, text-spacing override):
+
+| Id | Severity | WCAG | Component | Finding | Status |
+|---|---|---|---|---|---|
+| MU-01 | Major | 3.2.2 | Fatwa filters | A select change submitted the form | Fixed |
+| MU-02 | Major | 1.3.1, 4.1.2 | Search form | The label named an id the input lacked | Fixed |
+| MU-03 | Minor | 4.1.2 | Doubts list | Anchor with `role="row"` | Fixed |
+| MU-04 | Major | 2.4.11 | Back-to-top button | Fixed element could cover a focused control | Fixed |
+| MU-05 | Minor | 1.3.1 | wp-login.php | No `main` landmark in core's login markup | Manual review, core markup |
+
+Manual review still open: a screen-reader pass (NVDA, VoiceOver) of the glossary pop-ups and the reading-progress bar. Code audit against the upgrade rules found no unescaped output, no state-changing handler without nonce and capability check (the `murtadd_sec_*` handlers go through `murtadd_sec_check()`), no remote assets and no debug-mode notices. Licences of every bundled asset are listed in `license.txt` and `readme.txt` (Copyright). The theme folder name is not assumed by code; the docs ask for `murtadd`.
+
 ## 1.58.0 → 1.58.1
 
 Replace the theme files. Nothing else changes: the figure is a file in the theme folder, so it updates with the upload. The guide's text for the figure (its description and caption) is in the post body and keeps the 1.58.0 wording unless you paste the guide again.

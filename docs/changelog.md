@@ -1,5 +1,22 @@
 # Murtadd changelog
 
+## 1.58.2 (2026-11-09)
+
+WCAG 2.2 AA audit and fixes. No feature removed and no public identifier renamed.
+
+### Fixed
+- `searchform.php`: the label pointed at an id the input never had. The input now carries it (WCAG 1.3.1, 3.3.2, 4.1.2).
+- `assets/js/fatwa-filters.js`: a change in a filter select no longer submits the form, and the Filter button stays visible (WCAG 3.2.2). Moving through the options with the arrow keys used to reload the page at every step.
+- `archive-murtadd_doubt.php`: a table row is now a `div`; the statement is the link and its `::after` covers the row. An anchor may not carry `role="row"` (WCAG 4.1.2).
+- `assets/css/main.css`: `html { scroll-padding-block }` keeps a focused control clear of the fixed back-to-top button (WCAG 2.4.11).
+
+### Added
+- `bin/axe-audit.js`: an axe-core and Playwright scan of a list of URLs at a given width.
+- `tests/AccessibilityTest.php`: guards for the four fixes and for removed focus outlines.
+
+### Audit record
+Issue register, inventory and manual-review items are in `docs/upgrading.md` under 1.58.1 to 1.58.2.
+
 ## 1.58.1 (2026-11-07)
 
 The chains figure now draws the Qatada route, and the research notes behind the 1.58.0 guide are corrected. No feature removed and no public identifier renamed.
