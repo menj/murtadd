@@ -11,7 +11,7 @@ Documentation only. No theme code, seed text or setting changed, no feature remo
   - Muslim **1421**: the previously married woman has more right over herself than her guardian, and a virgin is asked, her silence being her consent.
   - Muslim **1433**: Rifa'a's wife, and "until you taste his honey" as the first husband did.
   - Muslim **1472**: Ibn 'Abbas reports that in the time of the Prophet, Abu Bakr and two years of 'Umar's caliphate, three divorces counted as one, and 'Umar said people had hurried. This is the report the triple-talaq entries give, with the attribution to Ibn 'Abbas.
-- Not covered by this check: al-Bukhari 5260, the muhallil reports (Abu Dawud 2076, Ibn Majah 1935 and 1936), the women reports (al-Bukhari 304 and 29), every other hadith in the seed, and every al-Albani grading. The 1.57.0 note that the rest were read on shamela.ws stands as it was written; it was not repeated here.
+- Not covered by this check: al-Bukhari 5260, the muhallil reports (Abu Dawud 2076, Ibn Majah 1935 and 1936), the women reports (al-Bukhari 304 and 29), every other hadith in the seed, and every al-Albani grading. The 1.57.0 note that the rest were read on shamela.ws is unchanged, and this entry does not repeat it.
 
 ## 1.59.1 (2026-11-09)
 
