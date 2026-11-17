@@ -1,5 +1,18 @@
 # Murtadd changelog
 
+## 1.59.2 (2026-11-17)
+
+Documentation only. No theme code, seed text or setting changed, no feature removed and no public identifier renamed. The version number still changes, so, as with every release, the first admin page after the update runs the theme's version-gated upgrade steps: the content-sync check, the rewrite-rule flush and the development-file cleanup.
+
+### Changed
+- Five hadith cited in the seed entries were read in the text of the printed editions on shamela.ws on 2026-11-17 (Sahih al-Bukhari, the Sultaniyya edition, book 1681; Sahih Muslim, Abd al-Baqi's edition, book 1727), each by its number and its wording. All five match what the entries say:
+  - al-Bukhari **5136**: a previously married woman is not married until she is consulted, a virgin not until she gives permission, which is her silence.
+  - al-Bukhari **5138**: the woman whose father married her against her will, and whose marriage the Prophet rejected.
+  - Muslim **1421**: the previously married woman has more right over herself than her guardian, and a virgin is asked, her silence being her consent.
+  - Muslim **1433**: Rifa'a's wife, and "until you taste his honey" as the first husband did.
+  - Muslim **1472**: Ibn 'Abbas reports that in the time of the Prophet, Abu Bakr and two years of 'Umar's caliphate, three divorces counted as one, and 'Umar said people had hurried. This is the report the triple-talaq entries give, with the attribution to Ibn 'Abbas.
+- Not covered by this check: al-Bukhari 5260, the muhallil reports (Abu Dawud 2076, Ibn Majah 1935 and 1936), the women reports (al-Bukhari 304 and 29), every other hadith in the seed, and every al-Albani grading. The 1.57.0 note that the rest were read on shamela.ws is unchanged, and this entry does not repeat it.
+
 ## 1.59.1 (2026-11-09)
 
 Follow-up to 1.59.0, from CodeAnt's review of it. No feature removed and no public identifier renamed. The fatwa filters are untouched.
