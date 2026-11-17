@@ -276,7 +276,7 @@ See docs/changelog.md for earlier releases.
 
 == Upgrade Notice ==
 = 1.59.2 =
-Documentation only. Replace the theme files. Nothing else to do.
+Documentation only. Replace the theme files, then open any admin page once. Nothing else to do.
 
 = 1.59.1 =
 Replace the theme files. Nothing else to do.

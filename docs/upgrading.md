@@ -16,7 +16,7 @@ Never upload WordPress core to a live folder without `wp-config.php` in place. T
 
 ## 1.59.1 → 1.59.2
 
-Documentation only. Replace the theme files. Nothing else changes.
+Documentation only: no theme code, seed text or setting changes. Replace the theme files, then open any admin page once as an administrator, so the steps that follow every version change run as usual (the content-sync check, the rewrite-rule flush and the development-file cleanup). Nothing else to do.
 
 ## 1.59.0 → 1.59.1
 

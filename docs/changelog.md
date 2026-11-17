@@ -2,7 +2,7 @@
 
 ## 1.59.2 (2026-11-17)
 
-Documentation only. No code, seed text or setting changed, no feature removed and no public identifier renamed.
+Documentation only. No theme code, seed text or setting changed, no feature removed and no public identifier renamed. The version number still changes, so, as with every release, the first admin page after the update runs the theme's version-gated upgrade steps: the content-sync check, the rewrite-rule flush and the development-file cleanup.
 
 ### Changed
 - Five hadith cited in the seed entries were read in the text of the printed editions on shamela.ws on 2026-11-17 (Sahih al-Bukhari, the Sultaniyya edition, book 1681; Sahih Muslim, Abd al-Baqi's edition, book 1727), each by its number and its wording. All five match what the entries say:
