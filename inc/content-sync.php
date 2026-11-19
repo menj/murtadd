@@ -439,12 +439,19 @@ function murtadd_sync_write( $post, $item ) {
 		if ( ! $done || is_wp_error( $done ) ) {
 			return false;
 		}
+		// update_post_meta() also returns false when the value is unchanged, so the result is checked by reading it back.
+		// An item whose meta did not take is not recorded, which leaves it to be tried again.
+		$meta = array();
 		if ( 'murtadd_rebuttal' === $item['type'] ) {
-			update_post_meta( $post->ID, '_murtadd_claim', $f['claim'] );
-			update_post_meta( $post->ID, '_murtadd_sources', $f['sources'] );
+			$meta = array( '_murtadd_claim' => $f['claim'], '_murtadd_sources' => $f['sources'] );
 		} elseif ( 'murtadd_doubt' === $item['type'] ) {
-			update_post_meta( $post->ID, '_murtadd_doubt_statement', $f['statement'] );
-			update_post_meta( $post->ID, '_murtadd_short_response', $f['response'] );
+			$meta = array( '_murtadd_doubt_statement' => $f['statement'], '_murtadd_short_response' => $f['response'] );
+		}
+		foreach ( $meta as $meta_key => $meta_value ) {
+			update_post_meta( $post->ID, $meta_key, $meta_value );
+			if ( get_post_meta( $post->ID, $meta_key, true ) != wp_unslash( $meta_value ) ) { // phpcs:ignore Universal.Operators.StrictComparisons.LooseNotEqual -- an array and its stored copy compare loosely; WordPress unslashes what it stores.
+				return false;
+			}
 		}
 		murtadd_sync_record( $post->ID, $item['type'] );
 		return true;

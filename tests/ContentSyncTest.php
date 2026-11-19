@@ -132,6 +132,7 @@ final class ContentSyncTest extends TestCase {
 		$this->assertStringContainsString( "'failed' => 0", $src );
 		$this->assertMatchesRegularExpression( "/\\\$out = murtadd_sync_apply\\(\\);\\s+if \\( 0 === \\(int\\) \\\$out\\['failed'\\] \\) \\{\\s+update_option\\( 'murtadd_sync_fp'/", $src );
 		$this->assertStringContainsString( "set_transient( 'murtadd_sync_retry', '1', 15 * MINUTE_IN_SECONDS )", $src );
+		$this->assertStringContainsString( 'get_post_meta( $post->ID, $meta_key, true ) != wp_unslash( $meta_value )', $src, 'A meta field that did not take is read back and fails the item.' );
 	}
 
 	public function test_the_redirect_runs_first() {
