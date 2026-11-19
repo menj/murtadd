@@ -1,6 +1,6 @@
 # Murtadd: single source of truth
 
-Version 1.59.3 · Child theme of Twenty Twenty-Five · murtadd.org
+Version 1.59.4 · Child theme of Twenty Twenty-Five · murtadd.org
 
 ## What this theme is
 
@@ -76,6 +76,8 @@ Two constraints on the data. Every Doubt's `related` slug must name a Rebuttal t
 | is replaced, and edited | leaves it and lists it |
 
 Edited means the stored text differs from the fingerprint recorded in `_murtadd_sync_fp` when the theme wrote it, or no fingerprint exists. Removals stop on a failed checksum (`checksums.json`), a drop of more than 10 percent in the item count, or `MURTADD_DISABLE_CONTENT_SYNC`. The `supersedes` map ships empty.
+
+**A failed item is retried (since 1.59.4).** `murtadd_sync_maybe_run()` records the option `murtadd_sync_fp` only when `murtadd_sync_apply()` reports no failed update or trash. After a failure it sets the transient `murtadd_sync_retry` for 15 minutes, so a persistent failure does not rerun the sync on every admin load.
 
 ## Guides
 

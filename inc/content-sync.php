@@ -439,12 +439,19 @@ function murtadd_sync_write( $post, $item ) {
 		if ( ! $done || is_wp_error( $done ) ) {
 			return false;
 		}
+		// update_post_meta() also returns false when the value is unchanged, so the result is checked by reading it back.
+		// An item whose meta did not take is not recorded, which leaves it to be tried again.
+		$meta = array();
 		if ( 'murtadd_rebuttal' === $item['type'] ) {
-			update_post_meta( $post->ID, '_murtadd_claim', $f['claim'] );
-			update_post_meta( $post->ID, '_murtadd_sources', $f['sources'] );
+			$meta = array( '_murtadd_claim' => $f['claim'], '_murtadd_sources' => $f['sources'] );
 		} elseif ( 'murtadd_doubt' === $item['type'] ) {
-			update_post_meta( $post->ID, '_murtadd_doubt_statement', $f['statement'] );
-			update_post_meta( $post->ID, '_murtadd_short_response', $f['response'] );
+			$meta = array( '_murtadd_doubt_statement' => $f['statement'], '_murtadd_short_response' => $f['response'] );
+		}
+		foreach ( $meta as $meta_key => $meta_value ) {
+			update_post_meta( $post->ID, $meta_key, $meta_value );
+			if ( get_post_meta( $post->ID, $meta_key, true ) != wp_unslash( $meta_value ) ) { // phpcs:ignore Universal.Operators.StrictComparisons.LooseNotEqual -- an array and its stored copy compare loosely; WordPress unslashes what it stores.
+				return false;
+			}
 		}
 		murtadd_sync_record( $post->ID, $item['type'] );
 		return true;
@@ -466,10 +473,10 @@ function murtadd_sync_removal_block() {
  * Run a sync: update untouched items, retire what the bundle dropped or superseded when no guard stops it, and
  * list everything that waits for the owner.
  *
- * @return array{updated:int,trashed:int,waiting:int,blocked:string}
+ * @return array{updated:int,trashed:int,failed:int,waiting:int,blocked:string}
  */
 function murtadd_sync_apply() {
-	$out = array( 'updated' => 0, 'trashed' => 0, 'waiting' => 0, 'blocked' => '' );
+	$out = array( 'updated' => 0, 'trashed' => 0, 'failed' => 0, 'waiting' => 0, 'blocked' => '' );
 	if ( murtadd_sync_disabled() ) {
 		$out['blocked'] = murtadd_sync_removal_block();
 		return $out;
@@ -489,9 +496,13 @@ function murtadd_sync_apply() {
 				}
 				break;
 			case 'update':
-				if ( isset( $bundle[ $row['key'] ] ) && murtadd_sync_write( $post, $bundle[ $row['key'] ] ) ) {
-					++$out['updated'];
-					murtadd_sync_log( $row['key'], 'updated to the bundled text' );
+				if ( isset( $bundle[ $row['key'] ] ) ) {
+					if ( murtadd_sync_write( $post, $bundle[ $row['key'] ] ) ) {
+						++$out['updated'];
+						murtadd_sync_log( $row['key'], 'updated to the bundled text' );
+					} else {
+						++$out['failed'];
+					}
 				}
 				break;
 			case 'trash':
@@ -500,6 +511,8 @@ function murtadd_sync_apply() {
 					if ( wp_trash_post( $post->ID ) ) {
 						++$out['trashed'];
 						murtadd_sync_log( $row['key'], 'supersede' === $row['action'] ? 'moved to the Trash, replaced' : 'moved to the Trash, dropped from the bundle' );
+					} else {
+						++$out['failed'];
 					}
 				}
 				break;
@@ -540,8 +553,17 @@ function murtadd_sync_maybe_run() {
 	if ( get_option( 'murtadd_sync_fp' ) === $fp ) {
 		return;
 	}
-	murtadd_sync_apply();
-	update_option( 'murtadd_sync_fp', $fp, false );
+	// A run that had a failed item is not recorded, so it is tried again, at most every 15 minutes.
+	if ( get_transient( 'murtadd_sync_retry' ) ) {
+		return;
+	}
+	$out = murtadd_sync_apply();
+	if ( 0 === (int) $out['failed'] ) {
+		update_option( 'murtadd_sync_fp', $fp, false );
+		delete_transient( 'murtadd_sync_retry' );
+	} else {
+		set_transient( 'murtadd_sync_retry', '1', 15 * MINUTE_IN_SECONDS );
+	}
 }
 add_action( 'admin_init', 'murtadd_sync_maybe_run', 30 );
 
