@@ -1,5 +1,12 @@
 # Murtadd changelog
 
+## 1.59.4 (2026-11-19)
+
+The content sync retries what failed. No feature removed, no setting renamed.
+
+### Fixed
+- `murtadd_sync_maybe_run()` recorded the sync fingerprint (`murtadd_sync_fp`) even when an item failed to update or move to the Trash, so later admin loads skipped it and the item kept its old text. `murtadd_sync_apply()` now counts failures (`failed` in its result), the fingerprint is recorded only when there are none, and after a failure the next attempt waits 15 minutes (transient `murtadd_sync_retry`). Reported by CodeAnt on #51.
+
 ## 1.59.3 (2026-11-19)
 
 Documentation only. No theme code, seed text or setting changed, no feature removed and no public identifier renamed. The version number still changes, so, as with every release, the first admin page load after the files are replaced runs the normal upgrade steps.

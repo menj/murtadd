@@ -3,7 +3,7 @@ Contributors: murtadd.org
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.1
-Stable tag: 1.59.3
+Stable tag: 1.59.4
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -118,6 +118,9 @@ Bundled resources:
 * The site icon, the pixel book and envelope images, the calligraphy in assets/images and screenshot.png were made for this theme and are GPL v3 or later with it.
 
 == Changelog ==
+= 1.59.4 =
+* The content sync is recorded as done only when every item went through. A failed item is tried again, at most every 15 minutes, instead of staying out of date.
+
 = 1.59.3 =
 * Documentation only. The developer notes list the accessibility scan.
 
@@ -278,6 +281,9 @@ Bundled resources:
 See docs/changelog.md for earlier releases.
 
 == Upgrade Notice ==
+= 1.59.4 =
+Replace the theme files, then open any admin page once. If an item could not be written before, the sync now tries it again.
+
 = 1.59.3 =
 Documentation only. Replace the theme files, then open any admin page once. Nothing else to do.
 

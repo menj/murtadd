@@ -127,6 +127,13 @@ final class ContentSyncTest extends TestCase {
 		$this->assertStringContainsString( 'murtadd_sync_removal_block() );', $this->read( 'inc/content-sync.php' ) );
 	}
 
+	public function test_a_failed_write_is_not_recorded_as_a_finished_sync() {
+		$src = $this->read( 'inc/content-sync.php' );
+		$this->assertStringContainsString( "'failed' => 0", $src );
+		$this->assertMatchesRegularExpression( "/\\\$out = murtadd_sync_apply\\(\\);\\s+if \\( 0 === \\(int\\) \\\$out\\['failed'\\] \\) \\{\\s+update_option\\( 'murtadd_sync_fp'/", $src );
+		$this->assertStringContainsString( "set_transient( 'murtadd_sync_retry', '1', 15 * MINUTE_IN_SECONDS )", $src );
+	}
+
 	public function test_the_redirect_runs_first() {
 		$this->assertStringContainsString( "'template_redirect', 'murtadd_superseded_redirect', 1", $this->read( 'inc/content-sync.php' ) );
 	}

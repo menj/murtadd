@@ -466,10 +466,10 @@ function murtadd_sync_removal_block() {
  * Run a sync: update untouched items, retire what the bundle dropped or superseded when no guard stops it, and
  * list everything that waits for the owner.
  *
- * @return array{updated:int,trashed:int,waiting:int,blocked:string}
+ * @return array{updated:int,trashed:int,failed:int,waiting:int,blocked:string}
  */
 function murtadd_sync_apply() {
-	$out = array( 'updated' => 0, 'trashed' => 0, 'waiting' => 0, 'blocked' => '' );
+	$out = array( 'updated' => 0, 'trashed' => 0, 'failed' => 0, 'waiting' => 0, 'blocked' => '' );
 	if ( murtadd_sync_disabled() ) {
 		$out['blocked'] = murtadd_sync_removal_block();
 		return $out;
@@ -489,9 +489,13 @@ function murtadd_sync_apply() {
 				}
 				break;
 			case 'update':
-				if ( isset( $bundle[ $row['key'] ] ) && murtadd_sync_write( $post, $bundle[ $row['key'] ] ) ) {
-					++$out['updated'];
-					murtadd_sync_log( $row['key'], 'updated to the bundled text' );
+				if ( isset( $bundle[ $row['key'] ] ) ) {
+					if ( murtadd_sync_write( $post, $bundle[ $row['key'] ] ) ) {
+						++$out['updated'];
+						murtadd_sync_log( $row['key'], 'updated to the bundled text' );
+					} else {
+						++$out['failed'];
+					}
 				}
 				break;
 			case 'trash':
@@ -500,6 +504,8 @@ function murtadd_sync_apply() {
 					if ( wp_trash_post( $post->ID ) ) {
 						++$out['trashed'];
 						murtadd_sync_log( $row['key'], 'supersede' === $row['action'] ? 'moved to the Trash, replaced' : 'moved to the Trash, dropped from the bundle' );
+					} else {
+						++$out['failed'];
 					}
 				}
 				break;
@@ -540,8 +546,17 @@ function murtadd_sync_maybe_run() {
 	if ( get_option( 'murtadd_sync_fp' ) === $fp ) {
 		return;
 	}
-	murtadd_sync_apply();
-	update_option( 'murtadd_sync_fp', $fp, false );
+	// A run that had a failed item is not recorded, so it is tried again, at most every 15 minutes.
+	if ( get_transient( 'murtadd_sync_retry' ) ) {
+		return;
+	}
+	$out = murtadd_sync_apply();
+	if ( 0 === (int) $out['failed'] ) {
+		update_option( 'murtadd_sync_fp', $fp, false );
+		delete_transient( 'murtadd_sync_retry' );
+	} else {
+		set_transient( 'murtadd_sync_retry', '1', 15 * MINUTE_IN_SECONDS );
+	}
 }
 add_action( 'admin_init', 'murtadd_sync_maybe_run', 30 );
 
