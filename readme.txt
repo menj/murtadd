@@ -3,7 +3,7 @@ Contributors: murtadd.org
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.1
-Stable tag: 1.59.2
+Stable tag: 1.59.3
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -118,6 +118,9 @@ Bundled resources:
 * The site icon, the pixel book and envelope images, the calligraphy in assets/images and screenshot.png were made for this theme and are GPL v3 or later with it.
 
 == Changelog ==
+= 1.59.3 =
+* Documentation only. The developer notes list the accessibility scan.
+
 = 1.59.2 =
 * Documentation only. Five hadith cited in the entries on consent in marriage and on triple talaq were read again in the text of Sahih al-Bukhari and Sahih Muslim.
 
@@ -275,6 +278,9 @@ Bundled resources:
 See docs/changelog.md for earlier releases.
 
 == Upgrade Notice ==
+= 1.59.3 =
+Documentation only. Replace the theme files, then open any admin page once. Nothing else to do.
+
 = 1.59.2 =
 Documentation only. Replace the theme files, then open any admin page once. Nothing else to do.
 

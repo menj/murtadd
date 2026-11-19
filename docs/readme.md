@@ -7,7 +7,7 @@ A classic-template child theme of Twenty Twenty-Five for **murtadd.org**.
 | Theme slug | `murtadd` |
 | Text domain | `murtadd` |
 | Parent | `twentytwentyfive` |
-| Version | 1.59.2 |
+| Version | 1.59.3 |
 | Author | Langgam Fikir Enterprise |
 | Licence | GNU General Public License v3 or later; the full text is in `LICENSE` |
 | Requires WP | 6.4+ |
@@ -109,6 +109,7 @@ composer test             # vendor/bin/phpunit; runs without WordPress
 php tests/security-detector-test.php
 php bin/build-error-pages.php          # rebuild errors/ after a text change
 php bin/build-error-pages.php --check  # fails when a page is stale
+AXE_CORE=/path/to/axe.min.js BASE=http://127.0.0.1:8820 node bin/axe-audit.js 1280 /  # WCAG 2.2 AA scan; exits 1 on a serious or critical rule (needs Playwright; see the header of the file)
 ```
 
 GitHub Actions runs `composer lint` and `composer test`. A release zip comes from `git archive`, which leaves out `.github`, `.claude`, `tests`, `config`, Composer's and PHPUnit's files and the git files (`.gitattributes`). `vendor/parsedown` ships, since the Docs tab loads it.
