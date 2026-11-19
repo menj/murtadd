@@ -1,5 +1,12 @@
 # Murtadd changelog
 
+## 1.59.3 (2026-11-19)
+
+Documentation only. No theme code, seed text or setting changed, no feature removed and no public identifier renamed. The version number still changes, so, as with every release, the first admin page load after the files are replaced runs the normal upgrade steps.
+
+### Changed
+- `docs/readme.md` lists `bin/axe-audit.js` among the development commands. The counts in the readme and the starter-content notes were checked against the seed files (48 doubts, 57 rebuttals, 12 guides, 8 Journal posts) and match.
+
 ## 1.59.2 (2026-11-17)
 
 Documentation only. No theme code, seed text or setting changed, no feature removed and no public identifier renamed. The version number still changes, so, as with every release, the first admin page after the update runs the theme's version-gated upgrade steps: the content-sync check, the rewrite-rule flush and the development-file cleanup.
