@@ -1,5 +1,12 @@
 # Murtadd changelog
 
+## 1.60.1 (2026-11-23)
+
+The content sync retries what failed. No feature removed, no setting renamed.
+
+### Fixed
+- `murtadd_sync_maybe_run()` recorded the sync fingerprint (`murtadd_sync_fp`) even when an item failed to update or move to the Trash, so later admin loads skipped it and the item kept its old text. `murtadd_sync_apply()` now counts failures (`failed` in its result), the fingerprint is recorded only when there are none, and after a failure the next attempt waits 15 minutes (transient `murtadd_sync_retry`). Reported by CodeAnt on #51. `murtadd_sync_write()` also reads each meta field back after writing it and reports failure when it did not take, so a rebuttal or doubt whose fields stayed stale is not recorded as done (CodeAnt, #52).
+
 ## 1.60.0 (2026-11-23)
 
 One new rebuttal. No feature removed and no public identifier renamed.

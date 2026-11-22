@@ -14,6 +14,12 @@ An upload straight into the live folder is riskier. While one of the files in `i
 
 Never upload WordPress core to a live folder without `wp-config.php` in place. The installer answers anyone in that state.
 
+## 1.60.0 → 1.60.1
+
+Replace the theme files, then open any admin page once as an administrator. Nothing else to do.
+
+What changed for you: a failed item no longer marks the sync as finished. The sync tries it again, at most every 15 minutes.
+
 ## 1.59.3 → 1.60.0
 
 Replace the theme files, then open any admin page once as an administrator. The content sync adds the new rebuttal, `iblis-and-the-command-to-prostrate`, from `inc/data/seed/rebuttals.json`; `checksums.json` was rewritten for it. Nothing else to do.
