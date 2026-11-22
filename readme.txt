@@ -3,7 +3,7 @@ Contributors: murtadd.org
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.1
-Stable tag: 1.59.3
+Stable tag: 1.60.0
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -24,7 +24,7 @@ The parent supplies the block library styles. Every front-end view is a PHP temp
 * Contextual links from the first mention of a subject to the page that treats it, here or on another site, and a glossary of Arabic and Malay terms.
 * A contact form shortcode, [murtadd_contact], which mails messages and stores nothing.
 * Security switches, a private login address, a spam scan, maintenance mode, branded error pages and 410 answers for removed spam.
-* Starter content: the pages, 48 doubts, 57 rebuttals, 12 guides and 8 Journal posts, inserted once and never overwritten.
+* Starter content: the pages, 48 doubts, 58 rebuttals, 12 guides and 8 Journal posts, inserted once and never overwritten.
 
 == Installation ==
 Install Twenty Twenty-Five first and keep it installed. It is the parent theme and need not be active.
@@ -118,6 +118,9 @@ Bundled resources:
 * The site icon, the pixel book and envelope images, the calligraphy in assets/images and screenshot.png were made for this theme and are GPL v3 or later with it.
 
 == Changelog ==
+= 1.60.0 =
+* One new rebuttal: the claim that God condemned Iblis for a command given only to the angels. It answers from 7:12, where God says "when I commanded you", and from Ibn Kathir and al-Qurtubi, read in their Shamela texts. There are now 48 doubts and 58 rebuttals.
+
 = 1.59.3 =
 * Documentation only. The developer notes list the accessibility scan.
 
@@ -278,6 +281,9 @@ Bundled resources:
 See docs/changelog.md for earlier releases.
 
 == Upgrade Notice ==
+= 1.60.0 =
+Replace the theme files, then open any admin page once. The new rebuttal is added by the content sync.
+
 = 1.59.3 =
 Documentation only. Replace the theme files, then open any admin page once. Nothing else to do.
 
