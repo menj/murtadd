@@ -1,5 +1,12 @@
 # Murtadd changelog
 
+## 1.60.0 (2026-11-23)
+
+One new rebuttal. No feature removed and no public identifier renamed.
+
+- `iblis-and-the-command-to-prostrate`, under Theodicy and Reason and faith: the claim that Iblis, a jinn, was condemned for an order given to the angels. It answers from 7:12 and 38:75, where God addresses the command to Iblis, from Ibn Kathir on 2:34 and 18:50 and al-Qurtubi on 2:34 (the Arabic matched in the Shamela texts), and from Sahih Muslim 2996 (graded on dorar.net). It has no counterpart slug on the companion site yet.
+- `inc/data/seed/checksums.json` rewritten by `bin/seed-checksums.php`. The readme counts now read 48 doubts and 58 rebuttals, and `docs/readme.md`, which still said 38 and 47, matches them.
+
 ## 1.59.3 (2026-11-19)
 
 Documentation only. No theme code, seed text or setting changed, no feature removed and no public identifier renamed. The version number still changes, so, as with every release, the first admin page load after the files are replaced runs the normal upgrade steps.

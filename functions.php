@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'MURTADD_VERSION', '1.59.3' );
+define( 'MURTADD_VERSION', '1.60.0' );
 
 /**
  * Asset suffix. Sources are served when SCRIPT_DEBUG is on, minified otherwise.
