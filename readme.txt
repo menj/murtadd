@@ -3,7 +3,7 @@ Contributors: murtadd.org
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.1
-Stable tag: 1.60.1
+Stable tag: 1.60.2
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -118,6 +118,9 @@ Bundled resources:
 * The site icon, the pixel book and envelope images, the calligraphy in assets/images and screenshot.png were made for this theme and are GPL v3 or later with it.
 
 == Changelog ==
+= 1.60.2 =
+* Documentation only. The developer notes now say that the content sync reads each saved field back and treats one that did not take as a failed item.
+
 = 1.60.1 =
 * The content sync is recorded as done only when every item went through. A failed item is tried again, at most every 15 minutes, instead of staying out of date.
 
@@ -284,6 +287,9 @@ Bundled resources:
 See docs/changelog.md for earlier releases.
 
 == Upgrade Notice ==
+= 1.60.2 =
+Documentation only. Replace the theme files, then open any admin page once. Nothing else to do.
+
 = 1.60.1 =
 Replace the theme files, then open any admin page once. If an item could not be written before, the sync now tries it again.
 
