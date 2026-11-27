@@ -1,5 +1,12 @@
 # Murtadd changelog
 
+## 1.60.2 (2026-11-26)
+
+Documentation only. No theme code, seed text or setting changed, no feature removed and no public identifier renamed. The version number still changes, so, as with every release, the first admin page load after the files are replaced runs the normal upgrade steps.
+
+### Changed
+- `docs/ssot.md` records that `murtadd_sync_write()` reads each meta field back and fails the item when it did not take (added in 1.60.1, not described there). It also says what follows a failure after the post fields were saved: the item is listed under Upkeep for the owner to take the bundled text, not rewritten by the retry. The counts in the readme and the docs were checked against the seed files again (48 doubts, 58 rebuttals, 12 guides, 8 Journal posts) and match.
+
 ## 1.60.1 (2026-11-23)
 
 The content sync retries what failed. No feature removed, no setting renamed.

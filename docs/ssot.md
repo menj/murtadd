@@ -1,6 +1,6 @@
 # Murtadd: single source of truth
 
-Version 1.60.1 · Child theme of Twenty Twenty-Five · murtadd.org
+Version 1.60.2 · Child theme of Twenty Twenty-Five · murtadd.org
 
 ## What this theme is
 
@@ -77,7 +77,7 @@ Two constraints on the data. Every Doubt's `related` slug must name a Rebuttal t
 
 Edited means the stored text differs from the fingerprint recorded in `_murtadd_sync_fp` when the theme wrote it, or no fingerprint exists. Removals stop on a failed checksum (`checksums.json`), a drop of more than 10 percent in the item count, or `MURTADD_DISABLE_CONTENT_SYNC`. The `supersedes` map ships empty.
 
-**A failed item is retried (since 1.60.1).** `murtadd_sync_maybe_run()` records the option `murtadd_sync_fp` only when `murtadd_sync_apply()` reports no failed update or trash. After a failure it sets the transient `murtadd_sync_retry` for 15 minutes, so a persistent failure does not rerun the sync on every admin load.
+**A failed item is retried (since 1.60.1).** `murtadd_sync_maybe_run()` records the option `murtadd_sync_fp` only when `murtadd_sync_apply()` reports no failed update or trash. After a failure it sets the transient `murtadd_sync_retry` for 15 minutes, so a persistent failure does not rerun the sync on every admin load. `murtadd_sync_write()` reads each saved meta field back (`update_post_meta()` also returns false for an unchanged value, so its result cannot be used) and returns false when a field did not take, so that item counts as failed and the run is not recorded. The post fields (title, content, excerpt) are already saved by then, so the stored text no longer matches the fingerprint the theme recorded. The next plan therefore reads that item as edited and lists it under Appearance, Murtadd, Upkeep as having newer bundled text, where the owner takes the bundled text (which writes the fields again) or keeps their own. It is not rewritten by the automatic retry.
 
 ## Guides
 
